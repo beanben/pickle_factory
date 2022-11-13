@@ -1,0 +1,10 @@
+# Backend Django
+config/__pycache__
+config/settings_local.py
+
+# Frontend Angular
+frontend/dist
+frontend/node_modules
+
+# Runtime
+staticfiles/

@@ -1,0 +1,34 @@
+{
+  "buildpacks": [
+    {
+      "url": "https://github.com/negativetwelve/heroku-buildpack-subdir"
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev"
+    }
+  ],
+  "env": {
+    "ALLOWED_HOSTS": {
+      "description": "A list of strings representing the host/domain names that this Django site can serve.",
+      "value": "pickle-factory.herokuapp.com"
+    },
+    "API_BASE_URL": {
+      "description": "The base URL for the API.",
+      "value": "pickle-factory.herokuapp.com"
+    },
+    "DEBUG": {
+      "description": "A boolean that turns on/off debug mode.",
+      "value": "false"
+    },
+    "SECRET_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "DISABLE_COLLECTSTATIC": {
+      "description": "Disable Heroku's automatic 'collectstatic' build step.",
+      "value": "true"
+    }
+  }
+}
