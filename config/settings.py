@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import dj_database_url
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -17,8 +18,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api',
+    
+    # third party packages
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+
+     # internal apps
+     'api',
+     'authentication',
 ]
 
 MIDDLEWARE = [
@@ -188,6 +196,14 @@ except Exception:
     DEBUG = os.getenv("DEBUG", None) == "True"
     SECRET_KEY = os.environ["SECRET_KEY"]
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
+
+
+# auth settings
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ["Bearer"],
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+}
 
 
 

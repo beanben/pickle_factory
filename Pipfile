@@ -15,9 +15,9 @@ django-heroku = "*"
 djangorestframework = "*"
 pygments = "*"
 django-cors-headers = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
-
