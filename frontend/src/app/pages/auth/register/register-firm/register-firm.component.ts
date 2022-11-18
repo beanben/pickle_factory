@@ -37,8 +37,9 @@ export class RegisterFirmComponent implements OnInit {
   }
 
   onClick(){
-    // this._authService.createFirm(this.firm)
-    //   .subscribe(() => this.closePopup())
+    console.log("clicked");
+    this._authService.createFirm(this.firm)
+      .subscribe(() => this.closePopup())
   }
 
 }

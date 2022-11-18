@@ -22,11 +22,11 @@ export class RegisterUserComponent implements OnInit {
     }
 
   onSubmit() {
-    // this._authService.register(this.user)
-    // .then(() => {
-    //   this.router.navigate(['/']);
-    // })
-    // .catch(err => this.errors = err)
+    this._authService.register(this.user)
+    .then(() => {
+      this.router.navigate(['/']);
+    })
+    .catch(err => this.errors = err)
  }
 
 }

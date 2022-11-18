@@ -5,6 +5,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, tap } from 'rxjs';
 import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
+import { User } from 'src/app/pages/auth/user';
+import { APIResult } from '../api-result';
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +36,60 @@ export class AuthService {
     );
   }
 
+  /** POST: create a new firm */
+  createFirm(firm: Firm): Observable<Firm> {
+    const url = `${this.urlRoot}firm/`;
+    const httpOptions = this.httpOptions;
+
+    return this.http.post<Firm>(url, firm, httpOptions).pipe(
+      tap(() => console.log('createFirm()', Math.random()))
+    );
+  }
+
   isLoggedIn(): boolean {
     return !!this._tokenService.getAccessToken();
+  }
+
+  register(user:User) {
+    return new Promise<APIResult>((resolve, reject) => {
+      const url = `${this.urlRoot}register/`;
+
+      this.http.post(url, user).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          if (result.status === "success"){
+            resolve(result);
+
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this.handleError(error));
+        }
+      })
+    })
+  }
+
+  private handleError(errorRes: HttpErrorResponse): Array<string> {
+    console.log("errorRes:", errorRes);
+    let errors = ['An unknown error occurred!'];
+
+    if (errorRes.error instanceof ErrorEvent) {
+      console.log('This is a client side error');
+      errors = [`Error: ${errorRes.error.message}`];
+
+    } else {
+      console.log('This is a server side error');
+      if (errorRes.error.response && errorRes.error.response.message){
+        errors = Object.values(errorRes.error.response.message);
+        
+      } else {
+        errors = Object.values(errorRes.error);
+      }
+      
+    }
+    return errors;
   }
 
 
