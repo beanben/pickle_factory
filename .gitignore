@@ -6,6 +6,7 @@ config/settings_local.py
 # Frontend Angular
 frontend/dist
 frontend/node_modules
+frontend/.angular
 
 # Runtime
 staticfiles/
