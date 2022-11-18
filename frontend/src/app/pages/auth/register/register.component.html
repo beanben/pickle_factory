@@ -1,1 +1,52 @@
-<p>register section work in progress</p>
+<app-register-firm *ngIf="openPopup" (onClosePopup)="closePopup()"></app-register-firm>
+
+<!-- REGISTER -->
+<div class="row ">
+    <div class="col">
+        
+        <h1 class="h3 pb-3 fw-normal text-center">
+            Please register
+        </h1> 
+        
+        <!-- select firm the user belongs to -->
+        <div class="row" *ngIf="!next">
+            <div class="col">
+                <div class="form-floating">
+                    <select
+                    class="form-select"
+                    id="floatingSelect"
+                    [(ngModel)]="user.firm">
+                        <option value="undefined"> -- Select your firm --</option>
+                        <option *ngFor='let firm of firms' [ngValue]="firm" >{{ firm.name }}
+                        </option>
+                    </select>
+                    <label for="floatingSelect">Firm</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- create a new firm if not already in the drop down, or next steps -->
+        <div class="row py-2" *ngIf="!next">
+            <div class="col">
+                <div class="d-flex justify-content-between">
+                    <button 
+                        class="btn btn-auth me-1 fw-bolder" 
+                        type="button"
+                        (click)="onOpenPopup()">New Firm
+                    </button>
+                    <button 
+                        class="btn btn-auth ms-1"
+                        [ngClass]="{'fw-bolder': user.firm}"
+                        type="button"
+                        [disabled]="!user.firm"
+                        (click)="onNext()">Next
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- add other user fields -->
+        <app-register-user [user]="user" *ngIf="next" (onRegister)="onLoginPage()"></app-register-user>
+
+    </div>
+</div>

@@ -1,3 +1,5 @@
+import { Firm } from "./firm";
+
 export interface User {
     pk?: number,
     firm: Firm,
@@ -7,9 +9,4 @@ export interface User {
     password: string,
     password_confirm?: string,
     token?: string
-}
-
-export interface Firm {
-    id: number,
-    name: string
 }

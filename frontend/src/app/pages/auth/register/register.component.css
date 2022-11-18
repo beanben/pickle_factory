@@ -1,0 +1,10 @@
+.btn-auth {
+    border: 2px solid #050537;
+    background-color: white;
+}
+
+.btn {
+    width: 132px;
+    height: 48px;
+    border-radius: 20px;
+}

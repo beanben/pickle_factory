@@ -13,6 +13,8 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { RegisterUserComponent } from './pages/auth/register/register-user/register-user.component';
 import { RegisterFirmComponent } from './pages/auth/register/register-firm/register-firm.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { RegisterFirmComponent } from './pages/auth/register/register-firm/regis
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'} ],
   bootstrap: [AppComponent]
