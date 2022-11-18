@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
      # internal apps
-     'api',
      'authentication',
 ]
 
