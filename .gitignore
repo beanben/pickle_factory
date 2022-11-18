@@ -1,6 +1,7 @@
 # Backend Django
 config/__pycache__
 config/settings_local.py
+*/__pycache__
 
 # Frontend Angular
 frontend/dist
