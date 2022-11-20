@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 
      # internal apps
-     'authentication',
+     'authentication'
 ]
 
 MIDDLEWARE = [
@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cref_db',
+        'NAME': 'pickle_db',
         'USER': '', # will need to create a user, with correct permissions`, to be able to see relationship with database`
         'PASSWORD': '',
         'HOST': 'localhost',
@@ -80,18 +80,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    # },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    # },
 ]
 
 
@@ -135,6 +135,24 @@ ALLOWED_HOSTS += ['0.0.0.0']
 
 # custom user
 AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doing the first migrations
+
+# REST Authenticaiton global parametres
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+         "rest_framework.authentication.TokenAuthentication",
+         "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated"
+    ]
+}
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ["Bearer"],
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+}
 
 # To get an error message on the console even if Debug = false:
 LOGGING = {
