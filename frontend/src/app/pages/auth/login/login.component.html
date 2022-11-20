@@ -1,1 +1,43 @@
-<p>login works!</p>
+<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+
+    <h1 class="h3 mb-3 fw-normal text-center">
+        Please login
+    </h1>
+    
+    <div class="form-group mb-1">
+        <div class="form-floating">
+            <input type="email" class="form-control" id="email"
+                    ngModel name="email"
+                    #email="ngModel"
+                    placeholder="Email address">
+            <label for="email">Email address</label>
+        </div>
+    </div>
+
+    <div class="form-group mb-1">
+        <div class="form-floating">
+            <input type="password" class="form-control" id="email"
+                    ngModel name="password"
+                    #password="ngModel"
+                    placeholder="Password">
+            <label for="email">Password</label>
+        </div>
+    </div>
+        
+    <div>
+        <button
+            class="btn btn-auth btn-active m-2 text-white"
+            type="submit">
+            Login               
+        </button>
+        <div class="mb-3">
+            <a routerLink="/auth/forgot" class="text-secondary">Forgot your password</a>
+        </div>
+    </div>
+
+    <div *ngFor="let error of errors"
+        class="alert alert-danger">
+        {{error}}
+    </div>
+
+</form>

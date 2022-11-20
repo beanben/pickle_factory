@@ -71,6 +71,32 @@ export class AuthService {
     })
   }
 
+  login(email: string, password: string) {
+    return new Promise<APIResult>((resolve, reject) => {
+      const url = `${this.urlRoot}login/`;
+      const body = {email: email, password: password};
+
+      this.http.post(url, body).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+
+          if (result.status === "success"){
+            this._tokenService.saveAccessToken(result.response.access);
+            this._tokenService.saveRefreshToken(result.response.refresh);
+            resolve(result);
+
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this.handleError(error));
+
+        }
+      })
+    })
+  }
+
   private handleError(errorRes: HttpErrorResponse): Array<string> {
     console.log("errorRes:", errorRes);
     let errors = ['An unknown error occurred!'];
