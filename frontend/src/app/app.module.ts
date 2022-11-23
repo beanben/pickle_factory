@@ -15,6 +15,9 @@ import { RegisterUserComponent } from './pages/auth/register/register-user/regis
 import { RegisterFirmComponent } from './pages/auth/register/register-firm/register-firm.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NavLeftComponent } from './parts/nav-left/nav-left.component';
+import { ProfileComponent } from './parts/profile.component';
+import { authInterceptorProviders } from './_services/auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -28,6 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     ResetComponent,
     RegisterUserComponent,
     RegisterFirmComponent,
+    NavLeftComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,7 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     HttpClientModule
   ],
-  providers: [ {provide: APP_BASE_HREF, useValue: '/'} ],
+  providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

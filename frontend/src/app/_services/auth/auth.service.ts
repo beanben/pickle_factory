@@ -97,6 +97,25 @@ export class AuthService {
     })
   }
 
+  getUser(): Observable<User> {
+    const url = `${this.urlRoot}user/`;
+    return this.http.get<User>(url).pipe(
+      tap(() => console.log('getUser()', Math.random()))
+    )
+  }
+
+  refreshToken(token: string) {
+    const url = `${this.urlRoot}token/refresh/`; 
+    const body = {"refresh": token};
+    return this.http.post<any>(url, body)
+  }
+
+  logout() {
+    this.router.navigate(['/landing']);
+    this._tokenService.deleteRefreshToken();
+    this._tokenService.deleteAccessToken();
+  }
+
   private handleError(errorRes: HttpErrorResponse): Array<string> {
     console.log("errorRes:", errorRes);
     let errors = ['An unknown error occurred!'];
