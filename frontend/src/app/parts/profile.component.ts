@@ -6,11 +6,11 @@ import { AuthService } from '../_services/auth/auth.service';
     selector: 'app-profile',
     template:`
         <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-centered">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Profile</h5>
+                    <h5 class="modal-title w-100 text-center">Profile</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
                 </div>
 
@@ -18,7 +18,8 @@ import { AuthService } from '../_services/auth/auth.service';
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col">
-                      {{user.first_name}} {{user.last_name}}
+                        <p class="text-center"></p>
+                      
                       </div>
                     </div>
                     <div class="row">
@@ -42,10 +43,11 @@ import { AuthService } from '../_services/auth/auth.service';
                 </div>
             </div>
         </div>
-        </div>
+      </div>
     `,
     styles: [
-        '.modal {background-color: #C4C4C466; width: 50%;}'
+        '.modal {background-color: rgba(0, 0, 0, 0.7);}',
+        '.modal-centered {top: 10em}'
     ]
   })
 export class ProfileComponent implements OnInit{

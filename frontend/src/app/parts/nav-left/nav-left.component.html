@@ -1,5 +1,5 @@
 <!-- MODAL (create new firm) -->
-<app-profile *ngIf="openPopup" (onClosePopup)="closePopup()"></app-profile>
+<app-profile *ngIf="openPopup" (onClosePopup)="closePopup()" [user]="user"></app-profile>
 
 <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
     <a routerLink="/" class="d-flex ps-1 align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
