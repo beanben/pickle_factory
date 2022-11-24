@@ -53,6 +53,7 @@ export class AuthService {
   register(user:User) {
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}register/`;
+      console.log("url:", url);
 
       this.http.post(url, user).subscribe({
         next: (data) => {
