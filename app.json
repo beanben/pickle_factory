@@ -7,6 +7,9 @@
   "addons": [
     {
       "plan": "heroku-postgresql:hobby-dev"
+    },
+    {
+      "plan": "sendgrid:starter"
     }
   ],
   "env": {
@@ -29,6 +32,14 @@
     "DISABLE_COLLECTSTATIC": {
       "description": "Disable Heroku's automatic 'collectstatic' build step.",
       "value": "true"
+    },
+    "SENDGRID_USERNAME": {
+      "description": "Sendgrid username",
+      "value": "apikey"
+    },
+    "SENDGRID_PASSWORD": {
+      "description": "Sendgrid SMTP password (API Key)",
+      "value": "<PASSWORD>"
     }
   }
 }

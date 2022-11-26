@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { AuthService } from 'src/app/_services/auth/auth.service';
 
 @Component({
   selector: 'app-forgot',
@@ -6,10 +8,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./forgot.component.css']
 })
 export class ForgotComponent implements OnInit {
+  errors: string[] = new Array();
+  successMsg = '';
 
-  constructor() { }
+  constructor(
+    private _authService: AuthService,
+    ) { 
+  }
 
   ngOnInit(): void {
   }
+
+  onSubmit(form: NgForm) {
+    const email = form.value.email;
+
+    this._authService.forgot(email)
+     .then((result) => {
+      this.successMsg = 'Email to reset password sent!';
+      })
+     .catch(err => this.errors = err)
+ }
 
 }

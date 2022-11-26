@@ -22,6 +22,7 @@ export class RegisterUserComponent implements OnInit {
     }
 
   onSubmit() {
+    // console.log("submit")
     this._authService.register(this.user)
     .then(() => {
       this.router.navigate(['/']);

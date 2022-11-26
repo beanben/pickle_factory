@@ -1,1 +1,36 @@
-<p>forgot works!</p>
+<div *ngIf="successMsg" class="alert alert-success" role="alert">
+    <h1 class="h3 fw-normal text-center">
+        {{successMsg}}
+    </h1>
+</div>
+
+<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" *ngIf="!successMsg">
+
+    <h1 class="h3 mb-3 fw-normal text-center">
+        Please type in your email
+    </h1>
+    
+    <div class="form-group mb-1">
+        <div class="form-floating">
+            <input type="email" class="form-control" id="email"
+                    ngModel name="email"
+                    #email="ngModel"
+                    placeholder="Email address">
+            <label for="email">Email address</label>
+        </div>
+    </div>
+        
+    <div>
+        <button
+            class="btn btn-primary m-2"
+            type="submit">
+            Submit               
+        </button>
+    </div>
+
+    <div *ngFor="let error of errors"
+        class="alert alert-danger">
+        {{error}}
+    </div>
+
+</form>

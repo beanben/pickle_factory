@@ -51,9 +51,9 @@ export class AuthService {
   }
 
   register(user:User) {
+    // console.log("register")
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}register/`;
-      console.log("url:", url);
 
       this.http.post(url, user).subscribe({
         next: (data) => {
@@ -115,6 +115,54 @@ export class AuthService {
     this.router.navigate(['/landing']);
     this._tokenService.deleteRefreshToken();
     this._tokenService.deleteAccessToken();
+  }
+
+  forgot(email: string) {
+    return new Promise<APIResult>((resolve, reject) => {
+      const url = `${this.urlRoot}forgot/`;
+      const body = {email: email};
+
+      this.http.post(url, body).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this.handleError(error));
+        }
+      })
+    })
+  }
+
+  reset(password: string, password_confirm: string, token: string) {
+    return new Promise<APIResult>((resolve, reject) => {
+      const url = `${this.urlRoot}reset/`;
+      const body = {
+        password: password, 
+        password_confirm: password_confirm,
+        token: token
+      };
+
+      this.http.post(url, body).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this.handleError(error));
+        }
+      })
+    })
   }
 
   private handleError(errorRes: HttpErrorResponse): Array<string> {

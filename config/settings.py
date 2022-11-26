@@ -132,6 +132,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Settings added to allow heroku to work locally
 ALLOWED_HOSTS += ['0.0.0.0']
 
+
 # custom user
 AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doing the first migrations
 
@@ -139,8 +140,8 @@ AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doi
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
-         "rest_framework.authentication.TokenAuthentication",
-         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated"
@@ -216,6 +217,13 @@ except Exception:
     DEBUG = os.getenv("DEBUG", None) == "True"
     SECRET_KEY = os.environ["SECRET_KEY"]
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
+
+    # Email settings
+    EMAIL_HOST_USER = os.environ["SENDGRID_USERNAME"]
+    EMAIL_HOST = "smtp.sendgrid.net"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_PASSWORD = os.environ["SENDGRID_PASSWORD"]
 
 
 # auth settings

@@ -1,1 +1,41 @@
-<p>reset works!</p>
+<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+
+    <h1 class="h3 mb-3 fw-normal text-center">
+        Please reset your password
+    </h1>
+
+    <div class="form-group mb-1">
+        <div class="form-floating">
+            <input type="password" class="form-control" id="email"
+                    ngModel name="password"
+                    #password="ngModel"
+                    placeholder="Password">
+            <label for="email">Password</label>
+        </div>
+    </div>
+
+    <div class="form-group mb-1">
+        <div class="form-floating">
+            <input type="password" class="form-control" id="email"
+                    ngModel name="password_confirm"
+                    #password_confirm="ngModel"
+                    placeholder="Password Confirm">
+            <label for="email">Confirm password</label>
+        </div>
+    </div>
+        
+    <div>
+        <button
+            class="btn btn-primary m-2"
+            type="submit">
+            Save
+                        
+        </button>
+    </div>
+
+    <div *ngFor="let error of errors"
+        class="alert alert-danger">
+        {{error}}
+    </div>
+
+</form>

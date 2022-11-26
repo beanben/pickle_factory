@@ -90,7 +90,7 @@ class ForgotAPIView(APIView):
             self.create_reset(token, email)
 
             # send emails
-            url = f'http://localhost:4200/auth/reset/{token}'
+            url = f'http://127.0.0.1:8000/auth/reset/{token}'
             send_mail(
                 subject='Reset your password',
                 message=f'Click <a href="{url}" > here </a> to reset your password',
