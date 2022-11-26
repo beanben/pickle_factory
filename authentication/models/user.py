@@ -9,13 +9,13 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=255, default="", blank=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    firm = models.ForeignKey(Firm, on_delete=models.CASCADE, blank=True, null=True) #to allow super user to not belong to a firm
+    firm = models.ForeignKey(Firm, on_delete=models.CASCADE, blank=True, null=True) #to allow superuser to not belong to a firm
     # firm = models.ForeignKey(Firm, on_delete=models.CASCADE)
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     # REQUIRED_FIELDS = ['firm']
-    REQUIRED_FIELDS = []
+    # REQUIRED_FIELDS = []
 
     objects = UserManager()
 
