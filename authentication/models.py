@@ -11,9 +11,6 @@ class Firm(models.Model):
 
 class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
-        if not email:
-            raise ValueError('Users must have an email address')
-
         user = self.model(
             email=self.normalize_email(email), 
             password=password, 
