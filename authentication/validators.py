@@ -1,4 +1,4 @@
-from .models.user import Reset
+from .models import Reset
 from rest_framework import serializers
 
 def reset_exist(token):

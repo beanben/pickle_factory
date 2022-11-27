@@ -2,8 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from .validators import reset_exist
-from .models.user import User, Reset
-from .models.firm import Firm
+from .models import User, Reset, Firm
 import pdb
 
 class FirmSerializer(serializers.ModelSerializer):
