@@ -7,15 +7,10 @@ input[type=number] {
     -moz-appearance: textfield;
   }
 
-/* .btn {
-    width: 132px;
-    height: 48px;
-    border-radius: 20px;
-} */
 
 .top-180 {
     position: absolute;
     top: 180px;
 }
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; }

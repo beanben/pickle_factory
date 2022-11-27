@@ -9,7 +9,6 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 })
 export class NavLeftComponent implements OnInit {
   logo = "assets/images/logo.svg";
-  logoActive = "assets/images/logoActive.svg";
   home = "assets/images/home.svg";
   homeActive = "assets/images/homeActive.svg";
   lender = "assets/images/lender.svg";
@@ -46,7 +45,6 @@ export class NavLeftComponent implements OnInit {
     this._authService.getUser()
       .subscribe(user => {
         this.user = user;
-        console.log(this.user.email)
       })
   }
 
