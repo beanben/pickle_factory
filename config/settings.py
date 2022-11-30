@@ -139,7 +139,7 @@ AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doi
 # REST Authenticaiton global parametres
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
