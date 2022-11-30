@@ -24,7 +24,7 @@ export class ForgotComponent implements OnInit {
 
     this._authService.forgot(email)
      .then((result) => {
-      this.successMsg = 'Email to reset password sent!';
+      this.successMsg = 'Email sent!';
       })
      .catch(err => this.errors = err)
  }
