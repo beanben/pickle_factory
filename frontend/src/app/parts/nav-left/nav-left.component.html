@@ -1,95 +1,76 @@
 <!-- MODAL (create new firm) -->
 <app-profile *ngIf="openPopup" (onClosePopup)="closePopup()" [user]="user"></app-profile>
 
-<div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
-    <a routerLink="/" class="d-flex ps-1 align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-      <img src="{{logo}}" alt="">
-      <span class="fs-4">Pickle</span>
-    </a>
-      
-    <hr>
+<!-- <div class="d-flex flex-column flex-shrink-0 p-1">
+    <a routerLink="/" class="text-decoration-none">
+      <div class="d-flex my-2">
+        <div class="mx-2 my-auto">
+          <img src="{{logo}}" alt="">
+        </div>
+        <div class="fs-4 my-auto text-white">Pickle</div>
+      </div>
+    </a> 
   
-    <ul class="nav nav-pills flex-column mb-auto text-white">
-      <li class="nav-item ps-1 mb-2">
-        <a 
-        routerLink="/home"
-        routerLinkActive="active"
-        class="nav-link px-2"
-        aria-current="page"> 
-          <img src="{{home}}" class="rounded me-2" alt="">
-          <span>Home</span>
+    <ul class="nav nav-pills flex-column mt-4 text-white">
+
+      <li class="nav-item">
+        <a routerLink="/home" routerLinkActive="active" class="nav-link" aria-current="home">
+          <div class="d-flex">
+            <div><img src="{{home}}" class="rounded me-2 nav-icon" alt=""></div>
+            <div>Home</div>
+          </div>  
         </a>
       </li>
-  
-      <li class="nav-item ps-1 mb-2">
-        <span (click)="is_expanded = !is_expanded" class="cursor-pointer"> 
-          <img src="{{stakeholder}}" class="rounded me-2" alt="">
-          <span>Stakeholders</span>
-  
-          <ng-container *ngIf="!is_expanded; else is_open">
-            <img src="{{expand_more}}" class="rounded me-2 filter-white expand_icon" alt="" >
-          </ng-container>
-          <ng-template #is_open>
-            <img src="{{expand_less}}" class="rounded me-2 filter-white expand_icon" alt="">
-          </ng-template>
-          
-        </span>
+
+      <li class="nav-item">
+
+          <div class="d-flex">
+            <div class="nav-link"><img src="{{home}}" class="rounded me-2 nav-icon" alt=""></div>
+            <div>Home</div>
+          </div>  
+        
       </li>
-  
-      <ul class="list-group" *ngIf="is_expanded">
-        <li class="list-group-item">
-          <a routerLink="/lender" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-            <span>Lenders</span>
-          </a>
-        </li>
-  
-        <li class="list-group-item">
-          <a routerLink="/investor" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-            <span>Investors</span>
-          </a>
-        </li>
-  
-        <li class="list-group-item">
-          <a routerLink="/borrower" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-            <span>Borrower</span>
-          </a>
-        </li>
-  
-      </ul>
-  
-      <!-- <div class="dropdown">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{stakeholder}}" class="rounded me-2" alt="">
-          <span>Stakeholders</span>
-        </a>
-      
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
+
+      <li class="nav-item" (click)="is_expanded = !is_expanded">
+          <div class="d-flex">
+
+            <div><img src="{{stakeholder}}" class="rounded me-2 nav-icon" alt=""></div>
+
+            <div class="d-flex justify-content-between">
+              <div class="flex-grow-1">Stakeholders</div>
+
+              <div class="cursor-pointer filter-white">
+                <ng-container *ngIf="!is_expanded; else is_open">
+                  <img src="{{expand_more}}" alt="" >
+                </ng-container>
+                <ng-template #is_open>
+                <img src="{{expand_less}}" alt="">
+                </ng-template>
+              </div> 
+            </div>  
+          </div>
+           
+        <ul class="list-group" *ngIf="is_expanded">
+          <li class="list-group-item">
+            <a routerLink="/lender" routerLinkActive="active" class="nav-link px-2" aria-current="page">
+              <span>Lenders</span>
+            </a>
+          </li>
+    
+          <li class="list-group-item">
+            <a routerLink="/investor" routerLinkActive="active" class="nav-link px-2" aria-current="page">
+              <span>Investors</span>
+            </a>
+          </li>
+    
+          <li class="list-group-item">
+            <a routerLink="/borrower" routerLinkActive="active" class="nav-link px-2" aria-current="page">
+              <span>Borrower</span>
+            </a>
+          </li>
+    
         </ul>
-      </div> -->
-  
-      <!-- <li class="nav-item ps-1">
-        <a 
-        routerLink="/lender" 
-        routerLinkActive="active"
-        class="nav-link px-2"
-        aria-current="page"> 
-          <img src="{{lender}}" class="rounded me-2" alt="">
-          <span>Lenders</span>
-        </a>
       </li>
-      <li class="nav-item ps-1">
-        <a 
-        routerLink="/investor" 
-        routerLinkActive="active"
-        class="nav-link px-2"
-        aria-current="page"> 
-          <img src="{{investor}}" class="rounded me-2" alt="">
-          <span>Investors</span>
-        </a>
-      </li> -->
   
     </ul>
      
@@ -103,8 +84,35 @@
         </button>
       </li>
     </ul>
-  
+ 
+  </div> -->
 
-       
-  </div>
+  <ul class="text-white p-3" style="list-style: none;">
+
+    <li class="fs-4 pb-3">
+      <img src="{{logo}}" alt="">
+      Pickle
+    </li>
+
+    <li class="pb-2"><img src="{{home}}" alt="">Home</li>
+
+    <li class="pb-2" (click)="is_expanded = !is_expanded">
+      <img src="{{stakeholder}}" alt="">Stakeholders 
+      <span class="cursor-pointer filter-white">
+        <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
+        <img *ngIf="is_expanded" src="{{expand_less}}" alt="">
+      </span>
+
+      <ng-container *ngIf="is_expanded">
+        <ul>
+          
+        </ul>
+
+      </ng-container>
+
+    </li>
+
+  </ul>
+
+
   

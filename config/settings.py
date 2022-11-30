@@ -223,7 +223,7 @@ except Exception:
     EMAIL_HOST = "smtp.sendgrid.net"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ["SENDGRID_PASSWORD"]
+    EMAIL_HOST_PASSWORD = os.environ["SENDGRID_API_KEY"]
 
 
 # auth settings

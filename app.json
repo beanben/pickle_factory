@@ -37,9 +37,9 @@
       "description": "Sendgrid username",
       "value": "apikey"
     },
-    "SENDGRID_PASSWORD": {
+    "SENDGRID_API_KEY": {
       "description": "Sendgrid SMTP password (API Key)",
-      "value": "<PASSWORD>"
+      "value": "<API_KEY>"
     }
   }
 }

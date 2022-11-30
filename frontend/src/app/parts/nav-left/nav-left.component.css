@@ -3,11 +3,6 @@
     height: 16px
 }
 
-img {
-    margin: auto;
-   vertical-align: middle; 
-   display: inline-block;
-}
 
 .profile {
     position: relative
@@ -21,8 +16,23 @@ img {
     filter: invert(100%) sepia(1%) saturate(2%) hue-rotate(221deg) brightness(110%) contrast(101%);
 }
 
-.expand_icon {
+.cursor-pointer {
     cursor: pointer;
 }
 
+  
+.nav-icon {
+    object-position: 50% 50%;
+}
 
+.logo-main {
+    width: 40px
+}
+
+.logo-side {
+    width: 16px;
+}
+
+img {
+    margin-right: .5rem;
+}
