@@ -89,8 +89,8 @@ class ForgotAPIView(APIView):
             self.create_reset(token, email)
 
             # send emails
-            url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            # url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
+            # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
+            url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
             send_mail(
                 subject='Reset your password',
                 message=f'Click <a href="{url}" > here </a> to reset your password',
