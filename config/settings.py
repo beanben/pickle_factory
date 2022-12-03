@@ -5,6 +5,8 @@ import datetime
 from dotenv import load_dotenv
 load_dotenv() 
 
+DEBUG = os.environ.get("DEBUG", None) == "True"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -217,6 +219,22 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
 }
 
+# Email settings
+# SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+
+
+# Twilio SendGrid
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+
+# DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL', default='noreply@gmail.com')
+
+
+
 # Settings to allow heroku working in production
 try:
     from .settings_local import *
@@ -224,18 +242,9 @@ try:
 except Exception:
     print("No settings_local.py available.")
     ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]]
-    DEBUG = os.getenv("DEBUG", None) == "True"
-    SECRET_KEY = os.environ["SECRET_KEY"]
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
 
-    # Email settings
-    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-    EMAIL_HOST = 'smtp.sendgrid.net'
-    EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
-    EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
 
 
 
