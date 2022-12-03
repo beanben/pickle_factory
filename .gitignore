@@ -13,3 +13,7 @@ staticfiles/
 
 #Other
 /draft
+
+# env variables
+sendgrid.env
+.env

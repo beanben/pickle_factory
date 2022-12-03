@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 import dj_database_url
 import datetime
+from dotenv import load_dotenv
+load_dotenv() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -207,6 +209,14 @@ LOGGING = {
     }
 }
 
+
+# auth settings
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ["Bearer"],
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
+}
+
 # Settings to allow heroku working in production
 try:
     from .settings_local import *
@@ -219,19 +229,13 @@ except Exception:
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
 
     # Email settings
-    EMAIL_HOST_USER = os.environ["SENDGRID_USERNAME"]
-    EMAIL_HOST = "smtp.sendgrid.net"
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+    EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ["SENDGRID_API_KEY"]
-
-
-# auth settings
-SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ["Bearer"],
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
-}
 
 
 

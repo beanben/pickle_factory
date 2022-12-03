@@ -16,6 +16,8 @@ djangorestframework = "*"
 pygments = "*"
 django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
+sendgrid = "*"
+django-sendgrid-v5 = "*"
 
 [dev-packages]
 

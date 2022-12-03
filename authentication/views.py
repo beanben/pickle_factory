@@ -15,6 +15,13 @@ from .serializers import (
     ForgotSerializer,
     UserSerializer)
 import pdb
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
+# import os
+# import sendgrid
+# import os
+# from sendgrid.helpers.mail import *
+
 
 # <===== Firm =====>
 class FirmList(generics.ListCreateAPIView):
@@ -88,18 +95,48 @@ class ForgotAPIView(APIView):
             token = self.create_token(email)
             self.create_reset(token, email)
 
+            send_mail('Subject here', 'Here is the message.', 'base_kh@hotmail.com', [email], fail_silently=False)
+
             # send emails
-            # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
-            send_mail(
-                subject='Reset your password',
-                message=f'Click <a href="{url}" > here </a> to reset your password',
-                from_email='from@example.com',
-                recipient_list=[email]
-            )
+            url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
+            # url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
+
+            # send_mail(
+            #     subject='Reset your password',
+            #     message=f'Click <a href="{url}" > here </a> to reset your password',
+            #     from_email='base_kh@hotmail.com',
+            #     recipient_list=[email]
+            # )
+            # print('email:', email)
+            # print("os.environ.get('SENDGRID_API_KEY');", os.environ.get('SENDGRID_API_KEY'))
+            # sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+            # from_email = Email("test@example.com")
+            # to_email = To("base_kh@hotmail.com")
+            # subject = "Sending with SendGrid is Fun"
+            # content = Content("text/plain", "and easy to do anywhere, even with Python")
+            # mail = Mail(from_email, to_email, subject, content)
+            # response = sg.client.mail.send.post(request_body=mail.get())
+            # print(response.status_code)
+            # print(response.body)
+            # print(response.headers)
+            # message = Mail(
+            #     from_email='from_email@example.com',
+            #     to_emails=(email),
+            #     subject='Sending with Twilio SendGrid is Fun',
+            #     html_content=f'Click <a href="{url}" > here </a> to reset your password'
+            # )
+            # try:
+            #     sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            #     response = sg.send(message)
+            #     print(response.status_code)
+            #     print(response.body)
+            #     print(response.headers)
+            # except Exception as e:
+            #     print(e.message)
+
             data = {
                 'status': 'success', 
-                'message': 'email was sent'
+                'message': 'email sent'
                 }
             return Response(data, status=status.HTTP_200_OK)
 
@@ -141,5 +178,4 @@ class UserAPIView(APIView):
 
 class UserUpdateAPIView(UpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer 
-
+    serializer_class = UserSerializer
