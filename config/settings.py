@@ -219,22 +219,6 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1),
 }
 
-# Email settings
-# SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-
-
-# Twilio SendGrid
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
-
-# DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL', default='noreply@gmail.com')
-
-
-
 # Settings to allow heroku working in production
 try:
     from .settings_local import *
@@ -243,6 +227,15 @@ except Exception:
     print("No settings_local.py available.")
     ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]]
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
+
+    # Twilio SendGrid
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'apikey'
+    EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+
+    # DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL', default='noreply@gmail.com')
 
 
 

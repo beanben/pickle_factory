@@ -100,6 +100,7 @@ class ForgotAPIView(APIView):
             # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
             url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
 
+            # pdb.set_trace()
             send_mail(
                 subject='Reset your password',
                 message=f'Click <a href="{url}" > here </a> to reset your password',
