@@ -107,6 +107,7 @@ class ForgotAPIView(APIView):
                 from_email= os.environ.get('FROM_EMAIL', default='noreply@gmail.com'),
                 recipient_list=[email]
             )
+            print(os.environ.get('FROM_EMAIL', default='noreply@gmail.com'))
 
             data = {
                 'status': 'success', 
