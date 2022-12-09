@@ -1,10 +1,16 @@
 .btn-auth {
     border: 2px solid #050537;
+}
+
+.btn-active {
+    color:#050537;
     background-color: white;
 }
 
-.btn {
-    width: 132px;
-    height: 48px;
-    border-radius: 20px;
+.btn-disabled {
+    background-color: rgb(229, 225, 225);
 }
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+  }

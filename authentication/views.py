@@ -30,6 +30,18 @@ class FirmList(generics.ListCreateAPIView):
     queryset = Firm.objects.all()
     serializer_class = FirmSerializer
 
+    def create(self, request, *args, **kwargs):
+        # pdb.set_trace()
+        # serializer = self.get_serializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            'status': "success",
+            'message': 'firm created',
+            'response': response.data
+        })
+
 
 class FirmDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
@@ -49,7 +61,7 @@ class RegisterAPIView(generics.CreateAPIView):
         return Response({
             'status': "success",
             'message': 'user created',
-            'data': response.data
+            'response': response.data
         })
 
 class TokenObtainPairView(TokenView):
@@ -107,7 +119,6 @@ class ForgotAPIView(APIView):
                 from_email= os.environ.get('FROM_EMAIL', default='noreply@gmail.com'),
                 recipient_list=[email]
             )
-            print(os.environ.get('FROM_EMAIL', default='noreply@gmail.com'))
 
             data = {
                 'status': 'success', 

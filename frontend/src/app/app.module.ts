@@ -11,9 +11,7 @@ import { ForgotComponent } from './pages/auth/forgot/forgot.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
-import { RegisterUserComponent } from './pages/auth/register/register-user/register-user.component';
-import { RegisterFirmComponent } from './pages/auth/register/register-firm/register-firm.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
@@ -29,8 +27,6 @@ import { authInterceptorProviders } from './_services/auth/auth.interceptor';
     LoginComponent,
     RegisterComponent,
     ResetComponent,
-    RegisterUserComponent,
-    RegisterFirmComponent,
     NavLeftComponent,
     ProfileComponent
   ],
@@ -38,6 +34,7 @@ import { authInterceptorProviders } from './_services/auth/auth.interceptor';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],

@@ -4,7 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 # from .managers import UserManager
 
 class Firm(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, verbose_name="firm name")
 
     def __str__(self):
         return self.name

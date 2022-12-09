@@ -1,4 +1,4 @@
 export interface Firm {
-    id: number,
+    id?: number,
     name: string
 }

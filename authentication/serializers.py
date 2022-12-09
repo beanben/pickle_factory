@@ -6,9 +6,25 @@ from .models import User, Reset, Firm
 import pdb
 
 class FirmSerializer(serializers.ModelSerializer):
+    # name = serializers.CharField(
+    #     error_messages={'required': 'field cannot be blank!'})
+    name = serializers.CharField(required=False)
+    
     class Meta:
         model = Firm
         fields = ['id', 'name']
+
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError({"firm": "this field is required"})
+        return attrs
+
+    def create(self, validated_data):
+        name = validated_data['name'].lower()
+        firm, created = Firm.objects.get_or_create(name=name) #to ensure no duplicates
+        return firm
+
+    
 
 class FirmFKSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -16,23 +32,20 @@ class FirmFKSerializer(serializers.Serializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     firm = FirmFKSerializer()
-
+    email = serializers.EmailField(required=False)
+    password = serializers.CharField(
+        style={"input_type": "password"}, 
+        write_only=True,
+        required=False)
     password_confirm = serializers.CharField(
         style={"input_type": "password"}, 
         write_only=True,
-        error_messages={'blank': 'Password confirmation cannot be blank!'}
-        )
+        required=False)
+    
 
     class Meta:
         model = User
         fields = ['firm', 'email','password', 'password_confirm']
-        extra_kwargs = {'password': 
-                            {
-                            'write_only': True,
-                            'error_messages': {'blank': 'Password cannot be blank!'}
-                            },
-                        'firm': {'error_messages': {'blank': 'Firm cannot be blank!'}}
-                        }
 
     def validate_email(self, email):
         user = User.objects.filter(email=email)
@@ -44,6 +57,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return email
 
     def validate(self, attrs):
+        fields_required = ['password', 'password_confirm', 'email']
+        # pdb.set_trace()
+
+        if 'password' not in attrs :
+            raise serializers.ValidationError({"password": "this field is required"})
+
         if attrs['password'] != attrs['password_confirm']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
 

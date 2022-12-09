@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { TokenStorageService } from './token-storage.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { concatMap, Observable, tap } from 'rxjs';
 import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
@@ -13,7 +13,7 @@ import { APIResult } from '../api-result';
 })
 export class AuthService {
   appRoot = "auth";
-  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}/`
+  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`
 
   httpOptions = {
     headers: new HttpHeaders({ 
@@ -29,31 +29,50 @@ export class AuthService {
 
   /** GET: get all firms */
   getFirms(): Observable<Firm[]> {
-    const url = `${this.urlRoot}firm/`
+    const url = `${this.urlRoot}/firm/`
 
     return this.http.get<Firm[]>(url).pipe(
       tap(() => console.log('getFirms()', Math.random())),
     );
   }
 
-  /** POST: create a new firm */
-  createFirm(firm: Firm): Observable<Firm> {
-    const url = `${this.urlRoot}firm/`;
-    const httpOptions = this.httpOptions;
+  // createFirm(firm: Firm): Observable<Firm> {
+  //   const url = `${this.urlRoot}/firm/`;
+  //   const httpOptions = this.httpOptions;
 
-    return this.http.post<Firm>(url, firm, httpOptions).pipe(
-      tap(() => console.log('createFirm()', Math.random()))
-    );
+  //   return this.http.post<Firm>(url, firm, httpOptions).pipe(
+  //     tap(() => console.log('createFirm()', Math.random()))
+  //   );
+  // }
+
+  createFirm(firm: Firm) {
+    return new Promise<APIResult>((resolve, reject) => {
+      const url = `${this.urlRoot}/firm/`;
+
+      this.http.post(url, firm).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this.handleError(error));
+        }
+      })
+    })
   }
+
 
   isLoggedIn(): boolean {
     return !!this._tokenService.getAccessToken();
   }
 
   register(user:User) {
-    // console.log("register")
     return new Promise<APIResult>((resolve, reject) => {
-      const url = `${this.urlRoot}register/`;
+      const url = `${this.urlRoot}/register/`;
 
       this.http.post(url, user).subscribe({
         next: (data) => {
@@ -72,9 +91,44 @@ export class AuthService {
     })
   }
 
+  // create_firm(firm: Firm): Observable<Firm> {
+  //   const url = `${this.urlRoot}/firm/`;
+  //   const httpOptions = this.httpOptions;
+
+  //   return this.http.post<Firm>(url, firm, httpOptions).pipe(
+  //     tap(() => console.log('createFirm()', Math.random()))
+  //   );
+  // }
+
+  // create_user(user: User): Observable<any>{
+  //   const url = `${this.urlRoot}/register/`;
+  //   return this.http.post<User>(url, user)
+  // }
+
+
+
+  // createFirmAndUser(firm: Firm, user: User):{
+  //   console.log("firm:", firm)
+  //   console.log("user:", user)
+
+  //   // const url_firm = `${this.urlRoot}/firm/`;
+  //   // const url_register = `${this.urlRoot}/register/`;
+
+  //   // this.http.post<Firm>(url_firm, firm)
+  //   // .pipe(
+  //   //   concatMap((firm: Firm) => {
+  //   //     user.firm = firm;
+  //   //     this.http.post<User>(url_register, user)
+  //   //   })
+  //   // ).subscribe({
+  //   // })
+
+
+  // }
+
   login(email: string, password: string) {
     return new Promise<APIResult>((resolve, reject) => {
-      const url = `${this.urlRoot}login/`;
+      const url = `${this.urlRoot}/login/`;
       const body = {email: email, password: password};
 
       this.http.post(url, body).subscribe({
@@ -99,14 +153,14 @@ export class AuthService {
   }
 
   getUser(): Observable<User> {
-    const url = `${this.urlRoot}user/`;
+    const url = `${this.urlRoot}/user/`;
     return this.http.get<User>(url).pipe(
       tap(() => console.log('getUser()', Math.random()))
     )
   }
 
   refreshToken(token: string) {
-    const url = `${this.urlRoot}token/refresh/`; 
+    const url = `${this.urlRoot}/token/refresh/`; 
     const body = {"refresh": token};
     return this.http.post<any>(url, body)
   }
@@ -119,7 +173,7 @@ export class AuthService {
 
   forgot(email: string) {
     return new Promise<APIResult>((resolve, reject) => {
-      const url = `${this.urlRoot}forgot/`;
+      const url = `${this.urlRoot}/forgot/`;
       const body = {email: email};
 
       this.http.post(url, body).subscribe({
@@ -141,7 +195,7 @@ export class AuthService {
 
   reset(password: string, password_confirm: string, token: string) {
     return new Promise<APIResult>((resolve, reject) => {
-      const url = `${this.urlRoot}reset/`;
+      const url = `${this.urlRoot}/reset/`;
       const body = {
         password: password, 
         password_confirm: password_confirm,
@@ -167,22 +221,22 @@ export class AuthService {
 
   private handleError(errorRes: HttpErrorResponse): Array<string> {
     console.log("errorRes:", errorRes);
-    let errors = ['An unknown error occurred!'];
+    let errors = errorRes.error
+    // let errors = ['An unknown error occurred!'];
 
-    if (errorRes.error instanceof ErrorEvent) {
-      console.log('This is a client side error');
-      errors = [`Error: ${errorRes.error.message}`];
+    // if (errorRes.error instanceof ErrorEvent) {
+    //   console.log('This is a client side error');
+    //   errors = [`Error: ${errorRes.error.message}`];
 
-    } else {
-      console.log('This is a server side error');
-      if (errorRes.error.response && errorRes.error.response.message){
-        errors = Object.values(errorRes.error.response.message);
+    // } else {
+    //   console.log('This is a server side error');
+    //   if (errorRes.error.response && errorRes.error.response.message){
+    //     errors = Object.values(errorRes.error.response.message);
         
-      } else {
-        errors = Object.values(errorRes.error);
-      }
-      
-    }
+    //   } else {
+    //     errors = Object.values(errorRes.error);
+    //   }  
+    // }
     return errors;
   }
 

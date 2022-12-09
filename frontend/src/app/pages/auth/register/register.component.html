@@ -1,52 +1,103 @@
-<app-register-firm *ngIf="openPopup" (onClosePopup)="closePopup()"></app-register-firm>
-
-<!-- REGISTER -->
 <div class="row ">
     <div class="col">
         
         <h1 class="h3 pb-3 fw-normal text-center">
             Please register
         </h1> 
+
+        <ng-container *ngIf="!next">
+            <form [formGroup]="firmForm" #f="ngForm">
+                <div class="form-group mb-2">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="name"
+                                formControlName="name"
+                                name="name"
+                                placeholder="Firm">
+                        <label for="name">Firm</label>
+                    </div>
+                </div>
+                <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
+                    class="alert alert-danger">
+                    Please enter your firm's name
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-auth m-2"
+                        type="submit"
+                        [ngClass]="firmForm.invalid ? 'btn-disabled' : 'btn-active'"
+                        (click)="onCreateFirm()">Next >
+                    </button>
+                </div>
+            </form>   
+        </ng-container>
+
+        <ng-container *ngIf="next">
+
+            <form [formGroup]="userForm" #f="ngForm">
+                <div class="form-group mb-1">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="firm" placeholder="firm" value="{{userForm.get('firm')?.value.name}}" disabled>
+                        <label for="firm">Firm</label>
+                    </div>
+                </div>
+            
+                <div class="form-group mb-1">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="email"
+                                formControlName="email"
+                                name="email"
+                                placeholder="Email address">
+                        <label for="email">Email address</label>
+                    </div>
+                </div>
+                <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
+                    class="alert alert-danger">
+                    Please enter your email
+                </div>
         
-        <!-- select firm the user belongs to -->
-        <div class="row" *ngIf="!next">
-            <div class="col">
-                <div class="form-floating">
-                    <select
-                    class="form-select"
-                    id="floatingSelect"
-                    [(ngModel)]="user.firm">
-                        <option value="undefined"> -- Select your firm --</option>
-                        <option *ngFor='let firm of firms' [ngValue]="firm" >{{ firm.name }}
-                        </option>
-                    </select>
-                    <label for="floatingSelect">Firm</label>
+                <div class="form-group mb-1">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="password"
+                                formControlName="password"
+                                name="password"
+                                placeholder="Password">
+                        <label for="password">Password</label>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- create a new firm if not already in the drop down, or next steps -->
-        <div class="row py-2" *ngIf="!next">
-            <div class="col">
-                <div class="d-flex justify-content-between">
-                    <button 
-                        class="btn btn-auth me-1 fw-bolder" 
+                <div *ngIf="(password?.invalid && (password?.dirty || password?.touched)) || (f.submitted && password?.invalid)"
+                    class="alert alert-danger">
+                    Please enter your password
+                </div>
+            
+                <div class="form-group mb-1">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="password_confirm"
+                                formControlName="password_confirm"
+                                name="password_confirm"
+                                placeholder="Confirm password">
+                        <label for="password_confirm">Confirm password</label>
+                    </div>
+                </div>
+                <div *ngIf="(password_confirm?.invalid && (password_confirm?.dirty || password_confirm?.touched)) || (f.submitted && password_confirm?.invalid)"
+                    class="alert alert-danger">
+                    Please confirm your password
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn btn-auth m-2 btn-active"
                         type="button"
-                        (click)="onOpenPopup()">New Firm
+                        (click)="next=false">
+                        < Back 
                     </button>
-                    <button 
-                        class="btn btn-auth ms-1"
-                        [ngClass]="{'fw-bolder': user.firm}"
+                    <button class="btn btn-auth m-2"
                         type="button"
-                        [disabled]="!user.firm"
-                        (click)="onNext()">Next
+                        [ngClass]="userForm.invalid ? 'btn-disabled' : 'btn-active'"
+                        (click)="onCreateUser()">Register
                     </button>
                 </div>
-            </div>
-        </div>
+            </form>
 
-        <!-- add other user fields -->
-        <app-register-user [user]="user" *ngIf="next" (onRegister)="onLoginPage()"></app-register-user>
+        </ng-container>
 
     </div>
 </div>
