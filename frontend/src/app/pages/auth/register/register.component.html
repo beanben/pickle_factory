@@ -95,6 +95,10 @@
                         (click)="onCreateUser()">Register
                     </button>
                 </div>
+
+                <div *ngFor="let error of errors " class="alert alert-danger text-center"> 
+                    {{error}}
+                </div>
             </form>
 
         </ng-container>

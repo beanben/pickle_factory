@@ -1,7 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { concatMap, tap } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { Firm } from '../firm';
 import { User } from '../user';
@@ -13,11 +12,9 @@ import { User } from '../user';
 })
 export class RegisterComponent implements OnInit {
   next = false;
-  user = {} as User;
-  isLogin = false;
-  @Output() onLogin = new EventEmitter<boolean>();
+  // isLogin = false;
+  // @Output() onLogin = new EventEmitter<boolean>();
   errors: string[] = new Array();
-  clicked = false;
 
   firmForm = new FormGroup({
     name: new FormControl('', Validators.required)
@@ -58,10 +55,10 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void { 
   }
 
-  onLoginPage(){
-    this.isLogin = true;
-    this.onLogin.emit(true);
-  }
+  // onLoginPage(){
+  //   this.isLogin = true;
+  //   this.onLogin.emit(true);
+  // }
 
   onCreateFirm(){
     let firm: Firm = {
@@ -82,6 +79,9 @@ export class RegisterComponent implements OnInit {
     .then(() => {
       this.router.navigate(['/']);
     })
-    .catch(err => this.errors = err)
+    .catch(err => {
+      this.errors = err;
+      // console.log("catch this.errors :", Object.values(this.errors ))
+    })
  }
 }

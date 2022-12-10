@@ -221,22 +221,18 @@ export class AuthService {
 
   private handleError(errorRes: HttpErrorResponse): Array<string> {
     console.log("errorRes:", errorRes);
+    
     let errors = errorRes.error
-    // let errors = ['An unknown error occurred!'];
 
-    // if (errorRes.error instanceof ErrorEvent) {
-    //   console.log('This is a client side error');
-    //   errors = [`Error: ${errorRes.error.message}`];
+    // test if element is an object, and take only its values
+    if (
+      typeof errors === 'object' &&
+      errors !== null &&
+      !Array.isArray(errors)
+    ) {
+      errors = Object.values(errors)
+    }
 
-    // } else {
-    //   console.log('This is a server side error');
-    //   if (errorRes.error.response && errorRes.error.response.message){
-    //     errors = Object.values(errorRes.error.response.message);
-        
-    //   } else {
-    //     errors = Object.values(errorRes.error);
-    //   }  
-    // }
     return errors;
   }
 
