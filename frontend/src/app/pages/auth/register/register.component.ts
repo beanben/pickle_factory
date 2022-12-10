@@ -12,8 +12,6 @@ import { User } from '../user';
 })
 export class RegisterComponent implements OnInit {
   next = false;
-  // isLogin = false;
-  // @Output() onLogin = new EventEmitter<boolean>();
   errors: string[] = new Array();
 
   firmForm = new FormGroup({
@@ -55,11 +53,6 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void { 
   }
 
-  // onLoginPage(){
-  //   this.isLogin = true;
-  //   this.onLogin.emit(true);
-  // }
-
   onCreateFirm(){
     let firm: Firm = {
       name: this.firmForm.get('name')?.value
@@ -79,9 +72,6 @@ export class RegisterComponent implements OnInit {
     .then(() => {
       this.router.navigate(['/']);
     })
-    .catch(err => {
-      this.errors = err;
-      // console.log("catch this.errors :", Object.values(this.errors ))
-    })
+    .catch(err => this.errors = err)
  }
 }
