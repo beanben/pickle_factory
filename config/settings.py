@@ -232,7 +232,6 @@ try:
 
 except Exception:
     print("No settings_local.py available.")
-    ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"]]
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
 
     # Twilio SendGrid
