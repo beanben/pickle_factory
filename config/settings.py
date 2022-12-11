@@ -11,14 +11,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS =[
-    'pickle-factory.herokuapp.com',
-    'www.pickle-factory.net', 
-    'pickle-factory.net', 
-    '.pickle-factory.net'
-    ] 
-
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -231,6 +223,14 @@ try:
 
 except Exception:
     print("No settings_local.py available.")
+
+    ALLOWED_HOSTS =[
+    'pickle-factory.herokuapp.com',
+    'www.pickle-factory.net', 
+    'pickle-factory.net', 
+    '.pickle-factory.net'
+    ] 
+    
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
 
     # Twilio SendGrid
