@@ -11,8 +11,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ALLOWED_HOSTS = [
-    'www.pickle-factory.net',
-    'pickle-factory.net'
+    '.pickle-factory.net'
 ]
 
 
