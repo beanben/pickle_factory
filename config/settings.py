@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ALLOWED_HOSTS = [
 #     '.pickle-factory.net'
 # ]
-ALLOWED_HOSTS =['*'] 
+ALLOWED_HOSTS =['www.pickle-factory.net', 'pickle-factory.net', '.pickle-factory.net'] 
 
 
 # Application definition
