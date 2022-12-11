@@ -116,7 +116,7 @@ class ForgotAPIView(APIView):
             send_mail(
                 subject='Reset your password',
                 message=f'Click <a href="{url}" > here </a> to reset your password',
-                from_email= os.environ.get('FROM_EMAIL', default='noreply@gmail.com'),
+                from_email= os.environ.get('EMAIL_SENDER', default='noreply@gmail.com'),
                 recipient_list=[email]
             )
 

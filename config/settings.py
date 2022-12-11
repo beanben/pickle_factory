@@ -129,11 +129,6 @@ WHITENOISE_INDEX_FILE = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Settings to allow code to work locall
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-# Settings added to allow heroku to work locally
-ALLOWED_HOSTS += ['0.0.0.0']
-
 
 # custom user
 AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doing the first migrations
@@ -230,7 +225,7 @@ except Exception:
     'pickle-factory.net', 
     '.pickle-factory.net'
     ] 
-    
+
     DATABASES = {"default": dj_database_url.config(default=os.environ["DATABASE_URL"])}
 
     # Twilio SendGrid
@@ -240,7 +235,7 @@ except Exception:
     EMAIL_HOST_USER = 'apikey'
     EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 
-    DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL', default='noreply@gmail.com')
+
 
 
 
