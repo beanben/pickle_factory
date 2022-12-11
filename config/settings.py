@@ -10,14 +10,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ALLOWED_HOSTS = [
-#     '.pickle-factory.net'
-# ]
+
 ALLOWED_HOSTS =[
     'pickle-factory.herokuapp.com',
     'www.pickle-factory.net', 
     'pickle-factory.net', 
-    '.pickle-factory.net'] 
+    '.pickle-factory.net'
+    ] 
 
 
 # Application definition
