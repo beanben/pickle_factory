@@ -13,10 +13,6 @@
     }
   ],
   "env": {
-    "ALLOWED_HOSTS": {
-      "description": "A list of strings representing the host/domain names that this Django site can serve.",
-      "value": "pickle-factory.herokuapp.com"
-    },
     "API_BASE_URL": {
       "description": "The base URL for the API.",
       "value": "pickle-factory.herokuapp.com"
