@@ -3,7 +3,9 @@ from pathlib import Path
 import dj_database_url
 import datetime
 from dotenv import load_dotenv
-load_dotenv() 
+load_dotenv()
+
+
 
 DEBUG = os.environ.get("DEBUG", None) == "True"
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -31,6 +33,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'config.custom_middleware.DomainRedirectMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
