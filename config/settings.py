@@ -44,6 +44,9 @@ MIDDLEWARE = [
     'config.middleware.DomainRedirectMiddleware'
 ]
 
+SECURE_SSL_REDIRECT = True #ensure url is using https
+
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
