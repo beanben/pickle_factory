@@ -110,7 +110,7 @@ class ForgotAPIView(APIView):
 
             # send emails
             # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            url = f'https://pickle-factory.herokuapp.com/auth/reset/{token}' #production
+            url = f'http://pickle-factory.net/auth/reset/{token}' #production
 
             # pdb.set_trace()
             send_mail(

@@ -6,8 +6,7 @@ class DomainRedirectMiddleware:
 
     def __call__(self, request):
         host = request.get_host().partition(":")[0]
-        print('host:', host)
-        print('request.path:', request.path)
+        
         if host == "pickle-factory.herokuapp.com":
             return HttpResponsePermanentRedirect("http://pickle-factory.net" + request.path)
         else:
