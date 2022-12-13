@@ -112,12 +112,12 @@ class ForgotAPIView(APIView):
             # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
             url = f'http://pickle-factory.net/auth/reset/{token}' #production
 
-            print("os.environ.get('EMAIL_SENDER', default='noreply@gmail.com'):", os.environ.get('EMAIL_SENDER', default='noreply@gmail.com'))
+            print("os.environ.get('EMAIL_SENDER'):", os.environ.get('EMAIL_SENDER'))
             # pdb.set_trace()
             send_mail(
                 subject='Reset your password',
                 message=f'Click <a href="{url}" > here </a> to reset your password',
-                from_email= os.environ.get('EMAIL_SENDER', default='noreply@gmail.com'),
+                from_email= os.environ.get('EMAIL_SENDER'),
                 recipient_list=[email]
             )
 
