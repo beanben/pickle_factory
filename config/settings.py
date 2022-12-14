@@ -34,9 +34,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    
-    'config.middleware.DomainRedirectMiddleware',
-
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -223,7 +220,6 @@ SIMPLE_JWT = {
 try:
     from .settings_local import *
 
-
 except Exception:
     print("No settings_local.py available.")
     SECURE_SSL_REDIRECT = True #ensure url is using https
@@ -243,6 +239,10 @@ except Exception:
     EMAIL_USE_TLS = True
     EMAIL_HOST_USER = 'apikey'
     EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
+
+    MIDDLEWARE += [
+        'config.middleware.DomainRedirectMiddleware'
+    ]
 
 
 
