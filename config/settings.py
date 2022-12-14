@@ -4,6 +4,7 @@ import dj_database_url
 import datetime
 from dotenv import load_dotenv
 load_dotenv()
+import pdb
 
 
 
@@ -33,18 +34,17 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    
+    'config.middleware.DomainRedirectMiddleware',
+
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'config.middleware.DomainRedirectMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware' 
 ]
-
-SECURE_SSL_REDIRECT = True #ensure url is using https
 
 
 ROOT_URLCONF = 'config.urls'
@@ -223,8 +223,10 @@ SIMPLE_JWT = {
 try:
     from .settings_local import *
 
+
 except Exception:
     print("No settings_local.py available.")
+    SECURE_SSL_REDIRECT = True #ensure url is using https
 
     ALLOWED_HOSTS =[
     'pickle-factory.herokuapp.com',

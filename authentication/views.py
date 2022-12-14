@@ -110,7 +110,12 @@ class ForgotAPIView(APIView):
 
             # send emails
             # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            url = f'http://pickle-factory.net/auth/reset/{token}' #production
+            url = f'https://pickle-factory.net/auth/reset/{token}' #production
+
+            host = request.get_host().partition(":")[0]
+            test_url = f'{host}/auth/reset/{token}'
+            print("host:", host)
+            print("test_url:", test_url)
 
             print("os.environ.get('EMAIL_SENDER'):", os.environ.get('EMAIL_SENDER'))
             # pdb.set_trace()
