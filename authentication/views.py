@@ -97,22 +97,22 @@ class ForgotAPIView(APIView):
             token = self.create_token(email)
             self.create_reset(token, email)
 
-            # send emails
-            # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            # url = f'https://pickle-factory.net/auth/reset/{token}' #production
+            # amend protocol if project run locally
+            local_urls = ['127.0.0.1', 'localhost', '0.0.0.0']
+            address = request.get_host().partition(":")[0]
+            protocol = 'http' if address in local_urls else 'https'
 
-            host = request.get_host().partition(":")[0]
-            url = f'{host}/auth/reset/{token}'
-            # print("host:", host)
-            # print("test_url:", test_url)
 
-            print("os.environ.get('EMAIL_SENDER'):", os.environ.get('EMAIL_SENDER'))
-            # pdb.set_trace()
+            host = request.get_host()
+            url = f'{protocol}://{host}/auth/reset/{token}'
+            message = f'Click <a href="{url}"> here </a> to reset your password'
+
             send_mail(
                 subject='Reset your password',
-                html_message=f'Click <a href="{url}"> here </a> to reset your password',
+                message=message,
                 from_email= os.environ.get('EMAIL_SENDER'),
-                recipient_list=[email]
+                recipient_list=[email],
+                html_message=message
             )
 
             data = {
