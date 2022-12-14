@@ -12,7 +12,8 @@ class DomainRedirectMiddleware:
         # print('host == "pickle-factory.herokuapp.com"', host == "pickle-factory.herokuapp.com")
         # return self.get_response(request)
 
-        if host == "pickle-factory.herokuapp.com":
+        # if host == "pickle-factory.herokuapp.com":
+        if host != "pickle-factory.net":
             return HttpResponsePermanentRedirect("https://pickle-factory.net" + request.path)
         
         return self.get_response(request)
