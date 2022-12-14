@@ -15,12 +15,7 @@ from .serializers import (
     ForgotSerializer,
     UserSerializer)
 import pdb
-# from sendgrid import SendGridAPIClient
-# from sendgrid.helpers.mail import Mail
-# import os
-# import sendgrid
 import os
-# from sendgrid.helpers.mail import *
 from sendgrid.helpers.mail import (Mail, Email,To, Content)
 
 
@@ -31,10 +26,6 @@ class FirmList(generics.ListCreateAPIView):
     serializer_class = FirmSerializer
 
     def create(self, request, *args, **kwargs):
-        # pdb.set_trace()
-        # serializer = self.get_serializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-
         response = super().create(request, *args, **kwargs)
         return Response({
             'status': "success",
@@ -47,8 +38,6 @@ class FirmDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
     queryset = Firm.objects.all()
     serializer_class = FirmSerializer
-
-
 
 # <===== User =====> 
 class RegisterAPIView(generics.CreateAPIView):
@@ -110,18 +99,18 @@ class ForgotAPIView(APIView):
 
             # send emails
             # url = f'http://127.0.0.1:8000/auth/reset/{token}' #development
-            url = f'https://pickle-factory.net/auth/reset/{token}' #production
+            # url = f'https://pickle-factory.net/auth/reset/{token}' #production
 
             host = request.get_host().partition(":")[0]
-            test_url = f'{host}/auth/reset/{token}'
-            print("host:", host)
-            print("test_url:", test_url)
+            url = f'{host}/auth/reset/{token}'
+            # print("host:", host)
+            # print("test_url:", test_url)
 
             print("os.environ.get('EMAIL_SENDER'):", os.environ.get('EMAIL_SENDER'))
             # pdb.set_trace()
             send_mail(
                 subject='Reset your password',
-                message=f'Click <a href="{url}" > here </a> to reset your password',
+                message=f'Click <a href="{url}"> here </a> to reset your password',
                 from_email= os.environ.get('EMAIL_SENDER'),
                 recipient_list=[email]
             )
