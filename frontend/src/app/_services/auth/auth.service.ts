@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { TokenStorageService } from './token-storage.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { concatMap, Observable, tap } from 'rxjs';
+import { concatMap, Observable, Subject, tap } from 'rxjs';
 import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
@@ -26,6 +26,15 @@ export class AuthService {
     private _tokenService: TokenStorageService,
     private router: Router
   ) { }
+
+  // isForgotPage(confirm: boolean): Observable<boolean>{
+  //   return confirm
+  // }
+
+  // getRouteUrl(url_string: string): Observable<string>{
+  //   return url_string
+  // }
+  
 
   /** GET: get all firms */
   getFirms(): Observable<Firm[]> {
@@ -235,6 +244,12 @@ export class AuthService {
 
     return errors;
   }
+
+  
+
+  
+
+
 
 
 
