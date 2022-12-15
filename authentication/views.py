@@ -112,7 +112,7 @@ class ForgotAPIView(APIView):
                 message=message,
                 from_email= os.environ.get('EMAIL_SENDER'),
                 recipient_list=[email],
-                html_message=message
+                # html_message=message
             )
 
             data = {
