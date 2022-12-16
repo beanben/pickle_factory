@@ -16,6 +16,7 @@ from .serializers import (
     UserSerializer)
 import pdb
 import os
+import sendgrid
 from sendgrid.helpers.mail import (Mail, Email,To, Content)
 
 
@@ -105,8 +106,8 @@ class ForgotAPIView(APIView):
 
             host = request.get_host()
             url = f'{protocol}://{host}/auth/reset/{token}'
-            # message = f'Click <a href="{url}"> here </a> to reset your password'
-            message = f'test without embedded url'
+            message = f'Click <a href="{url}"> here </a> to reset your password'
+            # message = f'test without embedded url'
             # subject='Reset your password',
 
             send_mail(
@@ -116,6 +117,23 @@ class ForgotAPIView(APIView):
                 recipient_list=[email],
                 html_message=message
             )
+
+            # test
+            sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+            from_email = f"Pickle Factory Team <{os.environ.get('EMAIL_SENDER')}>",  # Change to your verified sender
+            to_email = To("test@example.com")  # Change to your recipient
+            subject = "Sending with SendGrid is Fun"
+            content = Content("text/plain", "and easy to do anywhere, even with Python")
+            mail = Mail(from_email, to_email, subject, content)
+            mail_json = mail.get()
+
+            content2 = Content("text/html", message)
+            mail2 = Mail(from_email, to_email, subject, content2)
+            mail2_json = mail2.get()
+
+            response = sg.client.mail.send.post(request_body=mail_json)
+            response2 = sg.client.mail.send.post(request_body=mail2_json)
+
 
             data = {
                 'status': 'success', 
