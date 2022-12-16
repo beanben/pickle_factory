@@ -107,9 +107,10 @@ class ForgotAPIView(APIView):
             url = f'{protocol}://{host}/auth/reset/{token}'
             # message = f'Click <a href="{url}"> here </a> to reset your password'
             message = f'test without embedded url'
+            # subject='Reset your password',
 
             send_mail(
-                subject='Reset your password',
+                subject='test',
                 message=message,
                 from_email= f"Pickle Factory Team <{os.environ.get('EMAIL_SENDER')}>",
                 recipient_list=[email],
