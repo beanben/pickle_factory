@@ -105,7 +105,8 @@ class ForgotAPIView(APIView):
 
             host = request.get_host()
             url = f'{protocol}://{host}/auth/reset/{token}'
-            message = f'Click <a href="{url}"> here </a> to reset your password'
+            # message = f'Click <a href="{url}"> here </a> to reset your password'
+            message = f'test without embedded url'
 
             send_mail(
                 subject='Reset your password',

@@ -19,7 +19,6 @@ export class AuthComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
          const currentUrl = event.url;
-         console.log("currentUrl:", currentUrl)
          if (currentUrl.includes('forgot') || currentUrl.includes('register')) {
             this.isLogin = false;
           };
