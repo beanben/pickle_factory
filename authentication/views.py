@@ -112,7 +112,7 @@ class ForgotAPIView(APIView):
                 message=message,
                 from_email= os.environ.get('EMAIL_SENDER'),
                 recipient_list=[email],
-                auth_user='Pickle Factory Team',
+                # auth_user='Pickle Factory Team',
                 html_message=message
             )
 
