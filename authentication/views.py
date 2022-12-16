@@ -110,7 +110,7 @@ class ForgotAPIView(APIView):
             send_mail(
                 subject='Reset your password',
                 message=message,
-                from_email= f"Pickle Factory Team {os.environ.get('EMAIL_SENDER')}",
+                from_email= f"Pickle Factory Team <{os.environ.get('EMAIL_SENDER')}>",
                 recipient_list=[email],
                 html_message=message
             )
