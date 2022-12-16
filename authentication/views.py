@@ -97,7 +97,7 @@ class ForgotAPIView(APIView):
             token = self.create_token(email)
             self.create_reset(token, email)
 
-            # amend protocol if project run locally
+            # amend protocol if project runs locally
             local_urls = ['127.0.0.1', 'localhost', '0.0.0.0']
             address = request.get_host().partition(":")[0]
             protocol = 'http' if address in local_urls else 'https'
@@ -112,6 +112,7 @@ class ForgotAPIView(APIView):
                 message=message,
                 from_email= os.environ.get('EMAIL_SENDER'),
                 recipient_list=[email],
+                auth_user='Pickle Factory Team',
                 html_message=message
             )
 
