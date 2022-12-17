@@ -116,7 +116,7 @@ class ForgotAPIView(APIView):
             message = strip_tags(html_message)
 
             send_mail(
-                subject='test',
+                subject='password reset',
                 message=message,
                 from_email= f"Pickle Factory Team <{os.environ.get('EMAIL_SENDER')}>",
                 recipient_list=[email],
