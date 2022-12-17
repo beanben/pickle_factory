@@ -95,9 +95,6 @@ class ForgotAPIView(APIView):
 
     def post(self, request):
         serializer = ForgotSerializer(data=request.data)
-        # template_name = 'authentication/mail_template.html'
-        # template_name = 'authentication/sendgrid_template.html'
-        # template_name = 'authentication/clearscore_template.html'
         template_name = 'authentication/reset_email.html'
 
 
@@ -113,12 +110,9 @@ class ForgotAPIView(APIView):
 
 
             host = request.get_host()
+            home_page = f'{protocol}://{host}'
             url = f'{protocol}://{host}/auth/reset/{token}'
-            # message = f'Click <a href="{url}"> here </a> to reset your password'
-            # message = f'test without embedded url'
-            # subject='Reset your password',
-
-            html_message=render_to_string(template_name, {'url': url})
+            html_message=render_to_string(template_name, {'url': url, 'home_page': home_page})
             message = strip_tags(html_message)
 
             send_mail(
