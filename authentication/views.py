@@ -95,9 +95,11 @@ class ForgotAPIView(APIView):
 
     def post(self, request):
         serializer = ForgotSerializer(data=request.data)
-        template_name = 'authentication/mail_template.html'
+        # template_name = 'authentication/mail_template.html'
         # template_name = 'authentication/sendgrid_template.html'
         # template_name = 'authentication/clearscore_template.html'
+        template_name = 'authentication/reset_email.html'
+
 
         if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data["email"]
