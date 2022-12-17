@@ -16,6 +16,9 @@ from .serializers import (
     UserSerializer)
 import pdb
 import os
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 # import sendgrid
 # from sendgrid.helpers.mail import (Mail, Email,To, Content)
 
@@ -92,6 +95,7 @@ class ForgotAPIView(APIView):
 
     def post(self, request):
         serializer = ForgotSerializer(data=request.data)
+        template_name = 'authentication/mail_template.html'
 
         if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data["email"]
@@ -106,16 +110,19 @@ class ForgotAPIView(APIView):
 
             host = request.get_host()
             url = f'{protocol}://{host}/auth/reset/{token}'
-            message = f'Click <a href="{url}"> here </a> to reset your password'
+            # message = f'Click <a href="{url}"> here </a> to reset your password'
             # message = f'test without embedded url'
             # subject='Reset your password',
+
+            html_message=render_to_string(template_name, {'url': url})
+            message = strip_tags(html_message)
 
             send_mail(
                 subject='test',
                 message=message,
                 from_email= f"Pickle Factory Team <{os.environ.get('EMAIL_SENDER')}>",
                 recipient_list=[email],
-                html_message=message
+                html_message=html_message
             )
 
             # # test
