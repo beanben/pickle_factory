@@ -7,7 +7,7 @@ def reset_exist(token):
     if not reset.exists():
         data = {
             'status': 'error',
-            'message': 'invalid link, resend the request email!'
+            'message': 'this link is no longer valid, please request a new one'
             }
         raise serializers.ValidationError(data, code=400)
 

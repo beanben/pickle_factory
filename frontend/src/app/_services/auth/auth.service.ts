@@ -231,19 +231,26 @@ export class AuthService {
   private handleError(errorRes: HttpErrorResponse): Array<string> {
     console.log("errorRes:", errorRes);
     
-    let errors = errorRes.error
+    let errors = errorRes.error.response
 
-    // test if element is an object, and take only its values
-    if (
-      typeof errors === 'object' &&
-      errors !== null &&
-      !Array.isArray(errors)
-    ) {
+    if('token' in errors) {
+      errors = [errors.token.message]
+    } {
       errors = Object.values(errors)
     }
-
+    
     return errors;
   }
+
+  // test if element is an object, and take only its values
+  // if (
+  //   typeof errors === 'object' &&
+  //   errors !== null &&
+  //   !Array.isArray(errors)
+  // ) {
+  //   console.log("error is object")
+  //   errors = Object.values(errors)
+  // }
 
   
 

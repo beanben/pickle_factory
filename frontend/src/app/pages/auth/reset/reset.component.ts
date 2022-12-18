@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 
@@ -12,6 +12,16 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 export class ResetComponent implements OnInit {
   errors: string[] = new Array();
   successMsg = '';
+  form = new FormGroup({
+    password: new FormControl('', Validators.required),
+    password_confirm: new FormControl('', Validators.required)
+  });
+  get password(){
+    return this.form.get('password')
+  }
+  get password_confirm(){
+    return this.form.get('password_confirm')
+  }
 
   constructor(
     private _authService: AuthService,
@@ -23,14 +33,27 @@ export class ResetComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSubmit(form: NgForm) {
-    const password = form.value.password;
-    const password_confirm = form.value.password_confirm;
-    const token = this.route.snapshot.params['token']
+//   onSubmit(form: NgForm) {
+//     const password = form.value.password;
+//     const password_confirm = form.value.password_confirm;
+//     const token = this.route.snapshot.params['token']
 
-    this._authService.reset(password, password_confirm, token)
-     .then(() => this.router.navigate(['/auth/login']))
-     .catch(err => this.errors = err)
- }
+//     this._authService.reset(password, password_confirm, token)
+//      .then(() => this.router.navigate(['/auth/login']))
+//      .catch(err => this.errors = err)
+//  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      let password = this.password?.value;
+      let password_confirm = this.password_confirm?.value;
+      let token = this.route.snapshot.params['token']
+
+      this._authService
+      .reset(password, password_confirm, token)
+      .then(() => this.router.navigate(['/auth/login']))
+      .catch(err => this.errors = err)
+    }
+  }
 
 }

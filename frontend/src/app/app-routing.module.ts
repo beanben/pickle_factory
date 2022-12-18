@@ -10,8 +10,8 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { AuthGuard } from './_services/auth/auth.guard';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'landing', component: LandingComponent},
+  {path: '', component: LandingComponent},
+  {path: 'landing', redirectTo: '', pathMatch: 'full'},
   {path: 'auth', component: AuthComponent, children: [
     {path: 'login', component: LoginComponent},
     {path: 'register', component: RegisterComponent},

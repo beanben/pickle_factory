@@ -15,14 +15,18 @@ export class AuthComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // to ensure forgot page has login button
+    if(!this.router.url.includes('login')){
+      this.isLogin = false
+    }
+
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
-         const currentUrl = event.url;
+         let currentUrl = event.url;
          if (currentUrl.includes('forgot') || currentUrl.includes('register')) {
             this.isLogin = false;
-          };
-      }
+        };
+      };
+
     })
   }
 
