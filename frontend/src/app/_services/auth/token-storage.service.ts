@@ -32,4 +32,9 @@ export class TokenStorageService {
     window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   }
 
+  deleteTokens(){
+    this.deleteRefreshToken();
+    this.deleteAccessToken();
+  }
+
 }

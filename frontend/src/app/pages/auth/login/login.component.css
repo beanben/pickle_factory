@@ -3,5 +3,14 @@
 }
 
 .btn-active {
-    background-color:#050537;
+    color:#050537;
+    background-color: rgb(5, 5, 55);
+}
+
+.btn-disabled {
+    background-color: rgb(5, 5, 55, 0.3);
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
 }

@@ -54,24 +54,28 @@ export class RegisterComponent implements OnInit {
   }
 
   onCreateFirm(){
-    let firm: Firm = {
-      name: this.firmForm.get('name')?.value
+    if(this.userForm.valid){
+      let firm: Firm = {
+        name: this.firmForm.get('name')?.value
+      }
+  
+      this._authService.createFirm(firm)
+      .then((res) => {
+        this.next = true;
+        this.userForm.get('firm')?.setValue(res.response)
+      })
+      .catch(err => this.errors = err)
     }
-
-    this._authService.createFirm(firm)
-    .then((res) => {
-      this.next = true;
-      this.userForm.get('firm')?.setValue(res.response)
-    })
-    .catch(err => this.errors = err)
   }
 
   onCreateUser() {
-    let user: User = this.userForm.value;
-    this._authService.register(user)
-    .then(() => {
-      this.router.navigate(['/']);
-    })
-    .catch(err => this.errors = err)
+    if(this.userForm.valid){
+      let user: User = this.userForm.value;
+      this._authService.register(user)
+      .then(() => {
+        this.router.navigate(['/']);
+      })
+      .catch(err => this.errors = err)
+    }
  }
 }

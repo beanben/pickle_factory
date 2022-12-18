@@ -1,4 +1,4 @@
-<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+<form [formGroup]="form" #f="ngForm" (ngSubmit)="onSubmit()">
 
     <h1 class="h3 mb-3 fw-normal text-center">
         Please login
@@ -7,28 +7,35 @@
     <div class="form-group mb-1">
         <div class="form-floating">
             <input type="email" class="form-control" id="email"
-                    ngModel name="email"
-                    #email="ngModel"
+                    formControlName="email"
+                    name="email"
                     placeholder="Email address">
             <label for="email">Email address</label>
         </div>
     </div>
+    <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
+        class="alert alert-danger">
+        Please enter your email
+    </div>
 
     <div class="form-group mb-1">
         <div class="form-floating">
-            <input type="password" class="form-control" id="email"
-                    ngModel name="password"
-                    #password="ngModel"
+            <input type="password" class="form-control" id="password"
+                    formControlName = "password" 
+                    name="password"
                     placeholder="Password">
             <label for="email">Password</label>
         </div>
     </div>
+    <div *ngIf="(password?.invalid && (password?.dirty || password?.touched)) || (f.submitted && password?.invalid)"
+        class="alert alert-danger">
+        Please enter your password
+    </div>
         
     <div class="text-center">
-        <button
-            class="btn btn-auth btn-active m-2 text-white"
-            type="submit">
-            Login               
+        <button class="btn btn-auth m-2 text-white"
+                type="submit"
+                [ngClass]="form.invalid ? 'btn-disabled' : 'btn-active'">Login               
         </button>
         <div class="mb-3">
             <a routerLink="/auth/forgot" class="text-secondary">Forgot your password</a>
@@ -36,7 +43,7 @@
     </div>
 
     <div *ngFor="let error of errors"
-        class="alert alert-danger">
+        class="alert alert-danger text-center">
         {{error}}
     </div>
 

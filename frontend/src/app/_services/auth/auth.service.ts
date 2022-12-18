@@ -176,8 +176,7 @@ export class AuthService {
 
   logout() {
     this.router.navigate(['/landing']);
-    this._tokenService.deleteRefreshToken();
-    this._tokenService.deleteAccessToken();
+    this._tokenService.deleteTokens();
   }
 
   forgot(email: string) {
@@ -190,6 +189,7 @@ export class AuthService {
           const result = data as APIResult;
 
           if (result.status === "success"){
+            this._tokenService.deleteTokens()
             resolve(result);
           } else {
             reject(result.message)
