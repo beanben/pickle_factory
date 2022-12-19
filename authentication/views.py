@@ -18,6 +18,7 @@ import pdb
 import os
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from rest_framework.exceptions import AuthenticationFailed
 
 
 # <===== Firm =====>
@@ -58,19 +59,35 @@ class TokenObtainPairView(TokenView):
 
     def post(self, request, *args, **kwargs):
         serializer = TokenObtainPairSerializer(data=request.data)
+        # pdb.set_trace()
+        # # v1
+        # serializer.is_valid(raise_exception=True)
+        # data = {
+        #     'response': serializer.validated_data,
+        #     'status': 'success',
+        # }
+        # return Response(data, status=status.HTTP_200_OK)
 
-        if serializer.is_valid(raise_exception=True):
-            data = {
-                'response': serializer.validated_data,
-                'status': 'success',
-            }
-            return Response(data, status=status.HTTP_200_OK)
+        # v2
+        try:
+            if serializer.is_valid():
+                response = serializer.validated_data
+                status_message = 'success'
+                status_code = status.HTTP_200_OK
+            else:
+                response = serializer.errors
+                status_message = 'error'
+                status_code = status.HTTP_400_BAD_REQUEST
+        except AuthenticationFailed:
+            response = {"login": "authentication failed"}
+            status_message = 'error'
+            status_code = status.HTTP_401_UNAUTHORIZED
 
         data = {
-            'response': serializer.errors,
-            'status': 'error',
+            'response': response,
+            'status': status_message
         }
-        return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data, status=status_code)
 
 class ForgotAPIView(APIView):
     permission_classes = [AllowAny]
@@ -95,7 +112,8 @@ class ForgotAPIView(APIView):
         template_name = 'authentication/reset_email.html'
 
 
-        if serializer.is_valid(raise_exception=True):
+        # if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             email = serializer.validated_data["email"]
             token = self.create_token(email)
             self.create_reset(token, email)

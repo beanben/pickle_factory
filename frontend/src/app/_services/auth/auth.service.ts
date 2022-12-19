@@ -154,6 +154,10 @@ export class AuthService {
           }
         },
         error: (error) => {
+          // hacck because cannot make
+          // error.error.response = {
+          //   login: error.error.detail
+          // }; 
           reject(this.handleError(error));
 
         }
@@ -241,16 +245,6 @@ export class AuthService {
     
     return errors;
   }
-
-  // test if element is an object, and take only its values
-  // if (
-  //   typeof errors === 'object' &&
-  //   errors !== null &&
-  //   !Array.isArray(errors)
-  // ) {
-  //   console.log("error is object")
-  //   errors = Object.values(errors)
-  // }
 
   
 
