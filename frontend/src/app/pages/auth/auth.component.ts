@@ -24,7 +24,9 @@ export class AuthComponent implements OnInit {
          let currentUrl = event.url;
          if (currentUrl.includes('forgot') || currentUrl.includes('register')) {
             this.isLogin = false;
-        };
+        } else {
+            this.isLogin = true;
+        }
       };
 
     })

@@ -179,7 +179,7 @@ export class AuthService {
   }
 
   logout() {
-    this.router.navigate(['/landing']);
+    this.router.navigate(['/']);
     this._tokenService.deleteTokens();
   }
 
@@ -245,13 +245,6 @@ export class AuthService {
     
     return errors;
   }
-
-  
-
-  
-
-
-
 
 
 }
