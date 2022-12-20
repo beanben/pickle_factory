@@ -44,7 +44,7 @@ img {
 .dot {
     height: 25px;
     width: 25px;
-    background-color: rgb(201, 80, 80);
+    background-color: rgb(245, 245, 245);
     border-radius: 50%;
     display: inline-block;
   }

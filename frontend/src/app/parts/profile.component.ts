@@ -10,34 +10,18 @@ import { AuthService } from '../_services/auth/auth.service';
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title w-100 text-center">Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+                  <h5 class="modal-title w-100 text-center">Profile</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
                 </div>
 
-                <div class="modal-body">
-                  <div class="container-fluid">
-                    <div class="row">
-                      <div class="col">
-                        <p class="text-center"></p>
-                      
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col">
-                      {{user.email}}
-                      </div>
-                    </div>
-                  </div>
+                <div class="modal-body text-center h-50">
+                  <div>{{user.email}}</div>
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-between">
                   <ng-container *ngIf="!isEdit">
-                    <div class="row">
-                      <div class="col d-flex flex-row">
-                          <button type="button" class="btn btn-secondary m-2">Edit</button>
-                          <button type="button" class="btn btn-primary m-2" (click)="onLogout()">Logout</button>
-                      </div>
-                    </div>
+                      <button type="button" class="btn btn-primary m-2">Edit</button>
+                      <button type="button" class="btn btn-danger m-2" (click)="onLogout()">Logout</button>
                   </ng-container>
 
                 </div>

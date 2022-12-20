@@ -8,14 +8,14 @@
     </a>
   </div>
 
-  <div class="flex-grow-1">
-    <ul class="text-white p-3" style="list-style: none;">
+  <div class="p-2 flex-grow-1">
+    <ul class="p-0 text-white" style="list-style: none;">
 
-      <li class="pb-2"><img src="{{home}}" alt="">Home</li>
+      <li><img src="{{home}}" alt="">Home</li>
 
-      <li class="pb-2" (click)="is_expanded = !is_expanded">
+      <li style="cursor: pointer" (click)="is_expanded = !is_expanded">
         <img src="{{stakeholder}}" alt="">Stakeholders 
-        <span class="filter-white" style="cursor: pointer">
+        <span class="filter-white" >
           <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
           <img *ngIf="is_expanded" src="{{expand_less}}" alt="">
         </span>
@@ -33,8 +33,8 @@
   </div>
 
   <div class="p-2">
-    <span style="cursor: pointer" class="p-2" (click)="onOpenPopup()" style="cursor: pointer">
-      <span class="dot my-auto"></span>
+    <span style="cursor: pointer" class="d-flex align-items-center" (click)="onOpenPopup()" style="cursor: pointer">
+      <span class="dot me-2"></span>
       Profile
     </span>
   </div>
