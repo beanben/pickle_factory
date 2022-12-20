@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LandingComponent } from './pages/landing/landing.component';
+
 import { HomeComponent } from './pages/home/home.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { ForgotComponent } from './pages/auth/forgot/forgot.component';
@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
 import { authInterceptorProviders } from './_services/auth/auth.interceptor';
+import { LandingComponent } from './pages/home/landing.component';
 
 @NgModule({
   declarations: [
