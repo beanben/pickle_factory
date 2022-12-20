@@ -41,10 +41,22 @@ export class NavLeftComponent implements OnInit {
     this._authService.logout();
   }
 
+  // getUser(){
+  //   this._authService.getUser()
+  //     .subscribe(user => {
+  //       this.user = user;
+  //     })
+  // }
   getUser(){
     this._authService.getUser()
-      .subscribe(user => {
-        this.user = user;
+      .subscribe({
+        next: (user) => this.user = user,
+        error: (e) => {
+          console.log("error:", e);
+          if (e.status === 401) {
+            this._authService.logout();
+          }
+        }
       })
   }
 

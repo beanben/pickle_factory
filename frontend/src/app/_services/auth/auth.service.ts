@@ -172,6 +172,27 @@ export class AuthService {
     )
   }
 
+  // getUser2(){
+  //   return new Promise<APIResult>((resolve, reject) => {
+  //     const url = `${this.urlRoot}/user/`;
+
+  //     this.http.get(url).subscribe({
+  //       next: (data) => {
+  //         let result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this.handleError(error));
+  //       }
+  //     })
+  //   })
+  // }
+
   refreshToken(token: string) {
     const url = `${this.urlRoot}/token/refresh/`; 
     const body = {"refresh": token};

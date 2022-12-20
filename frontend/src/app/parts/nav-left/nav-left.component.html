@@ -1,93 +1,6 @@
-<!-- MODAL (create new firm) -->
-<app-profile *ngIf="openPopup" (onClosePopup)="closePopup()" [user]="user"></app-profile>
+<!-- REPLACE ALL THIS WITH FLEX / FLEX-GROW -->
 
-<!-- <div class="d-flex flex-column flex-shrink-0 p-1">
-    <a routerLink="/" class="text-decoration-none">
-      <div class="d-flex my-2">
-        <div class="mx-2 my-auto">
-          <img src="{{logo}}" alt="">
-        </div>
-        <div class="fs-4 my-auto text-white">Pickle</div>
-      </div>
-    </a> 
-  
-    <ul class="nav nav-pills flex-column mt-4 text-white">
-
-      <li class="nav-item">
-        <a routerLink="/home" routerLinkActive="active" class="nav-link" aria-current="home">
-          <div class="d-flex">
-            <div><img src="{{home}}" class="rounded me-2 nav-icon" alt=""></div>
-            <div>Home</div>
-          </div>  
-        </a>
-      </li>
-
-      <li class="nav-item">
-
-          <div class="d-flex">
-            <div class="nav-link"><img src="{{home}}" class="rounded me-2 nav-icon" alt=""></div>
-            <div>Home</div>
-          </div>  
-        
-      </li>
-
-      <li class="nav-item" (click)="is_expanded = !is_expanded">
-          <div class="d-flex">
-
-            <div><img src="{{stakeholder}}" class="rounded me-2 nav-icon" alt=""></div>
-
-            <div class="d-flex justify-content-between">
-              <div class="flex-grow-1">Stakeholders</div>
-
-              <div class="cursor-pointer filter-white">
-                <ng-container *ngIf="!is_expanded; else is_open">
-                  <img src="{{expand_more}}" alt="" >
-                </ng-container>
-                <ng-template #is_open>
-                <img src="{{expand_less}}" alt="">
-                </ng-template>
-              </div> 
-            </div>  
-          </div>
-           
-        <ul class="list-group" *ngIf="is_expanded">
-          <li class="list-group-item">
-            <a routerLink="/lender" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-              <span>Lenders</span>
-            </a>
-          </li>
-    
-          <li class="list-group-item">
-            <a routerLink="/investor" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-              <span>Investors</span>
-            </a>
-          </li>
-    
-          <li class="list-group-item">
-            <a routerLink="/borrower" routerLinkActive="active" class="nav-link px-2" aria-current="page">
-              <span>Borrower</span>
-            </a>
-          </li>
-    
-        </ul>
-      </li>
-  
-    </ul>
-     
-    <hr>
-  
-    <ul class="nav nav-pills flex-column mb-auto text-white">
-      <li class="nav-item ps-1">
-        <button type="button" class="nav-link" (click)="onOpenPopup()">
-          <img src="{{avatar}}" class="rounded me-2" alt="">
-          Profile
-        </button>
-      </li>
-    </ul>
- 
-  </div> -->
-
-  <ul class="text-white p-3" style="list-style: none;">
+<ul class="text-white p-3" style="list-style: none;">
 
     <li class="fs-4 pb-3">
       <img src="{{logo}}" alt="">
@@ -112,13 +25,12 @@
       </ng-container>
     </li>
 
-    <hr>
+    <hr class="light-grey">
 
     <li class="pb-2" (click)="onOpenPopup()" style="cursor: pointer">
       <img src="{{avatar}}" alt="">Profile
     </li>
-
-  </ul>
+ </ul>
 
 
   

@@ -36,3 +36,7 @@
 img {
     margin-right: .5rem;
 }
+
+.light-grey {
+    border: 0.5px solid white;
+}
