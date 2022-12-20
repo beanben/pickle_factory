@@ -31,14 +31,11 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(authReq)
       .pipe(
         catchError(err => {
-          if (err instanceof HttpErrorResponse && err.status === 401 && authReq.url.includes('refresh')) {
-            this._authService.logout();
+          if (err instanceof HttpErrorResponse && err.status === 401 && !authReq.url.includes('refresh')) {
             return this.handleError(authReq, next);
 
-          } else if (err instanceof HttpErrorResponse && err.status === 403 && !authReq.url.includes('register')) {
-            return this.handleError(authReq, next); 
-
           } else {
+            this._authService.logout();
             return throwError(() => err);
 
           }
@@ -55,7 +52,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private handleError(req: HttpRequest<any>, next: HttpHandler) {
     const token = this._tokenService.getRefreshToken();
-    // console.log("handleError")
     if(token) {
       return this._authService.refreshToken(token)
         .pipe(

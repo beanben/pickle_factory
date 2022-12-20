@@ -29,5 +29,5 @@ urlpatterns = [
     path('forgot/', ForgotAPIView.as_view(), name='forgot'),
     path('reset/', ResetAPIView.as_view(), name='reset'),
     path('user/', UserAPIView.as_view(), name='user_detail'),
-     path('user/<int:pk>/', UserUpdateAPIView.as_view(), name='user_update'),
+    path('user/<int:pk>/', UserUpdateAPIView.as_view(), name='user_update'),
 ]

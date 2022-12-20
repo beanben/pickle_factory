@@ -117,7 +117,9 @@ export class AuthService {
   refreshToken(token: string) {
     const url = `${this.urlRoot}/token/refresh/`; 
     const body = {"refresh": token};
-    return this.http.post<any>(url, body)
+    return this.http.post<any>(url, body).pipe(
+      tap(() => console.log('refreshToken()', Math.random()))
+    )
   }
 
   logout() {
