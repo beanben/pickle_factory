@@ -53,9 +53,9 @@ export class NavLeftComponent implements OnInit {
         next: (user) => this.user = user,
         error: (e) => {
           console.log("error:", e);
-          if (e.status === 401) {
-            this._authService.logout();
-          }
+          // if (e.status === 401) {
+          //   this._authService.logout();
+          // }
         }
       })
   }

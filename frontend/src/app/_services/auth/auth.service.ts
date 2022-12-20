@@ -26,17 +26,8 @@ export class AuthService {
     private _tokenService: TokenStorageService,
     private router: Router
   ) { }
-
-  // isForgotPage(confirm: boolean): Observable<boolean>{
-  //   return confirm
-  // }
-
-  // getRouteUrl(url_string: string): Observable<string>{
-  //   return url_string
-  // }
   
 
-  /** GET: get all firms */
   getFirms(): Observable<Firm[]> {
     const url = `${this.urlRoot}/firm/`
 
@@ -44,15 +35,6 @@ export class AuthService {
       tap(() => console.log('getFirms()', Math.random())),
     );
   }
-
-  // createFirm(firm: Firm): Observable<Firm> {
-  //   const url = `${this.urlRoot}/firm/`;
-  //   const httpOptions = this.httpOptions;
-
-  //   return this.http.post<Firm>(url, firm, httpOptions).pipe(
-  //     tap(() => console.log('createFirm()', Math.random()))
-  //   );
-  // }
 
   createFirm(firm: Firm) {
     return new Promise<APIResult>((resolve, reject) => {
@@ -73,7 +55,6 @@ export class AuthService {
       })
     })
   }
-
 
   isLoggedIn(): boolean {
     return !!this._tokenService.getAccessToken();
@@ -100,41 +81,6 @@ export class AuthService {
     })
   }
 
-  // create_firm(firm: Firm): Observable<Firm> {
-  //   const url = `${this.urlRoot}/firm/`;
-  //   const httpOptions = this.httpOptions;
-
-  //   return this.http.post<Firm>(url, firm, httpOptions).pipe(
-  //     tap(() => console.log('createFirm()', Math.random()))
-  //   );
-  // }
-
-  // create_user(user: User): Observable<any>{
-  //   const url = `${this.urlRoot}/register/`;
-  //   return this.http.post<User>(url, user)
-  // }
-
-
-
-  // createFirmAndUser(firm: Firm, user: User):{
-  //   console.log("firm:", firm)
-  //   console.log("user:", user)
-
-  //   // const url_firm = `${this.urlRoot}/firm/`;
-  //   // const url_register = `${this.urlRoot}/register/`;
-
-  //   // this.http.post<Firm>(url_firm, firm)
-  //   // .pipe(
-  //   //   concatMap((firm: Firm) => {
-  //   //     user.firm = firm;
-  //   //     this.http.post<User>(url_register, user)
-  //   //   })
-  //   // ).subscribe({
-  //   // })
-
-
-  // }
-
   login(email: string, password: string) {
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}/login/`;
@@ -154,10 +100,6 @@ export class AuthService {
           }
         },
         error: (error) => {
-          // hacck because cannot make
-          // error.error.response = {
-          //   login: error.error.detail
-          // }; 
           reject(this.handleError(error));
 
         }
@@ -171,27 +113,6 @@ export class AuthService {
       tap(() => console.log('getUser()', Math.random()))
     )
   }
-
-  // getUser2(){
-  //   return new Promise<APIResult>((resolve, reject) => {
-  //     const url = `${this.urlRoot}/user/`;
-
-  //     this.http.get(url).subscribe({
-  //       next: (data) => {
-  //         let result = data as APIResult;
-  //         if (result.status === "success"){
-  //           resolve(result);
-
-  //         } else {
-  //           reject(result.message)
-  //         }
-  //       },
-  //       error: (error) => {
-  //         reject(this.handleError(error));
-  //       }
-  //     })
-  //   })
-  // }
 
   refreshToken(token: string) {
     const url = `${this.urlRoot}/token/refresh/`; 

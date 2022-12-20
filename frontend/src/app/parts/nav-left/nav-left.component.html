@@ -1,36 +1,45 @@
-<!-- REPLACE ALL THIS WITH FLEX / FLEX-GROW -->
+<app-profile *ngIf="openPopup" (onClosePopup)="closePopup()" [user]="user"></app-profile>
 
-<ul class="text-white p-3" style="list-style: none;">
+ <div class="d-flex flex-column mb-3 text-white h-100">
 
-    <li class="fs-4 pb-3">
-      <img src="{{logo}}" alt="">
-      Pickle
-    </li>
+  <div class="p-2">
+    <a routerLink="/" class="text-white text-decoration-none">
+      <img src="{{logo}}" alt="">Pickle
+    </a>
+  </div>
 
-    <li class="pb-2"><img src="{{home}}" alt="">Home</li>
+  <div class="flex-grow-1">
+    <ul class="text-white p-3" style="list-style: none;">
 
-    <li class="pb-2" (click)="is_expanded = !is_expanded">
-      <img src="{{stakeholder}}" alt="">Stakeholders 
-      <span class="filter-white" style="cursor: pointer">
-        <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
-        <img *ngIf="is_expanded" src="{{expand_less}}" alt="">
-      </span>
+      <li class="pb-2"><img src="{{home}}" alt="">Home</li>
 
-      <ng-container *ngIf="is_expanded">
-        <ul style="list-style: none">
-          <li>Lenders</li>
-          <li>Borrowers</li>
-          <li>Panel</li>
-        </ul>
-      </ng-container>
-    </li>
+      <li class="pb-2" (click)="is_expanded = !is_expanded">
+        <img src="{{stakeholder}}" alt="">Stakeholders 
+        <span class="filter-white" style="cursor: pointer">
+          <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
+          <img *ngIf="is_expanded" src="{{expand_less}}" alt="">
+        </span>
+  
+        <ng-container *ngIf="is_expanded">
+          <ul style="list-style: none">
+            <li>Lenders</li>
+            <li>Borrowers</li>
+            <li>Panel</li>
+          </ul>
+        </ng-container>
+      </li>
 
-    <hr class="light-grey">
+    </ul>
+  </div>
 
-    <li class="pb-2" (click)="onOpenPopup()" style="cursor: pointer">
+  <div class="p-2">
+    <span style="cursor: pointer" class="pb-2" (click)="onOpenPopup()" style="cursor: pointer">
       <img src="{{avatar}}" alt="">Profile
-    </li>
- </ul>
+      <span class="text-white">{{user.first_name}}</span>
+    </span>
+  </div>
+
+</div>
 
 
   

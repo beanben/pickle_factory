@@ -10,15 +10,16 @@ import { LandingComponent } from './pages/landing/landing.component';
 import { AuthGuard } from './_services/auth/auth.guard';
 
 const routes: Routes = [
-  {path: '', component: LandingComponent},
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {path: '', component: HomeComponent},
+  // {path: '', redirectTo: 'home', pathMatch: 'full'},
+  // {path: '', component: LandingComponent},
   {path: 'auth', component: AuthComponent, children: [
     {path: 'login', component: LoginComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'forgot', component: ForgotComponent},
     {path: 'reset/:token', component: ResetComponent},  
   ]},
-  {path: 'home', component: HomeComponent, canActivate: [AuthGuard]}
+  // {path: 'home', component: HomeComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
