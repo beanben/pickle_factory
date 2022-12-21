@@ -155,6 +155,7 @@ export class ProfileComponent implements OnInit{
 
         this.user.first_name = this.first_name?.value;
         this.user.last_name = this.last_name?.value;
+        this.user.email = this.email?.value;
         this._authService.updateUser(this.user)
         .subscribe(() => {
           this.isEdit = false;
