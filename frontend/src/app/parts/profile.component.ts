@@ -68,7 +68,7 @@ import { AuthService } from '../_services/auth/auth.service';
 
                 <div class="modal-footer" [ngClass]="{'justify-content-between': !isEdit}">
                   <ng-container *ngIf="!isEdit">
-                      <button type="button" class="btn btn-primary m-2" (click)="isEdit=true">Edit</button>
+                      <button type="button" class="btn btn-primary m-2" (click)="onEdit()">Edit</button>
                       <button type="button" class="btn btn-danger m-2" (click)="onLogout()">Logout</button>
                   </ng-container>
                   <ng-container *ngIf="isEdit">
@@ -134,6 +134,11 @@ export class ProfileComponent implements OnInit{
               this.closePopup();
           }
         });
+      }
+
+      onEdit(){
+        this.isEdit = true;
+        this.initialiseForm()
       }
 
     closePopup() {
