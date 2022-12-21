@@ -54,7 +54,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onCreateFirm(){
-    if(this.userForm.valid){
+    if(this.firmForm.valid){
       let firm: Firm = {
         name: this.firmForm.get('name')?.value
       }
