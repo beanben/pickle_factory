@@ -81,6 +81,14 @@ export class AuthService {
     })
   }
 
+  updateUser(user: User): Observable<any> {
+    const url = `${this.urlRoot}/user/${user.pk}/`;
+    
+    return this.http.put(url, user, this.httpOptions).pipe(
+      tap(() => console.log('updateUser()', Math.random()))
+    )
+  }
+
   login(email: string, password: string) {
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}/login/`;

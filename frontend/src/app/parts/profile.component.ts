@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../pages/auth/user';
 import { AuthService } from '../_services/auth/auth.service';
 
@@ -14,14 +15,65 @@ import { AuthService } from '../_services/auth/auth.service';
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
                 </div>
 
-                <div class="modal-body text-center h-50">
-                  <div>{{user.email}}</div>
+                <div class="modal-body d-flex align-items-center">
+                  <ng-container *ngIf="!isEdit">
+                    <div class="mx-auto text-center">
+                      <p class="fw-bold">{{user.first_name}} {{user.last_name}}</p>
+                      <p>{{user.email}}</p>
+                    </div>
+                  </ng-container>
+                  
+                  <ng-container *ngIf="isEdit">
+                    <form [formGroup]="userForm" #f="ngForm" class="mx-auto">
+                      <div class="form-group mb-4">
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="first_name"
+                                formControlName="first_name"
+                                name="first_name"
+                                placeholder="First name">
+                          <label for="first_name">First name</label>
+                        </div>
+                      </div>
+
+                      <div class="form-group mb-2">
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="last_name"
+                                formControlName="last_name"
+                                name="last_name"
+                                placeholder="Last name">
+                          <label for="last_name">Last name</label>
+                        </div>
+                      </div>
+
+                      
+                      <div class="form-group mb-2">
+                      <app-required></app-required>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="email"
+                                formControlName="email"
+                                name="email"
+                                placeholder="Email">
+                          <label for="email">Email</label>
+                        </div>
+                      </div>
+                      <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
+                          class="alert alert-danger">
+                          Please enter your email
+                      </div>
+                    </form>
+
+                  </ng-container>
+
                 </div>
 
-                <div class="modal-footer justify-content-between">
+                <div class="modal-footer" [ngClass]="{'justify-content-between': !isEdit}">
                   <ng-container *ngIf="!isEdit">
-                      <button type="button" class="btn btn-primary m-2">Edit</button>
+                      <button type="button" class="btn btn-primary m-2" (click)="isEdit=true">Edit</button>
                       <button type="button" class="btn btn-danger m-2" (click)="onLogout()">Logout</button>
+                  </ng-container>
+                  <ng-container *ngIf="isEdit">
+                      <button type="button" class="btn btn-secondary m-2" (click)="isEdit=false">Cancel</button>
+                      <button type="submit" class="btn btn-success m-2" (click)="onUpdateUser()">Save</button>
                   </ng-container>
 
                 </div>
@@ -31,23 +83,49 @@ import { AuthService } from '../_services/auth/auth.service';
     `,
     styles: [
         '.modal {background-color: rgba(0, 0, 0, 0.7);}',
-        '.modal-centered {top: 10em}'
+        '.modal-centered {top: 10em}',
+       
     ]
   })
 export class ProfileComponent implements OnInit{
     displayStyle = "block";
     @Output() onClosePopup = new EventEmitter<void>();
     @Input() user = {} as User;
+    // isEdit = true;
     isEdit = false;
+    userForm: FormGroup = this.fb.group({
+      first_name: [''],
+      last_name: [''],
+      email: ['', Validators.required],
+  })
+  get email(){
+    return this.userForm.get('email')
+  }
+  get first_name(){
+    return this.userForm.get('first_name')
+  }
+  get last_name(){
+    return this.userForm.get('last_name')
+  }
 
     constructor(
         private el: ElementRef,
-        private _authService: AuthService
+        private _authService: AuthService,
+        private fb: FormBuilder
       ) { 
         this.addEventBackgroundClose();
       }
     
       ngOnInit(): void {
+        this.initialiseForm()
+      }
+
+      initialiseForm(){
+        this.userForm.patchValue({
+          first_name: this.user.first_name,
+          last_name: this.user.last_name,
+          email: this.user.email
+        })
       }
     
       addEventBackgroundClose(){
@@ -67,5 +145,16 @@ export class ProfileComponent implements OnInit{
       this._authService.logout();
     }
 
+    onUpdateUser(){
+      if(this.userForm.valid){
+
+        this.user.first_name = this.first_name?.value;
+        this.user.last_name = this.last_name?.value;
+        this._authService.updateUser(this.user)
+        .subscribe(() => {
+          this.isEdit = false;
+        })
+      }
+    }
 
 }

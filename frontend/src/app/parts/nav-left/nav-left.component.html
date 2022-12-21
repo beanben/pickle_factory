@@ -11,9 +11,9 @@
   <div class="p-2 flex-grow-1">
     <ul class="p-0 text-white" style="list-style: none;">
 
-      <li><img src="{{home}}" alt="">Home</li>
+      <li class="mb-2"><img src="{{home}}" alt="">Home</li>
 
-      <li style="cursor: pointer" (click)="is_expanded = !is_expanded">
+      <li class="mb-2" style="cursor: pointer" (click)="is_expanded = !is_expanded">
         <img src="{{stakeholder}}" alt="">Stakeholders 
         <span class="filter-white" >
           <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
@@ -32,7 +32,8 @@
     </ul>
   </div>
 
-  <div class="p-2">
+  <div class="p-2 mb-4">
+    <hr class="light-grey">
     <span style="cursor: pointer" class="d-flex align-items-center" (click)="onOpenPopup()" style="cursor: pointer">
       <span class="dot me-2"></span>
       Profile

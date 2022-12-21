@@ -17,6 +17,7 @@ import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
 import { authInterceptorProviders } from './_services/auth/auth.interceptor';
 import { LandingComponent } from './pages/home/landing.component';
+import { RequiredComponent } from './parts/required.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { LandingComponent } from './pages/home/landing.component';
     RegisterComponent,
     ResetComponent,
     NavLeftComponent,
-    ProfileComponent
+    ProfileComponent,
+    RequiredComponent
   ],
   imports: [
     BrowserModule,
