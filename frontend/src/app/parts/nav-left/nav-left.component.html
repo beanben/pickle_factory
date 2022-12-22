@@ -2,22 +2,30 @@
 
  <div class="d-flex flex-column mb-3 text-white h-100">
 
-  <div class="p-2">
-    <a routerLink="/" class="text-white text-decoration-none">
-      <img src="{{logo}}" alt="">Pickle
+  <div class="p-2 mb-2">
+    <a routerLink="/" class="text-white text-decoration-none d-flex">
+      <img src="{{logo}}" alt=""><h3 class="my-auto fw-bold">Pickle</h3>
     </a>
   </div>
 
   <div class="p-2 flex-grow-1">
-    <ul class="p-0 text-white" style="list-style: none;">
+    <ul class="p-0 text-white">
 
-      <li class="mb-2"><img src="{{home}}" alt="">Home</li>
+      <li [ngClass]="{'is-active': homeRoute.isActive}">
+        <a routerLink="/" routerLinkActive=active #homeRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
+          <img src="{{house}}" alt="">Home
+        </a>
+      </li>
 
-      <li class="mb-2" style="cursor: pointer" (click)="is_expanded = !is_expanded">
-        <img src="{{stakeholder}}" alt="">Stakeholders 
+      <li><img src="{{dollar}}" alt="">Loans</li>
+
+      <li><img src="{{chart}}" alt="">Fund manager</li>
+
+      <li style="cursor: pointer" (click)="is_expanded = !is_expanded">
+        <img src="{{person}}" alt="">Stakeholders 
         <span class="filter-white" >
-          <img *ngIf="!is_expanded" src="{{expand_more}}" alt="" >
-          <img *ngIf="is_expanded" src="{{expand_less}}" alt="">
+          <img *ngIf="!is_expanded" src="{{arrow_down}}" alt="" >
+          <img *ngIf="is_expanded" src="{{arrow_up}}" alt="">
         </span>
   
         <ng-container *ngIf="is_expanded">
@@ -34,15 +42,15 @@
 
   <div class="p-2 mb-4">
     <hr class="light-grey">
-    <span style="cursor: pointer" class="d-flex align-items-center" (click)="onOpenPopup()" style="cursor: pointer">
+    <span style="cursor: pointer" class="d-flex align-items-center profile" (click)="onOpenPopup()" style="cursor: pointer" [ngClass]="{'is-active': openPopup}">
 
-        <span class="dot me-2 color-pickle text-center">
+        <span class="dot me-2 color-pickle text-center my-auto">
           <ng-container *ngIf="!!user.first_name">
-            {{user.first_name | initial}}
+            <p class="p-0 my-auto"></p>{{user.first_name | initial}}
           </ng-container>
         </span>
 
-      Profile
+        <span>Profile</span>
     </span>
   </div>
 

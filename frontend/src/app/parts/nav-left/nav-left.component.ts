@@ -11,9 +11,12 @@ export class NavLeftComponent implements OnInit {
   logo = "assets/images/logo.svg";
   home = "assets/images/home.svg";
   lender = "assets/images/lender.svg";
-  stakeholder = "assets/images/stakeholder.svg";
-  expand_more = "assets/images/expand_more.svg";
-  expand_less = "assets/images/expand_less.svg";
+  person = "assets/images/person.svg";
+  arrow_down = "assets/images/arrow_down.svg";
+  arrow_up = "assets/images/arrow_up.svg";
+  dollar = "assets/images/dollar.svg";
+  chart = "assets/images/chart.svg";
+  house = "assets/images/house.svg";
   is_expanded = false;
   user = {} as User;
   // openPopup = true;
@@ -39,23 +42,15 @@ export class NavLeftComponent implements OnInit {
     this._authService.logout();
   }
 
-  // getUser(){
-  //   this._authService.getUser()
-  //     .subscribe(user => {
-  //       this.user = user;
-  //     })
-  // }
   getUser(){
     this._authService.getUser()
-      .subscribe({
-        next: (user) => this.user = user,
-        error: (e) => {
-          console.log("error:", e);
-          // if (e.status === 401) {
-          //   this._authService.logout();
-          // }
-        }
-      })
+      .subscribe(user => this.user = user)
+      // .subscribe({
+      //   next: (user) => this.user = user,
+      //   error: (e) => {
+      //     console.log("error:", e);
+      //   }
+      // })
   }
 
 }
