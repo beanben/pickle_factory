@@ -6,8 +6,6 @@ from .models import User, Reset, Firm
 import pdb
 
 class FirmSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField(
-    #     error_messages={'required': 'field cannot be blank!'})
     name = serializers.CharField(required=False)
     
     class Meta:
@@ -20,8 +18,14 @@ class FirmSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        name = validated_data['name'].lower()
-        firm, created = Firm.objects.get_or_create(name=name) #to ensure no duplicates
+        # ensure capitalisation is kept
+        firm = Firm.objects.filter(name__iexact=validated_data["name"])
+        if firm.exists():
+            return firm
+        else:
+            return Firm.objects.create(name=validated_data["name"])
+        # name = validated_data['name'].lower()
+        # firm, created = Firm.objects.get_or_create(name=name) #to ensure no duplicates
         return firm
 
     

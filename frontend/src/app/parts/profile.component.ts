@@ -60,6 +60,9 @@ import { AuthService } from '../_services/auth/auth.service';
                           class="alert alert-danger">
                           Please enter your email
                       </div>
+                      <div *ngFor="let error of errors " class="alert alert-danger text-center"> 
+                          {{error}}
+                      </div>
                     </form>
 
                   </ng-container>
@@ -91,7 +94,7 @@ export class ProfileComponent implements OnInit{
     displayStyle = "block";
     @Output() onClosePopup = new EventEmitter<void>();
     @Input() user = {} as User;
-    // isEdit = true;
+    errors: string[] = new Array();
     isEdit = false;
     userForm: FormGroup = this.fb.group({
       first_name: [''],
@@ -157,8 +160,12 @@ export class ProfileComponent implements OnInit{
         this.user.last_name = this.last_name?.value;
         this.user.email = this.email?.value;
         this._authService.updateUser(this.user)
-        .subscribe(() => {
-          this.isEdit = false;
+        .subscribe({
+          next: () => this.isEdit = false,
+          error: (e) => {
+            this.errors = e;
+            console.log("error:", this.errors)
+          }
         })
       }
     }

@@ -59,16 +59,7 @@ class TokenObtainPairView(TokenView):
 
     def post(self, request, *args, **kwargs):
         serializer = TokenObtainPairSerializer(data=request.data)
-        # pdb.set_trace()
-        # # v1
-        # serializer.is_valid(raise_exception=True)
-        # data = {
-        #     'response': serializer.validated_data,
-        #     'status': 'success',
-        # }
-        # return Response(data, status=status.HTTP_200_OK)
 
-        # v2
         try:
             if serializer.is_valid():
                 response = serializer.validated_data
