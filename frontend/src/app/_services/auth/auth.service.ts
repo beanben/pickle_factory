@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { TokenStorageService } from './token-storage.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { concatMap, Observable, Subject, tap } from 'rxjs';
+import { BehaviorSubject, concatMap, Observable, Subject, tap } from 'rxjs';
 import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
@@ -12,6 +12,10 @@ import { APIResult } from '../api-result';
   providedIn: 'root'
 })
 export class AuthService {
+  user = {} as User;
+  testService: BehaviorSubject<string> = new BehaviorSubject("service called");
+  userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+
   appRoot = "auth";
   urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`
 
@@ -26,6 +30,15 @@ export class AuthService {
     private _tokenService: TokenStorageService,
     private router: Router
   ) { }
+  
+  userSubjectGetValue(): Observable<User | null> {
+    return this.userSubject.asObservable();
+  }
+  userSubjectSetValue(user:User): void {
+    this.userSubject.next(user);
+  };
+
+  
   
 
   getFirms(): Observable<Firm[]> {
@@ -86,6 +99,14 @@ export class AuthService {
     
     return this.http.put(url, user, this.httpOptions).pipe(
       tap(() => console.log('updateUser()', Math.random()))
+    )
+  }
+
+  updateFirm(firm: Firm): Observable<any> {
+    const url = `${this.urlRoot}/firm/${firm.id}/`;
+    
+    return this.http.put(url, firm, this.httpOptions).pipe(
+      tap(() => console.log('updateFirm()', Math.random()))
     )
   }
 

@@ -15,6 +15,7 @@ class FirmSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if not attrs:
             raise serializers.ValidationError({"firm": "this field is required"})
+
         return attrs
 
     def create(self, validated_data):
@@ -28,7 +29,11 @@ class FirmSerializer(serializers.ModelSerializer):
         # firm, created = Firm.objects.get_or_create(name=name) #to ensure no duplicates
         return firm
 
-    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
+
 
 class FirmFKSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -62,7 +67,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         fields_required = ['password', 'password_confirm', 'email']
-        # pdb.set_trace()
 
         if 'password' not in attrs :
             raise serializers.ValidationError({"password": "this field is required"})
@@ -86,14 +90,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         user.save()
         return user
-
-
-    # def update(self, instance, validated_data):
-    #     pdb.set_trace()
-    #     # validated_data.pop("investments", None)
-    #     # instance.name = validated_data["name"]
-    #     instance.save()
-    #     return instance
 
 class ForgotSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
@@ -167,6 +163,12 @@ class UserSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
+
+        # update firm name
+        firm = Firm.objects.get(pk = instance.firm.pk)
+        firm.name = validated_data.get('firm_name', instance.firm.name)
+        firm.save()
+
         instance.save()
         return instance
 

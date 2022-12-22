@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin, map, mergeMap, mergeMapTo } from 'rxjs';
+import { Firm } from '../pages/auth/firm';
 import { User } from '../pages/auth/user';
 import { AuthService } from '../_services/auth/auth.service';
 
@@ -24,7 +26,7 @@ import { AuthService } from '../_services/auth/auth.service';
                   </ng-container>
                   
                   <ng-container *ngIf="isEdit">
-                    <form [formGroup]="userForm" #f="ngForm" class="mx-auto">
+                    <form [formGroup]="form" #f="ngForm" class="mx-auto">
                       <div class="form-group mb-4">
                         <div class="form-floating">
                           <input type="text" class="form-control" id="first_name"
@@ -45,7 +47,6 @@ import { AuthService } from '../_services/auth/auth.service';
                         </div>
                       </div>
 
-                      
                       <div class="form-group mb-2">
                       <app-required></app-required>
                         <div class="form-floating">
@@ -60,6 +61,22 @@ import { AuthService } from '../_services/auth/auth.service';
                           class="alert alert-danger">
                           Please enter your email
                       </div>
+
+                      <div class="form-group mb-2">
+                      <app-required></app-required>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="firm_name"
+                                formControlName="firm_name"
+                                name="firm_name"
+                                placeholder="Firm name">
+                          <label for="firm_name">Firm name</label>
+                        </div>
+                      </div>
+                      <div *ngIf="(firm_name?.invalid && (firm_name?.dirty || firm_name?.touched)) || (f.submitted && firm_name?.invalid)"
+                          class="alert alert-danger">
+                          Please enter the name of your firm
+                      </div>
+
                       <div *ngFor="let error of errors " class="alert alert-danger text-center"> 
                           {{error}}
                       </div>
@@ -76,7 +93,7 @@ import { AuthService } from '../_services/auth/auth.service';
                   </ng-container>
                   <ng-container *ngIf="isEdit">
                       <button type="button" class="btn btn-secondary m-2" (click)="isEdit=false">Cancel</button>
-                      <button type="submit" class="btn btn-success m-2" (click)="onUpdateUser()">Save</button>
+                      <button type="submit" class="btn btn-success m-2" (click)="onUpdate()">Save</button>
                   </ng-container>
 
                 </div>
@@ -96,19 +113,23 @@ export class ProfileComponent implements OnInit{
     @Input() user = {} as User;
     errors: string[] = new Array();
     isEdit = false;
-    userForm: FormGroup = this.fb.group({
+    form: FormGroup = this.fb.group({
       first_name: [''],
       last_name: [''],
       email: ['', Validators.required],
+      firm_name: ['', Validators.required]
   })
   get email(){
-    return this.userForm.get('email')
+    return this.form.get('email')
   }
   get first_name(){
-    return this.userForm.get('first_name')
+    return this.form.get('first_name')
   }
   get last_name(){
-    return this.userForm.get('last_name')
+    return this.form.get('last_name')
+  }
+  get firm_name(){
+    return this.form.get('firm_name')
   }
 
     constructor(
@@ -124,11 +145,17 @@ export class ProfileComponent implements OnInit{
       }
 
       initialiseForm(){
-        this.userForm.patchValue({
+        this.form.patchValue({
           first_name: this.user.first_name,
           last_name: this.user.last_name,
           email: this.user.email
         })
+
+        if(!!this.user.firm){
+          this.form.patchValue({
+            firm_name: this.user.firm!.name
+          })
+        }
       }
     
       addEventBackgroundClose(){
@@ -153,21 +180,34 @@ export class ProfileComponent implements OnInit{
       this._authService.logout();
     }
 
-    onUpdateUser(){
-      if(this.userForm.valid){
-
+    onUpdate(){
+      if(this.form.valid){
         this.user.first_name = this.first_name?.value;
         this.user.last_name = this.last_name?.value;
         this.user.email = this.email?.value;
-        this._authService.updateUser(this.user)
-        .subscribe({
-          next: () => this.isEdit = false,
-          error: (e) => {
-            this.errors = e;
-            console.log("error:", this.errors)
-          }
-        })
+
+        let firm: Firm = this.user.firm;
+        firm.name = this.firm_name?.value;
+
+        // ensure user update is propagted to home page
+        this._authService.updateFirm(firm)
+          .pipe(
+            map(firm => {
+              return firm
+            }),
+            mergeMap(firm => {
+              this.user.firm = firm
+              return this._authService.updateUser(this.user);
+            })
+          )
+          .subscribe(userResponse => {
+            this._authService.userSubjectSetValue(userResponse);
+            this.isEdit = false;
+          })
+
+
       }
     }
+
 
 }

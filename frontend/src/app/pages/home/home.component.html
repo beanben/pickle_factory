@@ -3,16 +3,14 @@
 </ng-container>
 
 <ng-container *ngIf="_authService.isLoggedIn()">
-
-
-    <div class="container-fluid ">
+    <div class="container">
         <div class="row">
-            <div class="col py-5 my-auto text-center offset-2">
+            <div class="col p-4">
+                <h2 class="pb-2" *ngIf="!!user.firm">{{user.firm.name}}</h2>
                 <button type="button" class="btn btn-primary" routerLink="/loan/new">
                     Add a new loan
                 </button>
             </div>
-
         </div>
     </div>
 
