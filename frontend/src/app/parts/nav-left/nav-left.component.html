@@ -35,7 +35,13 @@
   <div class="p-2 mb-4">
     <hr class="light-grey">
     <span style="cursor: pointer" class="d-flex align-items-center" (click)="onOpenPopup()" style="cursor: pointer">
-      <span class="dot me-2"></span>
+
+        <span class="dot me-2 color-pickle text-center">
+          <ng-container *ngIf="!!user.first_name">
+            {{user.first_name | initial}}
+          </ng-container>
+        </span>
+
       Profile
     </span>
   </div>

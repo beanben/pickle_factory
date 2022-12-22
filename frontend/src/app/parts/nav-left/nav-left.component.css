@@ -48,3 +48,9 @@ img {
     border-radius: 50%;
     display: inline-block;
   }
+
+  .color-pickle {
+    color:  #050537;
+    font-weight: bold;
+  }
+  
