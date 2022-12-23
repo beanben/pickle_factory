@@ -19,6 +19,8 @@ import { authInterceptorProviders } from './_services/auth/auth.interceptor';
 import { LandingComponent } from './pages/home/landing.component';
 import { RequiredComponent } from './parts/required.component';
 import { InitialPipe } from './parts/initials.pipe';
+import { LoanComponent } from './pages/loan/loan.component';
+import { NewLoanComponent } from './pages/loan/new-loan/new-loan.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { InitialPipe } from './parts/initials.pipe';
     NavLeftComponent,
     ProfileComponent,
     RequiredComponent,
-    InitialPipe
+    InitialPipe,
+    LoanComponent,
+    NewLoanComponent
   ],
   imports: [
     BrowserModule,

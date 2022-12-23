@@ -13,8 +13,8 @@ import { APIResult } from '../api-result';
 })
 export class AuthService {
   user = {} as User;
-  testService: BehaviorSubject<string> = new BehaviorSubject("service called");
-  userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  userSub: BehaviorSubject<User> = new BehaviorSubject<User>(this.user);
+  currentUser = this.userSub.asObservable();
 
   appRoot = "auth";
   urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`
@@ -31,15 +31,9 @@ export class AuthService {
     private router: Router
   ) { }
   
-  userSubjectGetValue(): Observable<User | null> {
-    return this.userSubject.asObservable();
+  changeUserSub(newUser:User){
+    return this.userSub.next(newUser)
   }
-  userSubjectSetValue(user:User): void {
-    this.userSubject.next(user);
-  };
-
-  
-  
 
   getFirms(): Observable<Firm[]> {
     const url = `${this.urlRoot}/firm/`

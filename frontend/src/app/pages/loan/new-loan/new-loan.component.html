@@ -1,0 +1,37 @@
+<div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+    <div class="modal-dialog modal-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title w-100 text-center">New loan</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+            </div>
+
+            <div class="modal-body d-flex align-items-center">
+
+                <form [formGroup]="form" #f="ngForm" class="mx-auto">
+                  <div class="form-group mb-4">
+                    <app-required></app-required>
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="name"
+                            formControlName="name"
+                            name="name"
+                            placeholder="Name">
+                      <label for="name">Name</label>
+                    </div>
+                  </div>
+                  <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
+                      class="alert alert-danger">
+                      Please enter a name
+                  </div>
+                </form>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary m-2" (click)="closePopup()">Cancel</button>
+                <button type="submit" class="btn btn-success m-2">Save</button>
+            </div>
+        </div>
+    </div>
+  </div>

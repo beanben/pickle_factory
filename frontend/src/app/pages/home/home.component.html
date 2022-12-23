@@ -3,11 +3,14 @@
 </ng-container>
 
 <ng-container *ngIf="_authService.isLoggedIn()">
-    <div class="container">
+
+    <app-new-loan *ngIf="openPopup" (onClosePopup)="closePopup()"></app-new-loan>
+
+    <div class="container-fluid">
         <div class="row">
             <div class="col p-4">
                 <h2 class="pb-2" *ngIf="!!user.firm">{{user.firm.name}}</h2>
-                <button type="button" class="btn btn-primary" routerLink="/loan/new">
+                <button type="button" class="btn btn-primary" (click)="openPopup=true">
                     Add a new loan
                 </button>
             </div>

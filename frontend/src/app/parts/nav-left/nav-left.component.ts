@@ -19,9 +19,9 @@ export class NavLeftComponent implements OnInit {
   house = "assets/images/house.svg";
   is_expanded = false;
   user = {} as User;
-  // openPopup = true;
   openPopup = false;
   button_clicked = false;
+  
 
   constructor(
     private _authService: AuthService,
@@ -29,6 +29,7 @@ export class NavLeftComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
+    console.log("nav init");
   }
 
   onOpenPopup(){
@@ -44,13 +45,10 @@ export class NavLeftComponent implements OnInit {
 
   getUser(){
     this._authService.getUser()
-      .subscribe(user => this.user = user)
-      // .subscribe({
-      //   next: (user) => this.user = user,
-      //   error: (e) => {
-      //     console.log("error:", e);
-      //   }
-      // })
+      .subscribe(user => {
+        this.user = user;
+        this._authService.changeUserSub(user);
+      })
   }
 
 }

@@ -8,9 +8,9 @@ import { User } from '../auth/user';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  openPopup = false;
   user = {} as User;
   isLoggedIn = false;
-  check = "";
 
   constructor(
     public _authService: AuthService
@@ -20,16 +20,6 @@ export class HomeComponent implements OnInit {
     this.isLoggedIn = this._authService.isLoggedIn();
     if(this.isLoggedIn){
       this.getUser();
-
-        // ensure user update from profile is propagated to home
-        this._authService.userSubjectSetValue(this.user);
-        this._authService.userSubjectGetValue()
-          .subscribe(user => {
-            if(!!user){
-              this.user=user;
-            }
-            
-          })
     }  
   }
 
@@ -37,7 +27,16 @@ export class HomeComponent implements OnInit {
     this._authService.getUser()
       .subscribe(user => {
         this.user = user;
+
+        this._authService.changeUserSub(user);
+
+        this._authService.currentUser
+          .subscribe(user => this.user=user)
       })
+  };
+
+  closePopup(){
+    this.openPopup = false;
   }
 
 }

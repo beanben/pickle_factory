@@ -132,44 +132,44 @@ export class ProfileComponent implements OnInit{
     return this.form.get('firm_name')
   }
 
-    constructor(
-        private el: ElementRef,
-        private _authService: AuthService,
-        private fb: FormBuilder
-      ) { 
-        this.addEventBackgroundClose();
-      }
+  constructor(
+      private el: ElementRef,
+      private _authService: AuthService,
+      private fb: FormBuilder
+    ) { 
+      this.addEventBackgroundClose();
+    }
     
-      ngOnInit(): void {
-        this.initialiseForm()
-      }
+    ngOnInit(): void {
+      this.initialiseForm()
+    }
 
-      initialiseForm(){
+    initialiseForm(){
+      this.form.patchValue({
+        first_name: this.user.first_name,
+        last_name: this.user.last_name,
+        email: this.user.email
+      })
+
+      if(!!this.user.firm){
         this.form.patchValue({
-          first_name: this.user.first_name,
-          last_name: this.user.last_name,
-          email: this.user.email
+          firm_name: this.user.firm!.name
         })
-
-        if(!!this.user.firm){
-          this.form.patchValue({
-            firm_name: this.user.firm!.name
-          })
-        }
       }
+    }
     
-      addEventBackgroundClose(){
-        this.el.nativeElement.addEventListener('click', (el:any) => {
-          if (el.target.className === 'modal') {
-              this.closePopup();
-          }
-        });
-      }
+    addEventBackgroundClose(){
+      this.el.nativeElement.addEventListener('click', (el:any) => {
+        if (el.target.className === 'modal') {
+            this.closePopup();
+        }
+      });
+    }
 
-      onEdit(){
-        this.isEdit = true;
-        this.initialiseForm()
-      }
+    onEdit(){
+      this.isEdit = true;
+      this.initialiseForm()
+    }
 
     closePopup() {
         this.displayStyle = "none"; 
@@ -201,10 +201,9 @@ export class ProfileComponent implements OnInit{
             })
           )
           .subscribe(userResponse => {
-            this._authService.userSubjectSetValue(userResponse);
+            this._authService.changeUserSub(userResponse);
             this.isEdit = false;
           })
-
 
       }
     }

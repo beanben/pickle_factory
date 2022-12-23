@@ -6,6 +6,7 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { HomeComponent } from './pages/home/home.component';
+import { LoanComponent } from './pages/loan/loan.component';
 import { AuthGuard } from './_services/auth/auth.guard';
 
 const routes: Routes = [
@@ -16,6 +17,7 @@ const routes: Routes = [
     {path: 'forgot', component: ForgotComponent},
     {path: 'reset/:token', component: ResetComponent},  
   ]},
+  {path: 'loan', component: LoanComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: "/"}
 ];
 

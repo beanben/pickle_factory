@@ -1,6 +1,6 @@
 <app-profile *ngIf="openPopup" (onClosePopup)="closePopup()" [user]="user"></app-profile>
 
- <div class="d-flex flex-column mb-3 text-white h-100">
+ <div class="d-flex flex-column text-white h-100">
 
   <div class="p-2 mb-2">
     <a routerLink="/" class="text-white text-decoration-none d-flex">
@@ -10,14 +10,22 @@
 
   <div class="p-2 flex-grow-1">
     <ul class="p-0 text-white">
-
-      <li [ngClass]="{'is-active': homeRoute.isActive}">
-        <a routerLink="/" routerLinkActive=active #homeRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
+      <li [ngClass]="homeRoute.isActive ? 'is-active': ''">
+        <a 
+          routerLink="/" 
+          routerLinkActive=active 
+          [routerLinkActiveOptions]="{ exact: true }" 
+          #homeRoute="routerLinkActive" 
+          style="text-decoration: none;" class="text-white">
           <img src="{{house}}" alt="">Home
         </a>
       </li>
 
-      <li><img src="{{dollar}}" alt="">Loans</li>
+      <li [ngClass]="{'is-active': loanRoute.isActive}">
+        <a routerLink="loan" routerLinkActive=active #loanRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
+          <img src="{{dollar}}" alt="">Loans
+        </a>    
+      </li>
 
       <li><img src="{{chart}}" alt="">Fund manager</li>
 

@@ -1,0 +1,10 @@
+.nav-title {
+    color: rgba(15, 86, 179, 1);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+li {
+    list-style-type:none;
+}

@@ -4,6 +4,7 @@ from django.contrib import admin
 
 api_patterns = ([
     path('auth/', include('authentication.urls')),
+    path('loan/', include('loan.urls')),
 ], 'api')
 
 urlpatterns = [

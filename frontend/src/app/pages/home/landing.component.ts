@@ -16,7 +16,6 @@ import { Component, OnInit } from "@angular/core";
             `,
     styles:[
         '.landing {background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("src/assets/images/sunrise.jpg")  no-repeat center center fixed; background-size: cover;}',
-        '.logo {background: url("src/assets/images/logo.svg") no-repeat;}',
         '.btn-auth {border: 2px solid #050537; background-color: white;}',
         '.btn {width: 132px; height: 48px; border-radius: 20px;}'
     ]
