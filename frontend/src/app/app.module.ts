@@ -20,7 +20,7 @@ import { LandingComponent } from './pages/home/landing.component';
 import { RequiredComponent } from './parts/required.component';
 import { InitialPipe } from './parts/initials.pipe';
 import { LoanComponent } from './pages/loan/loan.component';
-import { NewLoanComponent } from './pages/loan/new-loan/new-loan.component';
+import { LoanModalComponent } from './pages/loan/loan-modal/loan-modal.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import { NewLoanComponent } from './pages/loan/new-loan/new-loan.component';
     RequiredComponent,
     InitialPipe,
     LoanComponent,
-    NewLoanComponent
+    LoanModalComponent,
   ],
   imports: [
     BrowserModule,

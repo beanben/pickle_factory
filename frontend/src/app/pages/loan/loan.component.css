@@ -7,4 +7,9 @@
 
 li {
     list-style-type:none;
+    cursor: pointer;
+}
+
+.loan-selected {
+    background-color: #0dcaf026;
 }

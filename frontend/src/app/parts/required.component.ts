@@ -3,7 +3,7 @@ import { Component, OnInit } from "@angular/core";
 @Component({
     selector: 'app-required',
     template:`
-            <img src="{{red_star}}" class="rounded" alt="">
+            <img src="{{redStar}}" class="rounded" alt="">
             <span class="p-1 text-grey font-small fw-light">required</span> 
              `,
     styles: [
@@ -13,7 +13,7 @@ import { Component, OnInit } from "@angular/core";
     ]
 })
 export class RequiredComponent implements OnInit{
-    red_star = "assets/images/red_star.svg";
+    redStar = "assets/images/redStar.svg";
 
     ngOnInit(): void {}
 }

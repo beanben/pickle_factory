@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
      # internal apps
      'authentication',
+     'core',
      'loan'
 ]
 

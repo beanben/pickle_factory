@@ -118,95 +118,95 @@ export class ProfileComponent implements OnInit{
       last_name: [''],
       email: ['', Validators.required],
       firm_name: ['', Validators.required]
-  })
-  get email(){
-    return this.form.get('email')
-  }
-  get first_name(){
-    return this.form.get('first_name')
-  }
-  get last_name(){
-    return this.form.get('last_name')
-  }
-  get firm_name(){
-    return this.form.get('firm_name')
-  }
-
-  constructor(
-      private el: ElementRef,
-      private _authService: AuthService,
-      private fb: FormBuilder
-    ) { 
-      this.addEventBackgroundClose();
+    })
+    get email(){
+      return this.form.get('email')
     }
-    
-    ngOnInit(): void {
-      this.initialiseForm()
+    get first_name(){
+      return this.form.get('first_name')
+    }
+    get last_name(){
+      return this.form.get('last_name')
+    }
+    get firm_name(){
+      return this.form.get('firm_name')
     }
 
-    initialiseForm(){
-      this.form.patchValue({
-        first_name: this.user.first_name,
-        last_name: this.user.last_name,
-        email: this.user.email
-      })
+    constructor(
+        private el: ElementRef,
+        private _authService: AuthService,
+        private fb: FormBuilder
+      ) { 
+        this.addEventBackgroundClose();
+      }
+      
+      ngOnInit(): void {
+        this.initialiseForm()
+      }
 
-      if(!!this.user.firm){
+      initialiseForm(){
         this.form.patchValue({
-          firm_name: this.user.firm!.name
+          first_name: this.user.first_name,
+          last_name: this.user.last_name,
+          email: this.user.email
         })
-      }
-    }
-    
-    addEventBackgroundClose(){
-      this.el.nativeElement.addEventListener('click', (el:any) => {
-        if (el.target.className === 'modal') {
-            this.closePopup();
-        }
-      });
-    }
 
-    onEdit(){
-      this.isEdit = true;
-      this.initialiseForm()
-    }
-
-    closePopup() {
-        this.displayStyle = "none"; 
-        this.onClosePopup.emit();
-    }
-
-    onLogout(){
-      this._authService.logout();
-    }
-
-    onUpdate(){
-      if(this.form.valid){
-        this.user.first_name = this.first_name?.value;
-        this.user.last_name = this.last_name?.value;
-        this.user.email = this.email?.value;
-
-        let firm: Firm = this.user.firm;
-        firm.name = this.firm_name?.value;
-
-        // ensure user update is propagted to home page
-        this._authService.updateFirm(firm)
-          .pipe(
-            map(firm => {
-              return firm
-            }),
-            mergeMap(firm => {
-              this.user.firm = firm
-              return this._authService.updateUser(this.user);
-            })
-          )
-          .subscribe(userResponse => {
-            this._authService.changeUserSub(userResponse);
-            this.isEdit = false;
+        if(!!this.user.firm){
+          this.form.patchValue({
+            firm_name: this.user.firm!.name
           })
-
+        }
       }
-    }
+      
+      addEventBackgroundClose(){
+        this.el.nativeElement.addEventListener('click', (el:any) => {
+          if (el.target.className === 'modal') {
+              this.closePopup();
+          }
+        });
+      }
+
+      onEdit(){
+        this.isEdit = true;
+        this.initialiseForm()
+      }
+
+      closePopup() {
+          this.displayStyle = "none"; 
+          this.onClosePopup.emit();
+      }
+
+      onLogout(){
+        this._authService.logout();
+      }
+
+      onUpdate(){
+        if(this.form.valid){
+          this.user.first_name = this.first_name?.value;
+          this.user.last_name = this.last_name?.value;
+          this.user.email = this.email?.value;
+
+          let firm: Firm = this.user.firm;
+          firm.name = this.firm_name?.value;
+
+          // ensure user update is propagted to home page
+          this._authService.updateFirm(firm)
+            .pipe(
+              map(firm => {
+                return firm
+              }),
+              mergeMap(firm => {
+                this.user.firm = firm
+                return this._authService.updateUser(this.user);
+              })
+            )
+            .subscribe(userResponse => {
+              this._authService.changeUserSub(userResponse);
+              this.isEdit = false;
+            })
+
+        }
+      }
 
 
 }

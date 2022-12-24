@@ -4,7 +4,7 @@
 
 <ng-container *ngIf="_authService.isLoggedIn()">
 
-    <app-new-loan *ngIf="openPopup" (onClosePopup)="closePopup()"></app-new-loan>
+    <app-loan-modal *ngIf="openPopup" (onClosePopup)="closePopup()"></app-loan-modal>
 
     <div class="container-fluid">
         <div class="row">

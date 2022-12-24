@@ -12,8 +12,8 @@ export class NavLeftComponent implements OnInit {
   home = "assets/images/home.svg";
   lender = "assets/images/lender.svg";
   person = "assets/images/person.svg";
-  arrow_down = "assets/images/arrow_down.svg";
-  arrow_up = "assets/images/arrow_up.svg";
+  arrowDown = "assets/images/arrowDown.svg";
+  arrowUp = "assets/images/arrowUp.svg";
   dollar = "assets/images/dollar.svg";
   chart = "assets/images/chart.svg";
   house = "assets/images/house.svg";
@@ -29,7 +29,6 @@ export class NavLeftComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
-    console.log("nav init");
   }
 
   onOpenPopup(){

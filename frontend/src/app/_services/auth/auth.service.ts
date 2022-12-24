@@ -7,6 +7,7 @@ import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
 import { APIResult } from '../api-result';
+import { SharedService } from '../shared/shared.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private _tokenService: TokenStorageService,
-    private router: Router
+    private router: Router,
+    private _sharedService: SharedService
   ) { }
   
   changeUserSub(newUser:User){
@@ -57,7 +59,7 @@ export class AuthService {
           }
         },
         error: (error) => {
-          reject(this.handleError(error));
+          reject(this._sharedService.handleError(error));
         }
       })
     })
@@ -82,7 +84,7 @@ export class AuthService {
           }
         },
         error: (error) => {
-          reject(this.handleError(error));
+          reject(this._sharedService.handleError(error));
         }
       })
     })
@@ -123,7 +125,7 @@ export class AuthService {
           }
         },
         error: (error) => {
-          reject(this.handleError(error));
+          reject(this._sharedService.handleError(error));
 
         }
       })
@@ -167,7 +169,7 @@ export class AuthService {
           }
         },
         error: (error) => {
-          reject(this.handleError(error));
+          reject(this._sharedService.handleError(error));
         }
       })
     })
@@ -193,25 +195,25 @@ export class AuthService {
           }
         },
         error: (error) => {
-          reject(this.handleError(error));
+          reject(this._sharedService.handleError(error));
         }
       })
     })
   }
 
-  private handleError(errorRes: HttpErrorResponse): Array<string> {
-    console.log("errorRes:", errorRes);
+  // private handleError(errorRes: HttpErrorResponse): Array<string> {
+  //   console.log("errorRes:", errorRes);
     
-    let errors = errorRes.error.response
+  //   let errors = errorRes.error.response
 
-    if('token' in errors) {
-      errors = [errors.token.message]
-    } {
-      errors = Object.values(errors)
-    }
+  //   if('token' in errors) {
+  //     errors = [errors.token.message]
+  //   } {
+  //     errors = Object.values(errors)
+  //   }
     
-    return errors;
-  }
+  //   return errors;
+  // }
 
 
 }
