@@ -20,18 +20,32 @@ export class LoanComponent implements OnInit {
     private _loanService: LoanService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
     this.getLoans();
+    // console.log("this.loanSelected:", this.loanSelected);
+    // console.log(" this._loanService.loanSub.value:",  this._loanService.loanSub.value);
+    // console.log(" this._loanService.loanSub.getValue():",  this._loanService.loanSub.getValue());
   }
+
+
+
 
   getLoans(){
     this._loanService.getLoans()
       .subscribe((loans) => {
         this.loans = loans;
 
-        if(loans.length !=0 ) {
-          this.loanSelected = loans[0];
+        let loanSaved = this._loanService.loanSub.value;
+
+        if(Object.keys(loanSaved).length === 0){
+          this.loanSelected = loans[0]
+        } else {
+          this.loanSelected = this._loanService.loanSub.value;
         }
+
+        // if(loans.length !=0 ) {
+        //   this.loanSelected = loans[0];
+        // }
       })
   };
 
@@ -51,6 +65,9 @@ export class LoanComponent implements OnInit {
       } else {
         this.loans[this.indexLoan] = loan
       }
+
+      console.log("this.indexLoan:", this.indexLoan);
+      console.log("this.loanSelected:", this.loanSelected);
     };
 
     this.indexLoan = -1;

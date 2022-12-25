@@ -2,7 +2,7 @@
 
 <div class="container-fluid vh-100">
     <div class="row">
-        <div class="col-2 px-0 bg-white vh-100 me-1 d-flex flex-column">
+        <div class="col-3 px-0 bg-white vh-100 me-1 d-flex flex-column">
 
             <div class="d-flex justify-content-between py-3 mx-1">
                 <span class="nav-title my-auto">Loans</span>
@@ -20,7 +20,7 @@
                     <li  *ngFor="let loan of loans; let i = index" class="mx-1">
                         <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between"
                             (click)="onLoanSelected(i)"
-                            [ngClass]="{'loan-selected': loan == loanSelected}"
+                            [ngClass]="{'loan-selected': loan.id == loanSelected.id}"
                             style="height: 50px">
                             <span>{{loan.name}}</span>
                         </div>

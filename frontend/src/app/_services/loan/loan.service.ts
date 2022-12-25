@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Loan } from 'src/app/pages/loan/loan';
 import { environment } from 'src/environments/environment';
 import { APIResult } from '../api-result';
@@ -11,7 +11,8 @@ import { SharedService } from '../shared/shared.service';
 })
 export class LoanService {
   appRoot = "loan";
-  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`
+  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`;
+  loanSub: BehaviorSubject<Loan> = new BehaviorSubject({} as Loan);
 
   httpOptions = {
     headers: new HttpHeaders({ 
@@ -23,6 +24,15 @@ export class LoanService {
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
+
+  getLoanSub():Observable<Loan>{
+    return this.loanSub.asObservable() 
+  }
+
+  setLoanSub(newLoan: Loan){
+    return this.loanSub.next(newLoan);
+  }
+
 
   createLoan(loan: Loan) {
     return new Promise<APIResult>((resolve, reject) => {

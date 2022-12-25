@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth/auth.service';
+import { LoanService } from 'src/app/_services/loan/loan.service';
 import { User } from '../auth/user';
 import { Loan } from '../loan/loan';
 
@@ -15,6 +16,7 @@ export class HomeComponent implements OnInit {
   isLoggedIn = false;
 
   constructor(
+    private _loanService: LoanService,
     public _authService: AuthService,
     private el: ElementRef,
     private router: Router
@@ -57,7 +59,8 @@ export class HomeComponent implements OnInit {
     this.openLoanModal = false;
 
     if(!!loan){
-      this.router.navigate(['/loan'])
+      this._loanService.setLoanSub(loan);
+      this.router.navigate(['/loan']);
     }
   }
 
