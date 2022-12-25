@@ -2,28 +2,33 @@
 
 <div class="container-fluid vh-100">
     <div class="row">
-        <div class="col-2 vh-100 me-1 pt-2 bg-white">
+        <div class="col-2 px-0 bg-white vh-100 me-1 d-flex flex-column">
 
-            <div class="d-flex justify-content-between">
-                <span class="p-2 nav-title">Loans</span>
+            <div class="d-flex justify-content-between py-3 mx-1">
+                <span class="nav-title my-auto">Loans</span>
                 <button type="button" class="btn" (click)="isCollapsed = true">
-                    <img src="{{arrowLeftBlack}}" class="my-auto" alt="">
+                    <img src="{{arrowLeftBlack}}" class="" alt="">
                 </button>
             </div>
 
-            <ul class="p-2">
-                <li class="py-1">
-                    <button type="button" class="btn btn-primary " (click)="onOpenCreate()">New</button>
-                </li>
-                <li  *ngFor="let loan of loans; let i = index" class="py-1">
-                    <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between"
-                        (click)="onLoanSelected(i)"
-                        [ngClass]="{'loan-selected': loan == loanSelected}"
-                        style="height: 50px">
-                        <span>{{loan.name}}</span>
-                    </div>
-                </li>
-            </ul>
+            <div class="pb-3 mx-1">
+                <button type="button" class="btn btn-primary " (click)="onOpenCreate()">New</button>
+            </div>
+            
+            <div class="overflow-auto flex-grow-1">
+                <ul class="px-0">
+                    <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                        <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between"
+                            (click)="onLoanSelected(i)"
+                            [ngClass]="{'loan-selected': loan == loanSelected}"
+                            style="height: 50px">
+                            <span>{{loan.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            
             
         </div>
         <div class="col p-0">

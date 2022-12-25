@@ -13,3 +13,8 @@ li {
 .loan-selected {
     background-color: #0dcaf026;
 }
+
+.overflow-auto {
+    scrollbar-width: thin;
+    padding-right: 5px;
+}
