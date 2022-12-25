@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../loan';
@@ -23,8 +23,11 @@ export class LoanModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private _loanService: LoanService
-  ) { }
+    private _loanService: LoanService,
+    private el: ElementRef
+  ) { 
+    this.addEventBackgroundClose();
+  }
 
   ngOnInit(): void {
     this.getMode();
@@ -53,6 +56,15 @@ export class LoanModalComponent implements OnInit {
 
   onCancel(){
     this.modalSaveLoan.emit(null);
-  }
+  };
+
+  addEventBackgroundClose(){
+    this.el.nativeElement.addEventListener('click', (el:any) => {
+      if (el.target.className === 'modal') {
+          this.onCancel();
+      }
+    });
+  };
+
 
 }
