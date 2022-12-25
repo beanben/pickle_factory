@@ -19,7 +19,7 @@ class TimestampedModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['-created_at']
         abstract = True
 
 class AuthorTrackerModel(BaseModel):

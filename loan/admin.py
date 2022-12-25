@@ -4,6 +4,7 @@ from .models import Loan
 class LoanAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-        'author_firm')
+        'author_firm',
+        'created_at')
 
 admin.site.register(Loan, LoanAdmin)
