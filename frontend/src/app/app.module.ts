@@ -21,6 +21,7 @@ import { RequiredComponent } from './parts/required.component';
 import { InitialPipe } from './parts/initials.pipe';
 import { LoanComponent } from './pages/loan/loan.component';
 import { LoanModalComponent } from './pages/loan/loan-modal/loan-modal.component';
+import { EditComponent } from './shared/edit.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { LoanModalComponent } from './pages/loan/loan-modal/loan-modal.component
     InitialPipe,
     LoanComponent,
     LoanModalComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

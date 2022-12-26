@@ -62,6 +62,7 @@ export class LoanService {
       this.http.put(url, loan, this.httpOptions).subscribe({
         next: (data) => {
           const result = data as APIResult;
+          
 
           if (result.status === "success"){
             resolve(result);

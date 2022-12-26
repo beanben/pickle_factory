@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Loan
 from .serializers import LoanSerializer
 from core.mixins import AuthorQuerySetMixin
+import pdb
 
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):

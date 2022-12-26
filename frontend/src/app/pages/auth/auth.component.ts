@@ -7,7 +7,7 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
-  logo = "/assets/images/logo.svg";
+  logo = "assets/images/logoDark.svg";
   isLogin = true;
 
   constructor(

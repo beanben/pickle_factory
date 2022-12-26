@@ -12,7 +12,7 @@ export class LoanModalComponent implements OnInit {
   displayStyle = "block";
   mode = "";
   @Output() modalSaveLoan = new EventEmitter<Loan|null>();
-  loan = {} as Loan;
+  @Input() loan = {} as Loan;
   errors: string[] = new Array();
   form: FormGroup = this.fb.group({
     name: ['', Validators.required]
@@ -31,6 +31,14 @@ export class LoanModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMode();
+    this.initForm();
+  }
+
+  initForm(){
+    const name:string|null = this.loan.name;
+    if(name){
+      this.form.controls['name'].setValue(name);
+    };
   }
 
   getMode(){
@@ -43,14 +51,25 @@ export class LoanModalComponent implements OnInit {
 
   onSave(){
     if(this.form.valid){
-      this.loan.name = this.name?.value;
+      
+      if(this.loan.id) {
+        var req = this._loanService.updateLoan(this.loan)
+      } else {
+        var req = this._loanService.createLoan(this.loan)
+      };
 
-      this._loanService.createLoan(this.loan)
-        .then((result) => {
+      req.then((result) => {
           let loan: Loan = result.response;
           this.modalSaveLoan.emit(loan);
         })
         .catch(err => this.errors = err)
+
+      // this._loanService.createLoan(this.loan)
+      //   .then((result) => {
+      //     let loan: Loan = result.response;
+      //     this.modalSaveLoan.emit(loan);
+      //   })
+      //   .catch(err => this.errors = err)
     }
   };
 

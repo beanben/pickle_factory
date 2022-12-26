@@ -1,4 +1,8 @@
-<app-loan-modal *ngIf="openLoanModal" (modalSaveLoan)="onSave($event)"></app-loan-modal>
+<app-loan-modal 
+    *ngIf="openLoanModal"
+    [loan]="loanSelected"
+    (modalSaveLoan)="onSave($event)">
+</app-loan-modal>
 
 <div class="container-fluid vh-100">
     <div class="row">
@@ -23,6 +27,7 @@
                             [ngClass]="{'loan-selected': loan.id == loanSelected.id}"
                             style="height: 50px">
                             <span>{{loan.name}}</span>
+                            <app-edit (onOpenModalEdit)="openLoanModal = true"></app-edit>
                         </div>
                     </li>
                 </ul>

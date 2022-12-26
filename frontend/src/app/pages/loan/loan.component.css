@@ -18,3 +18,10 @@ li {
     scrollbar-width: thin;
     padding-right: 5px;
 }
+
+app-edit {
+    visibility: hidden;
+}
+.loan-selected:hover app-edit {
+    visibility: visible;
+}

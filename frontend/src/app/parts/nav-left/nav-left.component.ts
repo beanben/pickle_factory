@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
   styleUrls: ['./nav-left.component.css']
 })
 export class NavLeftComponent implements OnInit {
-  logo = "assets/images/logo.svg";
+  logoWhite = "assets/images/logoWhite.svg";
   home = "assets/images/home.svg";
   lender = "assets/images/lender.svg";
   person = "assets/images/person.svg";
