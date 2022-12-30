@@ -10,15 +10,8 @@ import { SharedService } from '../shared/shared.service';
   providedIn: 'root'
 })
 export class LoanService {
-  appRoot = "loan";
-  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`;
+  relativeUrl = "/api/loan";
   loanSub: BehaviorSubject<Loan> = new BehaviorSubject({} as Loan);
-
-  httpOptions = {
-    headers: new HttpHeaders({ 
-      'Content-Type': 'application/json',
-    })
-  };
 
   constructor(
     private http: HttpClient,
@@ -36,7 +29,7 @@ export class LoanService {
 
   createLoan(loan: Loan) {
     return new Promise<APIResult>((resolve, reject) => {
-      const url = `${this.urlRoot}/`;
+      const url = `${this.relativeUrl}/`;
 
       this.http.post(url, loan).subscribe({
         next: (data) => {
@@ -55,11 +48,11 @@ export class LoanService {
   };
 
   updateLoan(loan: Loan){
-    const url = `${this.urlRoot}/${loan.id}/`;
+    const url = `${this.relativeUrl}/${loan.id}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
-      this.http.put(url, loan, this.httpOptions).subscribe({
+      this.http.put(url, loan).subscribe({
         next: (data) => {
           const result = data as APIResult;
           
@@ -79,7 +72,7 @@ export class LoanService {
   };
 
   getLoans(): Observable<Loan[]> {
-    const url = `${this.urlRoot}/`;
+    const url = `${this.relativeUrl}/`;
 
     return this.http.get<Loan[]>(url)
       .pipe(
@@ -88,10 +81,9 @@ export class LoanService {
   };
 
   deleteLoan(loan: Loan): Observable<any> {
-    const url = `${this.urlRoot}/${loan.id}/`;
+    const url = `${this.relativeUrl}/${loan.id}/`;
 
     const options = {
-      headers: this.httpOptions["headers"],
       body: loan
     }
 
