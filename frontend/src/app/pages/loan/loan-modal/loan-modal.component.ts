@@ -51,6 +51,7 @@ export class LoanModalComponent implements OnInit {
 
   onSave(){
     if(this.form.valid){
+      this.loan.name = this.name?.value;
       
       if(this.loan.id) {
         var req = this._loanService.updateLoan(this.loan)

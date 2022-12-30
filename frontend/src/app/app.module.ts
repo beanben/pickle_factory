@@ -47,7 +47,6 @@ import { EditComponent } from './shared/edit.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
   bootstrap: [AppComponent]

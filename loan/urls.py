@@ -6,5 +6,5 @@ from .views import (
 
 urlpatterns = [
     path('', LoanList.as_view()),
-    path('<int:pk>/', LoanDetail.as_view())
+    path('<uuid:pk>/', LoanDetail.as_view())
 ]
