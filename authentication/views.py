@@ -63,20 +63,25 @@ class TokenObtainPairView(TokenView):
         try:
             if serializer.is_valid():
                 response = serializer.validated_data
-                status_message = 'success'
+                status_flag = 'success'
+                message = status_flag
                 status_code = status.HTTP_200_OK
             else:
                 response = serializer.errors
-                status_message = 'error'
+                status_flag = 'error'
+                message = 'bad request'
                 status_code = status.HTTP_400_BAD_REQUEST
         except AuthenticationFailed:
             response = {"login": "authentication failed"}
-            status_message = 'error'
+            status_flag = 'error'
+            message = 'authentication failed'
             status_code = status.HTTP_401_UNAUTHORIZED
 
+        
         data = {
             'response': response,
-            'status': status_message
+            'status': status_flag,
+            'message': message
         }
         return Response(data, status=status_code)
 

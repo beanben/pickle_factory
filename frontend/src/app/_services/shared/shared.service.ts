@@ -12,13 +12,19 @@ export class SharedService {
   handleError(errorRes: HttpErrorResponse): Array<string> {
     let errors = errorRes.error;
     console.log("errors:", errors)
-    
-    if(!!errors.response) {
-      // errors generated from views
-      errors = errors.response;
-    }
 
-    // extract messages from error
+    // one error message set in view
+    if(!!errors.message) {
+      return [errors.message]
+    }
+    
+    // 
+    if(!!errors.response) {
+      // serailizers.errors from view
+      errors = errors.response;
+    };
+
+    // extract all messages from error
     let errorValues = Object.values(Object.values(errors));
     let errorMessages = errorValues.map((item: any) => {
       if('message' in item){
