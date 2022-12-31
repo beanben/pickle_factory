@@ -33,16 +33,6 @@ export class ResetComponent implements OnInit {
   ngOnInit(): void {
   }
 
-//   onSubmit(form: NgForm) {
-//     const password = form.value.password;
-//     const password_confirm = form.value.password_confirm;
-//     const token = this.route.snapshot.params['token']
-
-//     this._authService.reset(password, password_confirm, token)
-//      .then(() => this.router.navigate(['/auth/login']))
-//      .catch(err => this.errors = err)
-//  }
-
   onSubmit() {
     if (this.form.valid) {
       let password = this.password?.value;

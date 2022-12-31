@@ -107,7 +107,6 @@ class ForgotAPIView(APIView):
         serializer = ForgotSerializer(data=request.data)
         template_name = 'authentication/reset_email.html'
 
-
         # if serializer.is_valid(raise_exception=True):
         if serializer.is_valid():
             email = serializer.validated_data["email"]
@@ -152,22 +151,22 @@ class ResetAPIView(APIView):
 
     def post(self, request):
         serializer = ResetSerializer(data=request.data)
-        if serializer.is_valid():
-            token = serializer.validated_data["token"]
-            data = {
-                'response': serializer.data,
-                'token': token,
-                'status': 'success',
-                'message': '****'
-            }
-            return Response(data, status=status.HTTP_200_OK)
-              
+        serializer.is_valid(raise_exception=True)
+        token = serializer.validated_data["token"]
         data = {
-            'response': serializer.errors,
-            'status': 'error',
-            'message': '****'
+            'response': serializer.data,
+            # 'token': token,
+            'status': 'success',
+            'message': 'password reset!'
         }
-        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data, status=status.HTTP_200_OK)
+              
+        # data = {
+        #     'response': serializer.errors,
+        #     'status': 'error',
+        #     'message': '****'
+        # }
+        # return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserAPIView(APIView):

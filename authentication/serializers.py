@@ -119,6 +119,7 @@ class ResetSerializer(serializers.Serializer):
                 }
             raise ValidationError(data, code=400)
 
+        reset = Reset.objects.get(token=attrs["token"])
         user = User.objects.filter(email=reset.email)
         if not user.exists():
             data = {
