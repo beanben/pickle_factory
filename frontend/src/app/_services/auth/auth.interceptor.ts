@@ -33,6 +33,9 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError(err => {
           if (err instanceof HttpErrorResponse && err.status === 401 && !authReq.url.includes('refresh')) {
             return this.handleError(authReq, next);
+          
+          } else if(err instanceof HttpErrorResponse && err.status !== 401){
+            return next.handle(authReq);
 
           } else {
             this._authService.logout();

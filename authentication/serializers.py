@@ -14,7 +14,7 @@ class FirmSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if not attrs:
-            raise serializers.ValidationError({"firm": "this field is required"})
+            raise ValidationError({"firm": "this field is required"})
 
         return attrs
 
@@ -61,7 +61,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         if user.exists():
             message = "Email already exists!"
-            raise serializers.ValidationError(message, code=400)
+            raise ValidationError(message, code=400)
 
         return email
 
@@ -69,10 +69,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields_required = ['password', 'password_confirm', 'email']
 
         if 'password' not in attrs :
-            raise serializers.ValidationError({"password": "this field is required"})
+            raise ValidationError({"password": "this field is required"})
 
         if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password": "Passwords do not match."})
+            raise ValidationError({"password": "Passwords do not match."})
 
         return attrs
 

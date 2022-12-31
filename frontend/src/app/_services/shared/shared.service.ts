@@ -10,16 +10,28 @@ export class SharedService {
 
 
   handleError(errorRes: HttpErrorResponse): Array<string> {
-    console.log("errorRes:", errorRes);
+    let errors = errorRes.error;
+    console.log("errors:", errors)
     
-    let errors = errorRes.error.response
+    if(!!errors.response) {
+      // errors generated from views
+      errors = errors.response;
+    }
 
-    if('token' in errors) {
-      errors = [errors.token.message]
-    } {
+    // extract messages from error
+    let errorValues = Object.values(Object.values(errors));
+    let errorMessages = errorValues.map((item: any) => {
+      if('message' in item){
+        return item.message
+      }
+    })
+    if (errorMessages.length !== 0 ){
+      errors = errorMessages
+
+    } else {
       errors = Object.values(errors)
     }
-    
+
     return errors;
   }
 

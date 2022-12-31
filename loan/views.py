@@ -18,6 +18,10 @@ class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
             'response': response.data
         })
 
+
+
+    
+
 class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer

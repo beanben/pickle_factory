@@ -22,13 +22,7 @@ export class LoanComponent implements OnInit {
 
   ngOnInit(): void { 
     this.getLoans();
-    // console.log("this.loanSelected:", this.loanSelected);
-    // console.log(" this._loanService.loanSub.value:",  this._loanService.loanSub.value);
-    // console.log(" this._loanService.loanSub.getValue():",  this._loanService.loanSub.getValue());
   }
-
-
-
 
   getLoans(){
     this._loanService.getLoans()
