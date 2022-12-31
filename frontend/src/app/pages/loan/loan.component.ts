@@ -43,9 +43,6 @@ export class LoanComponent implements OnInit {
           this.loanSelected = this._loanService.loanSub.value;
         }
 
-        // if(loans.length !=0 ) {
-        //   this.loanSelected = loans[0];
-        // }
       })
   };
 
@@ -66,8 +63,6 @@ export class LoanComponent implements OnInit {
         this.loans[this.indexLoan] = loan
       }
 
-      console.log("this.indexLoan:", this.indexLoan);
-      console.log("this.loanSelected:", this.loanSelected);
     };
 
     this.indexLoan = -1;
@@ -77,6 +72,19 @@ export class LoanComponent implements OnInit {
     this.loanSelected = this.loans[index];
     this.indexLoan = index;
   };
+
+  removeLoan(i: number){
+    this.loans.splice(i,1)
+  }
+
+  onDeleteLoan(){
+    this.openLoanModal = false;
+    this.removeLoan(this.indexLoan);
+
+    if(this.loans.length !=0 ) {
+      this.loanSelected = this.loans[0];
+    };
+  }
 
 
 }

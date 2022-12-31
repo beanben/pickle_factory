@@ -12,6 +12,7 @@ export class LoanModalComponent implements OnInit {
   displayStyle = "block";
   mode = "";
   @Output() modalSaveLoan = new EventEmitter<Loan|null>();
+  @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() loan = {} as Loan;
   errors: string[] = new Array();
   form: FormGroup = this.fb.group({
@@ -64,13 +65,6 @@ export class LoanModalComponent implements OnInit {
           this.modalSaveLoan.emit(loan);
         })
         .catch(err => this.errors = err)
-
-      // this._loanService.createLoan(this.loan)
-      //   .then((result) => {
-      //     let loan: Loan = result.response;
-      //     this.modalSaveLoan.emit(loan);
-      //   })
-      //   .catch(err => this.errors = err)
     }
   };
 
@@ -85,6 +79,11 @@ export class LoanModalComponent implements OnInit {
       }
     });
   };
+
+  onConfirmDelete(){
+    this._loanService.deleteLoan(this.loan)
+      .subscribe(() =>  this.deleteIsConfirmed.emit())
+  }
 
 
 }

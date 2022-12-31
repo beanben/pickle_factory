@@ -48,7 +48,7 @@
             <ng-container *ngIf="mode === 'delete'">
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary m-2 me-auto">Cancel</button>
-                  <button type="submit" class="btn btn-danger m-2">Delete</button>
+                  <button type="submit" class="btn btn-danger m-2" (click)="onConfirmDelete()">Delete</button>
               </div>
             </ng-container>
 
