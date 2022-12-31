@@ -14,7 +14,6 @@ class LoanSerializer(serializers.ModelSerializer):
         author_firm = self.context.get("author_firm")
         qs = Loan.objects.filter(name__iexact=name, author_firm=author_firm)
         if qs.exists():
-            # raise ValidationError("Loan's name must be unique")
             data = {
                 'status': 'error',
                 'message': 'Loan name must be unique'
@@ -22,12 +21,3 @@ class LoanSerializer(serializers.ModelSerializer):
             raise ValidationError(data, code=400)
 
         return name
-
-    # def validate(self, attr):
-    #     # unique loan name per firm
-    #     author_firm = self.context.get("author_firm")
-    #     qs = Loan.objects.filter(name=attr['name'], author_firm=author_firm)
-    #     if qs.exists():
-    #         raise ValidationError("Loan's name must be unique")
-
-    #     return attr

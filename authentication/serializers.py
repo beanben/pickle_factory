@@ -12,22 +12,12 @@ class FirmSerializer(serializers.ModelSerializer):
         model = Firm
         fields = ['id', 'name']
 
-    def validate(self, attrs):
-        if not attrs:
-            raise ValidationError({"firm": "this field is required"})
-
-        return attrs
-
     def create(self, validated_data):
-        # ensure capitalisation is kept
         firm = Firm.objects.filter(name__iexact=validated_data["name"])
         if firm.exists():
             return firm
         else:
             return Firm.objects.create(name=validated_data["name"])
-        # name = validated_data['name'].lower()
-        # firm, created = Firm.objects.get_or_create(name=name) #to ensure no duplicates
-        return firm
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -60,19 +50,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.filter(email=email)
 
         if user.exists():
-            message = "Email already exists!"
-            raise ValidationError(message, code=400)
+            data = {
+                'status': 'error',
+                'message': 'Email already exists!'
+                }
+            raise ValidationError(data, code=400)
 
         return email
 
     def validate(self, attrs):
-        fields_required = ['password', 'password_confirm', 'email']
-
-        if 'password' not in attrs :
-            raise ValidationError({"password": "this field is required"})
-
         if attrs['password'] != attrs['password_confirm']:
-            raise ValidationError({"password": "Passwords do not match."})
+            data = {
+                'status': 'error',
+                'message': 'Passwords do not match.'
+                }
+            raise ValidationError(data, code=400)
 
         return attrs
 
@@ -98,8 +90,11 @@ class ForgotSerializer(serializers.Serializer):
         user = User.objects.filter(email=email)
 
         if not user.exists():
-            message = "User with this email does not exist"
-            raise serializers.ValidationError(message, code=400)
+            data = {
+                'status': 'error',
+                'message': 'User with this email does not exist'
+                }
+            raise ValidationError(data, code=400)
 
         return email
 
@@ -108,19 +103,15 @@ class ResetSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255)
     password_confirm = serializers.CharField(max_length=255)
 
-    def validate(self, data):
-        password = data["password"]
-        password_confirm = data["password_confirm"]
-        token = data["token"]
-
-        if password != password_confirm:
+    def validate(self, attrs):
+        if attrs["password"] != attrs["password_confirm"]:
             data = {
                 'status': 'error',
                 'message': 'passwords do not match'
                 }
             raise ValidationError(data, code=400)
 
-        reset = Reset.objects.filter(token=token)
+        reset = Reset.objects.filter(token=attrs["token"])
         if not reset.exists():
             data = {
                 'status': 'error',
@@ -128,7 +119,6 @@ class ResetSerializer(serializers.Serializer):
                 }
             raise ValidationError(data, code=400)
 
-        reset = Reset.objects.get(token=token)
         user = User.objects.filter(email=reset.email)
         if not user.exists():
             data = {
@@ -139,7 +129,7 @@ class ResetSerializer(serializers.Serializer):
 
         # success
         user = User.objects.get(email=reset.email)
-        user.set_password(password)
+        user.set_password(attrs["password"])
         user.save()
         reset.delete()
         
