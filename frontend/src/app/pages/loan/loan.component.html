@@ -83,10 +83,16 @@
                             <li class="p-2" (click)="tabActive = 'management'" [ngClass]="{'active': tabActive === 'management'}">Loan management</li>
                             <li class="p-2" (click)="tabActive = 'financials'" [ngClass]="{'active': tabActive === 'financials'}">Financials</li>
                         </ul>
-                    </div>
-                    
+                    </div>    
+                     
                 </div>
             </nav>
+
+            <ng-container *ngIf="tabActive === 'detail'">
+                <app-loan-details></app-loan-details>
+            </ng-container>
+
+
         </div>
     </div>
 </div>

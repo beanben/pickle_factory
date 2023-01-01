@@ -33,8 +33,12 @@ app-edit {
     width: 75px;
 }
 
-.active {
+.active, .nav-link.active {
     color: black;
     border-bottom: 2px solid rgba(15, 86, 179, 1);
     font-weight: 600;
+}
+
+.color-basic{
+    color: Black
 }
