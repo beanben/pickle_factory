@@ -11,7 +11,8 @@ import { SharedService } from '../shared/shared.service';
 })
 export class LoanService {
   relativeUrl = "/api/loan";
-  loanSub: BehaviorSubject<Loan> = new BehaviorSubject({} as Loan);
+  loanSub = new BehaviorSubject<Loan>({} as Loan);
+  loanTabSub = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -21,9 +22,15 @@ export class LoanService {
   getLoanSub():Observable<Loan>{
     return this.loanSub.asObservable() 
   }
-
   setLoanSub(newLoan: Loan){
     return this.loanSub.next(newLoan);
+  }
+
+  getLoanTabSub():Observable<boolean>{
+    return this.loanTabSub.asObservable() 
+  }
+  setLoanTabSub(isCollapsed: boolean){
+    return this.loanTabSub.next(isCollapsed);
   }
 
 

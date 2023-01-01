@@ -24,6 +24,7 @@ export class LoanComponent implements OnInit {
 
   ngOnInit(): void { 
     this.getLoans();
+    this.isTabCollapsed();
   }
 
   getLoans(){
@@ -41,6 +42,20 @@ export class LoanComponent implements OnInit {
 
       })
   };
+
+  isTabCollapsed(){
+    this._loanService.getLoanTabSub()
+      .subscribe((bool) => this.isCollapsed = bool)
+    // this.isCollapsed = this._loanService.loanTabSub.value;
+  }
+
+  collapseTab(){
+    this._loanService.setLoanTabSub(true)
+  }
+  expandTab(){
+    this._loanService.setLoanTabSub(false)
+  }
+
 
   onOpenCreate(){
     this.loanSelected = {} as Loan;
