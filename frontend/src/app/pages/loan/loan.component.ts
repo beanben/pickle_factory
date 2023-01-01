@@ -10,6 +10,8 @@ import { Loan } from './loan';
 export class LoanComponent implements OnInit {
   isCollapsed = false;
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
+  arrowRightBlack = "assets/images/arrowRightBlack.svg";
+  buttonPlus = "assets/images/buttonPlus.svg";
   loans: Loan[] = [];
   loanSelected = {} as Loan;
   openLoanModal = false;

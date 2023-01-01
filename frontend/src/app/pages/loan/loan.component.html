@@ -7,36 +7,84 @@
 
 <div class="container-fluid vh-100">
     <div class="row">
-        <div class="col-2 px-0 bg-white vh-100 me-1 d-flex flex-column">
 
-            <div class="d-flex justify-content-between py-3 mx-1">
-                <span class="nav-title my-auto">Loans</span>
-                <button type="button" class="btn" (click)="isCollapsed = true">
-                    <img src="{{arrowLeftBlack}}" class="" alt="">
-                </button>
+        <ng-container *ngIf="!isCollapsed">
+            <div class="col-2 px-0 bg-white vh-100 me-1">
+                <div class="d-flex justify-content-between py-3 mx-1">
+                    <span class="nav-title my-auto">Loans</span>
+                    <button type="button" class="btn" (click)="isCollapsed = true">
+                        <img src="{{arrowLeftBlack}}" class="" alt="">
+                    </button>
+                </div>
+    
+                <div class="pb-3 mx-1">
+                    <button type="button" class="btn btn-primary " (click)="onOpenCreate()">New</button>
+                </div>
+                
+                <div class="overflow-auto pe-1">
+                    <ul class="px-0">
+                        <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                            <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
+                                (click)="onLoanSelected(i)"
+                                [ngClass]="{'loan-selected': loan.id == loanSelected.id}"
+                                style="height: 50px">
+                                <div class="overflow-auto pb-2 pt-2">
+                                    <div class="nowrap">{{loan.name}}</div>
+                                </div>
+          
+                                <app-edit (onOpenModalEdit)="openLoanModal = true"></app-edit>
+                            </div>
+                        </li>
+                    </ul>
+                </div> 
             </div>
+        </ng-container>
 
-            <div class="pb-3 mx-1">
-                <button type="button" class="btn btn-primary " (click)="onOpenCreate()">New</button>
+        <ng-container *ngIf="isCollapsed">
+            <div class="col-1 px-0 bg-white vh-100 me-1">
+
+                <div class="py-3 text-center">
+                    <button type="button" class="btn" (click)="isCollapsed = false">
+                        <img src="{{arrowRightBlack}}" class="" alt="">
+                    </button>
+                    <button type="button" class="btn p-0 mx-auto" (click)="onOpenCreate()">
+                        <img src="{{buttonPlus}}" class="" alt="">
+                    </button>
+                </div>
+
+                <!-- <div class="pb-3 px-0 text-center">
+                    <button type="button" class="btn " (click)="onOpenCreate()">
+                        <img src="{{buttonPlus}}" class="" alt="">
+                    </button>
+                </div> -->
+
+                <!-- <div class="p-1 mb-2 d-flex align-items-center"
+                    (click)="onOpenCreate()"
+                    style="height: 50px ; border-radius: 20px">
+                    <div class="m-0 p-0 mx-auto text-wrap text-center">
+                        <img src="{{buttonPlus}}" class="" alt="">
+                    </div>
+                </div> -->
+
+                <div class="overflow-auto pe-1">
+                    <ul class="px-0">
+                        <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                            <div class="p-1 border border-info mb-2 d-flex align-items-center"
+                                (click)="onLoanSelected(i)"
+                                [ngClass]="{'loan-selected': loan.id == loanSelected.id}"
+                                style="height: 50px ; border-radius: 20px">
+                                <div class="m-0 p-0 mx-auto text-wrap text-center">{{loan.name | initials}}</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div> 
+
+
             </div>
-            
-            <div class="overflow-auto flex-grow-1">
-                <ul class="px-0">
-                    <li  *ngFor="let loan of loans; let i = index" class="mx-1">
-                        <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between"
-                            (click)="onLoanSelected(i)"
-                            [ngClass]="{'loan-selected': loan.id == loanSelected.id}"
-                            style="height: 50px">
-                            <span>{{loan.name}}</span>
-                            <app-edit (onOpenModalEdit)="openLoanModal = true"></app-edit>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            
-            
-            
-        </div>
+        </ng-container>
+
+
+        
         <div class="col p-0">
             <nav class="navbar navbar-light navbar-expand-lg bg-white">
                 <div class="d-flex flex-column">

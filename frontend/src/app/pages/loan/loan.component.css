@@ -16,7 +16,7 @@ li {
 
 .overflow-auto {
     scrollbar-width: thin;
-    padding-right: 5px;
+    /* padding-right: 5px; */
 }
 
 app-edit {
@@ -24,4 +24,11 @@ app-edit {
 }
 .loan-selected:hover app-edit {
     visibility: visible;
+}
+.nowrap {
+    white-space: nowrap;
+}
+
+.col-1 {
+    width: 75px;
 }

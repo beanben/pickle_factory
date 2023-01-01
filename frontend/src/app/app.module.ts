@@ -12,16 +12,17 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
 import { authInterceptorProviders } from './_services/auth/auth.interceptor';
 import { LandingComponent } from './pages/home/landing.component';
 import { RequiredComponent } from './parts/required.component';
-import { InitialPipe } from './parts/initials.pipe';
+import { InitialPipe } from './shared/initial.pipe';
 import { LoanComponent } from './pages/loan/loan.component';
 import { LoanModalComponent } from './pages/loan/loan-modal/loan-modal.component';
 import { EditComponent } from './shared/edit.component';
+import { InitialsPipe } from './shared/initials.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { EditComponent } from './shared/edit.component';
     InitialPipe,
     LoanComponent,
     LoanModalComponent,
-    EditComponent
+    EditComponent,
+    InitialsPipe
   ],
   imports: [
     BrowserModule,
