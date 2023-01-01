@@ -17,6 +17,7 @@ export class LoanComponent implements OnInit {
   openLoanModal = false;
   isCreate = false;
   indexLoan = -1;
+  tabActive = 'detail';
 
   constructor(
     private _loanService: LoanService

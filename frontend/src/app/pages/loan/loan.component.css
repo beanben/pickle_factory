@@ -32,3 +32,9 @@ app-edit {
 .col-1 {
     width: 75px;
 }
+
+.active {
+    color: black;
+    border-bottom: 2px solid rgba(15, 86, 179, 1);
+    font-weight: 600;
+}
