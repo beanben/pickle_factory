@@ -5,6 +5,7 @@ import { ForgotComponent } from './pages/auth/forgot/forgot.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
+import { BorrowerComponent } from './pages/borrower/borrower.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoanComponent } from './pages/loan/loan.component';
 import { AuthGuard } from './_services/auth/auth.guard';
@@ -18,6 +19,7 @@ const routes: Routes = [
     {path: 'reset/:token', component: ResetComponent},  
   ]},
   {path: 'loan', component: LoanComponent, canActivate: [AuthGuard]},
+  {path: 'borrower', component: BorrowerComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: "/"}
 ];
 

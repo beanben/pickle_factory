@@ -6,14 +6,14 @@
                     <div class="py-2" [ngClass]="tabActive === 'funders' ? 'activeTab' : 'tab'">Funders</div> 
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item bg-disabled">
                 <a class="nav-link py-0">
-                    <div class="py-2" [ngClass]="tabActive === 'lenderProfessional' ? 'activeTab' : 'tab'">Lender's professionals</div>
+                    <div class="py-2 tab text-disabled">Lender's professionals</div>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link py-0" (click)="tabActive = 'borrowerProfessional'" [ngClass]="{'active': tabActive === 'borrowerProfessional'}" disabled>
-                    <div class="py-2" [ngClass]="tabActive === 'borrowerProfessional' ? 'activeTab' : 'tab'">Borrower's professionals</div>
+            <li class="nav-item bg-disabled">
+                <a class="nav-link py-0">
+                    <div class="py-2 tab text-disabled">Borrower's professionals</div>
                 </a>
             </li>
         </ul>

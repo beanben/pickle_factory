@@ -13,6 +13,13 @@
     border-bottom: 2px solid transparent;
 }
 
+.bg-disabled{
+    background-color: rgba(236, 236, 236);
+}
+.text-disabled {
+    color:  rgba(194, 190, 190)
+}
+
 
 
 

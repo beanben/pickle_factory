@@ -20,7 +20,6 @@ export class LoanComponent implements OnInit {
   isCreate = false;
   indexLoan = -1;
   tabActive = 'stakeholders';
-  counter = 0;
   overflowAuto = false;
 
   constructor(
@@ -52,7 +51,6 @@ export class LoanComponent implements OnInit {
   isTabCollapsed(){
     this._loanService.getLoanTabSub()
       .subscribe((bool) => this.isCollapsed = bool)
-    // this.isCollapsed = this._loanService.loanTabSub.value;
   }
 
   collapseTab(){

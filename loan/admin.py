@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Loan
+from .models.loan import Loan
 
 class LoanAdmin(admin.ModelAdmin):
     list_display = (

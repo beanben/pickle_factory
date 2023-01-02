@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Loan
+from loan.models.loan import Loan
 from rest_framework.serializers import ValidationError
 
 class LoanSerializer(serializers.ModelSerializer):
