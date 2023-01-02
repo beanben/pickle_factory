@@ -75,7 +75,8 @@ export class LoanComponent implements OnInit {
       this.loanSelected = loan;
 
       if(this.indexLoan === -1 ){ 
-        this.loans.push(loan);
+        // this.loans.push(loan);
+        this.loans.splice(0,0, loan)
       } else {
         this.loans[this.indexLoan] = loan
       }
