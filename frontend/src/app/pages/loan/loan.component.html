@@ -72,29 +72,35 @@
             </div>
         </ng-container>
 
+        <div class="col">
 
-        
-        <div class="col p-0">
-            <nav class="navbar navbar-light navbar-expand-lg bg-white pb-0">
-                <div class="d-flex flex-column">
-                    <div class="p-2 nav-title bg-white">{{loanSelected.name}}</div>
-            
-                    <div class="d-flex justify-content-between">
-                        <ul class="list-group list-group-horizontal">
-                            <li class="p-2" (click)="tabActive = 'stakeholders'" [ngClass]="tabActive === 'stakeholders' ? 'activeTab' : 'tab'">Stakeholders</li>
-                            <li class="p-2" (click)="tabActive = 'property'" [ngClass]="tabActive === 'property' ? 'activeTab' : 'tab'">Property</li>
-                            <li class="p-2" (click)="tabActive = 'structure'" [ngClass]="tabActive === 'structure' ? 'activeTab' : 'tab'">Loan structure</li>
-                            <li class="p-2" (click)="tabActive = 'financials'" [ngClass]="tabActive === 'financials' ? 'activeTab' : 'tab'">Financials</li>
-                        </ul>
-                    </div>    
-                     
+            <div class="row bg-white mb-2">
+                <div class="col">
+                    <nav class="navbar navbar-light navbar-expand-lg pb-0">
+                        <div class="d-flex flex-column">
+                            <div class="p-2 nav-title">{{loanSelected.name}}</div>
+                    
+                            <div class="d-flex justify-content-between">
+                                <ul class="list-group list-group-horizontal">
+                                    <li class="p-2" (click)="tabActive = 'stakeholders'" [ngClass]="tabActive === 'stakeholders' ? 'activeTab' : 'tab'">Stakeholders</li>
+                                    <li class="p-2" (click)="tabActive = 'property'" [ngClass]="tabActive === 'property' ? 'activeTab' : 'tab'">Property</li>
+                                    <li class="p-2" (click)="tabActive = 'structure'" [ngClass]="tabActive === 'structure' ? 'activeTab' : 'tab'">Loan structure</li>
+                                    <li class="p-2" (click)="tabActive = 'financials'" [ngClass]="tabActive === 'financials' ? 'activeTab' : 'tab'">Financials</li>
+                                </ul>
+                            </div>    
+                             
+                        </div>
+                    </nav>
                 </div>
-            </nav>
-
-            <ng-container *ngIf="tabActive === 'stakeholders'">
-                <app-stakeholders></app-stakeholders>
-            </ng-container>
-
+            </div>
+            
+            <div class="row p-4">
+                <div class="col px-0 bg-white" style="height: 500px">
+                    <ng-container *ngIf="tabActive === 'stakeholders'">
+                        <app-stakeholders></app-stakeholders>
+                    </ng-container>
+                </div>
+            </div>
 
         </div>
     </div>
