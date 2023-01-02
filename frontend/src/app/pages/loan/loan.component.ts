@@ -14,16 +14,21 @@ export class LoanComponent implements OnInit {
   buttonPlus = "assets/images/buttonPlus.svg";
   loans: Loan[] = [];
   loanSelected = {} as Loan;
+  loanHovered = {} as Loan;
+  indexHover = 0;
   openLoanModal = false;
   isCreate = false;
   indexLoan = -1;
-  tabActive = 'detail';
+  tabActive = 'stakeholders';
+  counter = 0;
+  overflowAuto = false;
 
   constructor(
     private _loanService: LoanService
   ) { }
 
   ngOnInit(): void { 
+    // this.overflowAuto = false;
     this.getLoans();
     this.isTabCollapsed();
   }
@@ -96,6 +101,13 @@ export class LoanComponent implements OnInit {
     if(this.loans.length !=0 ) {
       this.loanSelected = this.loans[0];
     };
+  }
+
+  onMouseEnter(i: number){
+    this.loanHovered = this.loans[i];
+  }
+  onMouseLeave(){
+    this.loanHovered = {} as Loan;
   }
 
 

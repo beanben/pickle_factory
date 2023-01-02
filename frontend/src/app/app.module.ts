@@ -24,6 +24,8 @@ import { LoanModalComponent } from './pages/loan/loan-modal/loan-modal.component
 import { EditComponent } from './shared/edit.component';
 import { InitialsPipe } from './shared/initials.pipe';
 import { LoanDetailsComponent } from './pages/loan/loan-details/loan-details.component';
+import { StakeholdersComponent } from './pages/loan/stakeholders/stakeholders.component';
+import { FundersComponent } from './pages/loan/stakeholders/funders/funders.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { LoanDetailsComponent } from './pages/loan/loan-details/loan-details.com
     LoanModalComponent,
     EditComponent,
     InitialsPipe,
-    LoanDetailsComponent
+    LoanDetailsComponent,
+    FundersComponent,
+    StakeholdersComponent
   ],
   imports: [
     BrowserModule,

@@ -14,10 +14,17 @@ li {
     background-color: #0dcaf026;
 }
 
-.overflow-auto {
+.scrollbar-thin {
     scrollbar-width: thin;
-    /* padding-right: 5px; */
 }
+.overflow-show {
+    overflow-x: auto
+}
+.overflow-hide{
+    overflow: hidden; 
+    /* overflow-x: auto */
+}
+
 
 app-edit {
     visibility: hidden;

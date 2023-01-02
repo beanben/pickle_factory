@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./loan-details.component.css']
 })
 export class LoanDetailsComponent implements OnInit {
-  tabActive = "funders"
+  // tabActive = "funders"
   constructor() { }
 
   ngOnInit(): void {
