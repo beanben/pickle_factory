@@ -35,6 +35,18 @@ class FirmList(generics.ListCreateAPIView):
             'response': response.data
         })
 
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     # pdb.set_trace()
+    #     return Response({
+    #         'status': "success",
+    #         'message': 'firm created',
+    #         'response': serializer.validated_data
+    #     })
+
 
 class FirmDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
@@ -152,7 +164,7 @@ class ResetAPIView(APIView):
     def post(self, request):
         serializer = ResetSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        token = serializer.validated_data["token"]
+        # token = serializer.validated_data["token"]
         data = {
             'response': serializer.data,
             # 'token': token,

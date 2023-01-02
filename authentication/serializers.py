@@ -14,7 +14,10 @@ class FirmSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         firm = Firm.objects.filter(name__iexact=validated_data["name"])
+        
         if firm.exists():
+            firm_name = firm.first()
+            firm = Firm.objects.get(name=firm_name)
             return firm
         else:
             return Firm.objects.create(name=validated_data["name"])

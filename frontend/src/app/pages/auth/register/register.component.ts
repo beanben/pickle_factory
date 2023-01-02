@@ -13,6 +13,7 @@ import { User } from '../user';
 export class RegisterComponent implements OnInit {
   next = false;
   errors: string[] = new Array();
+  firm = {} as Firm;
 
   firmForm = new FormGroup({
     name: new FormControl('', Validators.required)
