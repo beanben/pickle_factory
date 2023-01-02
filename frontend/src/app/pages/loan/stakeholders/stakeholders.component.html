@@ -2,24 +2,19 @@
     <ul class="nav nav-tabs">
      <li class="nav-item">
           <a class="nav-link py-0" (click)="tabActive = 'funders'" [ngClass]="{'active': tabActive === 'funders'}">
-             <div class="py-2" [ngClass]="{'activeTab': tabActive === 'funders'}">Funders</div> 
+             <div class="py-2" [ngClass]="tabActive === 'funders' ? 'activeTab' : 'tab'">Funders</div> 
          </a>
      </li>
      <li class="nav-item">
-         <a class="nav-link py-0" (click)="tabActive = 'waterfall'" [ngClass]="{'active': tabActive === 'waterfall'}">
-             <div class="py-2" [ngClass]="{'activeTab': tabActive === 'waterfall'}">Waterfall</div>
+         <a class="nav-link py-0" (click)="tabActive = 'lenderProfessional'" [ngClass]="{'active': tabActive === 'lenderProfessional'}">
+             <div class="py-2" [ngClass]="tabActive === 'lenderProfessional' ? 'activeTab' : 'tab'">Lender's professionals</div>
          </a>
      </li>
      <li class="nav-item">
-         <a class="nav-link py-0" (click)="tabActive = 'lending'" [ngClass]="{'active': tabActive === 'lending'}">
-             <div class="py-2" [ngClass]="{'activeTab': tabActive === 'lending'}">Lending costs</div>
-         </a>
-     </li>
-     <li class="nav-item">
-       <a class="nav-link py-0" (click)="tabActive = 'terms'" [ngClass]="{'active': tabActive === 'terms'}">
-         <div class="py-2" [ngClass]="{'activeTab': tabActive === 'terms'}">Terms</div>
-       </a>
-     </li>
+        <a class="nav-link py-0" (click)="tabActive = 'borrowerProfessional'" [ngClass]="{'active': tabActive === 'borrowerProfessional'}">
+            <div class="py-2" [ngClass]="tabActive === 'borrowerProfessional' ? 'activeTab' : 'tab'">Borrower's professionals</div>
+        </a>
+    </li>
    </ul>
    
    <div class="row p-0 m-0">
