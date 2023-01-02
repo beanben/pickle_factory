@@ -22,7 +22,7 @@
                 </div>
                 
                 <div class="overflow-auto scrollbar-thin pe-1">
-                    <ul class="px-0">
+                    <ul class="px-0" *ngIf="loans.length != 0">
                         <li  *ngFor="let loan of loans; let i = index" class="mx-1">
                             <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
                                 (click)="onLoanSelected(i)"
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="overflow-auto pe-1">
-                    <ul class="px-0">
+                    <ul class="px-0" *ngIf="loans.length != 0">
                         <li  *ngFor="let loan of loans; let i = index" class="mx-1">
                             <div class="p-1 border border-info mb-2 d-flex align-items-center"
                                 (click)="onLoanSelected(i)"
@@ -72,7 +72,7 @@
             </div>
         </ng-container>
 
-        <div class="col">
+        <div class="col" *ngIf="!!loanSelected">
 
             <div class="row bg-white mb-2">
                 <div class="col">
