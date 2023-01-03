@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from loan.models.loan import Loan
 from rest_framework.serializers import ValidationError
+from .borrower import BorrowerSerializer
 
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
+    borrower = BorrowerSerializer(required=False)
     
     class Meta:
         model = Loan
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'borrower']
 
     def validate_name(self, name):
         # unique loan name per firm
