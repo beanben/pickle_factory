@@ -21,6 +21,7 @@ export class NavLeftComponent implements OnInit {
   user = {} as User;
   openPopup = false;
   button_clicked = false;
+  stakeholders_is_active = false
   
 
   constructor(

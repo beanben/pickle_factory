@@ -20,7 +20,7 @@ export class BorrowerComponent implements OnInit {
   isCreate = false;
   indexBorrower = -1;
   overflowAuto = false;
-  tabActive = "contacts";
+  tabActive = "loans";
 
   constructor(
     private _borrowerService: BorrowerService
@@ -44,7 +44,9 @@ export class BorrowerComponent implements OnInit {
           this.borrowerSelected = this._borrowerService.borrowerSub.value;
         }
 
-        console.log("this.borrowerSelected:", this.borrowerSelected);
+        // console.log("borrowerSaved:", borrowerSaved);
+        // console.log("Object.keys(borrowerSaved).length:", Object.keys(borrowerSaved).length);
+        // console.log("Object.keys(borrowerSaved).length === 0:", Object.keys(borrowerSaved).length === 0);
       })
   };
 

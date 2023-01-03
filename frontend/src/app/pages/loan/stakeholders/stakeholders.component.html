@@ -1,31 +1,19 @@
 <div class="row">
     <div class="col px-0 bg-white" style="height: 500px">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                    <a class="nav-link py-0" (click)="tabActive = 'funders'" [ngClass]="{'active': tabActive === 'funders'}">
-                    <div class="py-2" [ngClass]="tabActive === 'funders' ? 'activeTab' : 'tab'">Funders</div> 
-                </a>
+        <ul>
+            <li class="p-2">
+                <div class="d-flex align-items-center">
+                    <span class="py-auto me-2">Borrower:</span> 
+                    <button class="btn btn-primary">Add Borrower</button>
+                </div>
             </li>
-            <li class="nav-item bg-disabled">
-                <a class="nav-link py-0">
-                    <div class="py-2 tab text-disabled">Lender's professionals</div>
-                </a>
-            </li>
-            <li class="nav-item bg-disabled">
-                <a class="nav-link py-0">
-                    <div class="py-2 tab text-disabled">Borrower's professionals</div>
-                </a>
+            <li class="p-2">
+                <div class="d-flex align-items-center">
+                    <span class="py-auto me-2">Lender(s):</span> 
+                    <button class="btn btn-primary" disabled>Add Lender</button>
+                </div>
             </li>
         </ul>
-        
-        <div class="row p-3">
-            <div class="col">
-                <ng-container *ngIf="tabActive === 'funders'">
-                    <app-funders></app-funders>
-                </ng-container>
-            </div>
-        </div>
-
     </div>
 </div>
 

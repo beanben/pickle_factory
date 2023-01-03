@@ -2,7 +2,7 @@
 
  <div class="d-flex flex-column text-white h-100">
 
-  <div class="p-2 mb-2">
+  <div class="p-2 mb-2" (click)="stakeholders_is_active = false">
     <a routerLink="/" class="text-white text-decoration-none d-flex">
       <img src="{{logoWhite}}" alt=""><h3 class="my-auto fw-bold">Pickle</h3>
     </a>
@@ -10,7 +10,7 @@
 
   <div class="p-2 flex-grow-1">
     <ul class="p-0 text-white">
-      <li [ngClass]="homeRoute.isActive ? 'is-active': ''">
+      <li [ngClass]="homeRoute.isActive ? 'is-active': ''" (click)="stakeholders_is_active = false">
         <a 
           routerLink="/" 
           routerLinkActive=active 
@@ -29,8 +29,8 @@
 
       <li><img src="{{chart}}" alt="">Fund manager</li>
 
-      <li style="cursor: pointer">
-        <span (click)="is_expanded = !is_expanded">
+      <li style="cursor: pointer" [ngClass]="{'is-active': stakeholders_is_active && !is_expanded}">
+        <span (click)="is_expanded = !is_expanded" >
           <img src="{{person}}" alt="">Stakeholders 
           <span class="filter-white" >
             <img *ngIf="!is_expanded" src="{{arrowDown}}" alt="" >
@@ -42,7 +42,7 @@
           <ul style="list-style: none" class="px-0">
             <li class="ps-4">Lenders</li>
 
-            <li class="ps-4" [ngClass]="{'is-active': borrowerRoute.isActive}">
+            <li class="ps-4" [ngClass]="{'is-active': borrowerRoute.isActive}" (click)="stakeholders_is_active = true">
               <a routerLink="borrower" routerLinkActive=active #borrowerRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
                 Borrower
               </a>    

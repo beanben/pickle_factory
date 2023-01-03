@@ -82,8 +82,7 @@
                     
                             <div class="d-flex justify-content-between">
                                 <ul class="list-group list-group-horizontal">
-                                    <li class="p-2" (click)="tabActive = 'contacts'" [ngClass]="tabActive === 'contacts' ? 'activeTab' : 'tab'">Contacts</li>
-                                    <li class="p-2" (click)="tabActive = 'loans'" [ngClass]="tabActive === 'loans' ? 'activeTab' : 'tab'">Loans</li>
+                                    <li class="p-2 activeTab">Loans</li>
                                 </ul>
                             </div>    
                              
@@ -93,10 +92,8 @@
             </div>
             
             <div class="row p-4">
-                <div class="col" >
-                    <ng-container *ngIf="tabActive === 'contacts'">
-                        contacts
-                    </ng-container>
+                <div class="col bg-white" style="height: 800px">
+                    <app-borrower-loans></app-borrower-loans>
                 </div>
             </div>
 

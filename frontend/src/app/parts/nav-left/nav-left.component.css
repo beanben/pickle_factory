@@ -55,7 +55,6 @@ font-weight: bold;
 }
 
 .is-active {
-    /* background-color: rgb(5, 5, 55,0); */
     background-color: rgb(255, 255, 255, 0.2);
     border-radius: 5px;
     
