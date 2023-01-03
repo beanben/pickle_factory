@@ -55,7 +55,7 @@ font-weight: bold;
 }
 
 .is-active {
-    background-color: rgb(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     
 }
@@ -64,8 +64,8 @@ li, .profile {
     padding: 0.5em;
 }
 
-/* .indent {
-    padding-left: 5px;
-} */
+.text-disabled {
+    color:rgba(192, 192, 192, 0.5)
+}
 
   

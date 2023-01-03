@@ -27,7 +27,7 @@
         </a>    
       </li>
 
-      <li><img src="{{chart}}" alt="">Fund manager</li>
+      <li class="text-disabled"><img src="{{chart}}" alt="">Fund manager</li>
 
       <li style="cursor: pointer" [ngClass]="{'is-active': stakeholders_is_active && !is_expanded}">
         <span (click)="is_expanded = !is_expanded" >
@@ -40,7 +40,7 @@
   
         <ng-container *ngIf="is_expanded">
           <ul style="list-style: none" class="px-0">
-            <li class="ps-4">Lenders</li>
+            <li class="ps-4 text-disabled">Lenders</li>
 
             <li class="ps-4" [ngClass]="{'is-active': borrowerRoute.isActive}" (click)="stakeholders_is_active = true">
               <a routerLink="borrower" routerLinkActive=active #borrowerRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
@@ -48,7 +48,7 @@
               </a>    
             </li>
 
-            <li class="ps-4">Panel</li>
+            <li class="ps-4 text-disabled">Panel</li>
           </ul>
         </ng-container>
       </li>

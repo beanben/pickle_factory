@@ -1,10 +1,15 @@
+<app-borrower-modal 
+    *ngIf="openBorrowerModal"
+    (modalSaveBorrower)="onSave($event)">
+</app-borrower-modal>
+
 <div class="row">
     <div class="col px-0 bg-white" style="height: 500px">
         <ul>
             <li class="p-2">
                 <div class="d-flex align-items-center">
                     <span class="py-auto me-2">Borrower:</span> 
-                    <button class="btn btn-primary">Add Borrower</button>
+                    <button class="btn btn-primary" (click)="onOpenCreate()">Add Borrower</button>
                 </div>
             </li>
             <li class="p-2">
