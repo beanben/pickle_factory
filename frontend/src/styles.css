@@ -14,3 +14,7 @@ input[type=number] {
 }
 html, body { height: 100%; }
 body { margin: 0; }
+
+.text-disabled {
+    color:rgba(192, 192, 192, 0.5)
+}
