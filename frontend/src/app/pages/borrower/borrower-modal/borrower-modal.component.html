@@ -2,12 +2,12 @@
     <div class="modal-dialog modal-centered">
         <div class="modal-content">
 
-            <div class="modal-header">
-              <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Borrower</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()"></button>
-            </div>
-
-            <ng-container *ngIf="mode === 'edit' || mode === 'new'">
+          <div class="modal-header">
+            <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Borrower</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()"></button>
+          </div>
+          
+          <ng-container *ngIf="mode === 'edit'">
               <div class="modal-body d-flex align-items-center">    
                 <form [formGroup]="form" #f="ngForm" class="mx-auto">
                   <div class="form-group mb-2">
@@ -29,29 +29,51 @@
                   </div>
                 </form>
               </div>
-            </ng-container>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger m-2" (click)="mode ='delete'" >Delete</button>
+                <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
+              </div>
+          </ng-container>
 
-            <ng-container *ngIf="mode === 'delete'">
+          <ng-container *ngIf="mode === 'new'">
+              <div class="modal-body d-flex align-items-center">    
+                <form [formGroup]="form" #f="ngForm" class="mx-auto">
+                  <div class="form-group mb-2">
+                  <app-required></app-required>
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="name"
+                            formControlName="name"
+                            name="name"
+                            placeholder="Name">
+                      <label for="name">Name</label>
+                    </div>
+                  </div>
+                  <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
+                      class="alert alert-danger">
+                      Please enter a name for the borrower
+                  </div>
+                  <div *ngFor="let error of errors " class="alert alert-danger text-center"> 
+                    {{error}}
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
+              </div>
+          </ng-container>
+
+          <ng-container *ngIf="mode === 'delete'">
               <div class="modal-body">
                 <p class="text-center my-auto">Are you sure you want to delete this borrower ?</p>
               </div>
-            </ng-container>
-            
-            <ng-container *ngIf="mode === 'edit' || mode === 'new'">
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-danger m-2" (click)="mode ='delete'"  *ngIf="mode === 'edit'">Delete</button>
-                  <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
-                  <button type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="mode === 'delete'">
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary m-2 me-auto">Cancel</button>
                   <button type="submit" class="btn btn-danger m-2" (click)="onConfirmDelete()">Delete</button>
               </div>
-            </ng-container>
+          </ng-container>
 
-        </div>
+      </div>
     </div>
   </div>

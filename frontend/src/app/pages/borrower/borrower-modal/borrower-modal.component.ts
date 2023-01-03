@@ -10,7 +10,7 @@ import { Borrower } from '../borrower';
 })
 export class BorrowerModalComponent implements OnInit {
   displayStyle = "block";
-  mode = "";
+  @Input() mode = "";
   @Output() modalSaveBorrower = new EventEmitter<Borrower|null>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() borrower = {} as Borrower;
@@ -43,10 +43,12 @@ export class BorrowerModalComponent implements OnInit {
   }
 
   getMode(){
-    if(this.borrower.id){
-      this.mode = "edit";
-    } else {
-      this.mode = "new"
+    if(this.mode ==="") {
+      if(this.borrower.id){
+        this.mode = "edit";
+      } else {
+        this.mode = "new"
+      }
     }
   }
 

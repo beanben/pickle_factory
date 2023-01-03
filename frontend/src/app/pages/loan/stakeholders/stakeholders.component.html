@@ -1,5 +1,6 @@
 <app-borrower-modal 
     *ngIf="openBorrowerModal"
+    [mode] = "'add'"
     (modalSaveBorrower)="onSave($event)">
 </app-borrower-modal>
 
