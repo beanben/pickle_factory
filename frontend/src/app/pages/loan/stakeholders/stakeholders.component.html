@@ -1,7 +1,7 @@
 <app-borrower-modal 
     *ngIf="openBorrowerModal"
     [mode] = "'add'"
-    (modalSaveBorrower)="onSave($event)">
+    (modalSaveLoanBorrower)="onSave($event)">
 </app-borrower-modal>
 
 <div class="row">
@@ -9,8 +9,10 @@
         <ul>
             <li class="p-2">
                 <div class="d-flex align-items-center">
-                    <span class="py-auto me-2">Borrower:</span> 
-                    <button class="btn btn-primary" (click)="onOpenCreate()">Add Borrower</button>
+                    <span class="py-auto me-2">Borrower:</span>
+
+                    <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
+                    <span *ngIf="!!loan.borrower">{{loan.borrower.name}}</span>
                 </div>
             </li>
             <li class="p-2">

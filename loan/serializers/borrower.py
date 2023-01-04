@@ -23,3 +23,8 @@ class BorrowerSerializer(serializers.ModelSerializer):
         instance.name = validated_data["name"]
         instance.save()
         return instance
+
+class BorrowerNestedSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    id = serializers.CharField()
+    # required otherwise when using BorrowerSerializer, the id is not visibile (readonly field)

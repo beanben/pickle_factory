@@ -74,6 +74,34 @@
               </div>
           </ng-container>
 
+          <ng-container *ngIf="mode === 'add'">
+            <div class="modal-body">
+              <div class="mx-auto text-center fw-normal">Select a Borrower in the list or create a new one</div> 
+
+              <form [formGroup]="borrowerForm" #f="ngForm" class="pt-4">
+                <div class="form-group my-2">
+                  <app-required></app-required>
+                    <div class="form-floating">
+                      <select
+                            class="form-select"
+                            id="borrower"
+                            formControlName="borrower">
+                                <option [ngValue]="null"> -- Select the borrower --</option>
+                                <option *ngFor='let borrower of borrowers' [ngValue]="borrower" >{{ borrower.name }}
+                                </option>
+                        </select>
+                      <label for="name">Name</label>
+                    </div>
+                  </div>
+              </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-success m-2" (click)="onSaveSelected()" [disabled]="!f.valid">Save</button>
+            </div>
+          </ng-container>
+
       </div>
     </div>
   </div>

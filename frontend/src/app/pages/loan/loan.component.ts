@@ -27,7 +27,6 @@ export class LoanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void { 
-    // this.overflowAuto = false;
     this.getLoans();
     this.isTabCollapsed();
   }
@@ -43,7 +42,9 @@ export class LoanComponent implements OnInit {
           this.loanSelected = loans[0]
         } else {
           this.loanSelected = this._loanService.loanSub.value;
-        }
+        };
+
+        this._loanService.setLoanSub(this.loanSelected);
 
       })
   };
@@ -73,8 +74,6 @@ export class LoanComponent implements OnInit {
       this.loanSelected = loan;
 
       if(this.indexLoan === -1 ){ 
-        // this.loans.push(loan);
-        // this.loans.splice(0,0, loan);
         this.loans.unshift(loan);
       } else {
         this.loans[this.indexLoan] = loan
@@ -88,6 +87,7 @@ export class LoanComponent implements OnInit {
   onLoanSelected(index: number ){ 
     this.loanSelected = this.loans[index];
     this.indexLoan = index;
+    this._loanService.setLoanSub(this.loanSelected);
   };
 
   removeLoan(i: number){

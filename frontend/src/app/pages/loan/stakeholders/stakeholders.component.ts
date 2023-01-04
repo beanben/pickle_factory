@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../loan';
 
 @Component({
@@ -9,10 +10,14 @@ import { Loan } from '../loan';
 export class StakeholdersComponent implements OnInit {
   tabActive = "funders";
   openBorrowerModal = false;
+  loan = {} as Loan;
   
-  constructor() { }
+  constructor(
+    private _loanService: LoanService
+  ) { }
 
   ngOnInit(): void {
+    this.getLoanSub();
   }
 
   onSave(loan: Loan | null){
@@ -22,5 +27,14 @@ export class StakeholdersComponent implements OnInit {
   onOpenCreate(){
     this.openBorrowerModal = true;
   }
+
+  getLoanSub(){
+    this._loanService.getLoanSub()
+      .subscribe((loan) => {
+        this.loan = loan;
+      })
+  }
+
+  
 
 }

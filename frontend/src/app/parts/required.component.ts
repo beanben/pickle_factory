@@ -8,8 +8,8 @@ import { Component, OnInit } from "@angular/core";
              `,
     styles: [
         '.text-grey { color: rgba(128,128,128,1) }',
-        '.font-small { font-size: 0.75em}',
-        'img {width: 4%}'
+        '.font-small { font-size: 10px}',
+        'img {width: 10px}'
     ]
 })
 export class RequiredComponent implements OnInit{

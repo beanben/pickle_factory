@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
+import { LoanService } from 'src/app/_services/loan/loan.service';
+import { Loan } from '../../loan/loan';
 import { Borrower } from '../borrower';
 
 @Component({
@@ -11,9 +13,12 @@ import { Borrower } from '../borrower';
 export class BorrowerModalComponent implements OnInit {
   displayStyle = "block";
   @Input() mode = "";
-  @Output() modalSaveBorrower = new EventEmitter<Borrower|null>();
-  @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() borrower = {} as Borrower;
+  loan = {} as Loan;
+  @Output() modalSaveBorrower = new EventEmitter<Borrower|null>();
+  @Output() modalSaveLoanBorrower = new EventEmitter<Borrower|null>();
+  @Output() deleteIsConfirmed = new EventEmitter<void>()
+  borrowers: Borrower[] = [];
   errors: string[] = new Array();
   form: FormGroup = this.fb.group({
     name: ['', Validators.required]
@@ -22,10 +27,15 @@ export class BorrowerModalComponent implements OnInit {
     return this.form.get('name')
   };
 
+  borrowerForm: FormGroup = this.fb.group({
+    borrower: [null, Validators.required]
+  });
+  
   constructor(
     private fb: FormBuilder,
     private _borrowerService: BorrowerService,
-    private el: ElementRef
+    private el: ElementRef,
+    private _loanService: LoanService
   ) { 
     this.addEventBackgroundClose();
   }
@@ -33,6 +43,8 @@ export class BorrowerModalComponent implements OnInit {
   ngOnInit(): void {
     this.getMode();
     this.initForm();
+    this.getBorrowers();
+    this.getLoanSub();
   }
 
   initForm(){
@@ -72,6 +84,7 @@ export class BorrowerModalComponent implements OnInit {
 
   onCancel(){
     this.modalSaveBorrower.emit(null);
+    this.modalSaveLoanBorrower.emit(null);
   };
 
   addEventBackgroundClose(){
@@ -85,6 +98,32 @@ export class BorrowerModalComponent implements OnInit {
   onConfirmDelete(){
     this._borrowerService.deleteBorrower(this.borrower)
       .subscribe(() =>  this.deleteIsConfirmed.emit())
+  }
+
+
+  getBorrowers(){
+    this._borrowerService.getBorrowers()
+      .subscribe((borrowers) => {
+        this.borrowers = borrowers;
+    })
+  }
+
+  onSaveSelected(){
+    if(this.borrowerForm.valid ){
+      let borrower: Borrower = this.borrowerForm.get('borrower')!.value;
+
+      this.loan.borrower = borrower;
+      this._loanService.updateLoan(this.loan)
+        .then((res) => {
+          let loan: Loan = res.response;
+          this.modalSaveLoanBorrower.emit(loan.borrower);
+        })
+    }
+  }
+
+  getLoanSub(){
+    this._loanService.getLoanSub()
+      .subscribe((loan) => this.loan = loan)
   }
 
 }

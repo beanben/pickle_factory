@@ -1,20 +1,21 @@
 from rest_framework import serializers
 from loan.models.loan import Loan
+from loan.models.borrower import Borrower
 from rest_framework.serializers import ValidationError
-from .borrower import BorrowerSerializer
+from .borrower import BorrowerNestedSerializer
+import pdb
 
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
-    borrower = BorrowerSerializer(required=False)
+    borrower = BorrowerNestedSerializer(required=False)
     
     class Meta:
         model = Loan
         fields = ['id', 'name', 'borrower']
 
-    def validate_name(self, name):
-        # unique loan name per firm
+    def create(self, validated_data):
         author_firm = self.context.get("author_firm")
-        qs = Loan.objects.filter(name__iexact=name, author_firm=author_firm)
+        qs = Loan.objects.filter(name__iexact=validated_data['name'], author_firm=author_firm)
         if qs.exists():
             data = {
                 'status': 'error',
@@ -22,4 +23,16 @@ class LoanSerializer(serializers.ModelSerializer):
                 }
             raise ValidationError(data, code=400)
 
-        return name
+        loan = Loan.objects.create(**validated_data)
+        loan.save()
+        return loan
+
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data["name"]
+
+        borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
+        instance.borrower = borrower
+        
+        instance.save()
+        return instance
