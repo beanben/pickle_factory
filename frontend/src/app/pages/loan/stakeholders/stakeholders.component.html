@@ -6,7 +6,53 @@
 
 <div class="row">
     <div class="col px-0 bg-white" style="height: 500px">
-        <ul>
+        <ul class="list-group list-group-horizontal">
+            <li class="p-2 sectionTitle listNoStyle">Details</li>
+         </ul>
+
+         <div class="row">
+            <div class="col-8 offset-2 text-center">
+
+                <div class="row px-2 tableTitle">
+                    <div class="col">Borrower</div>
+                    <div class="col">Lender(s)</div>
+                </div>
+        
+                <div class="row px-2 mt-2">
+                    <div class="col" [ngClass]="{'d-flex align-items-center' : !!loan.borrower}">
+                       <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
+                        <span *ngIf="!!loan.borrower" class="mx-auto">{{loan.borrower.name}}</span>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary" disabled>Add Lender</button>
+                    </div>
+                </div>
+
+            </div>
+         </div>
+
+         <!-- <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Borrower</th>
+                    <th scope="col">Lender(s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <td scope="row">
+                    <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
+                    <span *ngIf="!!loan.borrower">{{loan.borrower.name}}</span>
+                  </td>
+                  <td scope="row">
+                    <button class="btn btn-primary" disabled>Add Lender</button>
+                  </td>
+                </tr>
+            </tbody>
+         </table> -->
+         
+
+        <!-- <ul>
             <li class="p-2">
                 <div class="d-flex align-items-center">
                     <span class="py-auto me-2">Borrower:</span>
@@ -21,7 +67,7 @@
                     <button class="btn btn-primary" disabled>Add Lender</button>
                 </div>
             </li>
-        </ul>
+        </ul> -->
     </div>
 </div>
 
