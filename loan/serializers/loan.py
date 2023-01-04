@@ -7,7 +7,7 @@ import pdb
 
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
-    borrower = BorrowerNestedSerializer(required=False)
+    borrower = BorrowerNestedSerializer(required=False, allow_null=True)
     
     class Meta:
         model = Loan
@@ -30,9 +30,10 @@ class LoanSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data["name"]
-
-        borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
-        instance.borrower = borrower
+        
+        if validated_data["borrower"]:
+            borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
+            instance.borrower = borrower
         
         instance.save()
         return instance
