@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 
@@ -26,10 +27,12 @@ export class NavLeftComponent implements OnInit {
 
   constructor(
     private _authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.getUser();
+    this.identifyUrl();
   }
 
   onOpenPopup(){
@@ -49,6 +52,21 @@ export class NavLeftComponent implements OnInit {
         this.user = user;
         this._authService.changeUserSub(user);
       })
+  }
+
+  identifyUrl(){
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+         let currentUrl = event.url;
+
+         if (currentUrl.includes('borrower')){
+          this.is_expanded = true
+         } else {
+          this.is_expanded = false
+         }
+      };
+
+    })
   }
 
 }

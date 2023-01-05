@@ -54,7 +54,7 @@ color:  #050537;
 font-weight: bold;
 }
 
-.is-active {
+.bg-highlight {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     
