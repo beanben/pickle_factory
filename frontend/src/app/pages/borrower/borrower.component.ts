@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
 import { Borrower } from './borrower';
 
@@ -21,6 +22,7 @@ export class BorrowerComponent implements OnInit {
   indexBorrower = -1;
   overflowAuto = false;
   tabActive = "loans";
+  private subscr: Subscription = Subscription.EMPTY
 
   constructor(
     private _borrowerService: BorrowerService
@@ -44,14 +46,13 @@ export class BorrowerComponent implements OnInit {
           this.borrowerSelected = this._borrowerService.borrowerSub.value;
         }
 
-        // console.log("borrowerSaved:", borrowerSaved);
-        // console.log("Object.keys(borrowerSaved).length:", Object.keys(borrowerSaved).length);
-        // console.log("Object.keys(borrowerSaved).length === 0:", Object.keys(borrowerSaved).length === 0);
+        this._borrowerService.setBorrowerSub(this.borrowerSelected);
+
       })
   };
 
   isTabCollapsed(){
-    this._borrowerService.getBorrowerTabSub()
+    this.subscr = this._borrowerService.getBorrowerTabSub()
       .subscribe((bool) => this.isCollapsed = bool)
   }
 
@@ -87,6 +88,7 @@ export class BorrowerComponent implements OnInit {
   onBorrowerSelected(index: number ){ 
     this.borrowerSelected = this.borrowers[index];
     this.indexBorrower = index;
+    this._borrowerService.setBorrowerSub(this.borrowerSelected);
   };
 
   removeBorrower(i: number){
@@ -107,6 +109,12 @@ export class BorrowerComponent implements OnInit {
   }
   onMouseLeave(){
     this.borrowerHovered = {} as Borrower;
+  };
+
+  ngOnDestroy(): void {
+    if(this.subscr){
+      this.subscr.unsubscribe()
+    }
   }
 
 }

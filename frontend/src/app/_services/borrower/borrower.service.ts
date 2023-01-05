@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Borrower } from 'src/app/pages/borrower/borrower';
+import { Loan } from 'src/app/pages/loan/loan';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -53,7 +54,7 @@ export class BorrowerService {
   };
 
   updateBorrower(borrower: Borrower){
-    const url = `${this.relativeUrl}/${borrower.id}/`;
+    const url = `${this.relativeUrl}/${borrower.id}`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
@@ -95,5 +96,14 @@ export class BorrowerService {
       tap(() => console.log('deleteBorrower()', Math.random()))
     );
   }
+
+  getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
+    const url = `${this.relativeUrl}/${borrower.id}/loans`;
+
+    return this.http.get<Loan[]>(url)
+      .pipe(
+        tap(() => console.log('getBorrowerLoans()', Math.random()))
+      )
+  };
 
 }

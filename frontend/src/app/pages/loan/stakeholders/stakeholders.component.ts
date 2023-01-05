@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../loan';
 
@@ -7,14 +8,16 @@ import { Loan } from '../loan';
   templateUrl: './stakeholders.component.html',
   styleUrls: ['./stakeholders.component.css']
 })
-export class StakeholdersComponent implements OnInit {
+export class StakeholdersComponent implements OnInit, OnDestroy {
   tabActive = "funders";
   openBorrowerModal = false;
   loan = {} as Loan;
+  private subscr: Subscription = Subscription.EMPTY
   
   constructor(
     private _loanService: LoanService
-  ) { }
+  ) {
+   }
 
   ngOnInit(): void {
     this.getLoanSub();
@@ -29,10 +32,16 @@ export class StakeholdersComponent implements OnInit {
   }
 
   getLoanSub(){
-    this._loanService.getLoanSub()
+    this.subscr = this._loanService.getLoanSub()
       .subscribe((loan) => {
         this.loan = loan;
       })
+  }
+
+  ngOnDestroy(): void {
+    if(this.subscr){
+      this.subscr.unsubscribe()
+    }
   }
 
   

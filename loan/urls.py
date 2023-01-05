@@ -8,7 +8,8 @@ from .views import (
 
 borrower_patterns = ([
     path('', BorrowerList.as_view()),
-    path('<uuid:pk>/', BorrowerDetail.as_view())
+    path('<uuid:pk>/', BorrowerDetail.as_view(), name='borrower_detail'),
+    path('<uuid:pk>/loans', BorrowerDetail.as_view(), name='borrower_loans')
 ], 'borrower')
 
 urlpatterns = [

@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan';
 
@@ -7,7 +8,7 @@ import { Loan } from './loan';
   templateUrl: './loan.component.html',
   styleUrls: ['./loan.component.css']
 })
-export class LoanComponent implements OnInit {
+export class LoanComponent implements OnInit, OnDestroy {
   isCollapsed = false;
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
   arrowRightBlack = "assets/images/arrowRightBlack.svg";
@@ -21,10 +22,12 @@ export class LoanComponent implements OnInit {
   indexLoan = -1;
   tabActive = 'stakeholders';
   overflowAuto = false;
+  private subscr: Subscription = Subscription.EMPTY
 
   constructor(
     private _loanService: LoanService
-  ) { }
+  ) { 
+  }
 
   ngOnInit(): void { 
     this.getLoans();
@@ -50,7 +53,7 @@ export class LoanComponent implements OnInit {
   };
 
   isTabCollapsed(){
-    this._loanService.getLoanTabSub()
+    this.subscr = this._loanService.getLoanTabSub()
       .subscribe((bool) => this.isCollapsed = bool)
   }
 
@@ -108,6 +111,12 @@ export class LoanComponent implements OnInit {
   }
   onMouseLeave(){
     this.loanHovered = {} as Loan;
+  }
+
+  ngOnDestroy(): void {
+    if(this.subscr){
+      this.subscr.unsubscribe()
+    }
   }
 
 
