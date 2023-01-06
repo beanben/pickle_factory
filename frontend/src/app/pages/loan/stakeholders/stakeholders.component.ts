@@ -12,6 +12,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   tabActive = "funders";
   openBorrowerModal = false;
   loan = {} as Loan;
+  mode = '';
   private subscr: Subscription = Subscription.EMPTY
   
   constructor(

@@ -82,10 +82,10 @@
                 <div class="form-group my-2">
                   <app-required></app-required>
                     <div class="form-floating">
-                      <select
-                            class="form-select"
-                            id="borrower"
-                            formControlName="borrower">
+                      <select class="form-select"
+                              id="borrower"
+                              formControlName="borrower"
+                              [compareWith] = "compareBorrower">
                                 <option [ngValue]="null"> -- Select Borrower --</option>
                                 <option *ngFor='let borrower of borrowers' [ngValue]="borrower" >{{ borrower.name }}
                                 </option>

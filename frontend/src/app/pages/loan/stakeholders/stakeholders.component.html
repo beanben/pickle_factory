@@ -1,6 +1,12 @@
 <app-borrower-modal 
-    *ngIf="openBorrowerModal"
+    *ngIf="openBorrowerModal && !loan.borrower"
     [mode] = "'add'"
+    (modalSaveLoanBorrower)="onSave($event)">
+</app-borrower-modal>
+<app-borrower-modal 
+    *ngIf="openBorrowerModal && !!loan.borrower"
+    [mode] = "'add'"
+    [borrower] = "loan.borrower"
     (modalSaveLoanBorrower)="onSave($event)">
 </app-borrower-modal>
 
@@ -21,7 +27,10 @@
                 <div class="row px-2 mt-2">
                     <div class="col" [ngClass]="{'d-flex align-items-center' : !!loan.borrower}">
                        <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
-                        <span *ngIf="!!loan.borrower" class="mx-auto">{{loan.borrower.name}}</span>
+                        <span *ngIf="!!loan.borrower" class="mx-auto">
+                            {{loan.borrower.name}}
+                            <app-edit (onOpenModalEdit)="openBorrowerModal = true"></app-edit>
+                        </span>
                     </div>
                     <div class="col">
                         <button class="btn btn-primary" disabled>Add Lender</button>
@@ -31,43 +40,6 @@
             </div>
          </div>
 
-         <!-- <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Borrower</th>
-                    <th scope="col">Lender(s)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                  <td scope="row">
-                    <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
-                    <span *ngIf="!!loan.borrower">{{loan.borrower.name}}</span>
-                  </td>
-                  <td scope="row">
-                    <button class="btn btn-primary" disabled>Add Lender</button>
-                  </td>
-                </tr>
-            </tbody>
-         </table> -->
-         
-
-        <!-- <ul>
-            <li class="p-2">
-                <div class="d-flex align-items-center">
-                    <span class="py-auto me-2">Borrower:</span>
-
-                    <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
-                    <span *ngIf="!!loan.borrower">{{loan.borrower.name}}</span>
-                </div>
-            </li>
-            <li class="p-2">
-                <div class="d-flex align-items-center">
-                    <span class="py-auto me-2">Lender(s):</span> 
-                    <button class="btn btn-primary" disabled>Add Lender</button>
-                </div>
-            </li>
-        </ul> -->
     </div>
 </div>
 
