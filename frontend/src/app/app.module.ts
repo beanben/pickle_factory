@@ -28,6 +28,7 @@ import { StakeholdersComponent } from './pages/loan/stakeholders/stakeholders.co
 import { BorrowerComponent } from './pages/borrower/borrower.component';
 import { BorrowerModalComponent } from './pages/borrower/borrower-modal/borrower-modal.component';
 import { BorrowerLoansComponent } from './pages/borrower/borrower-loans/borrower-loans.component';
+import { DeleteComponent } from './shared/delete.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { BorrowerLoansComponent } from './pages/borrower/borrower-loans/borrower
     StakeholdersComponent,
     BorrowerComponent,
     BorrowerModalComponent,
-    BorrowerLoansComponent
+    BorrowerLoansComponent,
+    DeleteComponent
   ],
   imports: [
     BrowserModule,
