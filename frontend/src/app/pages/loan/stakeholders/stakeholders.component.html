@@ -28,8 +28,10 @@
                     <div class="col" [ngClass]="{'d-flex align-items-center' : !!loan.borrower}">
                        <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
                         <span *ngIf="!!loan.borrower" class="mx-auto">
-                            {{loan.borrower.name}}
-                            <app-edit (onOpenModalEdit)="openBorrowerModal = true"></app-edit>
+                            <div class="d-flex justify-content-between">
+                                <span class="me-auto">{{loan.borrower.name}}</span>
+                                <app-edit (onOpenModalEdit)="openBorrowerModal = true"></app-edit>
+                            </div>
                         </span>
                     </div>
                     <div class="col">

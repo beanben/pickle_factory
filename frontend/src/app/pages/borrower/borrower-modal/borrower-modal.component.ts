@@ -46,7 +46,7 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getMode();
     this.initForm();
-    this.initBorrowerForm(this.borrower);
+    this.initBorrowerForm();
     this.getBorrowers();
     this.getLoanSub();
   }
@@ -58,8 +58,12 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
     };
   }
 
-  initBorrowerForm(borrower: Borrower){
-    this.borrowerForm.controls['borrower'].setValue(borrower);
+  initBorrowerForm(){
+    if(Object.keys(this.borrower).length != 0){
+      this.borrowerForm.patchValue({'borrower': this.borrower})
+    } else {
+      this.borrowerForm.setValue({'borrower': null})
+    }
   }
 
   getMode(){
