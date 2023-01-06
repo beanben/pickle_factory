@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
+import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../../loan/loan';
 import { Borrower } from '../borrower';
 
@@ -15,7 +16,8 @@ export class BorrowerLoansComponent implements OnInit{
   loans: Loan[] = [];
 
   constructor(
-    private _borrowerService: BorrowerService
+    private _borrowerService: BorrowerService,
+    private _loanService: LoanService
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +38,10 @@ export class BorrowerLoansComponent implements OnInit{
     if(this.subscr){
       this.subscr.unsubscribe()
     }
+  }
+
+  onSelectLoan(loan: Loan){
+    this._loanService.setLoanSub(loan);
   }
 
   // getBorrowerLoans(borrower: Borrower){

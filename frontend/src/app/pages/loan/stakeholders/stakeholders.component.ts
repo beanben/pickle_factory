@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { map, mergeMap, Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../loan';
 
@@ -38,9 +38,35 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   getLoanSub(){
     this.subscr = this._loanService.getLoanSub()
       .subscribe((loan) => {
+        
+        if(!loan.borrower && !!loan.id){
+          this.getLoan(loan);
+        } else {
+          this.loan = loan;
+        }
+      })
+  }
+
+  getLoan(loan: Loan){
+    this._loanService.getLoan(loan)
+      .subscribe((loan) => {
         this.loan = loan;
       })
   }
+
+  // getLoanSub(){
+  //   this.subscr = this._loanService.getLoanSub()
+  //     .pipe(
+  //       map(loan => {return loan}),
+  //       mergeMap(loan => {
+  //         if(!loan.borrower && !!loan.id){
+  //           return this._loanService.getLoan(loan)
+  //         }
+  //       })
+  //     )
+  //     .subscribe( loan => this.loan = loan)
+  // }
+
 
   ngOnDestroy(): void {
     if(this.subscr){

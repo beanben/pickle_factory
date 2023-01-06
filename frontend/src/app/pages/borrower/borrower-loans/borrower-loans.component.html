@@ -2,10 +2,11 @@
     <li class="p-2 activeTab no-style">Loans</li>
 
     <ul *ngIf="!!borrower.loans">
-        <li *ngFor="let loan of borrower.loans">{{loan.name}}</li>
+        <li *ngFor="let loan of borrower.loans">
+            <a routerLink="/loan" (click)="onSelectLoan(loan)">{{loan.name}}</a>
+        </li>
     </ul>
 
-
-    <span *ngIf="!borrower.loans">No loans</span>
+    <span *ngIf="borrower.loans?.length === 0" class="px-3">No loans</span>
     
 </ul>

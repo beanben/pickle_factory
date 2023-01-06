@@ -48,27 +48,8 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
     queryset = Borrower.objects.all()
     serializer_class = BorrowerSerializer
 
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance)
-    #     pdb.set_trace()
-    #     return Response(serializer.data)
-
-
     def get_queryset(self):
-        # pdb.set_trace()
         return self.queryset.prefetch_related('loan_set')
-
-    # # GET all related loans !!
-    # def get_serializer_context(self):
-    #     context = super().get_serializer_context()
-
-    #     get_loans = False
-    #     if 'loans' in self.request.get_full_path():
-    #         get_loans = True
-
-    #     context.update({"get_loans": get_loans})
-    #     return context
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
