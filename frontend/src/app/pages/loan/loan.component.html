@@ -96,10 +96,13 @@
             
             <div class="row p-4">
                 <div class="col" >
-                    <ng-container *ngIf="tabActive === 'stakeholders'">
-                        <!-- <app-stakeholders [loan]="loanSelected"></app-stakeholders> -->
-                        <app-stakeholders></app-stakeholders>
-                    </ng-container>
+                    <div class="row">
+                        <div class="col px-0 bg-white" style="height: 500px">
+                            <ng-container *ngIf="tabActive === 'stakeholders'">
+                                <app-stakeholders></app-stakeholders>
+                            </ng-container>
+                        </div>
+                    </div>
                 </div>
             </div>
 

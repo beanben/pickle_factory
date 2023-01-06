@@ -16,44 +16,40 @@
     (removeIsConfirmed)="onRemove($event)">
 </app-borrower-modal>
 
-<div class="row">
-    <div class="col px-0 bg-white" style="height: 500px">
-        <ul class="list-group list-group-horizontal">
-            <li class="p-2 sectionTitle listNoStyle">Details</li>
-         </ul>
 
-         <div class="row">
-            <div class="col-8 offset-2 text-center">
+<ul class="list-group list-group-horizontal">
+    <li class="p-2 sectionTitle listNoStyle">Details</li>
+    </ul>
 
-                <div class="row px-2 tableTitle">
-                    <div class="col">Borrower</div>
-                    <div class="col">Lender(s)</div>
-                </div>
-        
-                <div class="row px-2 mt-2">
-                    <div class="col my-auto highlight rounded">
-                       <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
-                        <div *ngIf="!!loan.borrower" class="">
-                            <div class="row p-2 borrower-name">
-                                <div class="col">{{loan.borrower.name}}</div>
-                                <div class="col-auto text-center edit">
-                                    <div class="d-flex"> 
-                                        <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
-                                        <app-delete (onOpenModalDelete)="openRemoveBorrower = true"></app-delete>
-                                    </div>
-                                </div>   
+    <div class="row">
+    <div class="col-8 offset-2 text-center">
+
+        <div class="row px-2 tableTitle">
+            <div class="col">Borrower</div>
+            <div class="col">Lender(s)</div>
+        </div>
+
+        <div class="row px-2 mt-2">
+            <div class="col my-auto highlight rounded">
+                <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
+                <div *ngIf="!!loan.borrower" class="">
+                    <div class="row p-2 borrower-name">
+                        <div class="col">{{loan.borrower.name}}</div>
+                        <div class="col-auto text-center edit">
+                            <div class="d-flex"> 
+                                <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
+                                <app-delete (onOpenModalDelete)="openRemoveBorrower = true"></app-delete>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-primary" disabled>Add Lender</button>
+                        </div>   
                     </div>
                 </div>
-
             </div>
-         </div>
+            <div class="col">
+                <button class="btn btn-primary" disabled>Add Lender</button>
+            </div>
+        </div>
 
     </div>
-</div>
+    </div>
 
  

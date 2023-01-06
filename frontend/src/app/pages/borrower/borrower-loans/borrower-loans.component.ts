@@ -28,7 +28,6 @@ export class BorrowerLoansComponent implements OnInit{
 
         if(Object.keys(borrower).length !=0 ){
           this.borrower = borrower;
-          this.getBorrowerLoans(borrower);
         }
       })
   }
@@ -39,12 +38,12 @@ export class BorrowerLoansComponent implements OnInit{
     }
   }
 
-  getBorrowerLoans(borrower: Borrower){
-    this._borrowerService.getBorrowerLoans(borrower)
-      .subscribe((loans)=> {
-        this.loans = loans;
-        console.log("getBorrowerLoans:", loans)
-      })
-  }  
+  // getBorrowerLoans(borrower: Borrower){
+  //   this._borrowerService.getBorrowerLoans(borrower)
+  //     .subscribe((loans)=> {
+  //       this.loans = loans;
+  //       console.log("getBorrowerLoans:", loans)
+  //     })
+  // }  
 
 }

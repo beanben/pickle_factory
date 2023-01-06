@@ -2,8 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
-from .serializers.loan import LoanSerializer
-from .serializers.borrower import BorrowerSerializer
+from .serializers import LoanSerializer, BorrowerSerializer
 from core.mixins import AuthorQuerySetMixin
 import pdb
 
@@ -55,16 +54,21 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
     #     pdb.set_trace()
     #     return Response(serializer.data)
 
-    # GET all related loans !!
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
 
-        get_loans = False
-        if 'loans' in self.request.get_full_path():
-            get_loans = True
+    def get_queryset(self):
+        # pdb.set_trace()
+        return self.queryset.prefetch_related('loan_set')
 
-        context.update({"get_loans": get_loans})
-        return context
+    # # GET all related loans !!
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+
+    #     get_loans = False
+    #     if 'loans' in self.request.get_full_path():
+    #         get_loans = True
+
+    #     context.update({"get_loans": get_loans})
+    #     return context
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

@@ -1,4 +1,11 @@
-<ul class="list-group list-group-horizontal">
-    <li class="p-2 activeTab">Loans</li>
+<ul class="list-group">
+    <li class="p-2 activeTab no-style">Loans</li>
 
+    <ul *ngIf="!!borrower.loans">
+        <li *ngFor="let loan of borrower.loans">{{loan.name}}</li>
+    </ul>
+
+
+    <span *ngIf="!borrower.loans">No loans</span>
+    
 </ul>

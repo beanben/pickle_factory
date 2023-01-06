@@ -60,7 +60,7 @@
                         <li  *ngFor="let borrower of borrowers; let i = index" class="mx-1">
                             <div class="p-1 border border-info mb-2 d-flex align-items-center"
                                 (click)="onBorrowerSelected(i)"
-                                [ngClass]="{'loan-selected': borrower.id == borrowerSelected.id}"
+                                [ngClass]="{'borrower-selected': borrower.id == borrowerSelected.id}"
                                 style="height: 50px ; border-radius: 20px">
                                 <div class="m-0 p-0 mx-auto text-wrap text-center">{{borrower.name | initials}}</div>
                             </div>
@@ -92,8 +92,12 @@
             </div>
             
             <div class="row p-4">
-                <div class="col bg-white" style="height: 800px">
-                    <app-borrower-loans></app-borrower-loans>
+                <div class="col" >
+                    <div class="row">
+                        <div class="col px-0 bg-white" style="height: 500px">
+                            <app-borrower-loans></app-borrower-loans>
+                        </div>
+                    </div>
                 </div>
             </div>
 
