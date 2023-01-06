@@ -14,7 +14,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   openAddBorrowerModal = false;
   loan = {} as Loan;
   mode = '';
-  private subscr: Subscription = Subscription.EMPTY
+  private subscr: Subscription = Subscription.EMPTY;
   
   constructor(
     private _loanService: LoanService

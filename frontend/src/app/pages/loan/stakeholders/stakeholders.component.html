@@ -25,14 +25,16 @@
                 </div>
         
                 <div class="row px-2 mt-2">
-                    <div class="col" [ngClass]="{'d-flex align-items-center' : !!loan.borrower}">
+                    <div class="col my-auto highlight rounded">
                        <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button>
-                        <span *ngIf="!!loan.borrower" class="mx-auto">
-                            <div class="d-flex justify-content-between">
-                                <span class="me-auto">{{loan.borrower.name}}</span>
-                                <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
+                        <div *ngIf="!!loan.borrower" class="">
+                            <div class="row p-2 borrower-name">
+                                <div class="col">{{loan.borrower.name}}</div>
+                                <div class="col-auto text-center edit">
+                                    <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
+                                </div>   
                             </div>
-                        </span>
+                        </div>
                     </div>
                     <div class="col">
                         <button class="btn btn-primary" disabled>Add Lender</button>

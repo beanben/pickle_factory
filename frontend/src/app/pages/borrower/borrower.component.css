@@ -10,8 +10,8 @@ li {
     cursor: pointer;
 }
 
-.loan-selected {
-    background-color: #0dcaf026;
+.borrower-selected {
+    background-color: rgba(13, 202, 240, 0.15);
 }
 
 .scrollbar-thin {
@@ -28,7 +28,7 @@ li {
 app-edit {
     visibility: hidden;
 }
-.loan-selected:hover app-edit {
+.borrower-selected:hover app-edit {
     visibility: visible;
 }
 .nowrap {
