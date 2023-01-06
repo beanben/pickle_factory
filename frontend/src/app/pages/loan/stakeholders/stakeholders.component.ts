@@ -12,6 +12,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   tabActive = "funders";
   openBorrowerModal = false;
   openAddBorrowerModal = false;
+  openRemoveBorrower = false;
   loan = {} as Loan;
   mode = '';
   private subscr: Subscription = Subscription.EMPTY;
@@ -45,6 +46,10 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
     if(this.subscr){
       this.subscr.unsubscribe()
     }
+  }
+
+  onRemove(loan:Loan | null){
+    this.openRemoveBorrower = false;
   }
 
   

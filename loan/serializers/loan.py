@@ -30,10 +30,13 @@ class LoanSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data["name"]
-        
-        if validated_data["borrower"]:
-            borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
-            instance.borrower = borrower
+
+        try:
+            if validated_data["borrower"]:
+                borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
+                instance.borrower = borrower
+        except KeyError:
+            instance.borrower = None
         
         instance.save()
         return instance

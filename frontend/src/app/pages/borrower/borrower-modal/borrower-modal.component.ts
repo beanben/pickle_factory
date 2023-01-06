@@ -15,10 +15,11 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   @Input() mode = "";
   @Input() borrower = {} as Borrower;
-  loan = {} as Loan;
+  @Input() loan = {} as Loan;
   @Output() modalSaveBorrower = new EventEmitter<Borrower|null>();
   @Output() modalSaveLoanBorrower = new EventEmitter<Borrower|null>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
+  @Output() removeIsConfirmed = new EventEmitter<Loan | null>()
   borrowers: Borrower[] = [];
   errors: string[] = new Array();
   form: FormGroup = this.fb.group({
@@ -107,6 +108,7 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
     } else {
       this.modalSaveBorrower.emit(null);
       this.modalSaveLoanBorrower.emit(null);
+      this.removeIsConfirmed.emit(null);
     }
   };
 
@@ -146,6 +148,16 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
           let loan: Loan = res.response;
           this.modalSaveLoanBorrower.emit(loan.borrower);
         })
+  }
+
+  removeBorrower(){
+    this.loan.borrower = undefined;
+    this._loanService.updateLoan(this.loan)
+        .then((res) => {
+          let loan: Loan = res.response;
+          this.removeIsConfirmed.emit(loan);
+        })
+
   }
 
   getLoanSub(){

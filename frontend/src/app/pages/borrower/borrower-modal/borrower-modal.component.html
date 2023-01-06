@@ -107,6 +107,18 @@
             </div>
           </ng-container>
 
+          <ng-container *ngIf="mode === 'remove'">
+            <div class="modal-body">
+              <p class="text-center my-auto">Please confirm you want to remove the Borrower from this loan</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary me-auto" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-success" (click)="removeBorrower()">Confirm</button>
+            </div>
+        </ng-container>
+
+          
+
       </div>
     </div>
   </div>

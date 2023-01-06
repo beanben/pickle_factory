@@ -9,6 +9,12 @@
     [borrower] = "loan.borrower!"
     (modalSaveLoanBorrower)="onSave($event)">
 </app-borrower-modal>
+<app-borrower-modal
+    *ngIf="openRemoveBorrower"
+    [mode] = "'remove'"
+    [loan] = "loan"
+    (removeIsConfirmed)="onRemove($event)">
+</app-borrower-modal>
 
 <div class="row">
     <div class="col px-0 bg-white" style="height: 500px">
@@ -31,8 +37,10 @@
                             <div class="row p-2 borrower-name">
                                 <div class="col">{{loan.borrower.name}}</div>
                                 <div class="col-auto text-center edit">
-                                    <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
-                                    <!-- <app-delete></app-delete> -->
+                                    <div class="d-flex"> 
+                                        <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
+                                        <app-delete (onOpenModalDelete)="openRemoveBorrower = true"></app-delete>
+                                    </div>
                                 </div>   
                             </div>
                         </div>
