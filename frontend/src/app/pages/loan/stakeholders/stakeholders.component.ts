@@ -11,6 +11,7 @@ import { Loan } from '../loan';
 export class StakeholdersComponent implements OnInit, OnDestroy {
   tabActive = "funders";
   openBorrowerModal = false;
+  openAddBorrowerModal = false;
   loan = {} as Loan;
   mode = '';
   private subscr: Subscription = Subscription.EMPTY
@@ -26,6 +27,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
 
   onSave(loan: Loan | null){
     this.openBorrowerModal = false;
+    this.openAddBorrowerModal = false
   }
 
   onOpenCreate(){

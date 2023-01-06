@@ -4,9 +4,9 @@
     (modalSaveLoanBorrower)="onSave($event)">
 </app-borrower-modal>
 <app-borrower-modal 
-    *ngIf="openBorrowerModal && !!loan.borrower"
+    *ngIf="openAddBorrowerModal"
     [mode] = "'add'"
-    [borrower] = "loan.borrower"
+    [borrower] = "loan.borrower!"
     (modalSaveLoanBorrower)="onSave($event)">
 </app-borrower-modal>
 
@@ -30,7 +30,7 @@
                         <span *ngIf="!!loan.borrower" class="mx-auto">
                             <div class="d-flex justify-content-between">
                                 <span class="me-auto">{{loan.borrower.name}}</span>
-                                <app-edit (onOpenModalEdit)="openBorrowerModal = true"></app-edit>
+                                <app-edit (onOpenModalEdit)="openAddBorrowerModal = true"></app-edit>
                             </div>
                         </span>
                     </div>
