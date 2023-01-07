@@ -20,7 +20,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   openLoanModal = false;
   isCreate = false;
   indexLoan = -1;
-  tabActive = 'stakeholders';
+  tabActive = '';
   overflowAuto = false;
   private subscr: Subscription = Subscription.EMPTY
 
@@ -32,6 +32,8 @@ export class LoanComponent implements OnInit, OnDestroy {
   ngOnInit(): void { 
     this.getLoans();
     this.isTabCollapsed();
+    // this.setTabSub(this.tabActive);
+    this.getLoanTabActive();
   }
 
   getLoans(){
@@ -63,7 +65,20 @@ export class LoanComponent implements OnInit, OnDestroy {
   expandTab(){
     this._loanService.setLoanTabSub(false)
   }
+  setTabSub(tabActive: string){
+    this.tabActive = tabActive;
+    this._loanService.setLoanTabActiveSub(tabActive);
+  }
+  getLoanTabActive(){
+    this._loanService.getLoanTabActiveSub()
+      .subscribe((tabActive) => {
+        this.tabActive = tabActive;
 
+        if(tabActive === ''){
+          this.tabActive = 'property'
+        }
+      })
+  }
 
   onOpenCreate(){
     this.loanSelected = {} as Loan;

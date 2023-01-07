@@ -13,6 +13,7 @@ export class LoanService {
   relativeUrl = "/api/loan";
   loanSub = new BehaviorSubject<Loan>({} as Loan);
   loanTabSub = new BehaviorSubject<boolean>(false);
+  loanTabActiveSub = new BehaviorSubject<string>('');
 
   constructor(
     private http: HttpClient,
@@ -31,6 +32,12 @@ export class LoanService {
   }
   setLoanTabSub(isCollapsed: boolean){
     return this.loanTabSub.next(isCollapsed);
+  }
+  getLoanTabActiveSub():Observable<string>{
+    return this.loanTabActiveSub.asObservable() 
+  }
+  setLoanTabActiveSub(tabActive: string){
+    return this.loanTabActiveSub.next(tabActive);
   }
 
 

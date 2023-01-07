@@ -82,10 +82,10 @@
                     
                             <div class="d-flex justify-content-between">
                                 <ul class="list-group list-group-horizontal">
-                                    <li class="p-2" (click)="tabActive = 'stakeholders'" [ngClass]="tabActive === 'stakeholders' ? 'activeTab' : 'tab'">Stakeholders</li>
-                                    <li class="p-2 text-disabled" (click)="tabActive = 'property'" [ngClass]="tabActive === 'property' ? 'activeTab' : 'tab'">Property</li>
-                                    <li class="p-2 text-disabled" (click)="tabActive = 'structure'" [ngClass]="tabActive === 'structure' ? 'activeTab' : 'tab'">Loan structure</li>
-                                    <li class="p-2 text-disabled" (click)="tabActive = 'financials'" [ngClass]="tabActive === 'financials' ? 'activeTab' : 'tab'">Financials</li>
+                                    <li class="p-2" (click)="setTabSub('stakeholders')" [ngClass]="tabActive === 'stakeholders' ? 'activeTab' : 'tab'">Stakeholders</li>
+                                    <li class="p-2" (click)="setTabSub('property')" [ngClass]="tabActive === 'property' ? 'activeTab' : 'tab'">Property</li>
+                                    <li class="p-2 text-disabled" (click)="setTabSub('structure')" [ngClass]="tabActive === 'structure' ? 'activeTab' : 'tab'">Loan structure</li>
+                                    <li class="p-2 text-disabled" (click)="setTabSub('financials')" [ngClass]="tabActive === 'financials' ? 'activeTab' : 'tab'">Financials</li>
                                 </ul>
                             </div>    
                              
@@ -100,6 +100,9 @@
                         <div class="col px-0 bg-white" style="height: 500px">
                             <ng-container *ngIf="tabActive === 'stakeholders'">
                                 <app-stakeholders></app-stakeholders>
+                            </ng-container>
+                            <ng-container *ngIf="tabActive === 'property'">
+                                <app-property></app-property>
                             </ng-container>
                         </div>
                     </div>
