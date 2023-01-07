@@ -5,13 +5,15 @@ from loan.models.loan import Loan
 from loan.models.borrower import Borrower
 import pdb
 
-class LoanNestedSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    id = serializers.CharField()
-
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.CharField()
+
+class LoanNestedSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    id = serializers.CharField()
+    borrower = BorrowerNestedSerializer()
+
 
 class BorrowerSerializer(serializers.ModelSerializer):
     loans = LoanNestedSerializer(many=True)

@@ -28,7 +28,12 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
 
   onSave(loan: Loan | null){
     this.openBorrowerModal = false;
-    this.openAddBorrowerModal = false
+    this.openAddBorrowerModal = false;
+
+    if(loan){
+      this.loan = loan;
+      this.loan.borrower = loan.borrower;
+    }
   }
 
   onOpenCreate(){
@@ -38,34 +43,11 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   getLoanSub(){
     this.subscr = this._loanService.getLoanSub()
       .subscribe((loan) => {
-        
-        if(!loan.borrower && !!loan.id){
-          this.getLoan(loan);
-        } else {
+
           this.loan = loan;
-        }
       })
   }
 
-  getLoan(loan: Loan){
-    this._loanService.getLoan(loan)
-      .subscribe((loan) => {
-        this.loan = loan;
-      })
-  }
-
-  // getLoanSub(){
-  //   this.subscr = this._loanService.getLoanSub()
-  //     .pipe(
-  //       map(loan => {return loan}),
-  //       mergeMap(loan => {
-  //         if(!loan.borrower && !!loan.id){
-  //           return this._loanService.getLoan(loan)
-  //         }
-  //       })
-  //     )
-  //     .subscribe( loan => this.loan = loan)
-  // }
 
 
   ngOnDestroy(): void {
