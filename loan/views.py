@@ -2,7 +2,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
-from .serializers import LoanSerializer, BorrowerSerializer
+from .models.building import Building
+from .serializers import LoanSerializer, BorrowerSerializer, BuildingSerializer
 from core.mixins import AuthorQuerySetMixin
 import pdb
 
@@ -31,7 +32,6 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
             'response': response.data
         })
 
-# <===== Borrower =====>
 class BorrowerList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Borrower.objects.all()
     serializer_class = BorrowerSerializer
@@ -56,5 +56,29 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
         return Response({
             'status': "success",
             'message': 'borrower updated',
+            'response': response.data
+        })
+
+class BuildingList(AuthorQuerySetMixin, generics.ListCreateAPIView):
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            'status': "success",
+            'message': "building created",
+            'response': response.data
+        })
+
+class BuildingDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            'status': "success",
+            'message': 'building updated',
             'response': response.data
         })

@@ -9,7 +9,7 @@ import { Component, OnInit } from "@angular/core";
     styles: [
         '.text-grey { color: rgba(128,128,128,1) }',
         '.font-small { font-size: 10px}',
-        'img {width: 10px}'
+        'img {width: 7px}'
     ]
 })
 export class RequiredComponent implements OnInit{

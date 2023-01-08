@@ -11,10 +11,12 @@ import { Loan } from '../loan';
 export class LoanModalComponent implements OnInit {
   displayStyle = "block";
   mode = "";
+  errors: string[] = new Array();
+  
   @Output() modalSaveLoan = new EventEmitter<Loan|null>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() loan = {} as Loan;
-  errors: string[] = new Array();
+  
   form: FormGroup = this.fb.group({
     name: ['', Validators.required]
   });

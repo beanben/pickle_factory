@@ -3,6 +3,7 @@ from loan.models.borrower import Borrower
 from rest_framework.serializers import ValidationError
 from loan.models.loan import Loan
 from loan.models.borrower import Borrower
+from loan.models.building import Building
 import pdb
 
 class BorrowerNestedSerializer(serializers.Serializer):
@@ -63,6 +64,31 @@ class LoanSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data["name"]
+
+        try:
+            if validated_data["borrower"]:
+                borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
+                instance.borrower = borrower
+        except KeyError:
+            instance.borrower = None
+        
+        instance.save()
+        return instance
+
+
+class BuildingSerializer(serializers.ModelSerializer):
+    borrower = BorrowerNestedSerializer(required=False, allow_null=True)
+
+    class Meta:
+        model = Building
+        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'borrower']
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data["name"]
+        instance.street_name = validated_data["street_name"]
+        instance.postcode = validated_data["postcode"]
+        instance.city = validated_data["city"]
+        instance.country = validated_data["country"]
 
         try:
             if validated_data["borrower"]:

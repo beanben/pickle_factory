@@ -30,6 +30,7 @@ import { BorrowerModalComponent } from './pages/borrower/borrower-modal/borrower
 import { BorrowerLoansComponent } from './pages/borrower/borrower-loans/borrower-loans.component';
 import { DeleteComponent } from './shared/delete.component';
 import { PropertyComponent } from './pages/property/property.component';
+import { PropertyModalComponent } from './pages/property/property-modal/property-modal.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { PropertyComponent } from './pages/property/property.component';
     BorrowerModalComponent,
     BorrowerLoansComponent,
     DeleteComponent,
-    PropertyComponent
+    PropertyComponent,
+    PropertyModalComponent
   ],
   imports: [
     BrowserModule,

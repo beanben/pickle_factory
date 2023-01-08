@@ -75,7 +75,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         this.tabActive = tabActive;
 
         if(tabActive === ''){
-          this.tabActive = 'property'
+          this.tabActive = 'stakeholders'
         }
       })
   }

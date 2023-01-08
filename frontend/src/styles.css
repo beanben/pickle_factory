@@ -18,3 +18,11 @@ body { margin: 0; }
 .text-disabled {
     color:rgba(192, 192, 192, 0.5)
 }
+
+.modal{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-centered{
+    top: 7em
+}

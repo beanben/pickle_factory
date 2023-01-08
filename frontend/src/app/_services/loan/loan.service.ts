@@ -1,8 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Loan } from 'src/app/pages/loan/loan';
-import { environment } from 'src/environments/environment';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 

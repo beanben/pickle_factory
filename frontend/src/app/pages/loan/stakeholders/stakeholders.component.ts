@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
+import { Borrower } from '../../borrower/borrower';
 import { Loan } from '../loan';
 
 @Component({
@@ -26,13 +27,12 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
     this.getLoanSub();
   }
 
-  onSave(loan: Loan | null){
+  onSave(borrower: Borrower | null){
     this.openBorrowerModal = false;
     this.openAddBorrowerModal = false;
 
-    if(loan){
-      this.loan = loan;
-      this.loan.borrower = loan.borrower;
+    if(borrower){
+      this.loan.borrower = borrower;
     }
   }
 

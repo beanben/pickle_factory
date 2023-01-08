@@ -18,7 +18,7 @@ export class AuthService {
   currentUser = this.userSub.asObservable();
 
   appRoot = "auth";
-  urlRoot = `${environment.API_BASE_URL}/${this.appRoot}`
+  urlRoot = `${environment.BASE_URL}/${this.appRoot}`
 
   httpOptions = {
     headers: new HttpHeaders({ 

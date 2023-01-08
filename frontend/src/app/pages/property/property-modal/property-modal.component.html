@@ -1,0 +1,87 @@
+<div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+    <div class="modal-dialog modal-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Property</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()"></button>
+            </div>
+
+              <div class="modal-body d-flex align-items-center">    
+                <form [formGroup]="form" #f="ngForm" class="mx-auto">
+
+                  <div class="form-group mb-3">
+                  <app-required></app-required>
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="name"
+                            formControlName="name"
+                            name="name"
+                            placeholder="Name">
+                      <label for="name">Name</label>
+                    </div>
+                  </div>
+                  <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
+                      class="alert alert-danger">
+                      Please enter the name of the property
+                  </div>
+
+                  <div class="form-group mb-3">
+                      <div class="form-floating">
+                        <input type="text" class="form-control" id="street_name"
+                              formControlName="street_name"
+                              name="street_name"
+                              placeholder="Street">
+                        <label for="street_name">Street</label>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="postcode"
+                                formControlName="postcode"
+                                name="postcode"
+                                placeholder="Postcode">
+                          <label for="postcode">Postcode</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <app-required></app-required>
+                          <div class="form-floating">
+                            <input type="text" class="form-control" id="city"
+                                  formControlName="city"
+                                  name="city"
+                                  placeholder="City">
+                            <label for="city">City</label>
+                          </div>
+                        </div>
+                        <div *ngIf="(city?.invalid && (city?.dirty || city?.touched)) || (f.submitted && city?.invalid)"
+                            class="alert alert-danger">
+                            Please confirm the city
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="form-floating">
+                              <input type="text" class="form-control" id="country"
+                                    formControlName="country"
+                                    name="country"
+                                    placeholder="Country">
+                              <label for="country">Country</label>
+                            </div>
+                        </div>
+
+                  <div *ngFor="let error of errors " class="alert alert-danger text-center"> 
+                    {{error}}
+                  </div>
+                </form>
+              </div>
+
+      
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
+                  <button type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
+              </div>
+
+        </div>
+    </div>
+  </div>

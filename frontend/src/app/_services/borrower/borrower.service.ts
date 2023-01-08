@@ -10,7 +10,7 @@ import { SharedService } from '../shared/shared.service';
   providedIn: 'root'
 })
 export class BorrowerService {
-  relativeUrl = "/api/loan/borrower";
+  relativeUrl = "/api/borrower";
   borrowerSub = new BehaviorSubject<Borrower>({} as Borrower);
   borrowerTabSub = new BehaviorSubject<boolean>(false);
 
@@ -98,7 +98,7 @@ export class BorrowerService {
   }
 
   getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
-    const url = `${this.relativeUrl}/${borrower.id}/loans`;
+    const url = `${this.relativeUrl}/${borrower.id}`;
 
     return this.http.get<Loan[]>(url)
       .pipe(
