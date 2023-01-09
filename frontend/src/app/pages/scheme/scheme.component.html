@@ -7,7 +7,8 @@
 <div class="row m-0 full-height">
     <div class="col">
 
-        <ng-container *ngIf="!!scheme; else noScheme">
+
+        <ng-container *ngIf="!!scheme.name; else noScheme">
             <div class="row mb-3 p-2">
                 <div class="col-auto fw-bold">
                     {{scheme.name}}
@@ -27,7 +28,6 @@
                     </ul>
                 </div>
             </div>
-
 
         </ng-container>
 
