@@ -4,14 +4,14 @@ from .views import (
     LoanDetail,
     BorrowerList,
     BorrowerDetail,
-    BuildingList,
-    BuildingDetail
+    SchemeList,
+    SchemeDetail
 )
 
-building_patterns = ([
-    path('', BuildingList.as_view()),
-    path('<uuid:pk>/', BuildingDetail.as_view()),
-], 'building')
+scheme_patterns = ([
+    path('', SchemeList.as_view()),
+    path('<uuid:pk>/', SchemeDetail.as_view()),
+], 'scheme')
 
 borrower_patterns = ([
     path('', BorrowerList.as_view()),
@@ -26,5 +26,5 @@ loan_patterns = ([
 urlpatterns = [
     path('loan/', include(loan_patterns)),
     path('borrower/', include(borrower_patterns)),
-    path('borrower/<uuid:pk>/building', include(building_patterns)),
+    path('loan/<uuid:pk>/scheme', include(scheme_patterns)),
 ]

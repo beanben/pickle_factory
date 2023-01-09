@@ -12,7 +12,7 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
 import { authInterceptorProviders } from './_services/auth/auth.interceptor';
@@ -29,8 +29,8 @@ import { BorrowerComponent } from './pages/borrower/borrower.component';
 import { BorrowerModalComponent } from './pages/borrower/borrower-modal/borrower-modal.component';
 import { BorrowerLoansComponent } from './pages/borrower/borrower-loans/borrower-loans.component';
 import { DeleteComponent } from './shared/delete.component';
-import { PropertyComponent } from './pages/property/property.component';
-import { PropertyModalComponent } from './pages/property/property-modal/property-modal.component';
+import { SchemeComponent } from './pages/scheme/scheme.component';
+import { SchemeModalComponent } from './pages/scheme/scheme-modal/scheme-modal.component';
 
 @NgModule({
   declarations: [
@@ -56,8 +56,8 @@ import { PropertyModalComponent } from './pages/property/property-modal/property
     BorrowerModalComponent,
     BorrowerLoansComponent,
     DeleteComponent,
-    PropertyComponent,
-    PropertyModalComponent
+    SchemeComponent,
+    SchemeModalComponent
   ],
   imports: [
     BrowserModule,
@@ -65,6 +65,7 @@ import { PropertyModalComponent } from './pages/property/property-modal/property
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    // HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
   bootstrap: [AppComponent]

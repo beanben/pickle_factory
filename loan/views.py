@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
-from .models.building import Building
-from .serializers import LoanSerializer, BorrowerSerializer, BuildingSerializer
+from .models.scheme import Scheme
+from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer
 from core.mixins import AuthorQuerySetMixin
 import pdb
 
@@ -23,6 +23,9 @@ class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
+
+    def get_queryset(self):
+        return self.queryset.prefetch_related('schemes')
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -49,7 +52,7 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
     serializer_class = BorrowerSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('loan_set')
+        return self.queryset.prefetch_related('loans')
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -59,26 +62,26 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
             'response': response.data
         })
 
-class BuildingList(AuthorQuerySetMixin, generics.ListCreateAPIView):
-    queryset = Building.objects.all()
-    serializer_class = BuildingSerializer
+class SchemeList(AuthorQuerySetMixin, generics.ListCreateAPIView):
+    queryset = Scheme.objects.all()
+    serializer_class = SchemeSerializer
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return Response({
             'status': "success",
-            'message': "building created",
+            'message': "scheme created",
             'response': response.data
         })
 
-class BuildingDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
-    queryset = Building.objects.all()
-    serializer_class = BuildingSerializer
+class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
+    queryset = Scheme.objects.all()
+    serializer_class = SchemeSerializer
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
         return Response({
             'status': "success",
-            'message': 'building updated',
+            'message': 'scheme updated',
             'response': response.data
         })

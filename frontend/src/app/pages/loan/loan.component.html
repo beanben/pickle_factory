@@ -83,7 +83,7 @@
                             <div class="d-flex justify-content-between">
                                 <ul class="list-group list-group-horizontal">
                                     <li class="p-2" (click)="setTabSub('stakeholders')" [ngClass]="tabActive === 'stakeholders' ? 'activeTab' : 'tab'">Stakeholders</li>
-                                    <li class="p-2" (click)="setTabSub('property')" [ngClass]="tabActive === 'property' ? 'activeTab' : 'tab'">Property</li>
+                                    <li class="p-2" (click)="setTabSub('scheme')" [ngClass]="tabActive === 'scheme' ? 'activeTab' : 'tab'">Scheme</li>
                                     <li class="p-2 text-disabled" (click)="setTabSub('structure')" [ngClass]="tabActive === 'structure' ? 'activeTab' : 'tab'">Loan structure</li>
                                     <li class="p-2 text-disabled" (click)="setTabSub('financials')" [ngClass]="tabActive === 'financials' ? 'activeTab' : 'tab'">Financials</li>
                                 </ul>
@@ -101,8 +101,20 @@
                             <ng-container *ngIf="tabActive === 'stakeholders'">
                                 <app-stakeholders></app-stakeholders>
                             </ng-container>
-                            <ng-container *ngIf="tabActive === 'property'">
-                                <app-property></app-property>
+
+                            <ng-container *ngIf="tabActive === 'scheme'">
+
+                                <ng-container *ngIf="schemes.length !== 0; else noScheme">
+                                    <span *ngFor="let scheme of schemes">
+                                        <app-scheme [scheme]="scheme"></app-scheme>
+                                    </span>
+                                </ng-container>
+
+                                <ng-template #noScheme>
+                                    <app-scheme></app-scheme>
+                                </ng-template>
+                                
+                                
                             </ng-container>
                         </div>
                     </div>

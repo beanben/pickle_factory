@@ -3,7 +3,7 @@ from loan.models.borrower import Borrower
 from rest_framework.serializers import ValidationError
 from loan.models.loan import Loan
 from loan.models.borrower import Borrower
-from loan.models.building import Building
+from loan.models.scheme import Scheme
 import pdb
 
 class BorrowerNestedSerializer(serializers.Serializer):
@@ -14,6 +14,14 @@ class LoanNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.CharField()
     borrower = BorrowerNestedSerializer()
+
+class SchemeNestedSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    name = serializers.CharField()
+    street_name = serializers.CharField()
+    postcode = serializers.CharField()
+    city = serializers.CharField()
+    country = serializers.CharField()
 
 
 class BorrowerSerializer(serializers.ModelSerializer):
@@ -42,10 +50,11 @@ class BorrowerSerializer(serializers.ModelSerializer):
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
+    schemes = SchemeNestedSerializer(many=True)
     
     class Meta:
         model = Loan
-        fields = ['id', 'name', 'borrower']
+        fields = ['id', 'name', 'borrower', 'schemes']
 
     def create(self, validated_data):
         author_firm = self.context.get("author_firm")
@@ -76,28 +85,38 @@ class LoanSerializer(serializers.ModelSerializer):
         return instance
 
 
-class BuildingSerializer(serializers.ModelSerializer):
-    borrower = BorrowerNestedSerializer(required=False, allow_null=True)
+class SchemeSerializer(serializers.ModelSerializer):
+    loan_id = serializers.CharField()
 
     class Meta:
-        model = Building
-        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'borrower']
+        model = Scheme
+        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'loan_id']
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data["name"]
-        instance.street_name = validated_data["street_name"]
-        instance.postcode = validated_data["postcode"]
-        instance.city = validated_data["city"]
-        instance.country = validated_data["country"]
+    def create(self, validated_data):
+        loan_id = validated_data.pop("loan_id")
+        loan = Loan.objects.get(id=loan_id)
 
-        try:
-            if validated_data["borrower"]:
-                borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
-                instance.borrower = borrower
-        except KeyError:
-            instance.borrower = None
+        validated_data.update({"loan": loan})
+        # pdb.set_trace()
+        scheme = Scheme.objects.create(**validated_data)
+        # pdb.set_trace()
+        return scheme
+    # def update(self, instance, validated_data):
+    #     instance.name = validated_data["name"]
+    #     instance.street_name = validated_data["street_name"]
+    #     instance.postcode = validated_data["postcode"]
+    #     instance.city = validated_data["city"]
+    #     instance.country = validated_data["country"]
+    #     instance.loan = validated_data["loan"]
+
+    #     # try:
+    #     #     if validated_data["borrower"]:
+    #     #         borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
+    #     #         instance.borrower = borrower
+    #     # except KeyError:
+    #     #     instance.borrower = None
         
-        instance.save()
-        return instance
+    #     instance.save()
+    #     return instance
 
 

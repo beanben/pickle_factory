@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
+import { Scheme } from '../scheme/scheme';
 import { Loan } from './loan';
 
 @Component({
@@ -14,6 +15,7 @@ export class LoanComponent implements OnInit, OnDestroy {
   arrowRightBlack = "assets/images/arrowRightBlack.svg";
   buttonPlus = "assets/images/buttonPlus.svg";
   loans: Loan[] = [];
+  schemes: Scheme[] = [];
   loanSelected = {} as Loan;
   loanHovered = {} as Loan;
   indexHover = 0;
@@ -32,7 +34,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   ngOnInit(): void { 
     this.getLoans();
     this.isTabCollapsed();
-    // this.setTabSub(this.tabActive);
     this.getLoanTabActive();
   }
 
@@ -50,6 +51,10 @@ export class LoanComponent implements OnInit, OnDestroy {
         };
 
         this._loanService.setLoanSub(this.loanSelected);
+
+        if(!!this.loanSelected.schemes){
+          this.schemes = this.loanSelected.schemes;
+        }
 
       })
   };
@@ -75,7 +80,7 @@ export class LoanComponent implements OnInit, OnDestroy {
         this.tabActive = tabActive;
 
         if(tabActive === ''){
-          this.tabActive = 'stakeholders'
+          this.tabActive = 'scheme'
         }
       })
   }
@@ -106,6 +111,10 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.loanSelected = this.loans[index];
     this.indexLoan = index;
     this._loanService.setLoanSub(this.loanSelected);
+
+    if(!!this.loanSelected.schemes){
+      this.schemes = this.loanSelected.schemes;
+    }
   };
 
   removeLoan(i: number){

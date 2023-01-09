@@ -50,7 +50,6 @@ export class BorrowerModalComponent implements OnInit, OnDestroy {
     this.initBorrowerForm();
     this.getBorrowers();
     this.getLoanSub();
-    console.log("mode:", this.mode);
   }
 
   initForm(){

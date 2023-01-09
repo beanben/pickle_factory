@@ -3,7 +3,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-              <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Property</h5>
+              <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Scheme</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()"></button>
             </div>
 
@@ -22,7 +22,7 @@
                   </div>
                   <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
                       class="alert alert-danger">
-                      Please enter the name of the property
+                      Please enter the name of the scheme
                   </div>
 
                   <div class="form-group mb-3">
