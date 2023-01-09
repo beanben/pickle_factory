@@ -13,6 +13,7 @@ export class SchemeComponent implements OnInit {
   loan = {} as Loan;
   @Input() scheme = {} as Scheme;
   exist = false;
+  tabActive = "units";
 
   constructor(
     private _loanService: LoanService

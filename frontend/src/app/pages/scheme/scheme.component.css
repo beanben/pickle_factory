@@ -6,3 +6,18 @@
 .full-height {
     height: 100%;
 }
+
+li {
+    list-style-type:none;
+    cursor: pointer;
+}
+.nav-link, .nav-link.active {
+    color: black;
+}
+.activeTab {
+    border-bottom: 2px solid rgba(15, 86, 179, 1);
+    font-weight: 600;
+}
+.tab {
+    border-bottom: 2px solid transparent;
+}

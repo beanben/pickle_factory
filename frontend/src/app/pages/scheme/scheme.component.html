@@ -5,10 +5,10 @@
 </app-scheme-modal>
 
 <div class="row m-0 full-height">
-    <div class="col p-2">
+    <div class="col">
 
         <ng-container *ngIf="!!scheme; else noScheme">
-            <div class="row">
+            <div class="row mb-3 p-2">
                 <div class="col-auto fw-bold">
                     {{scheme.name}}
                 </div>
@@ -16,6 +16,19 @@
                     {{scheme.city}}
                 </div>
             </div>
+
+            <div class="row mb-2">
+                <div class="col px-0">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item px-2" (click)="tabActive = 'units'" [ngClass]="tabActive === 'units' ? 'activeTab' : 'tab'">Units</li>
+                        <li class="nav-item px-2" (click)="tabActive = 'income'" [ngClass]="tabActive === 'income' ? 'activeTab' : 'tab'">Income</li>
+                        <li class="nav-item px-2" (click)="tabActive = 'value'" [ngClass]="tabActive === 'value' ? 'activeTab' : 'tab'">Value</li>
+                        <li class="nav-item px-2" (click)="tabActive = 'development'" [ngClass]="tabActive === 'development' ? 'activeTab' : 'tab'">Development</li>
+                    </ul>
+                </div>
+            </div>
+
+
         </ng-container>
 
         <ng-template #noScheme>
