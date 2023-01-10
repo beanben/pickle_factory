@@ -9,13 +9,18 @@
 
 
         <ng-container *ngIf="!!scheme.name; else noScheme">
-            <div class="row mb-3 p-2 highlightHover">
-                <div class="col-auto fw-bold">
-                    {{scheme.name}}
-                </div>
-                <div class="col">
-                    {{scheme.city}}
-                </div>
+            <div class="row mb-3 p-2 ">
+                <div class="col-auto highlightHover">
+                    <div class="row">
+                        <div class="col-auto fw-bold">
+                            {{scheme.name}}
+                        </div>
+                        <div class="col-auto">
+                            {{scheme.city}}
+                        </div>
+                    </div>
+                    
+                </div> 
             </div>
 
             <div class="row mb-2">

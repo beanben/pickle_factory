@@ -9,7 +9,7 @@
 
             <ng-container *ngIf="mode === 'edit' || mode === 'new'">
               <div class="modal-body d-flex align-items-center">    
-                <form [formGroup]="form" #f="ngForm" class="mx-auto">
+                <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form">
                   <div class="form-group mb-2">
                   <app-required></app-required>
                     <div class="form-floating">
@@ -41,7 +41,7 @@
               <div class="modal-footer">
                   <button type="button" class="btn btn-danger m-2" (click)="mode ='delete'"  *ngIf="mode === 'edit'">Delete</button>
                   <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
-                  <button type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
+                  <button form="form" type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
               </div>
             </ng-container>
 
