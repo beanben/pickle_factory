@@ -47,6 +47,7 @@ export class SchemeModalComponent implements OnInit {
   onSave(){
     if(this.form.valid){
       this.scheme = this.form.value;
+      console.log("this.loan:", this.loan);
       this.scheme.loan_id = this.loan.id;
 
       if(this.scheme.id) {

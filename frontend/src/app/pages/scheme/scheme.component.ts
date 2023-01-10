@@ -10,7 +10,7 @@ import { Scheme } from './scheme';
 })
 export class SchemeComponent implements OnInit {
   openSchemeModal = false;
-  loan = {} as Loan;
+  @Input() loan = {} as Loan;
   @Input() scheme = {} as Scheme;
   exist = false;
   tabActive = "units";
