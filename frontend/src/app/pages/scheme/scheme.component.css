@@ -21,3 +21,7 @@ li {
 .tab {
     border-bottom: 2px solid transparent;
 }
+
+.highlightHover:hover{
+    background: red;
+}

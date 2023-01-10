@@ -5,5 +5,5 @@ export interface Loan {
     id: string;
     name: string;
     borrower?: Borrower;
-    schemes: Scheme[];
+    schemes?: Scheme[];
 }

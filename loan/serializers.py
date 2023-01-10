@@ -18,10 +18,10 @@ class LoanNestedSerializer(serializers.Serializer):
 class SchemeNestedSerializer(serializers.Serializer):
     id = serializers.CharField()
     name = serializers.CharField()
-    street_name = serializers.CharField()
-    postcode = serializers.CharField()
+    street_name = serializers.CharField(allow_blank=True)
+    postcode = serializers.CharField(allow_blank=True)
     city = serializers.CharField()
-    country = serializers.CharField()
+    country = serializers.CharField(allow_blank=True)
 
 
 class BorrowerSerializer(serializers.ModelSerializer):
@@ -50,7 +50,7 @@ class BorrowerSerializer(serializers.ModelSerializer):
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
-    schemes = SchemeNestedSerializer(many=True)
+    schemes = SchemeNestedSerializer(allow_null=True, many=True)
     
     class Meta:
         model = Loan

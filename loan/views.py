@@ -28,6 +28,7 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
         return self.queryset.prefetch_related('schemes')
 
     def update(self, request, *args, **kwargs):
+        # pdb.set_trace()
         response = super().update(request, *args, **kwargs)
         return Response({
             'status': "success",
