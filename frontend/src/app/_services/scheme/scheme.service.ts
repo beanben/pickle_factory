@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { Borrower } from 'src/app/pages/borrower/borrower';
 import { Loan } from 'src/app/pages/loan/loan';
 import { Scheme } from 'src/app/pages/scheme/scheme';
@@ -10,7 +11,7 @@ import { SharedService } from '../shared/shared.service';
   providedIn: 'root'
 })
 export class SchemeService {
-  relativeUrl = "/api/loan";
+  relativeUrl = "/api/scheme";
 
   constructor(
     private http: HttpClient,
@@ -18,11 +19,11 @@ export class SchemeService {
   ) { }
 
   createScheme(scheme: Scheme) {
-    const relativeUrl = `${this.relativeUrl}/${scheme.loan_id}/scheme`;
+    const url = `${this.relativeUrl}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
      
-      this.http.post(relativeUrl, scheme).subscribe({
+      this.http.post(url, scheme).subscribe({
         next: (data) => {
           const result = data as APIResult;
           if (result.status === "success"){
@@ -39,11 +40,11 @@ export class SchemeService {
   };
 
   updateScheme(scheme: Scheme) {
-    const relativeUrl = `${this.relativeUrl}/${scheme.loan_id}/scheme`;
+    const url = `${this.relativeUrl}/${scheme.id}`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
-      this.http.put(relativeUrl, scheme).subscribe({
+      this.http.put(url, scheme).subscribe({
         next: (data) => {
           const result = data as APIResult;
           
@@ -60,6 +61,22 @@ export class SchemeService {
       })
     })
   };
+
+  deleteScheme(scheme: Scheme): Observable<any> {
+    const url = `${this.relativeUrl}/${scheme.id}/`;
+
+    // delete scheme["loan_id"];
+    // console.log("scheme:", scheme);
+
+    const options = {
+      body: scheme
+    }
+
+    return this.http.delete(url, options).pipe(
+      tap(() => console.log('deleteScheme()', Math.random()))
+    ); 
+
+  }
 
 
 }

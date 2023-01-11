@@ -86,3 +86,4 @@ class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
             'message': 'scheme updated',
             'response': response.data
         })
+    

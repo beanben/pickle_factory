@@ -23,5 +23,11 @@ li {
 }
 
 .highlightHover:hover{
-    background: red;
+    background: rgba(13, 202, 240, 0.15);
+}
+app-edit, app-delete {
+    visibility: hidden;
+}
+.highlightHover:hover app-edit, .highlightHover:hover app-delete{
+    visibility: visible;
 }

@@ -74,7 +74,7 @@
 
         <div class="col" *ngIf="!!loanSelected">
 
-            <div class="row bg-white mb-2">
+            <div class="row bg-white">
                 <div class="col">
                     <nav class="navbar navbar-light navbar-expand-lg pb-0">
                         <div class="d-flex flex-column">
@@ -94,30 +94,47 @@
                 </div>
             </div>
             
-            <div class="row p-4">
-                <div class="col" >
-                    <div class="row">
-                        <div class="col px-0 bg-white" style="height: 500px">
-                            <ng-container *ngIf="tabActive === 'stakeholders'">
-                                <app-stakeholders></app-stakeholders>
-                            </ng-container>
-
-                            <ng-container *ngIf="tabActive === 'scheme'">
-
-                                <ng-container *ngIf="schemes.length !== 0; else noScheme">
-                                    <span *ngFor="let scheme of schemes">
-                                        <app-scheme [scheme]="scheme"></app-scheme>
-                                    </span>
+            <div class="row overflow-auto" style="height: 700px">
+                <div class="col">
+                    <!-- <div class="overflow-auto"> -->
+                        <div class="row m-2">
+                            <div class="col">
+                                <ng-container *ngIf="tabActive === 'stakeholders'">
+                                    <div class="row py-2">
+                                        <div class="col px-0 bg-white" style="height: 500px">
+                                            <app-stakeholders></app-stakeholders>
+                                        </div>
+                                    </div>
+                                </ng-container>
+            
+                                <ng-container *ngIf="tabActive === 'scheme'">
+                                    <ng-container *ngIf="schemes.length !== 0; else noScheme">
+                                        <div class="row py-2 " *ngFor="let scheme of schemes; let i = index">
+                                            <div class="col px-0 bg-white" style="height: 500px">
+                                                <app-scheme 
+                                                    [scheme]="scheme" 
+                                                    [loan]="loanSelected" 
+                                                    [index]="i"
+                                                    (deleteConfirmed)="deleteScheme($event)"></app-scheme>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+            
+                                    <ng-template #noScheme>
+                                        <div class="row py-2">
+                                            <div class="col px-0 bg-white" style="height: 500px">
+                                                <app-scheme [loan]="loanSelected"></app-scheme>
+                                            </div>
+                                        </div>
+                                    </ng-template>
                                 </ng-container>
 
-                                <ng-template #noScheme>
-                                    <app-scheme [loan]="loanSelected"></app-scheme>
-                                </ng-template>
-                                
-                                
-                            </ng-container>
+                            </div>
                         </div>
-                    </div>
+                        
+                    <!-- </div> -->
+                    
+     
                 </div>
             </div>
 

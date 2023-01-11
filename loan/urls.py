@@ -26,5 +26,5 @@ loan_patterns = ([
 urlpatterns = [
     path('loan/', include(loan_patterns)),
     path('borrower/', include(borrower_patterns)),
-    path('loan/<uuid:pk>/scheme', include(scheme_patterns)),
+    path('scheme/', include(scheme_patterns)),
 ]

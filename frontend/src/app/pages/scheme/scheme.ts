@@ -7,5 +7,5 @@ export interface Scheme {
     postcode?: string;
     city: string;
     country?: string;
-    loan_id: string;
+    loan_id?: string;
 }

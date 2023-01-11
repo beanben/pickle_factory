@@ -97,26 +97,8 @@ class SchemeSerializer(serializers.ModelSerializer):
         loan = Loan.objects.get(id=loan_id)
 
         validated_data.update({"loan": loan})
-        # pdb.set_trace()
         scheme = Scheme.objects.create(**validated_data)
-        # pdb.set_trace()
         return scheme
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data["name"]
-    #     instance.street_name = validated_data["street_name"]
-    #     instance.postcode = validated_data["postcode"]
-    #     instance.city = validated_data["city"]
-    #     instance.country = validated_data["country"]
-    #     instance.loan = validated_data["loan"]
 
-    #     # try:
-    #     #     if validated_data["borrower"]:
-    #     #         borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
-    #     #         instance.borrower = borrower
-    #     # except KeyError:
-    #     #     instance.borrower = None
-        
-    #     instance.save()
-    #     return instance
 
 

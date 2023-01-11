@@ -1,22 +1,29 @@
 <app-scheme-modal
     *ngIf="openSchemeModal"
     [loan] = "loan"
-    (modalSaveScheme)="onSave($event)">
+    [scheme]="scheme"
+    (modalSaveScheme)="onSave($event)"
+    (deleteIsConfirmed)="onDeleteScheme()">
 </app-scheme-modal>
 
 <div class="row m-0 full-height">
     <div class="col">
 
-
         <ng-container *ngIf="!!scheme.name; else noScheme">
-            <div class="row mb-3 p-2 ">
-                <div class="col-auto highlightHover">
-                    <div class="row">
+            <div class="row mb-2 p-2">
+                <div class="col-auto">
+                    <div class="row highlightHover rounded p-2">
                         <div class="col-auto fw-bold">
                             {{scheme.name}}
                         </div>
                         <div class="col-auto">
                             {{scheme.city}}
+                        </div>
+                        <div class="col-auto text-center edit">
+                            <div class="d-flex">
+                                <app-edit (onOpenModalEdit)="openSchemeModal = true"></app-edit>
+                            </div>
+                            
                         </div>
                     </div>
                     

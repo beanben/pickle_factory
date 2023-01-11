@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Loan } from '../../loan/loan';
@@ -11,12 +11,13 @@ import { Scheme } from '../scheme';
 })
 export class SchemeModalComponent implements OnInit {
   displayStyle = "block";
-  mode = "new";
   errors: string[] = [];
-  scheme = {} as Scheme;
+  mode = "";
 
-  @Output() modalSaveScheme= new EventEmitter<Scheme|null>();
+  @Output() modalSaveScheme = new EventEmitter<Scheme|null>();
+  @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() loan = {} as Loan;
+  @Input() scheme = {} as Scheme;
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -34,10 +35,12 @@ export class SchemeModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private _schemeService: SchemeService,
+    private el: ElementRef
   ) { }
 
   ngOnInit(): void {
-
+    this.getMode();
+    this.initForm()
   }
 
   onCancel(){
@@ -47,7 +50,6 @@ export class SchemeModalComponent implements OnInit {
   onSave(){
     if(this.form.valid){
       this.scheme = this.form.value;
-      console.log("this.loan:", this.loan);
       this.scheme.loan_id = this.loan.id;
 
       if(this.scheme.id) {
@@ -62,6 +64,37 @@ export class SchemeModalComponent implements OnInit {
         })
         .catch(err => this.errors = err)
     }
+  };
+
+  getMode(){
+    if(this.scheme.id){
+      this.mode = "edit";
+    } else {
+      this.mode = "new"
+    }
+  }
+
+  initForm(){
+    if(this.scheme.id){
+      this.form.setValue({
+        'name': this.scheme.name,
+        'street_name': this.scheme.street_name,
+        'postcode': this.scheme.postcode,
+        'city': this.scheme.city,
+        'country': this.scheme.country,
+      })
+    }
+  }
+
+  onConfirmDelete(){
+    this._schemeService.deleteScheme(this.scheme)
+      .subscribe(() =>  this.deleteIsConfirmed.emit())
+  }
+
+  addEventBackgroundClose(){
+    this.el.nativeElement.addEventListener('click', (el:any) => {
+          this.onCancel();
+    });
   };
 
 }
