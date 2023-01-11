@@ -114,10 +114,7 @@ export class LoanComponent implements OnInit, OnDestroy {
 
     if(!!this.loanSelected.schemes){
       this.schemes = this.loanSelected.schemes;
-      // this.schemes.forEach(scheme => {
-      //   scheme.loan_id = this.loanSelected.id;
-      //   console.log("scheme foreach: ", scheme)
-      // })
+
     }
   };
 
@@ -148,7 +145,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   }
 
   deleteScheme(index: number){
-    console.log("index:", index);
     this.schemes.splice(index,1)
   }
 

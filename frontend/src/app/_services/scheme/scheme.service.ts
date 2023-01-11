@@ -40,7 +40,7 @@ export class SchemeService {
   };
 
   updateScheme(scheme: Scheme) {
-    const url = `${this.relativeUrl}/${scheme.id}`;
+    const url = `${this.relativeUrl}/${scheme.id}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
 

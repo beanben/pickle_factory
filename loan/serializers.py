@@ -100,5 +100,16 @@ class SchemeSerializer(serializers.ModelSerializer):
         scheme = Scheme.objects.create(**validated_data)
         return scheme
 
+    # def update(self, instance, validated_data):
+    #     pdb.set_trace()
+    #     instance.name = validated_data["name"]
+    #     instance.street_name = validated_data["street_name"]
+    #     instance.postcode = validated_data["postcode"]
+    #     instance.city = validated_data["city"]
+    #     instance.country = validated_data["country"]
+
+    #     instance.save()
+    #     return instance
+
 
 
