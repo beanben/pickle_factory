@@ -44,12 +44,4 @@ export class BorrowerLoansComponent implements OnInit{
     this._loanService.setLoanSub(loan);
   }
 
-  // getBorrowerLoans(borrower: Borrower){
-  //   this._borrowerService.getBorrowerLoans(borrower)
-  //     .subscribe((loans)=> {
-  //       this.loans = loans;
-  //       console.log("getBorrowerLoans:", loans)
-  //     })
-  // }  
-
 }

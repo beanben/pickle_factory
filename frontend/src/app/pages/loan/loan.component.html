@@ -111,11 +111,17 @@
                                     <ng-container *ngIf="schemes.length !== 0; else noScheme">
                                         <div class="row py-2 " *ngFor="let scheme of schemes; let i = index">
                                             <div class="col px-0 bg-white" style="height: 500px">
-                                                <app-scheme 
+                                                <!-- <app-scheme 
                                                     [scheme]="scheme" 
                                                     [loan]="loanSelected" 
                                                     [index]="i"
-                                                    (deleteConfirmed)="deleteScheme($event)"></app-scheme>
+                                                    (deleteConfirmed)="deleteScheme($event)">
+                                                </app-scheme> -->
+                                                <app-scheme 
+                                                    [scheme]="scheme"
+                                                    [index]="i"
+                                                    (deleteConfirmed)="deleteScheme($event)">
+                                                </app-scheme>
                                             </div>
                                         </div>
                                     </ng-container>
@@ -123,7 +129,8 @@
                                     <ng-template #noScheme>
                                         <div class="row py-2">
                                             <div class="col px-0 bg-white" style="height: 500px">
-                                                <app-scheme [loan]="loanSelected"></app-scheme>
+                                                <!-- <app-scheme [loan]="loanSelected"></app-scheme> -->
+                                                <app-scheme></app-scheme>
                                             </div>
                                         </div>
                                     </ng-template>

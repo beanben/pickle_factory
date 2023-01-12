@@ -72,8 +72,19 @@ class LoanSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        instance.name = validated_data["name"]
+        # unique loan name per author firm
+        author_firm = self.context.get("author_firm")
+        qs = Loan.objects.filter(name__iexact=validated_data['name'], author_firm=author_firm)
+        if qs.exists():
+            data = {
+                'status': 'error',
+                'message': 'Loan name already taken'
+                }
+            raise ValidationError(data, code=400)
+        else:
+            instance.name = validated_data["name"]
 
+        
         try:
             if validated_data["borrower"]:
                 borrower = Borrower.objects.get(id=validated_data["borrower"]["id"])
