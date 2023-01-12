@@ -23,15 +23,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void { 
-
-    // this.subscr = this.route.params
-    //   .subscribe(
-    //     (params: Params) => {
-    //       let loan_id:string = params['id'];
-    //       this.getLoan(loan_id);
-    //     }
-    //   );
-
     this.subscr = this._loanService.getloanIdSub()
       .subscribe(loanId => {
         if(loanId){
@@ -54,6 +45,5 @@ export class LoanComponent implements OnInit, OnDestroy {
    deleteScheme(index: number){
     this.loan.schemes.splice(index,1)
   }
-
 
 }

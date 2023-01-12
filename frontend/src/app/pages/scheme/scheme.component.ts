@@ -49,7 +49,6 @@ export class SchemeComponent implements OnInit,  OnDestroy{
           if(this.loan){
             this.scheme.loan_id = this.loan.id
           };
-          console.log("this.loan:", this.loan) ;
       })
   }
 
