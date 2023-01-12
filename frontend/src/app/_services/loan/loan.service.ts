@@ -13,11 +13,19 @@ export class LoanService {
   loanSub = new BehaviorSubject<Loan>({} as Loan);
   loanTabSub = new BehaviorSubject<boolean>(false);
   loanTabActiveSub = new BehaviorSubject<string>('');
+  loanIdSub = new BehaviorSubject<string>('');
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
+
+  getloanIdSub():Observable<string>{
+    return this.loanIdSub.asObservable() 
+  }
+  setloanIdSub(loanId: string){
+    return this.loanIdSub.next(loanId);
+  }
 
   getLoanSub():Observable<Loan>{
     return this.loanSub.asObservable() 
@@ -85,6 +93,7 @@ export class LoanService {
 
   getLoans(): Observable<Loan[]> {
     const url = `${this.relativeUrl}/`;
+    // console.log("getLoans url:", url);
 
     return this.http.get<Loan[]>(url)
       .pipe(
@@ -92,8 +101,8 @@ export class LoanService {
       )
   };
 
-  getLoan(loan: Loan): Observable<Loan> {
-    const url = `${this.relativeUrl}/${loan.id}/`;
+  getLoan(loan_id: string): Observable<Loan> {
+    const url = `${this.relativeUrl}/${loan_id}/`;
 
     return this.http.get<Loan>(url)
       .pipe(

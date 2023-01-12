@@ -31,6 +31,7 @@ import { BorrowerLoansComponent } from './pages/borrower/borrower-loans/borrower
 import { DeleteComponent } from './shared/delete.component';
 import { SchemeComponent } from './pages/scheme/scheme.component';
 import { SchemeModalComponent } from './pages/scheme/scheme-modal/scheme-modal.component';
+import { LoansComponent } from './pages/loans/loans.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { SchemeModalComponent } from './pages/scheme/scheme-modal/scheme-modal.c
     BorrowerLoansComponent,
     DeleteComponent,
     SchemeComponent,
-    SchemeModalComponent
+    SchemeModalComponent,
+    LoansComponent
   ],
   imports: [
     BrowserModule,

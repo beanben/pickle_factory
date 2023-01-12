@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Borrower } from '../../borrower/borrower';
@@ -14,7 +14,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
   openBorrowerModal = false;
   openAddBorrowerModal = false;
   openRemoveBorrower = false;
-  loan = {} as Loan;
+  @Input() loan = {} as Loan;
   mode = '';
   private subscr: Subscription = Subscription.EMPTY;
   
@@ -24,7 +24,7 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit(): void {
-    this.getLoanSub();
+    // this.getLoanSub();
   }
 
   onSave(borrower: Borrower | null){
@@ -40,12 +40,12 @@ export class StakeholdersComponent implements OnInit, OnDestroy {
     this.openBorrowerModal = true;
   }
 
-  getLoanSub(){
-    this.subscr = this._loanService.getLoanSub()
-      .subscribe((loan) => {
-          this.loan = loan;
-      })
-  }
+  // getLoanSub(){
+  //   this.subscr = this._loanService.getLoanSub()
+  //     .subscribe((loan) => {
+  //         this.loan = loan;
+  //     })
+  // }
 
 
   ngOnDestroy(): void {

@@ -50,7 +50,7 @@ class BorrowerSerializer(serializers.ModelSerializer):
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
-    schemes = SchemeNestedSerializer(allow_null=True, many=True)
+    schemes = SchemeNestedSerializer(required=False, allow_null=True, many=True)
     
     class Meta:
         model = Loan

@@ -2,6 +2,7 @@ from django.db import models
 import uuid
 from authentication.models import User, Firm
 
+# use native id unless there is a good reason
 class BaseModel(models.Model):
     id = models.UUIDField(
         primary_key=True,
