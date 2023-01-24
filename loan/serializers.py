@@ -5,18 +5,20 @@ from loan.models.loan import Loan
 from loan.models.borrower import Borrower
 from loan.models.scheme import Scheme
 import pdb
+from django.utils.text import slugify
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
-    id = serializers.CharField()
+    id = serializers.IntegerField()
 
 class LoanNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
-    id = serializers.CharField()
+    id = serializers.IntegerField()
     borrower = BorrowerNestedSerializer()
+    slug = serializers.CharField()
 
 class SchemeNestedSerializer(serializers.Serializer):
-    id = serializers.CharField()
+    id = serializers.IntegerField()
     name = serializers.CharField()
     street_name = serializers.CharField(allow_blank=True)
     postcode = serializers.CharField(allow_blank=True)
@@ -25,11 +27,18 @@ class SchemeNestedSerializer(serializers.Serializer):
 
 
 class BorrowerSerializer(serializers.ModelSerializer):
-    loans = LoanNestedSerializer(many=True)
+    # loans = LoanNestedSerializer(many=True, required=False)
+    loans = serializers.SerializerMethodField()
 
     class Meta:
         model = Borrower
-        fields = ['id', 'name', 'author_firm', 'loans']
+        fields = ['id', 'name', 'author_firm', 'loans', 'slug']
+        lookup_field = 'slug'
+        depth = 1
+
+    def get_loans(self, obj):
+        loans = Loan.objects.filter(borrower=obj)
+        return LoanSerializer(loans, many=True).data
 
     def create(self, validated_data):
         # unique borrower per author firm
@@ -39,11 +48,11 @@ class BorrowerSerializer(serializers.ModelSerializer):
             raise ValidationError("Borrower's name must be unique")
         
         borrower = Borrower.objects.create(**validated_data)
-        borrower.save()
         return borrower
 
     def update(self, instance, validated_data):
         instance.name = validated_data["name"]
+
         instance.save()
         return instance
 
@@ -51,12 +60,19 @@ class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
     schemes = SchemeNestedSerializer(required=False, allow_null=True, many=True)
+    # borrower_detail = serializers.SerializerMethodField()
     
     class Meta:
         model = Loan
-        fields = ['id', 'name', 'borrower', 'schemes']
+        fields = ['id', 'name', 'borrower', 'schemes', 'slug']
+        depth = 1
+        lookup_field = 'slug'
+
+    # def get_borrower_detail(self, obj):
+    #     return BorrowerSerializer(obj.borrower).data
 
     def create(self, validated_data):
+        # loan name unique per author firm
         author_firm = self.context.get("author_firm")
         qs = Loan.objects.filter(name__iexact=validated_data['name'], author_firm=author_firm)
         if qs.exists():
@@ -67,23 +83,22 @@ class LoanSerializer(serializers.ModelSerializer):
             raise ValidationError(data, code=400)
 
         loan = Loan.objects.create(**validated_data)
-        loan.save()
         return loan
 
 
     def update(self, instance, validated_data):
         # unique loan name per author firm
         author_firm = self.context.get("author_firm")
-        qs = Loan.objects.filter(name__iexact=validated_data['name'], author_firm=author_firm)
+        qs = Loan.objects.filter(name__iexact=validated_data['name'], author_firm=author_firm).exclude(id=instance.id)
+
         if qs.exists():
             data = {
                 'status': 'error',
                 'message': 'Loan name already taken'
                 }
-            raise ValidationError(data, code=400)
+            raise ValidationError(data, code=400) 
         else:
             instance.name = validated_data["name"]
-
         
         try:
             if validated_data["borrower"]:
@@ -97,7 +112,7 @@ class LoanSerializer(serializers.ModelSerializer):
 
 
 class SchemeSerializer(serializers.ModelSerializer):
-    loan_id = serializers.CharField()
+    loan_id = serializers.IntegerField()
 
     class Meta:
         model = Scheme
@@ -110,17 +125,6 @@ class SchemeSerializer(serializers.ModelSerializer):
         validated_data.update({"loan": loan})
         scheme = Scheme.objects.create(**validated_data)
         return scheme
-
-    # def update(self, instance, validated_data):
-    #     pdb.set_trace()
-    #     instance.name = validated_data["name"]
-    #     instance.street_name = validated_data["street_name"]
-    #     instance.postcode = validated_data["postcode"]
-    #     instance.city = validated_data["city"]
-    #     instance.country = validated_data["country"]
-
-    #     instance.save()
-    #     return instance
 
 
 

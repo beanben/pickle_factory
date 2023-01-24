@@ -1,0 +1,27 @@
+.sectionTitle{
+    font-weight: 600;
+}
+.listNoStyle {
+    list-style-type:none;
+}
+.tableTitle{
+    font-weight: 450;
+    border-bottom: 1px solid rgba(119,119,119)
+}
+.highlight:hover {
+    background-color: rgba(13, 202, 240, 0.15);
+
+}
+.edit {
+    display: none;
+}
+.borrower-name:hover .edit {
+    display: block;
+}
+
+
+
+
+
+
+

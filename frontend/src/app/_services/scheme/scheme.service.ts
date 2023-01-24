@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { Borrower } from 'src/app/pages/borrower/borrower';
-import { Loan } from 'src/app/pages/loan/loan';
-import { Scheme } from 'src/app/pages/scheme/scheme';
+import { Borrower } from 'src/app/pages/borrowers/borrower/borrower';
+import { Loan } from 'src/app/pages/loans/loan/loan';
+import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 

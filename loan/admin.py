@@ -7,8 +7,23 @@ class LoanAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author_firm',
+        'slug',
+        'created_at')
+
+class BorrowerAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'author_firm',
+        'slug',
+        'created_at')
+
+class SchemeAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'author_firm',
+        'slug',
         'created_at')
 
 admin.site.register(Loan, LoanAdmin)
-admin.site.register(Borrower)
-admin.site.register(Scheme)
+admin.site.register(Borrower, BorrowerAdmin)
+admin.site.register(Scheme, SchemeAdmin)

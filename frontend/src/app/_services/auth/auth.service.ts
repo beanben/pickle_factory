@@ -14,11 +14,14 @@ import { SharedService } from '../shared/shared.service';
 })
 export class AuthService {
   user = {} as User;
-  userSub: BehaviorSubject<User> = new BehaviorSubject<User>(this.user);
-  currentUser = this.userSub.asObservable();
-
+  // userSub: BehaviorSubject<User> = new BehaviorSubject<User>(this.user);
+  userSub = new BehaviorSubject<User>({} as User);
+  private requestCompleted = new Subject<void>();
+  requestCompleted$ = this.requestCompleted.asObservable();
+  // currentUser = this.userSub.asObservable();
   appRoot = "auth";
   urlRoot = `${environment.BASE_URL}/${this.appRoot}`
+  
 
   httpOptions = {
     headers: new HttpHeaders({ 
@@ -32,10 +35,20 @@ export class AuthService {
     private router: Router,
     private _sharedService: SharedService
   ) { }
-  
-  changeUserSub(newUser:User){
-    return this.userSub.next(newUser)
+
+  getUserSub():Observable<User>{
+    return this.userSub.asObservable() 
   }
+  setUserSub(user: User){
+    return this.userSub.next(user);
+  }
+  markRequestCompleted() {
+    this.requestCompleted.next();
+  }
+  
+  // changeUserSub(newUser:User){
+  //   return this.userSub.next(newUser)
+  // }
 
   getFirms(): Observable<Firm[]> {
     const url = `${this.urlRoot}/firm/`

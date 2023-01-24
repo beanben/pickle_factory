@@ -26,3 +26,9 @@ body { margin: 0; }
 .modal-centered{
     top: 7em
 }
+
+.link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}

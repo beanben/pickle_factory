@@ -1,6 +1,7 @@
 from django.db import models
 from core.models import TimestampedModel, AuthorTrackerModel
 from .borrower import Borrower
+import pdb
 
 class Loan(TimestampedModel, AuthorTrackerModel):
     name = models.CharField(max_length=255)
