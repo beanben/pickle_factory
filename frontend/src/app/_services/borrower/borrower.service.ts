@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Borrower } from 'src/app/pages/borrower/borrower';
-import { Loan } from 'src/app/pages/loan/loan';
+import { Borrower } from 'src/app/pages/borrowers/borrower/borrower';
+
+import { Loan } from 'src/app/pages/loans/loan/loan';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -11,13 +12,21 @@ import { SharedService } from '../shared/shared.service';
 })
 export class BorrowerService {
   relativeUrl = "/api/borrower";
+  // borrowerIdSub = new BehaviorSubject<string>('');
   borrowerSub = new BehaviorSubject<Borrower>({} as Borrower);
-  borrowerTabSub = new BehaviorSubject<boolean>(false);
+  // borrowerTabSub = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
+
+  // getBorrowerIdSub():Observable<string>{
+  //   return this.borrowerIdSub.asObservable() 
+  // }
+  // setBorrowerIdSub(loanId: string){
+  //   return this.borrowerIdSub.next(loanId);
+  // }
 
   getBorrowerSub():Observable<Borrower>{
     return this.borrowerSub.asObservable() 
@@ -26,12 +35,12 @@ export class BorrowerService {
     return this.borrowerSub.next(newBorrower);
   }
 
-  getBorrowerTabSub():Observable<boolean>{
-    return this.borrowerTabSub.asObservable() 
-  }
-  setBorrowerTabSub(isCollapsed: boolean){
-    return this.borrowerTabSub.next(isCollapsed);
-  }
+  // getBorrowerTabSub():Observable<boolean>{
+  //   return this.borrowerTabSub.asObservable() 
+  // }
+  // setBorrowerTabSub(isCollapsed: boolean){
+  //   return this.borrowerTabSub.next(isCollapsed);
+  // }
 
   createBorrower(borrower: Borrower) {
     return new Promise<APIResult>((resolve, reject) => {
@@ -54,7 +63,7 @@ export class BorrowerService {
   };
 
   updateBorrower(borrower: Borrower){
-    const url = `${this.relativeUrl}/${borrower.id}`;
+    const url = `${this.relativeUrl}/${borrower.slug}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
@@ -86,7 +95,7 @@ export class BorrowerService {
   };
 
   deleteBorrower(borrower: Borrower): Observable<any> {
-    const url = `${this.relativeUrl}/${borrower.id}/`;
+    const url = `${this.relativeUrl}/${borrower.slug}/`;
 
     const options = {
       body: borrower
@@ -98,11 +107,20 @@ export class BorrowerService {
   }
 
   getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
-    const url = `${this.relativeUrl}/${borrower.id}`;
+    const url = `${this.relativeUrl}/${borrower.slug}`;
 
     return this.http.get<Loan[]>(url)
       .pipe(
         tap(() => console.log('getBorrowerLoans()', Math.random()))
+      )
+  };
+
+  getBorrower(borrowerSlug: string): Observable<Borrower> {
+    const url = `${this.relativeUrl}/${borrowerSlug}/`;
+
+    return this.http.get<Borrower>(url)
+      .pipe(
+        tap(() => console.log('getBorrower()', Math.random()))
       )
   };
 

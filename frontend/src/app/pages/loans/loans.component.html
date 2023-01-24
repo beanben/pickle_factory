@@ -1,0 +1,105 @@
+<app-loan-modal 
+    *ngIf="openLoanModal"
+    [loan]="loanSelected"
+    [mode] = "modalMode"
+    (modalSaveLoan)="onSave($event)"
+    (deleteIsConfirmed)="onDeleteLoan()">
+</app-loan-modal>
+
+<div class="container-fluid vh-100">
+    <div class="row">
+
+        <ng-container *ngIf="!isCollapsed">
+            <div class="col-2 px-0 bg-white vh-100 me-1">
+                <div class="d-flex justify-content-between py-3 mx-1">
+                    <span class="nav-title my-auto">Loans</span>
+                    <button type="button" class="btn" (click)="isCollapsed = true">
+                        <img src="{{arrowLeftBlack}}" class="" alt="">
+                    </button>
+                </div>
+    
+                <div class="pb-3 mx-1">
+                    <button type="button" class="btn btn-primary " (click)="onOpenModal('new')">New</button>
+                </div>
+                
+                <div class="overflow-auto scrollbar-thin pe-1">
+                    <ul class="px-0" *ngIf="loans.length != 0">
+                        <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                            <!-- <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
+                                [routerLink]="['/loans', loan.slug]"
+                                (click)="onLoanSelected(i)"    
+                                [ngClass]="{'highlight': loan.id == loanSelected.id}"
+                                style="height: 50px">
+                                <div 
+                                    class="scrollbar-thin pb-1 pt-1" 
+                                    (mouseenter)="onMouseEnter(i)" 
+                                    (mouseleave)="onMouseLeave()" 
+                                    [ngClass]="loan.id == loanHovered.id ? 'overflow-show' : 'overflow-hide'">
+                                    <div class="nowrap">{{loan.name}}</div>
+                                </div>
+                                <app-edit (onOpenModalEdit)="onOpenModal('edit')"></app-edit>
+                            </div> -->
+                            <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
+                                (click)="onLoanSelected(i)"    
+                                [ngClass]="{'highlight': loan.id == loanSelected.id}"
+                                style="height: 50px">
+                                <div 
+                                    class="scrollbar-thin pb-1 pt-1" 
+                                    (mouseenter)="onMouseEnter(i)" 
+                                    (mouseleave)="onMouseLeave()" 
+                                    [ngClass]="loan.id == loanHovered.id ? 'overflow-show' : 'overflow-hide'">
+                                    <div class="nowrap">{{loan.name}}</div>
+                                </div>
+                                <app-edit (onOpenModalEdit)="onOpenModal('edit')"></app-edit>
+                            </div>
+                        </li>
+                    </ul>
+                </div> 
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="isCollapsed">
+            <div class="col-1 px-0 bg-white vh-100 me-1">
+
+                <div class="py-3 text-center">
+                    <button type="button" class="btn" (click)="isCollapsed = false">
+                        <img src="{{arrowRightBlack}}" class="" alt="">
+                    </button>
+                    <button type="button" class="btn p-0 mx-auto" (click)="onOpenModal('new')">
+                        <img src="{{buttonPlus}}" class="" alt="">
+                    </button>
+                </div>
+
+                <div class="overflow-auto pe-1">
+                    <ul class="px-0" *ngIf="loans.length != 0">
+                        <!-- <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                            <div class="p-1 border border-info mb-2 d-flex align-items-center"
+                                [routerLink]="['/loans', loan.slug]"
+                                (click)="onLoanSelected(i)"
+                                [ngClass]="{'highlight ': loan.id == loanSelected.id}"
+                                style="height: 50px ; border-radius: 20px">
+                                <div class="m-0 p-0 mx-auto text-wrap text-center">{{loan.name | initials}}</div>
+                            </div>
+                        </li> -->
+                        <li  *ngFor="let loan of loans; let i = index" class="mx-1">
+                            <div class="p-1 border border-info mb-2 d-flex align-items-center"
+                                (click)="onLoanSelected(i)"
+                                [ngClass]="{'highlight ': loan.id == loanSelected.id}"
+                                style="height: 50px ; border-radius: 20px">
+                                <div class="m-0 p-0 mx-auto text-wrap text-center">{{loan.name | initials}}</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div> 
+
+
+            </div>
+        </ng-container>
+
+        <div class="col" *ngIf="loans.length != 0">
+            <app-loan></app-loan>
+            <!-- <router-outlet></router-outlet> -->
+        </div>
+
+    </div>
+</div>

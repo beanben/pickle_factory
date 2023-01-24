@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Loan } from 'src/app/pages/loan/loan';
+import { Loan } from 'src/app/pages/loans/loan/loan';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -10,33 +10,25 @@ import { SharedService } from '../shared/shared.service';
 })
 export class LoanService {
   relativeUrl = "/api/loan";
+  // loansSub = new BehaviorSubject<Loan[]>([]);
   loanSub = new BehaviorSubject<Loan>({} as Loan);
-  loanTabSub = new BehaviorSubject<boolean>(false);
-  loanTabActiveSub = new BehaviorSubject<string>('');
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
-
+  
+  // getLoansSub():Observable<Loan[]>{
+  //   return this.loansSub.asObservable() 
+  // }
+  // setLoansSub(loans: Loan[]){
+  //   return this.loansSub.next(loans);
+  // }
   getLoanSub():Observable<Loan>{
     return this.loanSub.asObservable() 
   }
-  setLoanSub(newLoan: Loan){
-    return this.loanSub.next(newLoan);
-  }
-
-  getLoanTabSub():Observable<boolean>{
-    return this.loanTabSub.asObservable() 
-  }
-  setLoanTabSub(isCollapsed: boolean){
-    return this.loanTabSub.next(isCollapsed);
-  }
-  getLoanTabActiveSub():Observable<string>{
-    return this.loanTabActiveSub.asObservable() 
-  }
-  setLoanTabActiveSub(tabActive: string){
-    return this.loanTabActiveSub.next(tabActive);
+  setLoanSub(loan: Loan){
+    return this.loanSub.next(loan);
   }
 
 
@@ -61,7 +53,7 @@ export class LoanService {
   };
 
   updateLoan(loan: Loan){
-    const url = `${this.relativeUrl}/${loan.id}/`;
+    const url = `${this.relativeUrl}/${loan.slug}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
@@ -85,6 +77,7 @@ export class LoanService {
 
   getLoans(): Observable<Loan[]> {
     const url = `${this.relativeUrl}/`;
+    // console.log("getLoans url:", url);
 
     return this.http.get<Loan[]>(url)
       .pipe(
@@ -92,9 +85,18 @@ export class LoanService {
       )
   };
 
-  getLoan(loan: Loan): Observable<Loan> {
-    const url = `${this.relativeUrl}/${loan.id}/`;
+  // getLoan(loanId: string): Observable<Loan> {
+  //   const url = `${this.relativeUrl}/${loanId}/`;
 
+  //   return this.http.get<Loan>(url)
+  //     .pipe(
+  //       tap(() => console.log('getLoan()', Math.random()))
+  //     )
+  // };
+
+  getLoan(loanSlug: string): Observable<Loan> {
+    const url = `${this.relativeUrl}/${loanSlug}/`;
+    
     return this.http.get<Loan>(url)
       .pipe(
         tap(() => console.log('getLoan()', Math.random()))
@@ -102,7 +104,7 @@ export class LoanService {
   };
 
   deleteLoan(loan: Loan): Observable<any> {
-    const url = `${this.relativeUrl}/${loan.id}/`;
+    const url = `${this.relativeUrl}/${loan.slug}/`;
 
     const options = {
       body: loan

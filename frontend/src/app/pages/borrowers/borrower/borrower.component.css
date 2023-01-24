@@ -1,0 +1,22 @@
+.nav-title {
+    color: rgba(15, 86, 179, 1);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+li {  
+    cursor: pointer;
+}
+
+li.no-style {
+    list-style-type:none;
+}
+
+.activeTab {
+    border-bottom: 2px solid rgba(15, 86, 179, 1);
+    font-weight: 600;
+}
+.tab {
+    border-bottom: 2px solid transparent;
+}

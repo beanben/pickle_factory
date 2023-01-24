@@ -10,17 +10,17 @@ from .views import (
 
 scheme_patterns = ([
     path('', SchemeList.as_view()),
-    path('<uuid:pk>/', SchemeDetail.as_view()),
+    path('<int:pk>/', SchemeDetail.as_view()),
 ], 'scheme')
 
 borrower_patterns = ([
     path('', BorrowerList.as_view()),
-    path('<uuid:pk>/', BorrowerDetail.as_view()),
+    path('<slug:slug>/', BorrowerDetail.as_view()),
 ], 'borrower')
 
 loan_patterns = ([
     path('', LoanList.as_view()),
-    path('<uuid:pk>/', LoanDetail.as_view()),
+    path('<slug:slug>/', LoanDetail.as_view()),
 ], 'loan')
 
 urlpatterns = [

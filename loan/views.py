@@ -23,9 +23,10 @@ class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
+    lookup_field = 'slug'
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('schemes')
+        return self.queryset.prefetch_related('borrower')
 
     def update(self, request, *args, **kwargs):
         # pdb.set_trace()
@@ -36,9 +37,17 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
             'response': response.data
         })
 
+    # def retrieve(self, request, *args, **kwargs):
+    #     # pdb.set_trace()
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance)
+        
+    #     return Response(serializer.data)
+
 class BorrowerList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Borrower.objects.all()
     serializer_class = BorrowerSerializer
+
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -51,6 +60,7 @@ class BorrowerList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = Borrower.objects.all()
     serializer_class = BorrowerSerializer
+    lookup_field = 'slug'
 
     def get_queryset(self):
         return self.queryset.prefetch_related('loans')

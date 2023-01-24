@@ -201,7 +201,8 @@ export class ProfileComponent implements OnInit{
               })
             )
             .subscribe(userResponse => {
-              this._authService.changeUserSub(userResponse);
+              this._authService.setUserSub(userResponse);
+              // this._authService.changeUserSub(userResponse);
               this.isEdit = false;
             })
 

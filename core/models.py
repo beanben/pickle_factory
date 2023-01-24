@@ -1,18 +1,36 @@
 from django.db import models
 import uuid
 from authentication.models import User, Firm
+from django.utils.text import slugify
+import pdb
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 
+# use native id unless there is a good reason
 class BaseModel(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        unique=True,
-        editable=False,
-        default=uuid.uuid4
-    )
+    # id = models.UUIDField(
+    #     primary_key=True,
+    #     unique=True,
+    #     editable=False,
+    #     default=uuid.uuid4
+    # )
+    slug = models.SlugField(blank=True)
 
     class Meta:
         abstract = True
 
+    def save(self, *args, **kwargs):
+        slug = slugify(self.name)
+
+        Klass = self.__class__
+        qs = Klass.objects.filter(slug=slug).exclude(id=self.id)
+        # pdb.set_trace()
+        if qs.exists():
+            slug = f'{slug}-{self.id}'
+
+        self.slug = slug
+        # pdb.set_trace()
+        super().save(*args, **kwargs)
 
 class TimestampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)

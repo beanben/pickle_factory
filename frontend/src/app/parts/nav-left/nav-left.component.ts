@@ -47,11 +47,20 @@ export class NavLeftComponent implements OnInit {
   }
 
   getUser(){
-    this._authService.getUser()
-      .subscribe(user => {
-        this.user = user;
-        this._authService.changeUserSub(user);
-      })
+    let userSubValue = this._authService.userSub.getValue();
+    
+    if(Object.keys(userSubValue).length != 0){
+      this.user = userSubValue;
+
+    } else {
+      this._authService.getUser()
+        .subscribe(user => {
+          this.user = user;
+          this._authService.setUserSub(user);
+          this._authService.markRequestCompleted();
+        })
+    }
+
   }
 
   identifyUrl(){

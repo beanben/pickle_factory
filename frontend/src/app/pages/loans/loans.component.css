@@ -1,0 +1,50 @@
+.nav-title {
+    color: rgba(15, 86, 179, 1);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+li {
+    list-style-type:none;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #0dcaf026;
+}
+app-edit {
+    visibility: hidden;
+}
+.highlight:hover app-edit {
+    visibility: visible;
+}
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+}
+.overflow-show {
+    overflow-x: auto
+}
+.overflow-hide{
+    overflow: hidden;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.col-1 {
+    width: 75px;
+}
+
+.nav-link, .nav-link.active {
+    color: black;
+}
+.activeTab {
+    border-bottom: 2px solid rgba(15, 86, 179, 1);
+    font-weight: 600;
+}
+.tab {
+    border-bottom: 2px solid transparent;
+}

@@ -22,7 +22,7 @@
       </li>
 
       <li [ngClass]="{'bg-highlight': loanRoute.isActive}">
-        <a routerLink="loan" routerLinkActive=active #loanRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
+        <a routerLink="loans" routerLinkActive=active #loanRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
           <img src="{{dollar}}" alt="">Loans
         </a>    
       </li>
@@ -43,8 +43,8 @@
             <li class="ps-4 text-disabled">Lenders</li>
 
             <li class="ps-4" [ngClass]="{'bg-highlight': borrowerRoute.isActive}">
-              <a routerLink="borrower" routerLinkActive=active #borrowerRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
-                Borrower
+              <a routerLink="borrowers" routerLinkActive=active #borrowerRoute="routerLinkActive" style="text-decoration: none;" class="text-white">
+                Borrowers
               </a>    
             </li>
 
