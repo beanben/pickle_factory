@@ -49,9 +49,7 @@ export class BorrowersComponent implements OnInit, OnDestroy {
 
   onBorrowerSelected(index: number ){ 
     this._borrowerService.setBorrowerSub(this.borrowers[index])
-    // this.borrowerSelected = this.borrowers[index];
     this.indexBorrower = index;
-    // this.router.navigate([this.borrowerSelected.slug], {relativeTo: this.route});
   };
 
   onMouseEnter(i: number){

@@ -5,7 +5,6 @@ from loan.models.loan import Loan
 from loan.models.borrower import Borrower
 from loan.models.scheme import Scheme
 import pdb
-from django.utils.text import slugify
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -15,7 +14,6 @@ class LoanNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.IntegerField()
     borrower = BorrowerNestedSerializer()
-    slug = serializers.CharField()
 
 class SchemeNestedSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -27,13 +25,11 @@ class SchemeNestedSerializer(serializers.Serializer):
 
 
 class BorrowerSerializer(serializers.ModelSerializer):
-    # loans = LoanNestedSerializer(many=True, required=False)
     loans = serializers.SerializerMethodField()
 
     class Meta:
         model = Borrower
-        fields = ['id', 'name', 'author_firm', 'loans', 'slug']
-        lookup_field = 'slug'
+        fields = ['id', 'name', 'author_firm', 'loans']
         depth = 1
 
     def get_loans(self, obj):
@@ -60,16 +56,12 @@ class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
     schemes = SchemeNestedSerializer(required=False, allow_null=True, many=True)
-    # borrower_detail = serializers.SerializerMethodField()
     
     class Meta:
         model = Loan
-        fields = ['id', 'name', 'borrower', 'schemes', 'slug']
+        fields = ['id', 'name', 'borrower', 'schemes']
         depth = 1
-        lookup_field = 'slug'
 
-    # def get_borrower_detail(self, obj):
-    #     return BorrowerSerializer(obj.borrower).data
 
     def create(self, validated_data):
         # loan name unique per author firm

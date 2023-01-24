@@ -28,7 +28,6 @@
                             <ul *ngIf="!!borrower.loans">
                                 <li *ngFor="let loan of borrower.loans">
                                     <span class="link" (click)="onNavigate(loan)">{{loan.name}}</span>
-                                    <!-- <a [routerLink]="['/loans']" [queryParams]="{slug: loan.slug}">{{loan.name}}</a> -->
                                 </li>
                             </ul>
                         
