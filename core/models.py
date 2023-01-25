@@ -8,12 +8,6 @@ import pdb
 
 # use native id unless there is a good reason
 class BaseModel(models.Model):
-    # id = models.UUIDField(
-    #     primary_key=True,
-    #     unique=True,
-    #     editable=False,
-    #     default=uuid.uuid4
-    # )
     slug = models.SlugField(blank=True)
 
     class Meta:
@@ -24,12 +18,10 @@ class BaseModel(models.Model):
 
         Klass = self.__class__
         qs = Klass.objects.filter(slug=slug).exclude(id=self.id)
-        # pdb.set_trace()
         if qs.exists():
             slug = f'{slug}-{self.id}'
 
         self.slug = slug
-        # pdb.set_trace()
         super().save(*args, **kwargs)
 
 class TimestampedModel(models.Model):

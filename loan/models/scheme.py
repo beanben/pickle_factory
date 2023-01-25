@@ -9,7 +9,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     postcode = models.CharField(max_length=100, blank=True, default="")
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100, blank=True , default="")
-    loan = models.ForeignKey(Loan, on_delete=models.SET_NULL, blank=True, null=True, related_name='schemes')
+    loan = models.ForeignKey(Loan, on_delete=models.SET_NULL, blank=True, null=True, related_name="schemes")
 
     def __str__(self):
         return self.name
