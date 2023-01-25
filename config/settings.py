@@ -71,19 +71,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# # Database
+# # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pickle_db',
-        'USER': '', # will need to create a user, with correct permissions`, to be able to see relationship with database`
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pickle_db',
+#         'USER': '', # will need to create a user, with correct permissions`, to be able to see relationship with database`
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 
 # Password validation
