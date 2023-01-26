@@ -87,6 +87,7 @@ export class BorrowersComponent implements OnInit, OnDestroy {
   onDeleteBorrower(){
     this.openBorrowerModal = false;
     this.removeBorrower(this.indexBorrower);
+    this.indexBorrower = -1;
 
     if(this.borrowers.length !=0 ) {
       this._borrowerService.setBorrowerSub(this.borrowers[0]);

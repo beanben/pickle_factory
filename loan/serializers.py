@@ -29,7 +29,7 @@ class BorrowerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Borrower
-        fields = ['id', 'name', 'author_firm', 'loans']
+        fields = ['id', 'name', 'author_firm', 'loans', 'slug']
         depth = 1
 
     def get_loans(self, obj):
@@ -59,7 +59,7 @@ class LoanSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Loan
-        fields = ['id', 'name', 'borrower', 'schemes']
+        fields = ['id', 'name', 'borrower', 'schemes', 'slug']
         depth = 1
 
 
