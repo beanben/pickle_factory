@@ -20,7 +20,6 @@
 
         <div class="row px-2 mt-2">
             <div class="col my-auto">
-                <!-- <button class="btn btn-primary" (click)="onOpenCreate()" *ngIf="!loan.borrower">Add Borrower</button> -->
                 <button class="btn btn-primary" (click)="onOpenBorrowerModal('selectNew')" *ngIf="!loan.borrower">Add Borrower</button>
                 <div *ngIf="!!loan.borrower" [ngClass]="{'highlight rounded': !!loan.borrower}">
                     <div class="row p-2 borrower-name">

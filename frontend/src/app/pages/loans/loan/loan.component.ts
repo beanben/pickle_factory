@@ -26,26 +26,7 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.sub = this._loanService.getLoanSub()
       .subscribe(loan => {
         this.loan = loan;
-
       })
-
-    // this.route.params
-    //   .pipe(
-    //     switchMap((params: Params) => {
-    //       return this._loanService.getLoan(params["slug"])
-    //     })
-    //   )
-    //   .subscribe(loan => {
-    //     this.loan = loan;
-
-    //     if(loan.schemes.length != 0 ){
-    //       this.loanSchemesExist = true
-    //     } else {
-    //       this.loanSchemesExist = false
-    //     }
-    //   })
-
-
 
   }
 

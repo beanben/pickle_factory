@@ -1,7 +1,4 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from '../loan';
 import { Scheme } from './scheme';
 
 @Component({
@@ -29,7 +26,7 @@ export class SchemeComponent implements OnInit{
 
   onSave(scheme: Scheme | null){
     this.openSchemeModal = false;
-    
+
     if(scheme){
       this.scheme = scheme;
     }  

@@ -10,7 +10,6 @@ import { SharedService } from '../shared/shared.service';
 })
 export class LoanService {
   relativeUrl = "/api/loan";
-  // loansSub = new BehaviorSubject<Loan[]>([]);
   loanSub = new BehaviorSubject<Loan>({} as Loan);
 
   constructor(
@@ -18,12 +17,6 @@ export class LoanService {
     private _sharedService: SharedService
   ) { }
   
-  // getLoansSub():Observable<Loan[]>{
-  //   return this.loansSub.asObservable() 
-  // }
-  // setLoansSub(loans: Loan[]){
-  //   return this.loansSub.next(loans);
-  // }
   getLoanSub():Observable<Loan>{
     return this.loanSub.asObservable() 
   }
@@ -85,14 +78,6 @@ export class LoanService {
       )
   };
 
-  // getLoan(loanId: string): Observable<Loan> {
-  //   const url = `${this.relativeUrl}/${loanId}/`;
-
-  //   return this.http.get<Loan>(url)
-  //     .pipe(
-  //       tap(() => console.log('getLoan()', Math.random()))
-  //     )
-  // };
 
   getLoan(loanSlug: string): Observable<Loan> {
     const url = `${this.relativeUrl}/${loanSlug}/`;

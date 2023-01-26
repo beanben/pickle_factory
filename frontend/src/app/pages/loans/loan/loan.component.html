@@ -33,7 +33,7 @@
                     </ng-container>
 
                     <ng-container *ngIf="tabActive === 'scheme'">
-                        
+
                         <ng-container *ngIf="loan.schemes.length !=0 ; else noScheme">
                             <div class="row py-2 " *ngFor="let scheme of loan.schemes; let i = index">
                                 <div class="col px-0 bg-white" style="height: 500px">
@@ -59,7 +59,6 @@
                 </div>
             </div>
         
-
     </div>
 </div>
     

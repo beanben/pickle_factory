@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { forkJoin, map, Subscription, switchMap, take } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription} from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan/loan';
 
@@ -23,62 +23,13 @@ export class LoansComponent implements OnInit, OnDestroy {
   loanHovered = {} as Loan;
   loans: Loan[] = [];
   loanSlug = "";
-  // subs = Subscription.EMPTY
   subs: Subscription[] = []
 
   constructor(
     private _loanService: LoanService,
-    private router: Router,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    
-    // const observable = forkJoin({
-    //   loans: this._loanService.getLoans(),
-    //   param: this.route.queryParams.pipe(take(1))
-    // })
-
-    // this.subs.push(
-    //   observable.subscribe({
-    //     next: values => {
-    //       this.loans = values["loans"];
-    //       this.loanSlug = values["param"]["slug"];
-          
-    //       if(!!this.loanSlug) {
-    //         this.getLoan(this.loanSlug)
-    //         this.router.navigate([]);
-
-    //       } else if(this.loans.length !==0){
-    //         this._loanService.setLoanSub(this.loans[0]);
-    //       }
-          
-    //     }
-    //   })
-    // )
-
-    // const observable = forkJoin({
-    //   loans: this._loanService.getLoans(),
-    //   loan: this._loanService.getLoanSub()
-    // })
-
-    //  this.subs.push(
-    //   observable.subscribe({
-    //     next: values => {
-    //       this.loans = values["loans"];
-    //       this.loanSelected = values["loan"];
-          
-    //       if(Object.keys()) {
-    //         this.getLoan(this.loanSlug)
-    //         this.router.navigate([]);
-
-    //       } else if(this.loans.length !==0){
-    //         this._loanService.setLoanSub(this.loans[0]);
-    //       }
-          
-    //     }
-    //   })
-    // )
 
     this.getLoans();
 
@@ -160,8 +111,6 @@ export class LoansComponent implements OnInit, OnDestroy {
     if(this.loans.length !=0 ) {
       this._loanService.setLoanSub(this.loans[0]);
 
-    // } else {
-    //   this.router.navigate(["/loans"]);
     }
   }
 

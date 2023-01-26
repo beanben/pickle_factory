@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
 import { Borrower } from './borrower/borrower';
@@ -26,8 +25,6 @@ export class BorrowersComponent implements OnInit, OnDestroy {
 
   constructor(
     private _borrowerService: BorrowerService,
-    private router: Router,
-    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -74,10 +71,6 @@ export class BorrowersComponent implements OnInit, OnDestroy {
         this.indexBorrower === -1
       }
     }
-
-    // this.indexBorrower = -1;
-    // this.setBorrowerSelected(borrower);
-    // this.router.navigate([this.borrowerSelected.slug], {relativeTo: this.route});
   };
 
   removeBorrower(i: number){
@@ -91,11 +84,6 @@ export class BorrowersComponent implements OnInit, OnDestroy {
 
     if(this.borrowers.length !=0 ) {
       this._borrowerService.setBorrowerSub(this.borrowers[0]);
-
-    //   this.borrowerSelected = this.borrowers[0];
-    //   this.router.navigate([this.borrowerSelected.slug], {relativeTo: this.route});
-    // } else {
-    //   this.router.navigate(['/borrowers']);
     } 
   }
 
@@ -110,22 +98,8 @@ export class BorrowersComponent implements OnInit, OnDestroy {
 
         if(this.borrowers.length !==0){
           this._borrowerService.setBorrowerSub(this.borrowers[0]);
-
-        //   this.borrowerSelected = this.borrowers[0];
-        //   this.router.navigate([this.borrowerSelected.slug], {relativeTo: this.route});
-        // } else {
-        //   this.router.navigate(['/borrowers']);
         }
       })
   };
-
-  // setBorrowerSelected(borrower: Borrower | null){
-  //   if(!!borrower){
-  //     this.borrowerSelected = borrower;
-
-  //   } else if(this.borrowers.length !==0){
-  //     this.borrowerSelected = this.borrowers[0];
-  //   }
-  // }
 
 }

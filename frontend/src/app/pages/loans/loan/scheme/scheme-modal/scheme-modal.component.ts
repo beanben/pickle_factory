@@ -51,19 +51,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
 
     this.sub = this._loanService.getLoanSub()
       .subscribe(loan => this.loan = loan)
-
-    // this.route.params
-    //   .subscribe(
-    //     (params: Params) => this.getLoan(params["slug"])
-    //   )
   }
-
-  // getLoan(loanSlug:string){
-  //   this._loanService.getLoan(loanSlug)
-  //     .subscribe(loan => {
-  //       this.loan = loan;
-  //     })
-  // }
 
   onCancel(){
     this.modalSaveScheme.emit(null);
@@ -84,6 +72,11 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
 
       req.then((result) => {
           let scheme: Scheme = result.response;
+          
+          // add scheme to loan in behaviorsubject
+          this.loan.schemes.push(scheme);
+          this._loanService.setLoanSub(this.loan);
+
           this.modalSaveScheme.emit(scheme);
         })
         .catch(err => this.errors = err)
