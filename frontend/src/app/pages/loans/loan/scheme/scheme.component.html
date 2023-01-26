@@ -10,7 +10,7 @@
     <div class="col">
 
         <ng-container *ngIf="!!scheme.name; else noScheme">
-            <div class="row mb-2 p-2">
+            <div class="row p-2 fixed-height" >
                 <div class="col-auto">
                     <div class="row highlightHover rounded p-2">
                         <div class="col-auto fw-bold">
@@ -29,9 +29,6 @@
                                     <span>{{scheme.country}}</span>
                                 </div>
                             </div>       
-                        </div>
-                        <div class="col-auto" >
-                            
                         </div>
                         <div class="col-auto text-center edit">
                             <div class="d-flex">
