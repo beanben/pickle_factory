@@ -16,9 +16,7 @@
 <div class="row mx-0 mt-4">
     <div class="col">
 
-        <button class="btn btn-primary my-2 px-auto" *ngIf="loan.schemes.length !=0"> Add scheme</button>
-
-        <div class="row overflow-auto bg-white">
+        <div class="row overflow-auto">
             <div class="col">
                 <ng-container *ngIf="tabActive === 'stakeholders'">
                     <div class="row py-2">
@@ -30,6 +28,9 @@
         
                 <ng-container *ngIf="tabActive === 'scheme'">
                     <ng-container *ngIf="loan.schemes.length !=0 ; else noScheme">
+
+                        <button class="btn btn-primary px-auto"> Add scheme</button>
+
                         <div class="row py-2 " *ngFor="let scheme of loan.schemes; let i = index">
                             <div class="col px-0 bg-white" style="height: 750px">
                                 <app-scheme 
