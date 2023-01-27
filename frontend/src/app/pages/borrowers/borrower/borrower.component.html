@@ -10,27 +10,32 @@
         </div>    
             
     </div>
-</nav>   
+</nav>
 
-<div class="row overflow-auto bg-white mx-0 mt-4" style="height: 800px">
+<div class="row mx-0 mt-4">
     <div class="col">
-        <div class="row py-2">
 
-            <div class="col px-0 bg-white">
+        <div class="row overflow-auto bg-white">
+            <div class="col">
 
-                <ul class="list-group">
-                    <li class="p-2 no-style">Loans</li>
-                
-                    <ul *ngIf="!!borrower.loans">
-                        <li *ngFor="let loan of borrower.loans">
-                            <span class="link" (click)="onNavigate(loan)">{{loan.name}}</span>
-                        </li>
-                    </ul>
-                
-                    <span *ngIf="borrower.loans?.length === 0" class="px-3">No loans</span>
-                    
-                </ul>
-
+                <div class="row py-2">
+                    <div class="col px-0 bg-white" style="height: 800px">
+                        <ul class="list-group">
+                            <li class="p-2 no-style">Loans</li>
+                        
+                            <ul *ngIf="!!borrower.loans">
+                                <li *ngFor="let loan of borrower.loans">
+                                    <span class="link" (click)="onNavigate(loan)">{{loan.name}}</span>
+                                </li>
+                            </ul>
+                        
+                            <span *ngIf="borrower.loans?.length === 0" class="px-3">No loans</span>
+                            
+                        </ul>
+        
+                    </div>
+                </div>
+        
             </div>
         </div>
 
