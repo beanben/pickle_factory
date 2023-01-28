@@ -3,6 +3,7 @@ import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription, switchMap } from 'rxjs';
+import { Scheme } from './scheme/scheme';
 
 @Component({
   selector: 'app-loan',
@@ -12,6 +13,7 @@ import { Subscription, switchMap } from 'rxjs';
 export class LoanComponent implements OnInit, OnDestroy {
   tabActive = 'scheme';
   loanSchemesExist = false;
+  openSchemeModal = false;
 
   loan = {} as Loan;
   sub = Subscription.EMPTY;
@@ -36,6 +38,15 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe()
+  }
+
+  onSave(scheme: Scheme | null){
+    this.openSchemeModal = false;
+
+    if(scheme){
+      this.loan.schemes.push(scheme);
+      console.log("this.loan.schemes: ", this.loan.schemes)
+    }  
   }
 
 }

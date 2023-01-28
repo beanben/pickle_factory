@@ -6,7 +6,7 @@
     (deleteIsConfirmed)="onDeleteLoan()">
 </app-loan-modal>
 
-<div class="container-fluid h-100">
+<div class="container-fluid vh-100" >
     <div class="row h-100">
 
         <ng-container *ngIf="!isCollapsed">
@@ -73,7 +73,7 @@
             </div>
         </ng-container>
 
-        <div class="col h-100" *ngIf="loans.length != 0">
+        <div class="col vh-100 overflow-auto" *ngIf="loans.length != 0">
             <app-loan></app-loan>
         </div>
 

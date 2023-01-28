@@ -1,6 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
@@ -43,7 +42,6 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     private _schemeService: SchemeService,
     private el: ElementRef,
     private _loanService: LoanService,
-    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {

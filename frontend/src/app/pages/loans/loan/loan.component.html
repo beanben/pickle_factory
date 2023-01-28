@@ -1,5 +1,11 @@
+<app-scheme-modal
+    *ngIf="openSchemeModal"
+    [mode] = "'new'"
+    (modalSaveScheme)="onSave($event)">
+</app-scheme-modal>
 
-<nav class="navbar navbar-light navbar-expand-lg pb-0 px-0 bg-white">
+
+<nav class="navbar navbar-light navbar-expand-lg pb-0 px-0 bg-white sticky-top">
     <div class="d-flex flex-column">
         <div class="p-2 nav-title">{{loan.name}}</div>
         <div class="d-flex justify-content-between">
@@ -16,42 +22,44 @@
 <div class="row mx-0 mt-4">
     <div class="col">
 
-        <div class="row overflow-auto">
-            <div class="col">
-                <ng-container *ngIf="tabActive === 'stakeholders'">
-                    <div class="row py-2">
-                        <div class="col px-0 bg-white" style="height: 750px">
-                            <app-stakeholders [loan]="loan"></app-stakeholders>
+        <ng-container *ngIf="tabActive === 'stakeholders'">
+            <div class="row py-2">
+                <div class="col px-0 bg-white" style="height: 750px">
+                    <app-stakeholders [loan]="loan"></app-stakeholders>
+                </div>
+            </div>
+        </ng-container>
+        
+        <ng-container *ngIf="tabActive === 'scheme'">
+            <ng-container *ngIf="loan.schemes.length !=0 ; else noScheme">
+
+                <button class="btn btn-primary px-auto" (click)="openSchemeModal = true"> Add scheme</button>
+
+                    <div class="row">
+                        <div class="col">
+
+                            <div class="row py-2" *ngFor="let scheme of loan.schemes; let i = index">
+                                <div class="col px-0 bg-white" style="height: 750px">
+                                    <app-scheme 
+                                        [scheme]="scheme"
+                                        [index]="i"
+                                        (deleteConfirmed)="deleteScheme($event)">
+                                    </app-scheme>
+                                </div>
+                            </div>
+                    
                         </div>
                     </div>
-                </ng-container>
+            </ng-container>
+
+            <ng-template #noScheme>
+                <div class="row py-2">
+                    <div class="col px-0 bg-white" style="height: 800px">
+                        <app-scheme></app-scheme>
+                    </div>
+                </div>
+            </ng-template>
+        </ng-container>
         
-                <ng-container *ngIf="tabActive === 'scheme'">
-                    <ng-container *ngIf="loan.schemes.length !=0 ; else noScheme">
-
-                        <button class="btn btn-primary px-auto"> Add scheme</button>
-
-                        <div class="row py-2 " *ngFor="let scheme of loan.schemes; let i = index">
-                            <div class="col px-0 bg-white" style="height: 750px">
-                                <app-scheme 
-                                    [scheme]="scheme"
-                                    [index]="i"
-                                    (deleteConfirmed)="deleteScheme($event)">
-                                </app-scheme>
-                            </div>
-                        </div>
-                    </ng-container>
-                    <ng-template #noScheme>
-                        <div class="row py-2">
-                            <div class="col px-0 bg-white" style="height: 800px">
-                                <app-scheme></app-scheme>
-                            </div>
-                        </div>
-                    </ng-template>
-                </ng-container>
-        
-            </div>
-        </div>
-
     </div>
 </div>
