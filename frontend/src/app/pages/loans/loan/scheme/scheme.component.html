@@ -1,10 +1,3 @@
-<!-- <app-scheme-modal
-    *ngIf="openSchemeModal"
-    [scheme]="scheme"
-    [mode] = "modalMode"
-    (modalSaveScheme)="onSave($event)"
-    (deleteIsConfirmed)="onDeleteScheme()">
-</app-scheme-modal> -->
 <app-scheme-modal
     *ngIf="openSchemeModal"
     [scheme]="scheme"
@@ -27,14 +20,14 @@
                         <div class="col-auto">
                             <div class="row">
                                 <div class="col">
-                                    <span>{{scheme.street_name}}</span>
-                                    <span>{{scheme.postcode}}</span>
+                                    {{scheme.street_name}}
+                                    {{scheme.postcode}}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <span>{{scheme.city}}</span>
-                                    <span>{{scheme.country}}</span>
+                                    {{scheme.city}}
+                                    {{scheme.country}}
                                 </div>
                             </div>       
                         </div>
