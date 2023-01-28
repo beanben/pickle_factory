@@ -15,10 +15,11 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   errors: string[] = [];
 
-  @Output() modalSaveScheme = new EventEmitter<Scheme|null>();
+  @Output() modalSaveScheme = new EventEmitter<void>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
   @Input() scheme = {} as Scheme;
   @Input() mode = "";
+  @Input() index = -1;
 
   sub = Subscription.EMPTY;
   loan = {} as Loan;
@@ -52,7 +53,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   }
 
   onCancel(){
-    this.modalSaveScheme.emit(null);
+    this.modalSaveScheme.emit();
   };
 
   onSave(){
@@ -62,22 +63,25 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
 
       if(this.scheme.id) {
         scheme.id = this.scheme.id;
-        var req = this._schemeService.updateScheme(scheme)
-
-      } else {
-        var req = this._schemeService.createScheme(scheme)
-      };
-
-      req.then((result) => {
+        this._schemeService.updateScheme(scheme)
+        .then((result) => {
           let scheme: Scheme = result.response;
-          
-          // add scheme to loan in behaviorsubject
-          this.loan.schemes.push(scheme);
-          this._loanService.setLoanSub(this.loan);
-
-          this.modalSaveScheme.emit(scheme);
+          this.loan.schemes[this.index]=scheme;
+          this.modalSaveScheme.emit();
         })
         .catch(err => this.errors = err)
+
+
+      } else {
+        this._schemeService.createScheme(scheme)
+        .then((result) => {
+          let scheme: Scheme = result.response;
+          this.loan.schemes.push(scheme);
+          this.modalSaveScheme.emit();
+        })
+        .catch(err => this.errors = err)
+
+      };
     }
   };
 

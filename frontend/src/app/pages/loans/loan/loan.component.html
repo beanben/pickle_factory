@@ -1,7 +1,12 @@
-<app-scheme-modal
+<!-- <app-scheme-modal
     *ngIf="openSchemeModal"
     [mode] = "'new'"
     (modalSaveScheme)="onSave($event)">
+</app-scheme-modal> -->
+<app-scheme-modal
+    *ngIf="openSchemeModal"
+    [mode] = "'new'"
+    (modalSaveScheme)="openSchemeModal = false">
 </app-scheme-modal>
 
 

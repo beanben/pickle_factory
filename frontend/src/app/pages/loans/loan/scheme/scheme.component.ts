@@ -24,13 +24,18 @@ export class SchemeComponent implements OnInit{
     this.modalMode = modalMode;
   }
 
-  onSave(scheme: Scheme | null){
-    this.openSchemeModal = false;
+  // onSave(scheme: Scheme | null){
+  //   this.openSchemeModal = false;
 
-    if(scheme){
-      this.scheme = scheme;
-    }  
-  }
+  //   if(scheme){
+  //     this.scheme = scheme;
+  //   }  
+  // }
+
+  // onSave(){
+  //   this.openSchemeModal = false;
+  //   console.log("void emitted")
+  // }
 
   onDeleteScheme(){
     this.openSchemeModal = false;

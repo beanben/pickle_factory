@@ -40,13 +40,13 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe()
   }
 
-  onSave(scheme: Scheme | null){
-    this.openSchemeModal = false;
+  // onSave(scheme: Scheme | null){
+  //   this.openSchemeModal = false;
 
-    if(scheme){
-      this.loan.schemes.push(scheme);
-      console.log("this.loan.schemes: ", this.loan.schemes)
-    }  
-  }
+  //   if(scheme){
+  //     this.loan.schemes.push(scheme);
+  //     console.log("this.loan.schemes: ", this.loan.schemes)
+  //   }  
+  // }
 
 }

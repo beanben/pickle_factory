@@ -1,8 +1,16 @@
-<app-scheme-modal
+<!-- <app-scheme-modal
     *ngIf="openSchemeModal"
     [scheme]="scheme"
     [mode] = "modalMode"
     (modalSaveScheme)="onSave($event)"
+    (deleteIsConfirmed)="onDeleteScheme()">
+</app-scheme-modal> -->
+<app-scheme-modal
+    *ngIf="openSchemeModal"
+    [scheme]="scheme"
+    [mode] = "modalMode"
+    [index]="index"
+    (modalSaveScheme)="openSchemeModal = false"
     (deleteIsConfirmed)="onDeleteScheme()">
 </app-scheme-modal>
 
