@@ -7,6 +7,8 @@ export interface Scheme {
     postcode?: string;
     city: string;
     country?: string;
+    currency: string;
+    system: string;
     loan_id: number;
     units: Unit[]
 }

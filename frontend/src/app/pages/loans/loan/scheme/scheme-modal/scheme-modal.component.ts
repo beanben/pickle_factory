@@ -24,14 +24,24 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   sub = Subscription.EMPTY;
   loan = {} as Loan;
 
+  currency_choices =[
+    {value: "GBP", display: "GBP (£)"},
+    {value: "EUR", display: "EUR (€)"},
+    {value: "USD", display: "USD ($)"},
+  ];
+  system_choices =[
+    {value: "SQFT", display: "imperial (sqft)"},
+    {value: "SQM", display: "metric (sqm)"}
+  ];
+
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
     street_name: [''],
     postcode: [''],
     city: ['', Validators.required],
     country: [''],
-    currency: ['', Validators.required],
-    system: ['', Validators.required]
+    currency: [this.currency_choices[0].value, Validators.required],
+    system: [this.system_choices[0].value, Validators.required]
   });
   get name(){
     return this.form.get('name')
@@ -46,15 +56,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     return this.form.get('system')
   };
 
-  currency_choices =[
-    {value: "GBP", display: "GBP (£)"},
-    {value: "EUR", display: "EUR (€)"},
-    {value: "USD", display: "USD ($)"},
-  ];
-  system_choices =[
-    {value: "SQFT", display: "imperial (sqft)"},
-    {value: "SQM", display: "metric (sqm)"}
-  ];
+  
 
   constructor(
     private fb: FormBuilder,
@@ -112,6 +114,8 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
         'postcode': this.scheme.postcode,
         'city': this.scheme.city,
         'country': this.scheme.country,
+        'currency': this.scheme.currency,
+        'system': this.scheme.system
       })
     }
   }

@@ -22,7 +22,8 @@ class SchemeNestedSerializer(serializers.Serializer):
     postcode = serializers.CharField(allow_blank=True)
     city = serializers.CharField()
     country = serializers.CharField(allow_blank=True)
-
+    currency = serializers.CharField()
+    system = serializers.CharField()
 
 class BorrowerSerializer(serializers.ModelSerializer):
     loans = serializers.SerializerMethodField()
@@ -108,7 +109,7 @@ class SchemeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Scheme
-        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'loan_id']
+        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'currency', 'system', 'loan_id']
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")
