@@ -30,6 +30,8 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     postcode: [''],
     city: ['', Validators.required],
     country: [''],
+    currency: ['', Validators.required],
+    system: ['', Validators.required]
   });
   get name(){
     return this.form.get('name')
@@ -37,6 +39,22 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   get city(){
     return this.form.get('city')
   };
+  get currency(){
+    return this.form.get('currency')
+  };
+  get system(){
+    return this.form.get('system')
+  };
+
+  currency_choices =[
+    {value: "GBP", display: "GBP (£)"},
+    {value: "EUR", display: "EUR (€)"},
+    {value: "USD", display: "USD ($)"},
+  ];
+  system_choices =[
+    {value: "SQFT", display: "imperial (sqft)"},
+    {value: "SQM", display: "metric (sqm)"}
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -46,6 +64,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.addEventBackgroundClose();
     this.initForm();
 
     this.sub = this._loanService.getLoanSub()
@@ -104,7 +123,9 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
 
   addEventBackgroundClose(){
     this.el.nativeElement.addEventListener('click', (el:any) => {
-          this.onCancel();
+      if (el.target.className === 'modal') {
+        this.onCancel();
+    }
     });
   };
 

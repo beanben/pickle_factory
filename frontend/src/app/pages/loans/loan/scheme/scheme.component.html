@@ -50,8 +50,22 @@
                         <li class="nav-item p-2" (click)="tabActive = 'value'" [ngClass]="tabActive === 'value' ? 'activeTab' : 'tab'">Value</li>
                         <li class="nav-item p-2" (click)="tabActive = 'development'" [ngClass]="tabActive === 'development' ? 'activeTab' : 'tab'">Development</li>
                     </ul>
+
+                    <div class="row p-2">
+                        <div class="col">
+
+                            <ng-container *ngIf="tabActive === 'units'">
+                                <app-units [scheme]="scheme"></app-units>
+                            </ng-container>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
+
+
 
         </ng-container>
 

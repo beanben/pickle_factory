@@ -1,0 +1,54 @@
+
+<app-unit-modal
+    *ngIf="openUnitModal"
+    [mode]="modalMode"
+    (modalSaveUnit)="openUnitModal = false">
+</app-unit-modal>
+
+<div class="p-3">
+    <ng-container *ngIf="!! scheme.units ; else noUnits">
+        <div class="row border-bottom text-center fw-bolder">
+            <div class="col">
+                Asset Class
+            </div>
+            <div class="col">
+                Unit type
+            </div>
+            <div class="col">
+                Units
+            </div>
+            <div class="col">
+                Area
+            </div>
+        </div>
+
+        <div class="row text-center fw-bolder" *ngFor="let unit of scheme.units">
+            <div class="col">
+                {{unit.asset_class}}
+            </div>
+            <div class="col">
+                {{unit.asset_class}}
+            </div>
+            <div class="col">
+                {{unit.quantity}}
+            </div>
+            <div class="col">
+                {{unit.area}} {{unit.area_metric}}
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #noUnits>
+        <div class="d-flex flex-row justify-content-center pt-4">
+            <button class="btn btn-primary" (click)="onOpenModal('add')">Add unit</button>
+        </div>
+    </ng-template>
+
+    
+
+    
+
+
+
+</div>
+

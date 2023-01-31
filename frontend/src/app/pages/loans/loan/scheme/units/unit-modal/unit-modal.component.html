@@ -1,0 +1,196 @@
+<div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+    <div class="modal-dialog modal-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()"></button>
+            </div>          
+
+            <ng-container *ngIf="step===1">
+                <div class="modal-body"> 
+                    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item d-flex align-items-center">
+                                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus"></span>
+                                <span class="px-2">Asset class</span> 
+                            </li>
+                            <img src="{{chevronRight}}" alt="">
+                            <li class="breadcrumb-item d-flex align-items-center">
+                                <span class="px-2" appDot [status]="detailStatus"></span>
+                                <span class="px-2">Detail</span>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
+                        <span class="d-flex justify-content-center pb-2">Please select the unit asset class from the list </span> 
+
+                        <div class="form-group mb-3">
+                            <app-required></app-required>
+                            <div class="form-floating text-center">
+                                <select class="form-select"
+                                    id="asset_class"
+                                    formControlName="asset_class">
+                                        <option [ngValue]="''"> -- Select Asset Class --</option>
+                                        <option
+                                        *ngFor='let choice of asset_class_choices' 
+                                        [ngValue]="choice">{{ choice.display}}
+                                        </option>
+                                    </select>
+                                <label for="asset_class">Asset class</label>
+                            </div>
+                            <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+                                class="alert alert-danger">
+                                Please select the unit asset class
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
+                    <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+                </div>
+                
+            </ng-container>
+
+            <ng-container *ngIf="step===2">
+                <div class="modal-body"> 
+                    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center">
+                            <li class="breadcrumb-item d-flex align-items-center">
+                                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus">
+                                    <span style="color:green">&#10003;</span>
+                                </span>
+                                <span class="px-2">Asset class</span> 
+                            </li>
+                            <img src="{{chevronRight}}" alt="">
+                            <li class="breadcrumb-item d-flex align-items-center">
+                                <span class="px-2" appDot [status]="detailStatus"></span>
+                                <span class="px-2">Detail</span>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
+                        <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units for this asset class</span> 
+
+                        <div class="form-group mb-1 row">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="asset_class" placeholder="Asset Class" value="{{asset_class!.value.display}}" disabled>
+                                    <label for="asset_class">Asset class</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 row">
+                            <div class="col">
+                                <div class="form-floating text-center">
+                                    <select class="form-select w-auto"
+                                        id="area_type"
+                                        formControlName="area_type">
+                                            <option [ngValue]="''"> -- Area Type --</option>
+                                            <option
+                                            *ngFor='let choice of area_type_choices' 
+                                            [ngValue]="choice">{{ choice.display}}
+                                            </option>
+                                        </select>
+                                    <label for="area_type">Area type</label>
+                                </div>
+                                <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+                                    class="alert alert-danger">
+                                    Please select the type of area
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-floating text-center">
+                                    <select class="form-select w-auto"
+                                        id="area_metric"
+                                        formControlName="area_metric">
+                                            <option [ngValue]="''"> -- Area Metric --</option>
+                                            <option
+                                            *ngFor='let choice of area_metric_choices' 
+                                            [ngValue]="choice">{{ choice.display}}
+                                            </option>
+                                        </select>
+                                    <label for="area_metric">Area metric</label>
+                                </div>
+                                <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+                                    class="alert alert-danger">
+                                    Please select the metric for the area
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group mb-1">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="asset_class" placeholder="Asset Class" value="{{asset_class!.value.display}}" disabled>
+                                <label for="asset_class">Asset class</label>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="form-group mb-1">
+                            <div class="form-floating text-center">
+                                <select class="form-select"
+                                    id="area_type"
+                                    formControlName="area_type">
+                                        <option [ngValue]="''"> -- Area Type --</option>
+                                        <option
+                                        *ngFor='let choice of area_type_choices' 
+                                        [ngValue]="choice">{{ choice.display}}
+                                        </option>
+                                    </select>
+                                <label for="area_type">Area type</label>
+                            </div>
+                            <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+                                class="alert alert-danger">
+                                Please select the type of area
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="form-group mb-1">
+                            <div class="form-floating text-center">
+                                <select class="form-select"
+                                    id="area_metric"
+                                    formControlName="area_metric">
+                                        <option [ngValue]="''"> -- Area Metric --</option>
+                                        <option
+                                        *ngFor='let choice of area_metric_choices' 
+                                        [ngValue]="choice">{{ choice.display}}
+                                        </option>
+                                    </select>
+                                <label for="area_metric">Area metric</label>
+                            </div>
+                            <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+                                class="alert alert-danger">
+                                Please select the metric for the area
+                            </div>
+                        </div> -->
+
+                        <div class="row">
+                            <div class="col">Unit type</div>
+                            <div class="col">Number of units</div>
+                            <div class="col">Number of beds</div>
+                            <div class="col">Area</div>
+
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button>
+                    <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
+                    <button form="form" type="submit" class="btn btn-success">Save</button>
+                </div>
+                
+            </ng-container>
+
+        </div>
+    </div>
+ </div>
+

@@ -1,4 +1,4 @@
-import { Loan } from "../loan";
+import { Unit } from "./units/unit";
 
 export interface Scheme {
     id: number;
@@ -8,4 +8,5 @@ export interface Scheme {
     city: string;
     country?: string;
     loan_id: number;
+    units: Unit[]
 }

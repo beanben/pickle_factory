@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Scheme } from './scheme';
 
 @Component({
@@ -15,7 +15,8 @@ export class SchemeComponent implements OnInit{
   @Input() index = -1;
   @Output() deleteConfirmed = new EventEmitter<number>();
 
-  constructor( ) { }
+  constructor( 
+  ) { }
 
   ngOnInit(): void { }
 
@@ -23,19 +24,6 @@ export class SchemeComponent implements OnInit{
     this.openSchemeModal = true;
     this.modalMode = modalMode;
   }
-
-  // onSave(scheme: Scheme | null){
-  //   this.openSchemeModal = false;
-
-  //   if(scheme){
-  //     this.scheme = scheme;
-  //   }  
-  // }
-
-  // onSave(){
-  //   this.openSchemeModal = false;
-  //   console.log("void emitted")
-  // }
 
   onDeleteScheme(){
     this.openSchemeModal = false;
