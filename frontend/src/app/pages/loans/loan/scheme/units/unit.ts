@@ -1,4 +1,12 @@
-import { Scheme } from "../scheme";
+export interface AreaType {
+    value: string;
+}
+export interface AssetClass {
+    value: string;
+}
+export interface AreaMetric {
+    value: string;
+}
 
 export interface Unit {
     id: number,
@@ -6,8 +14,10 @@ export interface Unit {
     type: string,
     beds?: number,
     area?: number,
-    area_type?: string,
-    area_metric?: string,
-    asset_class: string,
+    area_type?: AreaType,
+    area_metric?: AreaMetric,
+    asset_class: AssetClass,
     scheme_id: number
 }
+
+

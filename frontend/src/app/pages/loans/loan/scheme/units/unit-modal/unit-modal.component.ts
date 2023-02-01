@@ -1,5 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Scheme } from '../../scheme';
+
+import {AssetClass} from '../unit';
 
 @Component({
   selector: 'app-unit-modal',
@@ -11,33 +14,18 @@ export class UnitModalComponent implements OnInit {
   chevronRight = "assets/images/chevronRight.svg";
   assetClassStatus = "";
   detailStatus = "";
-  // areaStatus = "";
   step = 1;
   nextIsClicked = false;
 
-  htmlTickMark = "&#10003;"
-
   @Input() mode ="";
+  @Input() scheme = {} as Scheme;
   @Output() modalSaveUnit = new EventEmitter<void>();
 
-  form: FormGroup = this.fb.group({
-    asset_class: ['', Validators.required],
-    type: [''],
-    quantity: [0, Validators.required],
-    beds: [null],
-    area: [null],
-    area_type: [''],
-    area_metric: ['']
-  })
-
+  // https://www.tektutorialshub.com/angular/nested-formarray-example-add-form-fields-dynamically/
   area_type_choices =[
-    {value: "NIA", display: "NIA"},
-    {value: "NSA", display: "NSA"},
-  ];
-
-  area_metric_choices =[
-    {value: "SQFT", display: "square feet"},
-    {value: "SQM", display: "square metres"},
+    {value: "NIA", display: "NIA" , meaning: "Net Internal Area"},
+    {value: "NSA", display: "NSA", meaning: "Net Saleable Area"},
+    {value: "GIA", display: "GIA", meaning: "Gross Internal Area"},
   ];
 
   asset_class_choices =[
@@ -50,9 +38,50 @@ export class UnitModalComponent implements OnInit {
     {value: "PBSA", display: "Student Accommodation"}
   ];
 
+  default_choices: {[key: string]: any} = {
+    "BTS": {units: "units", beds: "beds", area: "NIA"},
+    "BTL": {units: "units", beds: "beds", area: "NIA"},
+    "H": {units: "rooms", beds: "beds", area: "NIA"},
+    "C": {units: "units", beds: null, area: "GIA"},
+    "O": {units: "units", beds: null, area: "GIA"},
+    "S": {units: "units", beds: null, area: "GIA"},
+    "PBSA": {units: "rooms", beds: "beds", area: "NIA"},
+  }
+
+  form: FormGroup = this.fb.group({
+    asset_class:  ['', Validators.required],
+    area_type: [this.area_type_choices[0].value],
+    units: this.fb.array([])
+  })
   get asset_class(){
     return this.form.get('asset_class')
   };
+  get area_type(){
+    return this.form.get('area_type')
+  };
+  get units(): FormArray{
+    return this.form.get("units") as FormArray
+  }
+
+  // form: FormGroup = this.fb.group({
+  //   asset_class: ['', Validators.required],
+  //   type: [''],
+  //   quantity: [0, Validators.required],
+  //   beds: [null],
+  //   area: [null],
+  //   area_type: [''],
+  // })
+
+  newUnit(): FormGroup {
+    return this.fb.group({
+      asset_class: ['', Validators.required],
+      type: [''],
+      quantity: [0, Validators.required],
+      beds: [null],
+      area: [null]
+    })
+  }
+
 
   constructor(
     private el: ElementRef,
@@ -65,6 +94,17 @@ export class UnitModalComponent implements OnInit {
     this.assetClassStatus = "active";
     this.detailStatus = "inactive";
 
+    this.addUnit();
+
+    console.log("scheme:", this.scheme)
+
+  }
+
+  addUnit() {
+    this.units.push(this.newUnit());
+  }
+  removeUnit(index:number) {
+    this.units.removeAt(index);
   }
 
   addEventBackgroundClose(){

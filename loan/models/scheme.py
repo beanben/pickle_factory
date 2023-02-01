@@ -32,10 +32,6 @@ class Unit(models.Model):
         ("NIA", "NIA"),
         ("NSA", "NSA"),
     ]
-    AREA_METRIC_CHOICES = [
-        ("SQFT", "square feet"),
-        ("SQM", "square metres")
-    ]
     ASSET_CLASS_CHOICES =[
         ("BTS", "Build to Sell"),
         ("BTL", "Build to Let"),
@@ -51,6 +47,8 @@ class Unit(models.Model):
     beds = models.PositiveIntegerField(blank=True, null=True)
     area = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
-    area_metric = models.CharField(max_length=4, choices=AREA_METRIC_CHOICES, blank=True)
     asset_class = models.CharField(max_length=10, choices=ASSET_CLASS_CHOICES)
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="units")
+
+
+
