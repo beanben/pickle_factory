@@ -30,7 +30,7 @@
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
             <span class="d-flex justify-content-center pb-2">Please select the unit asset class from the list </span>
 
-            <div class="form-group mb-3">
+            <div class="form-group mb-3 px-2">
               <app-required></app-required>
               <div class="form-floating text-center">
                 <select class="form-select" id="asset_class" formControlName="asset_class">
@@ -78,9 +78,10 @@
           </nav>
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
-            <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units for this asset class</span>
+            <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units for this asset
+              class</span>
 
-            <div class="form-group">
+            <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control" id="asset_class" placeholder="Asset Class"
                   value="{{asset_class!.value.display}}" disabled>
@@ -88,21 +89,33 @@
               </div>
             </div>
 
-            <div class="row text-center pt-2 border-table text-center">
-              <div class="col my-auto px-1">Type</div>
-              <div class="col my-auto px-1">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
-              <div class="col my-auto px-1" *ngIf="default_choices[asset_class!.value.value].beds">{{default_choices[asset_class!.value.value].beds | titlecase}}</div>
-              <div class="col my-auto px-1">{{default_choices[asset_class!.value.value].area}} ({{scheme.system | lowercase}})</div>
-            </div>
+            <div class="px-2">
 
-            <div formArrayName="units">
-              <div *ngFor="let unit of units.controls; let i=index">
-                <div [formGroupName]="i">
-                  <input type="number" formControlName="quantity" />
-                  <input type="number" formControlName="beds" />
-                  <input type="number" formControlName="area" />
+              <div class="row mx-0 text-center py-2 border-table text-center">
+                <div class="col my-auto">Type</div>
+                <div class="col my-auto">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
+                <div class="col my-auto" *ngIf="default_choices[asset_class!.value.value].beds">
+                  {{default_choices[asset_class!.value.value].beds | titlecase}}</div>
+                <div class="col my-auto">{{default_choices[asset_class!.value.value].area}}
+                  ({{scheme.system | lowercase}})</div>
+              </div>
+
+              <div formArrayName="units">
+                <div *ngFor="let unit of units.controls; let i=index">
+                  <div [formGroupName]="i">
+                    <div class="row mx-0">
+                      <input type="text" class="form-control col my-auto" formControlName="type" />
+                      <input type="number" class="form-control col my-auto" formControlName="quantity" />
+                      <input class="form-control col my-auto" formControlName="beds"
+                            *ngIf="default_choices[asset_class!.value.value].beds" type="number"/>
+                      <input type="number" class="form-control col my-auto" formControlName="area" />
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{default_choices[asset_class!.value.value].units }} type</button>
+
             </div>
 
           </form>

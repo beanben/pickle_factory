@@ -2,8 +2,6 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@ang
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Scheme } from '../../scheme';
 
-import {AssetClass} from '../unit';
-
 @Component({
   selector: 'app-unit-modal',
   templateUrl: './unit-modal.component.html',
@@ -63,20 +61,10 @@ export class UnitModalComponent implements OnInit {
     return this.form.get("units") as FormArray
   }
 
-  // form: FormGroup = this.fb.group({
-  //   asset_class: ['', Validators.required],
-  //   type: [''],
-  //   quantity: [0, Validators.required],
-  //   beds: [null],
-  //   area: [null],
-  //   area_type: [''],
-  // })
-
   newUnit(): FormGroup {
     return this.fb.group({
-      asset_class: ['', Validators.required],
       type: [''],
-      quantity: [0, Validators.required],
+      quantity: [null, Validators.required],
       beds: [null],
       area: [null]
     })
@@ -95,8 +83,6 @@ export class UnitModalComponent implements OnInit {
     this.detailStatus = "inactive";
 
     this.addUnit();
-
-    console.log("scheme:", this.scheme)
 
   }
 
@@ -136,6 +122,15 @@ export class UnitModalComponent implements OnInit {
     this.detailStatus = "inactive";
 
     this.step -= 1;
+
+    this.units.clear();
+    this.addUnit();
+  }
+
+  onSave(){
+    if(this.form.valid){
+      console.log("this.form.value:", this.form.value)
+    }
   }
 
 }
