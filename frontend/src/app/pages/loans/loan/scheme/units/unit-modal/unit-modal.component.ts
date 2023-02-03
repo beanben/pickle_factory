@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { textValidator } from 'src/app/shared/custom.validators';
+// import {TypeValidator } from 'src/app/shared/custom.validators';
 import { Scheme } from '../../scheme';
 
 @Component({
@@ -14,6 +16,11 @@ export class UnitModalComponent implements OnInit {
   detailStatus = "";
   step = 1;
   nextIsClicked = false;
+  showError = false;
+  requiredControls: string[] = [];
+  invalidControlsType: any[] = [];
+  textOnly = /^[a-zA-Z]+$/;
+  numbersOnly = /^\d+$/;
 
   @Input() mode ="";
   @Input() scheme = {} as Scheme;
@@ -47,9 +54,9 @@ export class UnitModalComponent implements OnInit {
   }
 
   form: FormGroup = this.fb.group({
-    asset_class:  ['', Validators.required],
-    area_type: [this.area_type_choices[0].value],
-    units: this.fb.array([])
+    asset_class:  ['', {validators: [Validators.required], updateOn: 'blur'}],
+    area_type: [this.area_type_choices[0].value, {updateOn: 'blur'}],
+    unitsArray: this.fb.array([])
   })
   get asset_class(){
     return this.form.get('asset_class')
@@ -57,16 +64,17 @@ export class UnitModalComponent implements OnInit {
   get area_type(){
     return this.form.get('area_type')
   };
-  get units(): FormArray{
-    return this.form.get("units") as FormArray
+  get unitsArray(): FormArray{
+    return this.form.get("unitsArray") as FormArray
   }
 
   newUnit(): FormGroup {
     return this.fb.group({
-      type: [''],
-      quantity: [null, Validators.required],
-      beds: [null],
-      area: [null]
+      // type: ['', {validators: [Validators.required, textValidator()], updateOn: 'blur'}],
+      type: ['', {validators: [Validators.required, Validators.pattern(this.textOnly)], updateOn: 'blur'}],
+      units: [null, {validators: [Validators.required, Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
+      beds: [null, {validators: [Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
+      area: [null, {validators: [Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
     })
   }
 
@@ -87,10 +95,11 @@ export class UnitModalComponent implements OnInit {
   }
 
   addUnit() {
-    this.units.push(this.newUnit());
+      this.unitsArray.push(this.newUnit());
   }
+
   removeUnit(index:number) {
-    this.units.removeAt(index);
+    this.unitsArray.removeAt(index);
   }
 
   addEventBackgroundClose(){
@@ -123,14 +132,44 @@ export class UnitModalComponent implements OnInit {
 
     this.step -= 1;
 
-    this.units.clear();
+    this.unitsArray.clear();
     this.addUnit();
   }
 
   onSave(){
-    if(this.form.valid){
-      console.log("this.form.value:", this.form.value)
+    this.getInvalidControls();
+  }
+
+  getInvalidControls() {
+    for (let i = 0; i < this.unitsArray.length; i++) {
+      const unit = this.unitsArray.at(i) as FormGroup;
+
+      for (const controlName in unit.controls) {
+        if (unit.controls[controlName].hasError('required') && !this.requiredControls.includes(controlName)) {
+          this.requiredControls.push(controlName);
+        }
+
+        const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName)
+
+        if(isNotIncluded && unit.controls[controlName].hasError('pattern')){
+          if(controlName === "type"){
+            this.invalidControlsType.push({controlName: controlName, controlType: "text"})
+
+          } else if(controlName === "units" || controlName==="beds"|| controlName ==="area"){
+            this.invalidControlsType.push({controlName: controlName, controlType: "number"})
+          }
+        }
+      }
+
     }
   }
+
+
+  // onFocus(){
+  //   console.log("is focus")
+  // }
+  // onBlur(){
+  //   console.log("is blur")
+  // }
 
 }

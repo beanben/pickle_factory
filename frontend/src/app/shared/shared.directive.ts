@@ -1,10 +1,10 @@
-import { Directive, ElementRef, Renderer2, Input, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, Renderer2, Input, SimpleChanges, HostListener, forwardRef } from '@angular/core';
+import { NG_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
 
 @Directive({
   selector: '[appDot]'
 })
 export class DotDirective {
-  // @Input() color = "";
   @Input() status = "";
   statusColor: {[key: string]: string} = {
     active: "rgb(15, 86, 179)",
@@ -28,9 +28,4 @@ export class DotDirective {
       this.el.nativeElement.style.backgroundColor = this.statusColor[this.status];
     }
   }
-
-  // INSERT SPAN USING RENDERER
-
-
-
 }

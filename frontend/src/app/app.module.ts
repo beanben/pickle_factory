@@ -33,7 +33,7 @@ import { SchemeComponent } from './pages/loans/loan/scheme/scheme.component';
 import { SchemeModalComponent } from './pages/loans/loan/scheme/scheme-modal/scheme-modal.component';
 import { UnitsComponent } from './pages/loans/loan/scheme/units/units.component';
 import { UnitModalComponent } from './pages/loans/loan/scheme/units/unit-modal/unit-modal.component';
-import { DotDirective } from './shared/dot.directive';
+import { DotDirective } from './shared/shared.directive';
 
 @NgModule({
   declarations: [

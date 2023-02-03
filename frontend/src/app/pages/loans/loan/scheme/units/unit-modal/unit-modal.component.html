@@ -78,12 +78,11 @@
           </nav>
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
-            <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units for this asset
-              class</span>
+            <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units</span>
 
             <div class="form-group px-2">
               <div class="form-floating">
-                <input type="text" class="form-control" id="asset_class" placeholder="Asset Class"
+                <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset_class" placeholder="Asset Class"
                   value="{{asset_class!.value.display}}" disabled>
                 <label for="asset_class">Asset class</label>
               </div>
@@ -91,8 +90,8 @@
 
             <div class="px-2">
 
-              <div class="row mx-0 text-center py-2 border-table text-center">
-                <div class="col my-auto">Type</div>
+              <div class="row mx-0 py-2 border-table text-center">
+                <div class="col my-auto ">Type</div>
                 <div class="col my-auto">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
                 <div class="col my-auto" *ngIf="default_choices[asset_class!.value.value].beds">
                   {{default_choices[asset_class!.value.value].beds | titlecase}}</div>
@@ -100,21 +99,30 @@
                   ({{scheme.system | lowercase}})</div>
               </div>
 
-              <div formArrayName="units">
-                <div *ngFor="let unit of units.controls; let i=index">
+              <ng-container formArrayName="unitsArray">
+                <ng-container *ngFor="let unit of unitsArray.controls; let i=index">
                   <div [formGroupName]="i">
                     <div class="row mx-0">
-                      <input type="text" class="form-control col my-auto" formControlName="type" />
-                      <input type="number" class="form-control col my-auto" formControlName="quantity" />
-                      <input class="form-control col my-auto" formControlName="beds"
-                            *ngIf="default_choices[asset_class!.value.value].beds" type="number"/>
-                      <input type="number" class="form-control col my-auto" formControlName="area" />
+                      <input class="form-control col my-auto" formControlName="type"/>
+                      <input class="form-control col my-auto text-right" formControlName="units" />
+                      <input class="form-control col my-auto text-right" formControlName="beds"
+                            *ngIf="default_choices[asset_class!.value.value].beds"/>
+                      <input class="form-control col my-auto text-right" formControlName="area" />
                     </div>
                   </div>
-                </div>
-              </div>
+                </ng-container>
+              </ng-container>
 
               <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{default_choices[asset_class!.value.value].units }} type</button>
+
+              <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0">
+                The following fields are required: {{ requiredControls.join(', ') }}.
+
+                <div *ngFor="let field of invalidControlsType">
+                  {{field.controlName}} must be {{field.controlType}}
+                </div>
+
+              </div>
 
             </div>
 
@@ -122,10 +130,9 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">
-            < Previous</button> <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel
-          </button>
-          <button form="form" type="submit" class="btn btn-success">Save</button>
+          <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 
+          <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
+          <button form="form" type="submit" class="btn btn-success" (click)="onSave()">Save</button>
         </div>
 
       </ng-container>
