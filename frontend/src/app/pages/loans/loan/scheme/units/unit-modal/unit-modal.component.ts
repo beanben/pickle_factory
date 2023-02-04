@@ -17,16 +17,15 @@ export class UnitModalComponent implements OnInit {
   step = 1;
   nextIsClicked = false;
   showError = false;
-  requiredControls: string[] = [];
-  invalidControlsType: any[] = [];
   textOnly = /^[a-zA-Z]+$/;
   numbersOnly = /^\d+$/;
 
   @Input() mode ="";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveUnit = new EventEmitter<void>();
+  requiredControls: string[] = [];
+  invalidControlsType: {controlName: string, controlType: string}[] = [];
 
-  // https://www.tektutorialshub.com/angular/nested-formarray-example-add-form-fields-dynamically/
   area_type_choices =[
     {value: "NIA", display: "NIA" , meaning: "Net Internal Area"},
     {value: "NSA", display: "NSA", meaning: "Net Saleable Area"},
@@ -70,7 +69,6 @@ export class UnitModalComponent implements OnInit {
 
   newUnit(): FormGroup {
     return this.fb.group({
-      // type: ['', {validators: [Validators.required, textValidator()], updateOn: 'blur'}],
       type: ['', {validators: [Validators.required, Validators.pattern(this.textOnly)], updateOn: 'blur'}],
       units: [null, {validators: [Validators.required, Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
       beds: [null, {validators: [Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
@@ -134,6 +132,8 @@ export class UnitModalComponent implements OnInit {
 
     this.unitsArray.clear();
     this.addUnit();
+    this.requiredControls = [];
+    this.invalidControlsType = [];
   }
 
   onSave(){
@@ -141,23 +141,32 @@ export class UnitModalComponent implements OnInit {
   }
 
   getInvalidControls() {
+    let assetClassValue: string = this.asset_class!.value.value;
+
     for (let i = 0; i < this.unitsArray.length; i++) {
       const unit = this.unitsArray.at(i) as FormGroup;
 
       for (const controlName in unit.controls) {
+        let controlDescription: string = this.default_choices[assetClassValue][controlName];
+
+        if(controlName === "type"){
+          controlDescription = "type"
+        };
+
         if (unit.controls[controlName].hasError('required') && !this.requiredControls.includes(controlName)) {
-          this.requiredControls.push(controlName);
+
+          this.requiredControls.push(controlDescription);
         }
 
         const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName)
 
         if(isNotIncluded && unit.controls[controlName].hasError('pattern')){
           if(controlName === "type"){
-            this.invalidControlsType.push({controlName: controlName, controlType: "text"})
+            this.invalidControlsType.push({controlName: controlDescription, controlType: "text"})
 
           } else if(controlName === "units" || controlName==="beds"|| controlName ==="area"){
             
-            this.invalidControlsType.push({controlName: controlName, controlType: "number"})
+            this.invalidControlsType.push({controlName: controlDescription, controlType: "number"})
           }
         }
       }

@@ -119,7 +119,7 @@
                 The following fields are required: {{ requiredControls.join(', ') }}.
 
                 <div *ngFor="let field of invalidControlsType">
-                  {{field.controlName}} must be {{field.controlType}}
+                  {{field.controlName}} must be a {{field.controlType}}
                 </div>
 
               </div>
