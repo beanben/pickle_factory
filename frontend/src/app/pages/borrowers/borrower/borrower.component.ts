@@ -1,7 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from '../../loans/loan/loan';
 import { Borrower } from './borrower';
@@ -16,9 +14,7 @@ export class BorrowerComponent implements OnInit {
   @Input() borrower = {} as Borrower;
 
   constructor(
-    private _borrowerService: BorrowerService,
     private _loanService: LoanService,
-    private route: ActivatedRoute,
     private router: Router
   ) { }
 

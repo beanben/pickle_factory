@@ -26,7 +26,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   subs: Subscription[] = []
 
   constructor(
-    private _loanService: LoanService,
+    private _loanService: LoanService
   ) { }
 
   ngOnInit(): void {

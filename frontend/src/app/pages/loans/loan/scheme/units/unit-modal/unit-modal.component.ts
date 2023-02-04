@@ -156,6 +156,7 @@ export class UnitModalComponent implements OnInit {
             this.invalidControlsType.push({controlName: controlName, controlType: "text"})
 
           } else if(controlName === "units" || controlName==="beds"|| controlName ==="area"){
+            
             this.invalidControlsType.push({controlName: controlName, controlType: "number"})
           }
         }

@@ -53,3 +53,16 @@ body { margin: 0; }
 .border-table {
     border-bottom: 1px solid rgb(128,128,128);
 }
+.tableTitle{
+    font-weight: 450;
+    border-top: 1px solid rgba(119,119,119);
+    border-bottom: 1px solid rgba(119,119,119);
+    font-weight:bolder ;
+}
+.rowTable {
+    border-bottom: 0.5px solid rgba(119,119,119);
+}
+.highlight:hover {
+    background-color: rgba(13, 202, 240, 0.15);
+    cursor: pointer;
+}

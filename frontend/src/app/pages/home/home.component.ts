@@ -13,32 +13,32 @@ import { Loan } from '../loans/loan/loan';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   openLoanModal = false;
-  user = {} as User;
   isLoggedIn = false;
+
+  user = {} as User;
   subs = Subscription.EMPTY
+  loans: Loan[] = [];
 
   constructor(
-    private _loanService: LoanService,
     public _authService: AuthService,
     private el: ElementRef,
+    private _loanService: LoanService,
     private router: Router
   ) { 
     this.addEventBackgroundClose()
   }
 
   ngOnInit(): void {
-    this.isLoggedIn = this._authService.isLoggedIn();
+    this.getLoans();
 
-    if(this.isLoggedIn){
-     this.subs = this._authService.requestCompleted$.subscribe(() => {
-        this.getUser();
-      })
-      
-    }  
+    this.subs = this._authService.requestCompleted$.subscribe(() => {
+      this.getUser();
+    })
   }
 
   getUser(){
     let userSubValue:User = this._authService.userSub.getValue();
+
 
     if(userSubValue){
       this.user = userSubValue;
@@ -66,20 +66,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSave(loan:Loan | null){
     this.openLoanModal = false;
-
-    // if(!!loan){
-    //   this._loanService.setLoanSub(loan);
-    //   this.router.navigate(['/loan']);
-    // }
   }
 
-  getUserSub(){
-    this._authService.getUserSub()
-      .subscribe(user => this.user)
-  }
-
+  
   ngOnDestroy() {
     this.subs.unsubscribe();
+  }
+
+  onLoanSelected(index: number ){ 
+    this._loanService.setLoanSub(this.loans[index]);
+    this.router.navigate(["/loans"])
+  };
+
+  getLoans(){
+    this._loanService.getLoans()
+    .subscribe(loans => {
+      this.loans = loans;
+
+    })
   }
 
 }
