@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription} from 'rxjs';
+import { empty, EMPTY, Observable, of, Subscription} from 'rxjs';
+import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan/loan';
 
@@ -25,19 +26,24 @@ export class LoansComponent implements OnInit, OnDestroy {
   subs: Subscription[] = []
 
   constructor(
-    private _loanService: LoanService
+    private _loanService: LoanService,
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
-
-    this.getLoans();
-
     this.subs.push(
       this._loanService.getLoanSub()
         .subscribe(loan => {
-          this.loanSelected = loan;    
+          this.loanSelected = loan;
+
         })
     )
+    
+    if(this._authService.isLoggedIn()){
+      this.getLoans();
+    }
+
+    
 
   }
 
@@ -59,14 +65,35 @@ export class LoansComponent implements OnInit, OnDestroy {
   }
 
   getLoans(){
-    this._loanService.getLoans()
-    .subscribe(loans => {
-      this.loans = loans;
+    const loansSub: Loan[] = this._loanService.loansSub.getValue();
+    
+    let loansObs: Observable<Loan[]> = loansSub.length === 0 
+      ? this._loanService.getLoans()
+      : this._loanService.getLoansSub();
 
-      if(Object.keys(this._loanService.loanSub.getValue()).length === 0 && this.loans.length != 0){
-        this._loanService.setLoanSub(loans[0]);
-      }
-    })
+
+    this.subs.push(
+      loansObs.subscribe(loans => {
+          this.loans = loans;
+
+          if(Object.keys(this._loanService.loanSub.getValue()).length === 0 && this.loans.length !== 0){
+            this._loanService.setLoanSub(loans[0]);
+          }
+
+          if (loansSub.length === 0) {
+            this._loanService.setLoansSub(loans);
+          }
+        })
+    )
+
+    // this._loanService.getLoans()
+    // .subscribe(loans => {
+    //   this.loans = loans;
+
+    //   if(Object.keys(this._loanService.loanSub.getValue()).length === 0 && this.loans.length != 0){
+    //     this._loanService.setLoanSub(loans[0]);
+    //   }
+    // })
   }
 
   onLoanSelected(index: number ){ 

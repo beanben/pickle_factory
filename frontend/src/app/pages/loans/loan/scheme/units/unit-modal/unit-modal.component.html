@@ -103,11 +103,26 @@
                 <ng-container *ngFor="let unit of unitsArray.controls; let i=index">
                   <div [formGroupName]="i">
                     <div class="row mx-0">
-                      <input class="form-control col my-auto" formControlName="type"/>
-                      <input class="form-control col my-auto text-right" formControlName="units" />
-                      <input class="form-control col my-auto text-right" formControlName="beds"
-                            *ngIf="default_choices[asset_class!.value.value].beds"/>
-                      <input class="form-control col my-auto text-right" formControlName="area" />
+
+                      <div class="col my-auto px-0">
+                        <ng-container *ngIf="unitsArray.length > 1; else noUnits">
+                          <input class="form-control" formControlName="type"/>
+                        </ng-container>
+                        <ng-template #noUnits>Total</ng-template>
+                      </div>
+
+                      <div class="col my-auto px-0">
+                        <input class="form-control text-right" formControlName="units"/>
+                      </div>
+                      
+                      <div class="col my-auto px-0" *ngIf="default_choices[asset_class!.value.value].beds">
+                        <input class="form-control text-right" formControlName="beds"/>
+                      </div>
+                      
+                      <div class="col my-auto px-0">
+                        <input class="form-control text-right" formControlName="area"/>
+                      </div>
+                      
                     </div>
                   </div>
                 </ng-container>

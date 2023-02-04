@@ -1,13 +1,13 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, mergeMap } from 'rxjs';
+import { map, mergeMap, Subscription } from 'rxjs';
 import { Firm } from '../pages/auth/firm';
 import { User } from '../pages/auth/user';
 import { AuthService } from '../_services/auth/auth.service';
 
 @Component({
-    selector: 'app-profile',
-    template:`
+  selector: 'app-profile',
+  template: `
         <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
         <div class="modal-dialog modal-centered">
             <div class="modal-content">
@@ -101,113 +101,124 @@ import { AuthService } from '../_services/auth/auth.service';
         </div>
       </div>
     `,
-    styles: [
-        '.modal {background-color: rgba(0, 0, 0, 0.7);}',
-        '.modal-centered {top: 10em}',
-       
-    ]
+  styles: [
+    '.modal {background-color: rgba(0, 0, 0, 0.7);}',
+    '.modal-centered {top: 10em}',
+
+  ]
+})
+export class ProfileComponent implements OnInit, OnDestroy {
+  displayStyle = "block";
+  isEdit = false;
+
+  sub = Subscription.EMPTY;
+  errors: string[] = new Array();
+  user = {} as User;
+  @Output() onClosePopup = new EventEmitter<void>();
+
+  form: FormGroup = this.fb.group({
+    first_name: [''],
+    last_name: [''],
+    email: ['', Validators.required],
+    firm_name: ['', Validators.required]
   })
-export class ProfileComponent implements OnInit{
-    displayStyle = "block";
-    @Output() onClosePopup = new EventEmitter<void>();
-    @Input() user = {} as User;
-    errors: string[] = new Array();
-    isEdit = false;
-    form: FormGroup = this.fb.group({
-      first_name: [''],
-      last_name: [''],
-      email: ['', Validators.required],
-      firm_name: ['', Validators.required]
+  get email() {
+    return this.form.get('email')
+  }
+  get first_name() {
+    return this.form.get('first_name')
+  }
+  get last_name() {
+    return this.form.get('last_name')
+  }
+  get firm_name() {
+    return this.form.get('firm_name')
+  }
+
+  constructor(
+    private el: ElementRef,
+    private _authService: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.addEventBackgroundClose();
+  }
+
+  ngOnInit(): void {
+    this.initialiseForm();
+
+    this.sub = this._authService.getUserSub()
+      .subscribe(user => {
+        this.user = user;
+      })
+  }
+
+  initialiseForm() {
+    this.form.patchValue({
+      first_name: this.user.first_name,
+      last_name: this.user.last_name,
+      email: this.user.email
     })
-    get email(){
-      return this.form.get('email')
-    }
-    get first_name(){
-      return this.form.get('first_name')
-    }
-    get last_name(){
-      return this.form.get('last_name')
-    }
-    get firm_name(){
-      return this.form.get('firm_name')
-    }
 
-    constructor(
-        private el: ElementRef,
-        private _authService: AuthService,
-        private fb: FormBuilder
-      ) { 
-        this.addEventBackgroundClose();
+    if (!!this.user.firm) {
+      this.form.patchValue({
+        firm_name: this.user.firm!.name
+      })
+    }
+  }
+
+  addEventBackgroundClose() {
+    this.el.nativeElement.addEventListener('click', (el: any) => {
+      if (el.target.className === 'modal') {
+        this.closePopup();
       }
-      
-      ngOnInit(): void {
-        this.initialiseForm()
-      }
+    });
+  }
 
-      initialiseForm(){
-        this.form.patchValue({
-          first_name: this.user.first_name,
-          last_name: this.user.last_name,
-          email: this.user.email
-        })
+  onEdit() {
+    this.isEdit = true;
+    this.initialiseForm()
+  }
 
-        if(!!this.user.firm){
-          this.form.patchValue({
-            firm_name: this.user.firm!.name
+  closePopup() {
+    this.displayStyle = "none";
+    this.onClosePopup.emit();
+  }
+
+  onLogout() {
+    this._authService.logout();
+  }
+
+  onUpdate() {
+    if (this.form.valid) {
+      this.user.first_name = this.first_name?.value;
+      this.user.last_name = this.last_name?.value;
+      this.user.email = this.email?.value;
+
+      let firm: Firm = this.user.firm;
+      firm.name = this.firm_name?.value;
+
+      // ensure user update is propagted to home page
+      this._authService.updateFirm(firm)
+        .pipe(
+          map(firm => {
+            return firm
+          }),
+          mergeMap(firm => {
+            this.user.firm = firm
+            return this._authService.updateUser(this.user);
           })
-        }
-      }
-      
-      addEventBackgroundClose(){
-        this.el.nativeElement.addEventListener('click', (el:any) => {
-          if (el.target.className === 'modal') {
-              this.closePopup();
-          }
-        });
-      }
+        )
+        .subscribe(userResponse => {
+          this._authService.setUserSub(userResponse);
+          // this._authService.changeUserSub(userResponse);
+          this.isEdit = false;
+        })
+    }
+  }
 
-      onEdit(){
-        this.isEdit = true;
-        this.initialiseForm()
-      }
-
-      closePopup() {
-          this.displayStyle = "none"; 
-          this.onClosePopup.emit();
-      }
-
-      onLogout(){
-        this._authService.logout();
-      }
-
-      onUpdate(){
-        if(this.form.valid){
-          this.user.first_name = this.first_name?.value;
-          this.user.last_name = this.last_name?.value;
-          this.user.email = this.email?.value;
-
-          let firm: Firm = this.user.firm;
-          firm.name = this.firm_name?.value;
-
-          // ensure user update is propagted to home page
-          this._authService.updateFirm(firm)
-            .pipe(
-              map(firm => {
-                return firm
-              }),
-              mergeMap(firm => {
-                this.user.firm = firm
-                return this._authService.updateUser(this.user);
-              })
-            )
-            .subscribe(userResponse => {
-              this._authService.setUserSub(userResponse);
-              // this._authService.changeUserSub(userResponse);
-              this.isEdit = false;
-            })
-
-        }
-      }
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
 
 
 }

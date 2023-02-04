@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { User } from '../auth/user';
@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
 
   user = {} as User;
-  sub = Subscription.EMPTY
+  subs: Subscription[] = []
   loans: Loan[] = [];
 
   constructor(
@@ -30,13 +30,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.getLoans();
+    if(this._authService.isLoggedIn()){
+      this.getLoans();
     
-    this.sub = this._authService.getUserSub()
-      .subscribe(user => {
-        this.user = user;
-      })
-
+      this.subs.push(
+        this._authService.getUserSub()
+        .subscribe(user => this.user = user)
+      )
+    }
   }
 
 
@@ -54,11 +55,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onSave(loan:Loan | null){
     this.openLoanModal = false;
-  }
 
-  
-  ngOnDestroy() {
-    this.sub.unsubscribe();
+    if(loan){
+      this._loanService.setLoanSub(loan);
+      this.router.navigate(["/loans"]);
+    }
   }
 
   onLoanSelected(index: number ){ 
@@ -67,11 +68,30 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   getLoans(){
-    this._loanService.getLoans()
-    .subscribe(loans => {
-      this.loans = loans;
+    const loansSub: Loan[] = this._loanService.loansSub.getValue();
 
-    })
+    let loansObs: Observable<Loan[]> = loansSub.length === 0 
+      ? this._loanService.getLoans()
+      : this._loanService.getLoansSub();
+
+    this.subs.push(
+      loansObs.subscribe(loans => {
+        this.loans = loans;
+
+        if (loansSub.length === 0) {
+          this._loanService.setLoansSub(loans);
+        }
+      })
+    )
+    // this._loanService.getLoans()
+    // .subscribe(loans => {
+    //   this.loans = loans;
+    //   this._loanService.setLoansSub(loans);
+    // })
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
   }
 
 }

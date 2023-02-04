@@ -27,7 +27,7 @@
                         <li  *ngFor="let loan of loans; let i = index" class="mx-1">
                             <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
                                 (click)="onLoanSelected(i)"    
-                                [ngClass]="{'highlight': loan.id == loanSelected.id}"
+                                [ngClass]="{'selected': loan.id == loanSelected.id}"
                                 style="height: 50px">
                                 <div 
                                     class="scrollbar-thin pb-1 pt-1" 
@@ -61,7 +61,7 @@
                         <li  *ngFor="let loan of loans; let i = index" class="mx-1">
                             <div class="p-1 border border-info mb-2 d-flex align-items-center"
                                 (click)="onLoanSelected(i)"
-                                [ngClass]="{'highlight ': loan.id == loanSelected.id}"
+                                [ngClass]="{'selected ': loan.id == loanSelected.id}"
                                 style="height: 50px ; border-radius: 20px">
                                 <div class="m-0 p-0 mx-auto text-wrap text-center">{{loan.name | initials}}</div>
                             </div>

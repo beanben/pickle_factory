@@ -10,15 +10,12 @@ li {
     cursor: pointer;
 }
 
-.highlight {
-    background-color: #0dcaf026;
-}
-app-edit {
+/* app-edit {
     visibility: hidden;
 }
 .highlight:hover app-edit {
     visibility: visible;
-}
+} */
 
 .scrollbar-thin {
     scrollbar-width: thin;

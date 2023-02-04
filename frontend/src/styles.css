@@ -66,3 +66,12 @@ body { margin: 0; }
     background-color: rgba(13, 202, 240, 0.15);
     cursor: pointer;
 }
+app-edit {
+    visibility: hidden;
+}
+.highlight:hover app-edit {
+    visibility: visible;
+}
+.selected {
+    background-color: #0dcaf026;
+}

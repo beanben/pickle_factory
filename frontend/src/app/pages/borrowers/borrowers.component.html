@@ -27,7 +27,7 @@
                         <li  *ngFor="let borrower of borrowers; let i = index" class="mx-1">
                             <div class="p-1 border border-info rounded mb-2 d-flex align-items-center justify-content-between flex-nowrap"
                                 (click)="onBorrowerSelected(i)"
-                                [ngClass]="{'highlight': borrower.id == borrowerSelected.id}"
+                                [ngClass]="{'selected': borrower.id == borrowerSelected.id}"
                                 style="height: 50px">
                                 <div 
                                     class="scrollbar-thin pb-1 pt-1" 

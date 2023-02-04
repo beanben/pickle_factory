@@ -89,7 +89,6 @@ export class UnitModalComponent implements OnInit {
     this.detailStatus = "inactive";
 
     this.addUnit();
-
   }
 
   addUnit() {
@@ -137,7 +136,17 @@ export class UnitModalComponent implements OnInit {
   }
 
   onSave(){
+    // this.requiredControls = [];
+    // this.invalidControlsType = [];
+
+    if(this.unitsArray.length === 1){
+      this.unitsArray.at(0).get("type")!.patchValue("Total")
+    };
+
     this.getInvalidControls();
+    if(this.form.valid){
+      console.log("this.form.value: ", this.form.value)
+    }
   }
 
   getInvalidControls() {
@@ -151,21 +160,20 @@ export class UnitModalComponent implements OnInit {
 
         if(controlName === "type"){
           controlDescription = "type"
-        };
+        }; 
 
+        // get controls with required error
         if (unit.controls[controlName].hasError('required') && !this.requiredControls.includes(controlName)) {
-
           this.requiredControls.push(controlDescription);
         }
 
-        const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName)
+        // get controls w/o required error, but w type error
+        const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName);
 
         if(isNotIncluded && unit.controls[controlName].hasError('pattern')){
           if(controlName === "type"){
-            this.invalidControlsType.push({controlName: controlDescription, controlType: "text"})
-
+            this.invalidControlsType.push({controlName: controlDescription, controlType: "text"}) 
           } else if(controlName === "units" || controlName==="beds"|| controlName ==="area"){
-            
             this.invalidControlsType.push({controlName: controlDescription, controlType: "number"})
           }
         }
@@ -173,13 +181,5 @@ export class UnitModalComponent implements OnInit {
 
     }
   }
-
-
-  // onFocus(){
-  //   console.log("is focus")
-  // }
-  // onBlur(){
-  //   console.log("is blur")
-  // }
 
 }
