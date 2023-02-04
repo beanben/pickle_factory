@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { User } from 'src/app/pages/auth/user';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 
@@ -8,7 +9,7 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
   templateUrl: './nav-left.component.html',
   styleUrls: ['./nav-left.component.css']
 })
-export class NavLeftComponent implements OnInit {
+export class NavLeftComponent implements OnInit, OnDestroy {
   logoWhite = "assets/images/logoWhite.svg";
   home = "assets/images/home.svg";
   lender = "assets/images/lender.svg";
@@ -19,10 +20,12 @@ export class NavLeftComponent implements OnInit {
   chart = "assets/images/chart.svg";
   house = "assets/images/house.svg";
   is_expanded = false;
-  user = {} as User;
   openPopup = false;
   button_clicked = false;
-  stakeholders_is_active = false
+  stakeholders_is_active = false;
+
+  sub = Subscription.EMPTY;
+  user = {} as User;
   
 
   constructor(
@@ -47,19 +50,24 @@ export class NavLeftComponent implements OnInit {
   }
 
   getUser(){
-    let userSubValue = this._authService.userSub.getValue();
+    // let userSubValue = this._authService.userSub.getValue();
     
-    if(Object.keys(userSubValue).length != 0){
-      this.user = userSubValue;
+    // if(Object.keys(userSubValue).length != 0){
+    //   this.user = userSubValue;
 
-    } else {
-      this._authService.getUser()
-        .subscribe(user => {
-          this.user = user;
-          this._authService.setUserSub(user);
-          this._authService.markRequestCompleted();
-        })
-    }
+    // } else {
+    //   this._authService.getUser()
+    //     .subscribe(user => {
+    //       this.user = user;
+    //       this._authService.setUserSub(user);
+    //       // this._authService.markRequestCompleted();
+    //     })
+    // }
+
+    this.sub = this._authService.getUserSub()
+      .subscribe(user => {
+        this.user = user;
+      })
 
   }
 
@@ -76,6 +84,10 @@ export class NavLeftComponent implements OnInit {
       };
 
     })
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
   }
 
 }

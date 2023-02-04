@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, map, mergeMap, mergeMapTo } from 'rxjs';
+import { map, mergeMap } from 'rxjs';
 import { Firm } from '../pages/auth/firm';
 import { User } from '../pages/auth/user';
 import { AuthService } from '../_services/auth/auth.service';

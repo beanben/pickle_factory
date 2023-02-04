@@ -16,8 +16,8 @@ export class AuthService {
   user = {} as User;
   // userSub: BehaviorSubject<User> = new BehaviorSubject<User>(this.user);
   userSub = new BehaviorSubject<User>({} as User);
-  private requestCompleted = new Subject<void>();
-  requestCompleted$ = this.requestCompleted.asObservable();
+  // private requestCompleted = new Subject<void>();
+  // requestCompleted$ = this.requestCompleted.asObservable();
   // currentUser = this.userSub.asObservable();
   appRoot = "auth";
   urlRoot = `${environment.BASE_URL}/${this.appRoot}`
@@ -42,13 +42,10 @@ export class AuthService {
   setUserSub(user: User){
     return this.userSub.next(user);
   }
-  markRequestCompleted() {
-    this.requestCompleted.next();
-  }
-  
-  // changeUserSub(newUser:User){
-  //   return this.userSub.next(newUser)
+  // markRequestCompleted() {
+  //   this.requestCompleted.next();
   // }
+  
 
   getFirms(): Observable<Firm[]> {
     const url = `${this.urlRoot}/firm/`

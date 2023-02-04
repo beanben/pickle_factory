@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
 
   user = {} as User;
-  subs = Subscription.EMPTY
+  sub = Subscription.EMPTY
   loans: Loan[] = [];
 
   constructor(
@@ -29,28 +29,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.getLoans();
 
-    this.subs = this._authService.requestCompleted$.subscribe(() => {
-      this.getUser();
-    })
+    this.getLoans();
+    
+    this.sub = this._authService.getUserSub()
+      .subscribe(user => {
+        this.user = user;
+      })
+
   }
 
-  getUser(){
-    let userSubValue:User = this._authService.userSub.getValue();
-
-
-    if(userSubValue){
-      this.user = userSubValue;
-    
-    } else {
-      this._authService.getUser()
-        .subscribe(user => {
-          this.user = user;
-          this._authService.setUserSub(user);
-        })
-    }
-  };
 
   closePopup(){
     this.openLoanModal = false;
@@ -70,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.sub.unsubscribe();
   }
 
   onLoanSelected(index: number ){ 
