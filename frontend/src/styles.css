@@ -75,3 +75,6 @@ app-edit {
 .selected {
     background-color: #0dcaf026;
 }
+.cursorPointer{
+    cursor: pointer;
+}

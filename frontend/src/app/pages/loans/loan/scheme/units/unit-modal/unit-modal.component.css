@@ -1,0 +1,13 @@
+.text-invisible {
+    color: transparent
+}
+
+.deleteHover:hover{
+    background: red; 
+}
+.text-visible{
+    color: red
+}
+.text-visible:hover {
+    color: white
+}

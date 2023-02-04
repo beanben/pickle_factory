@@ -90,25 +90,28 @@
 
             <div class="px-2">
 
-              <div class="row mx-0 py-2 border-table text-center">
-                <div class="col my-auto ">Type</div>
-                <div class="col my-auto">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
-                <div class="col my-auto" *ngIf="default_choices[asset_class!.value.value].beds">
+              <div class="row mx-0 pt-2 text-center">
+                <div class="col my-auto border-table">Type</div>
+                <div class="col my-auto border-table">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
+                <div class="col my-auto border-table" *ngIf="default_choices[asset_class!.value.value].beds">
                   {{default_choices[asset_class!.value.value].beds | titlecase}}</div>
-                <div class="col my-auto">{{default_choices[asset_class!.value.value].area}}
-                  ({{scheme.system | lowercase}})</div>
+                <div class="col my-auto border-table">{{default_choices[asset_class!.value.value].area}}
+                  ({{scheme.system | lowercase}})
+                </div>
+                <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
+              
 
               <ng-container formArrayName="unitsArray">
                 <ng-container *ngFor="let unit of unitsArray.controls; let i=index">
                   <div [formGroupName]="i">
-                    <div class="row mx-0">
-
+                    <div class="row mx-0" [ngClass]="{'fw-bolder': (i+1) === unitsArray.length }">
+                      
                       <div class="col my-auto px-0">
-                        <ng-container *ngIf="unitsArray.length > 1; else noUnits">
+                        <ng-container *ngIf="(i+1) < unitsArray.length; else total">
                           <input class="form-control" formControlName="type"/>
                         </ng-container>
-                        <ng-template #noUnits>Total</ng-template>
+                        <ng-template #total>Total</ng-template>
                       </div>
 
                       <div class="col my-auto px-0">
@@ -121,6 +124,13 @@
                       
                       <div class="col my-auto px-0">
                         <input class="form-control text-right" formControlName="area"/>
+                      </div>
+
+                      <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
+                          style="width: 20px" 
+                          [ngClass]="(i+1) === unitsArray.length ? 'text-invisible': 'text-visible deleteHover cursorPointer'"
+                          (click)="removeUnit(i)">
+                        &times;
                       </div>
                       
                     </div>

@@ -30,8 +30,6 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.sub = this._loanService.getLoanSub()
       .subscribe(loan => {
         this.loan = loan;
-
-
       })
 
   }
