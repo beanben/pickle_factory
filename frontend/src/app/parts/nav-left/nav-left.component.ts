@@ -50,19 +50,6 @@ export class NavLeftComponent implements OnInit, OnDestroy {
   }
 
   getUser(){
-    // let userSubValue = this._authService.userSub.getValue();
-    
-    // if(Object.keys(userSubValue).length != 0){
-    //   this.user = userSubValue;
-
-    // } else {
-    //   this._authService.getUser()
-    //     .subscribe(user => {
-    //       this.user = user;
-    //       this._authService.setUserSub(user);
-    //       // this._authService.markRequestCompleted();
-    //     })
-    // }
 
     this.sub = this._authService.getUserSub()
       .subscribe(user => {

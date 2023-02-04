@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription} from 'rxjs';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan/loan';
@@ -10,7 +9,7 @@ import { Loan } from './loan/loan';
   styleUrls: ['./loans.component.css']
 })
 export class LoansComponent implements OnInit, OnDestroy {
-  isCollapsed = false;
+  isCollapsed = true;
   openLoanModal = false;
   indexLoan = -1;
   modalMode = "";

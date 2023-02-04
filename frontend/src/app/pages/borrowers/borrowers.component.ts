@@ -9,7 +9,7 @@ import { Borrower } from './borrower/borrower';
   styleUrls: ['./borrowers.component.css']
 })
 export class BorrowersComponent implements OnInit, OnDestroy {
-  isCollapsed = false;
+  isCollapsed = true;
   openBorrowerModal = false;
   indexBorrower = -1;
   modalMode = "";
