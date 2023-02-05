@@ -11,3 +11,10 @@
 .text-visible:hover {
     color: white
 }
+
+/* input{  
+    text-align: right;
+} */
+#form.unitAdded input.ng-invalid {
+    border: 1px solid red;
+}

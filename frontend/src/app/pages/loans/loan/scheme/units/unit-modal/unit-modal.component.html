@@ -77,12 +77,12 @@
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'unitAdded': unitAdded}">
             <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units</span>
 
             <div class="form-group px-2">
               <div class="form-floating">
-                <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset_class" placeholder="Asset Class"
+                <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset_class" placeholder="asset lass"
                   value="{{asset_class!.value.display}}" disabled>
                 <label for="asset_class">Asset class</label>
               </div>
@@ -105,38 +105,46 @@
               <ng-container formArrayName="unitsArray">
                 <ng-container *ngFor="let unit of unitsArray.controls; let i=index">
                   <div [formGroupName]="i">
-                    <div class="row mx-0" [ngClass]="{'fw-bolder': (i+1) === unitsArray.length }">
+                    <div class="row mx-0">
                       
-                      <div class="col my-auto px-0">
-                        <ng-container *ngIf="(i+1) < unitsArray.length; else total">
-                          <input class="form-control" formControlName="type"/>
-                        </ng-container>
-                        <ng-template #total>Total</ng-template>
+                      <div class="col my-auto px-0" >
+                          <input class="form-control" formControlName="type" placeholder="type" [ngClass]="{'border-0 fw-bolder': unitsArray.length ===1}">
                       </div>
-
-                      <div class="col my-auto px-0">
-                        <input class="form-control text-right" formControlName="units"/>
+                      <div class="col my-auto px-0 text-end">
+                          <input class="form-control text-end" formControlName="units" placeholder="0" >
                       </div>
-                      
-                      <div class="col my-auto px-0" *ngIf="default_choices[asset_class!.value.value].beds">
-                        <input class="form-control text-right" formControlName="beds"/>
+                      <div class="col my-auto px-0 text-end" *ngIf="default_choices[asset_class!.value.value].beds">
+                          <input class="form-control text-end" formControlName="beds" placeholder="0" />
                       </div>
-                      
-                      <div class="col my-auto px-0">
-                        <input class="form-control text-right" formControlName="area"/>
+                      <div class="col my-auto px-0 text-end">
+                         <input class="form-control text-end" formControlName="area" placeholder="0" />
                       </div>
-
                       <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                           style="width: 20px" 
-                          [ngClass]="(i+1) === unitsArray.length ? 'text-invisible': 'text-visible deleteHover cursorPointer'"
+                          [ngClass]="unitsArray.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
                           (click)="removeUnit(i)">
                         &times;
-                      </div>
-                      
+                      </div> 
                     </div>
                   </div>
                 </ng-container>
               </ng-container>
+
+              <div class="row mx-0" *ngIf="unitsArray.length > 1">
+                <div class="col px-0 my-auto">
+                  <span class="form-control fw-bolder border-0">Total</span>
+                </div>
+                <div class="col my-auto px-0 text-end">
+                  <span class="form-control fw-bolder border-0">{{totalUnits}}</span>
+                </div>
+                <div class="col my-auto px-0 text-end">
+                  <span class="form-control fw-bolder border-0">{{totalBeds}}</span>
+                </div>
+                <div class="col my-auto px-0 text-end">
+                  <span class="form-control fw-bolder border-0">{{totalArea}}</span>
+                </div>
+                <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
+              </div>
 
               <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{default_choices[asset_class!.value.value].units }} type</button>
 

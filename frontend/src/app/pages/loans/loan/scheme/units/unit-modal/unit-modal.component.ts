@@ -1,7 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { textValidator } from 'src/app/shared/custom.validators';
-// import {TypeValidator } from 'src/app/shared/custom.validators';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Scheme } from '../../scheme';
 
 @Component({
@@ -9,7 +8,7 @@ import { Scheme } from '../../scheme';
   templateUrl: './unit-modal.component.html',
   styleUrls: ['./unit-modal.component.css']
 })
-export class UnitModalComponent implements OnInit {
+export class UnitModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   chevronRight = "assets/images/chevronRight.svg";
   assetClassStatus = "";
@@ -17,62 +16,66 @@ export class UnitModalComponent implements OnInit {
   step = 1;
   nextIsClicked = false;
   showError = false;
-  textOnly = /^[a-zA-Z]+$/;
   numbersOnly = /^\d+$/;
+  totalUnits = 0;
+  totalBeds = 0;
+  totalArea = 0;
+  subs: Subscription[] = [];
+  unitAdded = false;
 
-  @Input() mode ="";
+  @Input() mode = "";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveUnit = new EventEmitter<void>();
   requiredControls: string[] = [];
-  invalidControlsType: {controlName: string, controlType: string}[] = [];
+  invalidControlsType: { controlName: string, controlType: string }[] = [];
 
-  area_type_choices =[
-    {value: "NIA", display: "NIA" , meaning: "Net Internal Area"},
-    {value: "NSA", display: "NSA", meaning: "Net Saleable Area"},
-    {value: "GIA", display: "GIA", meaning: "Gross Internal Area"},
+  area_type_choices = [
+    { value: "NIA", display: "NIA", meaning: "Net Internal Area" },
+    { value: "NSA", display: "NSA", meaning: "Net Saleable Area" },
+    { value: "GIA", display: "GIA", meaning: "Gross Internal Area" },
   ];
 
-  asset_class_choices =[
-    {value: "BTS", display: "Residential - Build to Sell"},
-    {value: "BTL", display: "Residential - Build to Let"},
-    {value: "H", display: "Hotel"},
-    {value: "C", display: "Commercial"},
-    {value: "O", display: "Office"},
-    {value: "S", display: "Shopping Centre"},
-    {value: "PBSA", display: "Student Accommodation"}
+  asset_class_choices = [
+    { value: "BTS", display: "Residential - Build to Sell" },
+    { value: "BTL", display: "Residential - Build to Let" },
+    { value: "H", display: "Hotel" },
+    { value: "C", display: "Commercial" },
+    { value: "O", display: "Office" },
+    { value: "S", display: "Shopping Centre" },
+    { value: "PBSA", display: "Student Accommodation" }
   ];
 
-  default_choices: {[key: string]: any} = {
-    "BTS": {units: "units", beds: "beds", area: "NIA"},
-    "BTL": {units: "units", beds: "beds", area: "NIA"},
-    "H": {units: "rooms", beds: "beds", area: "NIA"},
-    "C": {units: "units", beds: null, area: "GIA"},
-    "O": {units: "units", beds: null, area: "GIA"},
-    "S": {units: "units", beds: null, area: "GIA"},
-    "PBSA": {units: "rooms", beds: "beds", area: "NIA"},
+  default_choices: { [key: string]: any } = {
+    "BTS": { units: "units", beds: "beds", area: "NIA" },
+    "BTL": { units: "units", beds: "beds", area: "NIA" },
+    "H": { units: "rooms", beds: "beds", area: "NIA" },
+    "C": { units: "units", beds: null, area: "GIA" },
+    "O": { units: "units", beds: null, area: "GIA" },
+    "S": { units: "units", beds: null, area: "GIA" },
+    "PBSA": { units: "rooms", beds: "beds", area: "NIA" },
   }
 
   form: FormGroup = this.fb.group({
-    asset_class:  ['', {validators: [Validators.required], updateOn: 'blur'}],
-    area_type: [this.area_type_choices[0].value, {updateOn: 'blur'}],
+    asset_class: ['', Validators.required],
+    area_type: [this.area_type_choices[0].value],
     unitsArray: this.fb.array([])
   })
-  get asset_class(){
+  get asset_class() {
     return this.form.get('asset_class')
   };
-  get area_type(){
+  get area_type() {
     return this.form.get('area_type')
   };
-  get unitsArray(): FormArray{
+  get unitsArray(): FormArray {
     return this.form.get("unitsArray") as FormArray
   }
 
   newUnit(): FormGroup {
     return this.fb.group({
-      type: ['', {validators: [Validators.required, Validators.pattern(this.textOnly)], updateOn: 'blur'}],
-      units: [null, {validators: [Validators.required, Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
-      beds: [null, {validators: [Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
-      area: [null, {validators: [Validators.pattern(this.numbersOnly)], updateOn: 'blur'}],
+      type: ['', Validators.required],
+      units: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
+      beds: [null, Validators.pattern(this.numbersOnly)],
+      area: [null, Validators.pattern(this.numbersOnly)]
     })
   }
 
@@ -89,41 +92,59 @@ export class UnitModalComponent implements OnInit {
     this.detailStatus = "inactive";
 
     this.addUnit();
+    this.subs.push(
+      this.unitsArray.valueChanges.subscribe(() => {
+        this.calculateTotals();
+        this.getInvalidControls();
+      })
+    )
+
   }
 
   addUnit() {
-      this.unitsArray.push(this.newUnit());
+    this.unitAdded = true;
+
+    this.unitsArray.insert(0, this.newUnit());
+
+    if(this.unitsArray.length === 1){
+      this.unitsArray.at(0).get("type")!.patchValue("Total");
+    } else if (this.unitsArray.length === 2) {
+      this.unitsArray.at(1).get("type")!.reset();
+    }
   }
 
-  removeUnit(index:number) {
+  removeUnit(index: number) {
     this.unitsArray.removeAt(index);
+
+    if(this.unitsArray.length === 1){
+      this.unitsArray.at(0).get("type")!.patchValue("Total");
+    }
   }
 
-  addEventBackgroundClose(){
-    this.el.nativeElement.addEventListener('click', (el:any) => {
+  addEventBackgroundClose() {
+    this.el.nativeElement.addEventListener('click', (el: any) => {
       if (el.target.className === 'modal') {
-          this.onCancel();
+        this.onCancel();
       }
     });
   };
 
-  onCancel(){
+  onCancel() {
     this.modalSaveUnit.emit();
   };
 
-  onNext(){
-   this.nextIsClicked = true;
-  
-   if(!!this.asset_class?.valid && this.step === 1){
-    this.assetClassStatus = "complete";
-    this.detailStatus = "active";
-   };
+  onNext() {
+    this.nextIsClicked = true;
 
-   this.step += 1;
+    if (this.asset_class?.valid && this.step === 1) {
+      this.assetClassStatus = "complete";
+      this.detailStatus = "active";
+      this.step += 1;
+    };
 
   }
 
-  onPrevious(){
+  onPrevious() {
     this.assetClassStatus = "active";
     this.detailStatus = "inactive";
 
@@ -133,23 +154,30 @@ export class UnitModalComponent implements OnInit {
     this.addUnit();
     this.requiredControls = [];
     this.invalidControlsType = [];
+
+    if(this.step === 1){
+      this.unitAdded = false;
+    }
   }
 
-  onSave(){
+  onSave() {
     // this.requiredControls = [];
     // this.invalidControlsType = [];
 
-    if(this.unitsArray.length === 1){
+    if (this.unitsArray.length === 1) {
       this.unitsArray.at(0).get("type")!.patchValue("Total")
     };
 
     this.getInvalidControls();
-    if(this.form.valid){
+    if (this.form.valid) {
       console.log("this.form.value: ", this.form.value)
     }
   }
 
   getInvalidControls() {
+    this.requiredControls = [];
+    this.invalidControlsType = [];
+
     let assetClassValue: string = this.asset_class!.value.value;
 
     for (let i = 0; i < this.unitsArray.length; i++) {
@@ -158,9 +186,9 @@ export class UnitModalComponent implements OnInit {
       for (const controlName in unit.controls) {
         let controlDescription: string = this.default_choices[assetClassValue][controlName];
 
-        if(controlName === "type"){
+        if (controlName === "type") {
           controlDescription = "type"
-        }; 
+        };
 
         // get controls with required error
         if (unit.controls[controlName].hasError('required') && !this.requiredControls.includes(controlName)) {
@@ -170,16 +198,62 @@ export class UnitModalComponent implements OnInit {
         // get controls w/o required error, but w type error
         const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName);
 
-        if(isNotIncluded && unit.controls[controlName].hasError('pattern')){
-          if(controlName === "type"){
-            this.invalidControlsType.push({controlName: controlDescription, controlType: "text"}) 
-          } else if(controlName === "units" || controlName==="beds"|| controlName ==="area"){
-            this.invalidControlsType.push({controlName: controlDescription, controlType: "number"})
+        if (isNotIncluded && unit.controls[controlName].hasError('pattern')) {
+          if (controlName === "units" || controlName === "beds" || controlName === "area") {
+            this.invalidControlsType.push({ controlName: controlDescription, controlType: "number" })
           }
         }
       }
 
     }
   }
+
+
+
+
+
+  calculateTotals(): void {
+    this.totalUnits = 0;
+    this.totalBeds = 0;
+    this.totalArea = 0;
+    // console.log("this.totalUnits - start: ", this.totalUnits);
+
+    let totalUnits = 0;
+    let totalBeds = 0;
+    let totalArea = 0;
+    this.unitsArray.controls.forEach(control => {
+      totalUnits += +control.get('units')?.value || 0;
+      totalBeds += +control.get('beds')?.value || 0;
+      totalArea += +control.get('area')?.value || 0;
+
+      // console.log("+control.get('units')?.value || 0: ", +control.get('units')?.value || 0);
+    });
+
+    this.totalUnits += totalUnits;
+    this.totalBeds += totalBeds;
+    this.totalArea += totalArea;
+
+    // console.log("this.totalUnits - end: ", this.totalUnits);
+  }
+
+  // updateValue(index: number, controlName: string){
+  //   let control = this.unitsArray.at(index).get(controlName);
+
+  //   if(control){
+  //     let valueUpdated = control.value;
+  //     control.setValue(valueUpdated);
+  //   }
+  // }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
+
+  // onBlur(){
+  //   console.log("onBlur");
+  // }
+  // onKeyEnter(){
+  //   console.log("onKeyenter");
+  // }
 
 }
