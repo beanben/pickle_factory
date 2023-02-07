@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme } from '../../scheme';
 
@@ -21,13 +21,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   totalBeds = 0;
   totalArea = 0;
   subs: Subscription[] = [];
-  unitAdded = false;
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveUnit = new EventEmitter<void>();
   requiredControls: string[] = [];
-  invalidControlsType: { controlName: string, controlType: string }[] = [];
+  invalidControlsType: { name: string, type: string }[] = [];
+  // invalidControlsType: string[] = [];
 
   area_type_choices = [
     { value: "NIA", display: "NIA", meaning: "Net Internal Area" },
@@ -102,8 +102,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   addUnit() {
-    this.unitAdded = true;
-
     this.unitsArray.insert(0, this.newUnit());
 
     if(this.unitsArray.length === 1){
@@ -154,21 +152,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.addUnit();
     this.requiredControls = [];
     this.invalidControlsType = [];
-
-    if(this.step === 1){
-      this.unitAdded = false;
-    }
   }
 
   onSave() {
-    // this.requiredControls = [];
-    // this.invalidControlsType = [];
-
     if (this.unitsArray.length === 1) {
       this.unitsArray.at(0).get("type")!.patchValue("Total")
     };
 
-    this.getInvalidControls();
     if (this.form.valid) {
       console.log("this.form.value: ", this.form.value)
     }
@@ -177,38 +167,33 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   getInvalidControls() {
     this.requiredControls = [];
     this.invalidControlsType = [];
-
     let assetClassValue: string = this.asset_class!.value.value;
+    const invalidControls: {[key: string]: FormControl}[] = [];
 
-    for (let i = 0; i < this.unitsArray.length; i++) {
-      const unit = this.unitsArray.at(i) as FormGroup;
+    this.unitsArray.controls.forEach((group, index) => {
+      if (this.unitsArray.at(index).invalid) {
 
-      for (const controlName in unit.controls) {
-        let controlDescription: string = this.default_choices[assetClassValue][controlName];
+        Object.keys((group as FormGroup).controls).forEach((controlName: string) => {
+          let formControl = group.get(controlName)! as FormControl;
+          
+          if(formControl.invalid){
 
-        if (controlName === "type") {
-          controlDescription = "type"
-        };
+            let controlDescription: string = this.default_choices[assetClassValue][controlName];
+            if (controlName === "type") {controlDescription = "type"};
 
-        // get controls with required error
-        if (unit.controls[controlName].hasError('required') && !this.requiredControls.includes(controlName)) {
-          this.requiredControls.push(controlDescription);
-        }
+            if(formControl.hasError('required') && !this.requiredControls.includes(controlDescription)){
+              this.requiredControls.push(controlDescription)
 
-        // get controls w/o required error, but w type error
-        const isNotIncluded: boolean = !this.invalidControlsType.some(c => c.controlName === controlName);
-
-        if (isNotIncluded && unit.controls[controlName].hasError('pattern')) {
-          if (controlName === "units" || controlName === "beds" || controlName === "area") {
-            this.invalidControlsType.push({ controlName: controlDescription, controlType: "number" })
+            } else if(formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)){
+              this.invalidControlsType.push({name: controlDescription, type: "number"})
+            }
           }
-        }
+
+        })
       }
+    });
 
-    }
-  }
-
-
+} 
 
 
 
@@ -216,7 +201,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.totalUnits = 0;
     this.totalBeds = 0;
     this.totalArea = 0;
-    // console.log("this.totalUnits - start: ", this.totalUnits);
 
     let totalUnits = 0;
     let totalBeds = 0;
@@ -225,35 +209,16 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       totalUnits += +control.get('units')?.value || 0;
       totalBeds += +control.get('beds')?.value || 0;
       totalArea += +control.get('area')?.value || 0;
-
-      // console.log("+control.get('units')?.value || 0: ", +control.get('units')?.value || 0);
     });
 
     this.totalUnits += totalUnits;
     this.totalBeds += totalBeds;
     this.totalArea += totalArea;
-
-    // console.log("this.totalUnits - end: ", this.totalUnits);
   }
-
-  // updateValue(index: number, controlName: string){
-  //   let control = this.unitsArray.at(index).get(controlName);
-
-  //   if(control){
-  //     let valueUpdated = control.value;
-  //     control.setValue(valueUpdated);
-  //   }
-  // }
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  // onBlur(){
-  //   console.log("onBlur");
-  // }
-  // onKeyEnter(){
-  //   console.log("onKeyenter");
-  // }
 
 }
