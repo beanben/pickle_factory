@@ -15,6 +15,30 @@ class LoanNestedSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     borrower = BorrowerNestedSerializer()
 
+class UnitSchemeSerializer(serializers.ModelSerializer):
+    scheme_id = serializers.IntegerField()
+
+    class Meta:
+        model = Unit
+        fields = [
+            'asset_class',
+            'type',
+            'description',
+            'quantity', 
+            'beds', 
+            'area',
+            'area_type',
+            'scheme_id']
+
+    def create(self, validated_data):
+        scheme_id = validated_data.pop("scheme_id")
+        scheme = Scheme.objects.get(id=scheme_id)
+
+        validated_data.update({"scheme": scheme})
+        unit = Unit.objects.create(**validated_data)
+        return unit
+
+
 class SchemeNestedSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
@@ -24,6 +48,7 @@ class SchemeNestedSerializer(serializers.Serializer):
     country = serializers.CharField(allow_blank=True)
     currency = serializers.CharField()
     system = serializers.CharField()
+    units = UnitSchemeSerializer(many=True, required=False)
 
 class BorrowerSerializer(serializers.ModelSerializer):
     loans = serializers.SerializerMethodField()
@@ -118,35 +143,4 @@ class SchemeSerializer(serializers.ModelSerializer):
         validated_data.update({"loan": loan})
         scheme = Scheme.objects.create(**validated_data)
         return scheme
-
-class SchemeUnitSerializer(serializers.ModelSerializer):
-    scheme = SchemeNestedSerializer()
-    area_type_choices = serializers.SerializerMethodField()
-    area_metric_choices = serializers.SerializerMethodField()
-    asset_class_choices = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Unit
-        fields = [
-            'quantity', 
-            'type', 
-            'beds', 
-            'area',
-            'area_type',
-            'area_type_choices', 
-            'area_metric', 
-            'area_metric_choices',
-            'asset_class',
-            'asset_class_choices',
-            'scheme']
-
-    def get_area_type_choices(self, obj):
-        return dict(Unit.AREA_TYPE_CHOICES)[obj.area_type]
-
-    def get_area_metric_choices(self, obj):
-        return dict(Unit.AREA_METRIC_CHOICES)[obj.area_metric]
-
-    def get_asset_class_choices(self, obj):
-        return dict(Unit.ASSET_CLASS_CHOICES)[obj.asset_class]
-
 

@@ -5,9 +5,9 @@ from .loan import Loan
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
     CURRENCY_CHOICES =[
-        ("GBP", "£"),
-        ("EUR", "€"),
-        ("USD", "$"),
+        ("GBP", "GBP (£)"),
+        ("EUR", "EUR (€)"),
+        ("USD", "USD ($)"),
     ]
     SYSTEM_CHOICES =[
         ("SQFT", "imperial (sqft)"),
@@ -27,14 +27,15 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     def __str__(self):
         return self.name
 
-class Unit(models.Model):
+class Unit(TimestampedModel, AuthorTrackerModel):
     AREA_TYPE_CHOICES =[
-        ("NIA", "NIA"),
-        ("NSA", "NSA"),
+        ("NIA", "Net Internal Area"),
+        ("NSA", "Net Salable Area"),
+        ("GIA", "Gross Internal Area"),
     ]
     ASSET_CLASS_CHOICES =[
-        ("BTS", "Build to Sell"),
-        ("BTL", "Build to Let"),
+        ("BTS", "Residential - Build to Sell"),
+        ("BTL", "Residential - Build to Let"),
         ("H", "Hotel"),
         ("C", "Commercial"),
         ("O", "Office"),
@@ -42,13 +43,18 @@ class Unit(models.Model):
         ("PBSA", "Student Accommodation")
     ]
 
-    quantity = models.PositiveIntegerField(default=1)
+    asset_class = models.CharField(max_length=10, choices=ASSET_CLASS_CHOICES)
     type = models.CharField(max_length=100)
+    description = models.CharField(max_length=100)
+    quantity = models.PositiveIntegerField(default=1)
     beds = models.PositiveIntegerField(blank=True, null=True)
     area = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
-    asset_class = models.CharField(max_length=10, choices=ASSET_CLASS_CHOICES)
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="units")
+
+    def __str__(self):
+        description = self.description if self.description != "total" else f"{self.type}"
+        return f"{self.quantity} {description} - {self.scheme.name}"
 
 
 

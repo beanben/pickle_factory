@@ -56,8 +56,6 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     return this.form.get('system')
   };
 
-  
-
   constructor(
     private fb: FormBuilder,
     private _schemeService: SchemeService,

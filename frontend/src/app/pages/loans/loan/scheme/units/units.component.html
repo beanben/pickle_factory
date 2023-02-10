@@ -3,11 +3,11 @@
     *ngIf="openUnitModal"
     [mode]="modalMode"
     [scheme]="scheme"
-    (modalSaveUnit)="openUnitModal = false">
+    (modalSaveUnits)="onSave($event)">
 </app-unit-modal>
 
 <div class="p-3">
-    <ng-container *ngIf="!! scheme.units ; else noUnits">
+    <ng-container *ngIf="scheme.units.length !=0; else noUnits">
         <div class="row border-bottom text-center fw-bolder">
             <div class="col">
                 Asset Class
@@ -23,18 +23,18 @@
             </div>
         </div>
 
-        <div class="row text-center fw-bolder" *ngFor="let unit of scheme.units">
+        <div class="row text-center" *ngFor="let unit of scheme.units">
             <div class="col">
-                {{unit.asset_class}}
+                {{unit.assetClass}}
             </div>
             <div class="col">
-                {{unit.asset_class}}
+                {{unit.type}}
             </div>
             <div class="col">
                 {{unit.quantity}}
             </div>
             <div class="col">
-                {{unit.area}} {{unit.area_metric}}
+                {{unit.area}} {{unit.area}}
             </div>
         </div>
     </ng-container>

@@ -1,14 +1,15 @@
 
 export interface Unit {
-    id: number,
+    id?: number,
+    assetClass: "BTS" | "BTL" | "H" | "C" | "O" | "S" | "PBSA",
+    type: "unit" | "rooms",
+    description: string,
     quantity: number,
-    type: string,
-    beds?: number,
-    area?: number,
-    area_type?: string,
-    area_metric?: string,
-    asset_class: string,
-    scheme_id: number
+    beds: number | null,
+    area: number | null,
+    areaType: "NIA" | "NSA" | "GIA",
+    areaSystem?: "SQFT" | "SQM",
+    schemeId: number
 }
 
 

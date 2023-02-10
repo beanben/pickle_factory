@@ -5,12 +5,19 @@ from .views import (
     BorrowerList,
     BorrowerDetail,
     SchemeList,
-    SchemeDetail
+    SchemeDetail,
+    UnitSchemeList,
+    UnitSchemeDetail
 )
 
+unit_patterns = ([
+    path('', UnitSchemeList.as_view()),
+    path('<int:pk>/', UnitSchemeDetail.as_view()),
+], 'unit')
 scheme_patterns = ([
     path('', SchemeList.as_view()),
     path('<int:pk>/', SchemeDetail.as_view()),
+    path('<int:pk>/unit/', include(unit_patterns)),
 ], 'scheme')
 
 borrower_patterns = ([

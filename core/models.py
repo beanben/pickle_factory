@@ -14,14 +14,16 @@ class BaseModel(models.Model):
         abstract = True
 
     def save(self, *args, **kwargs):
-        slug = slugify(self.name)
+        if hasattr(self, 'name'):
+            slug = slugify(self.name)
 
-        Klass = self.__class__
-        qs = Klass.objects.filter(slug=slug).exclude(id=self.id)
-        if qs.exists():
-            slug = f'{slug}-{self.id}'
+            Klass = self.__class__
+            qs = Klass.objects.filter(slug=slug).exclude(id=self.id)
+            if qs.exists():
+                slug = f'{slug}-{self.id}'
 
-        self.slug = slug
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
 class TimestampedModel(models.Model):

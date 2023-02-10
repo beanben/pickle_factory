@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware' 
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 
@@ -151,7 +151,15 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated"
-    ]
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        # https://github.com/vbabiy/djangorestframework-camel-case
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+       'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+    #    https://github.com/vbabiy/djangorestframework-camel-case
+    ],
 }
 
 SIMPLE_JWT = {

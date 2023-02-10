@@ -78,3 +78,7 @@ app-edit {
 .cursorPointer{
     cursor: pointer;
 }
+.text-active{
+    color: rgb(15,86,179);
+    font-weight: bolder;
+}

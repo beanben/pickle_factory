@@ -2,6 +2,9 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme } from '../../scheme';
+import { Unit } from '../unit';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { APIResult } from 'src/app/_services/api-result';
 
 @Component({
   selector: 'app-unit-modal',
@@ -20,22 +23,23 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   totalUnits = 0;
   totalBeds = 0;
   totalArea = 0;
-  subs: Subscription[] = [];
+  formIsSubmitted = false;
+  valueChanged = false;
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
-  @Output() modalSaveUnit = new EventEmitter<void>();
+  @Output() modalSaveUnits = new EventEmitter<Unit[]|null>();
   requiredControls: string[] = [];
+  errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
-  // invalidControlsType: string[] = [];
+  subs: Subscription[] = [];
 
-  area_type_choices = [
-    { value: "NIA", display: "NIA", meaning: "Net Internal Area" },
-    { value: "NSA", display: "NSA", meaning: "Net Saleable Area" },
-    { value: "GIA", display: "GIA", meaning: "Gross Internal Area" },
+  areaTypeChoices = [
+    { value: "NIA", display: "Net Internal Area"},
+    { value: "NSA", display: "Net Salable Area"},
+    { value: "GIA", display: "Gross Internal Area"},
   ];
-
-  asset_class_choices = [
+  assetClassChoices = [
     { value: "BTS", display: "Residential - Build to Sell" },
     { value: "BTL", display: "Residential - Build to Let" },
     { value: "H", display: "Hotel" },
@@ -45,44 +49,44 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     { value: "PBSA", display: "Student Accommodation" }
   ];
 
-  default_choices: { [key: string]: any } = {
-    "BTS": { units: "units", beds: "beds", area: "NIA" },
-    "BTL": { units: "units", beds: "beds", area: "NIA" },
-    "H": { units: "rooms", beds: "beds", area: "NIA" },
-    "C": { units: "units", beds: null, area: "GIA" },
-    "O": { units: "units", beds: null, area: "GIA" },
-    "S": { units: "units", beds: null, area: "GIA" },
-    "PBSA": { units: "rooms", beds: "beds", area: "NIA" },
+  assetClassStructures: { [key: string]: any } = {
+    "BTS": { unitType: "units", beds: "beds", areaType: "NIA" },
+    "BTL": { unitType: "units", beds: "beds", areaType: "NIA" },
+    "H": { unitType: "rooms", beds: "beds", areaType: "NIA" },
+    "C": { unitType: "units", beds: null, areaType: "GIA" },
+    "O": { unitType: "units", beds: null, areaType: "GIA" },
+    "S": { unitType: "units", beds: null, areaType: "GIA" },
+    "PBSA": { unitType: "rooms", beds: "beds", areaType: "NIA" },
   }
 
   form: FormGroup = this.fb.group({
-    asset_class: ['', Validators.required],
-    area_type: [this.area_type_choices[0].value],
-    unitsArray: this.fb.array([])
+    assetClass: ['', Validators.required],
+    units: this.fb.array([]),
+    areaType: ['']
   })
-  get asset_class() {
-    return this.form.get('asset_class')
+  get assetClass() {
+    return this.form.get('assetClass')
   };
-  get area_type() {
-    return this.form.get('area_type')
-  };
-  get unitsArray(): FormArray {
-    return this.form.get("unitsArray") as FormArray
+  get units(): FormArray {
+    return this.form.get("units") as FormArray
   }
+  get areaType() {
+    return this.form.get('areaType')
+  };
 
   newUnit(): FormGroup {
     return this.fb.group({
-      type: ['', Validators.required],
-      units: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
+      description: ['', Validators.required],
+      quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [null, Validators.pattern(this.numbersOnly)],
       area: [null, Validators.pattern(this.numbersOnly)]
     })
   }
 
-
   constructor(
     private el: ElementRef,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private _schemeService: SchemeService
   ) { }
 
   ngOnInit(): void {
@@ -92,8 +96,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.detailStatus = "inactive";
 
     this.addUnit();
+
     this.subs.push(
-      this.unitsArray.valueChanges.subscribe(() => {
+      this.units.valueChanges.subscribe(() => {
+        this.valueChanged = true;
         this.calculateTotals();
         this.getInvalidControls();
       })
@@ -102,20 +108,22 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   addUnit() {
-    this.unitsArray.insert(0, this.newUnit());
+    this.formIsSubmitted = false;
+    this.units.insert(0, this.newUnit());
 
-    if(this.unitsArray.length === 1){
-      this.unitsArray.at(0).get("type")!.patchValue("Total");
-    } else if (this.unitsArray.length === 2) {
-      this.unitsArray.at(1).get("type")!.reset();
+    if (this.units.length === 1) {
+      this.units.at(0).get("description")!.patchValue("Total");
+
+    } else if (this.units.length === 2) {
+      this.units.at(1).get("description")!.reset();
     }
   }
 
   removeUnit(index: number) {
-    this.unitsArray.removeAt(index);
+    this.units.removeAt(index);
 
-    if(this.unitsArray.length === 1){
-      this.unitsArray.at(0).get("type")!.patchValue("Total");
+    if (this.units.length === 1) {
+      this.units.at(0).get("description")!.patchValue("Total");
     }
   }
 
@@ -128,13 +136,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   onCancel() {
-    this.modalSaveUnit.emit();
+    this.modalSaveUnits.emit();
   };
 
   onNext() {
     this.nextIsClicked = true;
 
-    if (this.asset_class?.valid && this.step === 1) {
+    if (this.assetClass?.valid && this.step === 1) {
       this.assetClassStatus = "complete";
       this.detailStatus = "active";
       this.step += 1;
@@ -145,47 +153,81 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   onPrevious() {
     this.assetClassStatus = "active";
     this.detailStatus = "inactive";
+    this.formIsSubmitted = false;
 
     this.step -= 1;
 
-    this.unitsArray.clear();
+    this.units.clear();
     this.addUnit();
     this.requiredControls = [];
     this.invalidControlsType = [];
   }
 
   onSave() {
-    if (this.unitsArray.length === 1) {
-      this.unitsArray.at(0).get("type")!.patchValue("Total")
-    };
 
+   this.formIsSubmitted = true;
+   this.getInvalidControls();
     if (this.form.valid) {
-      console.log("this.form.value: ", this.form.value)
+      let units: Unit[] = [];
+
+      this.units.controls.forEach(newUnit => {
+
+        const unit = {} as Unit;
+        unit.assetClass = this.assetClass!.value.value;
+        unit.type = this.assetClassStructures[unit.assetClass].unitType;
+        unit.description = newUnit.get("description")!.value;
+        unit.quantity = newUnit.get("quantity")!.value;
+        
+        if(newUnit.get("beds")!.value) {
+          unit.beds = newUnit.get("beds")!.value;
+        };
+        if(newUnit.get("area")!.value) {
+          unit.area = newUnit.get("area")!.value;
+          unit.areaType = this.assetClassStructures[unit.assetClass].areaType;
+        };
+        unit.schemeId = this.scheme.id;
+
+        units.push(unit);
+      });
+
+      this.createUnits(units);
     }
+  }
+  
+  createUnits(units: Unit[]){
+    this._schemeService.createUnits(units)
+    .then((res: APIResult) => {
+      let unitsCreated: Unit[] = res.response;
+
+      this.modalSaveUnits.emit(unitsCreated);
+    })
+    .catch(err => this.errors = err)
   }
 
   getInvalidControls() {
     this.requiredControls = [];
     this.invalidControlsType = [];
-    let assetClassValue: string = this.asset_class!.value.value;
-    const invalidControls: {[key: string]: FormControl}[] = [];
+    let assetClassValue: string = this.assetClass!.value.value;
 
-    this.unitsArray.controls.forEach((group, index) => {
-      if (this.unitsArray.at(index).invalid) {
+    this.units.controls.forEach((newUnit, index) => {
+      if (this.units.at(index).invalid) {
 
-        Object.keys((group as FormGroup).controls).forEach((controlName: string) => {
-          let formControl = group.get(controlName)! as FormControl;
-          
-          if(formControl.invalid){
+        Object.keys((newUnit as FormGroup).controls).forEach((controlName: string) => {
+          let formControl = newUnit.get(controlName)! as FormControl;
 
-            let controlDescription: string = this.default_choices[assetClassValue][controlName];
-            if (controlName === "type") {controlDescription = "type"};
+          if (formControl.invalid && (this.formIsSubmitted || newUnit.dirty)) {
+            
+            
+            let controlDescription: string = controlName;
+            if (controlName === "quantity") { 
+              controlDescription = this.assetClassStructures[assetClassValue].unitType
+             };
 
-            if(formControl.hasError('required') && !this.requiredControls.includes(controlDescription)){
+            if (formControl.hasError('required') && !this.requiredControls.includes(controlDescription)) {
               this.requiredControls.push(controlDescription)
 
-            } else if(formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)){
-              this.invalidControlsType.push({name: controlDescription, type: "number"})
+            } else if (formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)) {
+              this.invalidControlsType.push({ name: controlDescription, type: "number" })
             }
           }
 
@@ -193,7 +235,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       }
     });
 
-} 
+  }
 
 
 
@@ -205,8 +247,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     let totalUnits = 0;
     let totalBeds = 0;
     let totalArea = 0;
-    this.unitsArray.controls.forEach(control => {
-      totalUnits += +control.get('units')?.value || 0;
+    this.units.controls.forEach(control => {
+      totalUnits += +control.get('quantity')?.value || 0;
       totalBeds += +control.get('beds')?.value || 0;
       totalArea += +control.get('area')?.value || 0;
     });

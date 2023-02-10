@@ -17,7 +17,7 @@
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot
                   [status]="assetClassStatus"></span>
-                <span class="px-2">Asset class</span>
+                <span class="px-2 text-active">Asset class</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
@@ -33,14 +33,14 @@
             <div class="form-group mb-3 px-2">
               <app-required></app-required>
               <div class="form-floating text-center">
-                <select class="form-select" id="asset_class" formControlName="asset_class">
+                <select class="form-select" id="asset-class" formControlName="assetClass">
                   <option [ngValue]="''"> -- Select Asset Class --</option>
-                  <option *ngFor='let choice of asset_class_choices' [ngValue]="choice">{{ choice.display}}
+                  <option *ngFor='let choice of assetClassChoices' [ngValue]="choice">{{ choice.display}}
                   </option>
                 </select>
-                <label for="asset_class">Asset class</label>
+                <label for="asset-class">Asset class</label>
               </div>
-              <div *ngIf="(asset_class?.invalid && nextIsClicked ) || (f.submitted && asset_class?.invalid)"
+              <div *ngIf="(assetClass?.invalid && nextIsClicked ) || (f.submitted && assetClass?.invalid)"
                 class="alert alert-danger">
                 Please select the unit asset class
               </div>
@@ -72,7 +72,7 @@
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2" appDot [status]="detailStatus"></span>
-                <span class="px-2">Detail</span>
+                <span class="px-2 text-active">Detail</span>
               </li>
             </ol>
           </nav>
@@ -83,37 +83,36 @@
             <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset_class" placeholder="asset lass"
-                  value="{{asset_class!.value.display}}" disabled>
+                  value="{{assetClass!.value.display}}" disabled>
                 <label for="asset_class">Asset class</label>
               </div>
             </div>
 
             <div class="px-2">
-
               <div class="row mx-0 pt-2 text-center">
-                <div class="col my-auto border-table">Type</div>
-                <div class="col my-auto border-table">{{default_choices[asset_class!.value.value].units | titlecase}}</div>
-                <div class="col my-auto border-table" *ngIf="default_choices[asset_class!.value.value].beds">
-                  {{default_choices[asset_class!.value.value].beds | titlecase}}</div>
-                <div class="col my-auto border-table">{{default_choices[asset_class!.value.value].area}}
-                  ({{scheme.system | lowercase}})
+                <div class="col my-auto border-table">Description</div>
+                <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value.value].unitType | titlecase}}</div>
+                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClass!.value.value].beds">
+                  {{assetClassStructures[assetClass!.value.value].beds | titlecase}}</div>
+                <div class="col my-auto border-table">
+                  {{assetClassStructures[assetClass!.value.value].areaType}} ({{scheme.system | lowercase}})
                 </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
               
 
-              <ng-container formArrayName="unitsArray">
-                <ng-container *ngFor="let unit of unitsArray.controls; let i=index">
+              <ng-container formArrayName="units">
+                <ng-container *ngFor="let unit of units.controls; let i=index">
                   <div [formGroupName]="i">
                     <div class="row mx-0">
                       
                       <div class="col my-auto px-0" >
-                          <input class="form-control" formControlName="type" placeholder="type" [ngClass]="{'border-0 fw-bolder': unitsArray.length ===1}">
+                          <input class="form-control" formControlName="description" placeholder="description" [ngClass]="{'border-0 fw-bolder': units.length ===1}">
                       </div>
                       <div class="col my-auto px-0 text-end">
-                          <input class="form-control text-end" formControlName="units" placeholder="0" >
+                          <input class="form-control text-end" formControlName="quantity" placeholder="0" >
                       </div>
-                      <div class="col my-auto px-0 text-end" *ngIf="default_choices[asset_class!.value.value].beds">
+                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClass!.value.value].beds">
                           <input class="form-control text-end" formControlName="beds" placeholder="0" />
                       </div>
                       <div class="col my-auto px-0 text-end">
@@ -121,7 +120,7 @@
                       </div>
                       <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                           style="width: 20px" 
-                          [ngClass]="unitsArray.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
+                          [ngClass]="units.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
                           (click)="removeUnit(i)">
                         &times;
                       </div> 
@@ -130,7 +129,7 @@
                 </ng-container>
               </ng-container>
 
-              <div class="row mx-0" *ngIf="unitsArray.length > 1">
+              <div class="row mx-0" *ngIf="units.length > 1">
                 <div class="col px-0 my-auto">
                   <span class="form-control fw-bolder border-0">Total</span>
                 </div>
@@ -146,7 +145,7 @@
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
 
-              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{default_choices[asset_class!.value.value].units }} type</button>
+              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClass!.value.value].unitType}}</button>
 
               <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
                 The following fields are required: {{ requiredControls.join(', ') }}.
