@@ -13,18 +13,25 @@ import { SharedService } from '../shared/shared.service';
 export class BorrowerService {
   relativeUrl = "/api/borrower";
   borrowerSub = new BehaviorSubject<Borrower>({} as Borrower);
+  borrowersSub = new BehaviorSubject<Borrower[]>([] as Borrower[]);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
 
-
   getBorrowerSub():Observable<Borrower>{
     return this.borrowerSub.asObservable() 
   }
   setBorrowerSub(newBorrower: Borrower){
     return this.borrowerSub.next(newBorrower);
+  }
+
+  getBorrowersSub():Observable<Borrower[]>{
+    return this.borrowersSub.asObservable() 
+  }
+  setBorrowersSub(borrowers: Borrower[]){
+    return this.borrowersSub.next(borrowers);
   }
 
 

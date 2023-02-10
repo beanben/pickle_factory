@@ -14,6 +14,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   openLoanModal = false;
   indexLoan = -1;
   modalMode = "";
+  loanSlug = "";
 
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
   arrowRightBlack = "assets/images/arrowRightBlack.svg";
@@ -22,8 +23,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   loanSelected = {} as Loan;
   loanHovered = {} as Loan;
   loans: Loan[] = [];
-  loanSlug = "";
-  subs: Subscription[] = []
+  subs: Subscription[] = [];
 
   constructor(
     private _loanService: LoanService,
@@ -33,17 +33,12 @@ export class LoansComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subs.push(
       this._loanService.getLoanSub()
-        .subscribe(loan => {
-          this.loanSelected = loan;
-
-        })
+        .subscribe(loan => this.loanSelected = loan)
     )
     
     if(this._authService.isLoggedIn()){
       this.getLoans();
     }
-
-    
 
   }
 
@@ -67,7 +62,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   getLoans(){
     const loansSub: Loan[] = this._loanService.loansSub.getValue();
     
-    let loansObs: Observable<Loan[]> = loansSub.length === 0 
+    let loansObs: Observable<Loan[]> = loansSub.length === 0 && this._authService.isLoggedIn()
       ? this._loanService.getLoans()
       : this._loanService.getLoansSub();
 
@@ -76,7 +71,7 @@ export class LoansComponent implements OnInit, OnDestroy {
       loansObs.subscribe(loans => {
           this.loans = loans;
 
-          if(Object.keys(this._loanService.loanSub.getValue()).length === 0 && this.loans.length !== 0){
+          if(Object.keys(loansSub).length === 0 && loans.length !== 0){
             this._loanService.setLoanSub(loans[0]);
           }
 

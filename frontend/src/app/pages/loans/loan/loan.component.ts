@@ -50,7 +50,6 @@ export class LoanComponent implements OnInit, OnDestroy {
   onDeleteLoan(){
     this.openLoanModal = false;
     
-    
     let loans: Loan[] = this._loanService.loansSub.getValue();
     const index: number = loans.findIndex(loan => loan.id = this.loan.id);
     loans.splice(index, 1);

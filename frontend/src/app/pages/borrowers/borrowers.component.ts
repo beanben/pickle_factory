@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
 import { Borrower } from './borrower/borrower';
 
@@ -21,18 +21,19 @@ export class BorrowersComponent implements OnInit, OnDestroy {
   borrowerSelected = {} as Borrower;
   borrowerHovered = {} as Borrower;
   borrowers: Borrower[] = [];
-  sub = Subscription.EMPTY;
+  subs: Subscription[] = [];
 
   constructor(
     private _borrowerService: BorrowerService,
   ) { }
 
   ngOnInit(): void {
+    this.subs.push(
+      this._borrowerService.getBorrowerSub()
+        .subscribe(borrower => this.borrowerSelected = borrower)
+    );
+
     this.getBorrowers();
-
-    this.sub = this._borrowerService.getBorrowerSub()
-      .subscribe(borrower => this.borrowerSelected = borrower)
-
   }
 
   onOpenModal(modalMode: string){
@@ -87,19 +88,30 @@ export class BorrowersComponent implements OnInit, OnDestroy {
     } 
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe()
-  }
-
   getBorrowers(){
-    this._borrowerService.getBorrowers()
-      .subscribe((borrowers) => {
+    const borrowersSub: Borrower[] = this._borrowerService.borrowersSub.getValue();
+
+    let borrowersObs: Observable<Borrower[]> = borrowersSub.length === 0
+      ? this._borrowerService.getBorrowers()
+      : this._borrowerService.getBorrowersSub();
+
+    this.subs.push(
+      borrowersObs.subscribe(borrowers => {
         this.borrowers = borrowers;
 
-        if(this.borrowers.length !==0){
-          this._borrowerService.setBorrowerSub(this.borrowers[0]);
+        if(Object.keys(borrowersSub).length === 0 && borrowers.length !== 0){
+          this._borrowerService.setBorrowerSub(borrowers[0]);
+        }
+
+        if (borrowersSub.length === 0) {
+          this._borrowerService.setBorrowersSub(borrowers);
         }
       })
+    )
   };
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
 
 }
