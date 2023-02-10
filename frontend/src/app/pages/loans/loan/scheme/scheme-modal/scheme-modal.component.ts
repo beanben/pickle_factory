@@ -78,7 +78,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   onSave(){
     if(this.form.valid){
       let scheme: Scheme = this.form.value;
-      scheme.loan_id = this.loan.id;
+      scheme.loanId = this.loan.id;
 
       if(this.scheme.id) {
         scheme.id = this.scheme.id;
@@ -108,7 +108,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     if(this.scheme.id){
       this.form.setValue({
         'name': this.scheme.name,
-        'street_name': this.scheme.street_name,
+        'streetName': this.scheme.streetName,
         'postcode': this.scheme.postcode,
         'city': this.scheme.city,
         'country': this.scheme.country,

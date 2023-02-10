@@ -61,8 +61,8 @@
     <span style="cursor: pointer" class="d-flex align-items-center profile" (click)="onOpenPopup()" style="cursor: pointer" [ngClass]="{'bg-highlight': openPopup}">
 
         <span class="dot me-2 color-pickle text-center my-auto">
-          <ng-container *ngIf="!!user.first_name">
-            <p class="p-0 my-auto"></p>{{user.first_name | initial}}
+          <ng-container *ngIf="!!user.firstName">
+            <p class="p-0 my-auto"></p>{{user.firstName | initial}}
           </ng-container>
         </span>
 

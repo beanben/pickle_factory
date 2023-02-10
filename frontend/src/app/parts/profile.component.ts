@@ -20,7 +20,7 @@ import { AuthService } from '../_services/auth/auth.service';
                 <div class="modal-body d-flex align-items-center">
                   <ng-container *ngIf="!isEdit">
                     <div class="mx-auto text-center">
-                      <p class="fw-bold">{{user.first_name}} {{user.last_name}}</p>
+                      <p class="fw-bold">{{user.firstName}} {{user.lastName}}</p>
                       <p>{{user.email}}</p>
                     </div>
                   </ng-container>
@@ -29,21 +29,21 @@ import { AuthService } from '../_services/auth/auth.service';
                     <form [formGroup]="form" #f="ngForm" class="mx-auto">
                       <div class="form-group mb-4">
                         <div class="form-floating">
-                          <input type="text" class="form-control" id="first_name"
-                                formControlName="first_name"
-                                name="first_name"
+                          <input type="text" class="form-control" id="first-name"
+                                formControlName="firstName"
+                                name="firstName"
                                 placeholder="First name">
-                          <label for="first_name">First name</label>
+                          <label for="first-name">First name</label>
                         </div>
                       </div>
 
                       <div class="form-group mb-2">
                         <div class="form-floating">
-                          <input type="text" class="form-control" id="last_name"
-                                formControlName="last_name"
-                                name="last_name"
+                          <input type="text" class="form-control" id="last-name"
+                                formControlName="lastName"
+                                name="lastName"
                                 placeholder="Last name">
-                          <label for="last_name">Last name</label>
+                          <label for="last-name">Last name</label>
                         </div>
                       </div>
 
@@ -65,14 +65,14 @@ import { AuthService } from '../_services/auth/auth.service';
                       <div class="form-group mb-2">
                       <app-required></app-required>
                         <div class="form-floating">
-                          <input type="text" class="form-control" id="firm_name"
-                                formControlName="firm_name"
-                                name="firm_name"
+                          <input type="text" class="form-control" id="firm-name"
+                                formControlName="firmName"
+                                name="firmName"
                                 placeholder="Firm name">
-                          <label for="firm_name">Firm name</label>
+                          <label for="firm-name">Firm name</label>
                         </div>
                       </div>
-                      <div *ngIf="(firm_name?.invalid && (firm_name?.dirty || firm_name?.touched)) || (f.submitted && firm_name?.invalid)"
+                      <div *ngIf="(firmName?.invalid && (firmName?.dirty || firmName?.touched)) || (f.submitted && firmName?.invalid)"
                           class="alert alert-danger">
                           Please enter the name of your firm
                       </div>
@@ -117,22 +117,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @Output() onClosePopup = new EventEmitter<void>();
 
   form: FormGroup = this.fb.group({
-    first_name: [''],
-    last_name: [''],
+    firstName: [''],
+    lastName: [''],
     email: ['', Validators.required],
-    firm_name: ['', Validators.required]
+    firmName: ['', Validators.required]
   })
   get email() {
     return this.form.get('email')
   }
-  get first_name() {
-    return this.form.get('first_name')
+  get firstName() {
+    return this.form.get('firstName')
   }
-  get last_name() {
-    return this.form.get('last_name')
+  get lastName() {
+    return this.form.get('lastName')
   }
-  get firm_name() {
-    return this.form.get('firm_name')
+  get firmName() {
+    return this.form.get('firmName')
   }
 
   constructor(
@@ -154,14 +154,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   initialiseForm() {
     this.form.patchValue({
-      first_name: this.user.first_name,
-      last_name: this.user.last_name,
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
       email: this.user.email
     })
 
     if (!!this.user.firm) {
       this.form.patchValue({
-        firm_name: this.user.firm!.name
+        firmName: this.user.firm!.name
       })
     }
   }
@@ -190,12 +190,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   onUpdate() {
     if (this.form.valid) {
-      this.user.first_name = this.first_name?.value;
-      this.user.last_name = this.last_name?.value;
+      this.user.firstName = this.firstName?.value;
+      this.user.lastName = this.lastName?.value;
       this.user.email = this.email?.value;
 
       let firm: Firm = this.user.firm;
-      firm.name = this.firm_name?.value;
+      firm.name = this.firmName?.value;
 
       // ensure user update is propagted to home page
       this._authService.updateFirm(firm)
@@ -210,7 +210,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
         )
         .subscribe(userResponse => {
           this._authService.setUserSub(userResponse);
-          // this._authService.changeUserSub(userResponse);
           this.isEdit = false;
         })
     }
