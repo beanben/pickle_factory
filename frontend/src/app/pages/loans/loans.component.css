@@ -10,13 +10,6 @@ li {
     cursor: pointer;
 }
 
-/* app-edit {
-    visibility: hidden;
-}
-.highlight:hover app-edit {
-    visibility: visible;
-} */
-
 .scrollbar-thin {
     scrollbar-width: thin;
 }

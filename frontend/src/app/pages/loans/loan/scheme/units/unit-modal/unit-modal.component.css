@@ -12,9 +12,6 @@
     color: white
 }
 
-/* input{  
-    text-align: right;
-} */
 input.ng-invalid {
     border: 1px solid red;
 }

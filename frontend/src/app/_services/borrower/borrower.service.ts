@@ -12,21 +12,13 @@ import { SharedService } from '../shared/shared.service';
 })
 export class BorrowerService {
   relativeUrl = "/api/borrower";
-  // borrowerIdSub = new BehaviorSubject<string>('');
   borrowerSub = new BehaviorSubject<Borrower>({} as Borrower);
-  // borrowerTabSub = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
 
-  // getBorrowerIdSub():Observable<string>{
-  //   return this.borrowerIdSub.asObservable() 
-  // }
-  // setBorrowerIdSub(loanId: string){
-  //   return this.borrowerIdSub.next(loanId);
-  // }
 
   getBorrowerSub():Observable<Borrower>{
     return this.borrowerSub.asObservable() 
@@ -35,12 +27,6 @@ export class BorrowerService {
     return this.borrowerSub.next(newBorrower);
   }
 
-  // getBorrowerTabSub():Observable<boolean>{
-  //   return this.borrowerTabSub.asObservable() 
-  // }
-  // setBorrowerTabSub(isCollapsed: boolean){
-  //   return this.borrowerTabSub.next(isCollapsed);
-  // }
 
   createBorrower(borrower: Borrower) {
     return new Promise<APIResult>((resolve, reject) => {

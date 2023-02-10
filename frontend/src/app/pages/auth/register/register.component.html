@@ -71,14 +71,14 @@
             
                 <div class="form-group mb-1">
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="password_confirm"
-                                formControlName="password_confirm"
-                                name="password_confirm"
+                        <input type="password" class="form-control" id="password-confirm"
+                                formControlName="passwordConfirm"
+                                name="passwordConfirm"
                                 placeholder="Confirm password">
-                        <label for="password_confirm">Confirm password</label>
+                        <label for="password-confirm">Confirm password</label>
                     </div>
                 </div>
-                <div *ngIf="(password_confirm?.invalid && (password_confirm?.dirty || password_confirm?.touched)) || (f.submitted && password_confirm?.invalid)"
+                <div *ngIf="(passwordConfirm?.invalid && (passwordConfirm?.dirty || passwordConfirm?.touched)) || (f.submitted && passwordConfirm?.invalid)"
                     class="alert alert-danger">
                     Please confirm your password
                 </div>

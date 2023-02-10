@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth/auth.service';
@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
     firm: ['', Validators.required],
     email: ['', Validators.required],
     password: ['', Validators.required],
-    password_confirm: ['', Validators.required]
+    passwordConfirm: ['', Validators.required]
   })
 
   get email(){
@@ -39,13 +39,12 @@ export class RegisterComponent implements OnInit {
   get password(){
     return this.userForm.get('password')
   }
-  get password_confirm(){
-    return this.userForm.get('password_confirm')
+  get passwordConfirm(){
+    return this.userForm.get('passwordConfirm')
   }
 
   constructor(
     private _authService: AuthService,
-    private el: ElementRef,
     private router: Router,
     private fb: FormBuilder
     ) { 

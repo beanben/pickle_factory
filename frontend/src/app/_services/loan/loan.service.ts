@@ -78,7 +78,6 @@ export class LoanService {
 
   getLoans(): Observable<Loan[]> {
     const url = `${this.relativeUrl}/`;
-    // console.log("getLoans url:", url);
 
     return this.http.get<Loan[]>(url)
       .pipe(

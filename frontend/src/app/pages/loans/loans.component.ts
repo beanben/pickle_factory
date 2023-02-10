@@ -86,14 +86,6 @@ export class LoansComponent implements OnInit, OnDestroy {
         })
     )
 
-    // this._loanService.getLoans()
-    // .subscribe(loans => {
-    //   this.loans = loans;
-
-    //   if(Object.keys(this._loanService.loanSub.getValue()).length === 0 && this.loans.length != 0){
-    //     this._loanService.setLoanSub(loans[0]);
-    //   }
-    // })
   }
 
   onLoanSelected(index: number ){ 

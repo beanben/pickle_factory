@@ -74,8 +74,8 @@ export class SchemeService {
   }
 
   createUnits(units: Unit[]) {
-    const scheme_id = units[0].schemeId;
-    const url = `${this.relativeUrl}/${scheme_id}/unit/`;
+    const schemeId = units[0].schemeId;
+    const url = `${this.relativeUrl}/${schemeId}/unit/`;
 
     return new Promise<APIResult>((resolve, reject) => {
      

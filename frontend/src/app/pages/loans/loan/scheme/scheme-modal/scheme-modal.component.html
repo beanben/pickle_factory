@@ -81,7 +81,7 @@
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of currency_choices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of currencyChoices; let i = index">
                   <input class="form-check-input" type="radio" name="currency" [id]="'currency-'+i"
                     formControlName="currency" [value]="choice.value">
                   <label class="form-check-label" [for]="'currency-'+i">
@@ -98,7 +98,7 @@
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of system_choices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of systemChoices; let i = index">
                   <input class="form-check-input" type="radio" name="system" [id]="'system-'+i" formControlName="system"
                     [value]="choice.value">
                   <label class="form-check-label" [for]="'system-'+i">
@@ -194,7 +194,7 @@
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of currency_choices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of currencyChoices; let i = index">
                   <input class="form-check-input" type="radio" name="currency" [id]="'currency-'+i"
                     formControlName="currency" [value]="choice.value">
                   <label class="form-check-label" [for]="'currency-'+i">
@@ -211,7 +211,7 @@
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of system_choices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of systemChoices; let i = index">
                   <input class="form-check-input" type="radio" name="system" [id]="'system-'+i" formControlName="system"
                     [value]="choice.value">
                   <label class="form-check-label" [for]="'system-'+i">

@@ -24,12 +24,12 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   sub = Subscription.EMPTY;
   loan = {} as Loan;
 
-  currency_choices =[
+  currencyChoices =[
     {value: "GBP", display: "GBP (£)"},
     {value: "EUR", display: "EUR (€)"},
     {value: "USD", display: "USD ($)"},
   ];
-  system_choices =[
+  systemChoices =[
     {value: "SQFT", display: "imperial (sqft)"},
     {value: "SQM", display: "metric (sqm)"}
   ];
@@ -40,8 +40,8 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     postcode: [''],
     city: ['', Validators.required],
     country: [''],
-    currency: [this.currency_choices[0].value, Validators.required],
-    system: [this.system_choices[0].value, Validators.required]
+    currency: [this.currencyChoices[0].value, Validators.required],
+    system: [this.systemChoices[0].value, Validators.required]
   });
   get name(){
     return this.form.get('name')

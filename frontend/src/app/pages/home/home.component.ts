@@ -83,11 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       })
     )
-    // this._loanService.getLoans()
-    // .subscribe(loans => {
-    //   this.loans = loans;
-    //   this._loanService.setLoansSub(loans);
-    // })
+
   }
 
   ngOnDestroy(): void {

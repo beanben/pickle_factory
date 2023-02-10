@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 
 @Component({
@@ -11,7 +10,6 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 })
 export class LoginComponent implements OnInit {
   errors: string[] = new Array();
-  // sub = Subscription.EMPTY;
 
   form = new FormGroup({
     email: new FormControl('', Validators.required),
@@ -40,25 +38,9 @@ export class LoginComponent implements OnInit {
       this._authService.login(email, password)
        .then(() => {
         this.router.navigate(['/']);
-        // console.log("navigate");
-        // this.getUser();
       })
        .catch(err => this.errors = err)
     }
  }
-
-//  getUser() {
-//   this.sub = this._authService.getUser()
-//     .subscribe(user => {
-//       console.log("user:", user);
-//       this._authService.setUserSub(user);
-//     })
-//   }
-
-  // ngOnDestroy(): void {
-  //   this.sub.unsubscribe()
-  // }
-
-
 
 }

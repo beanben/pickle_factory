@@ -14,11 +14,7 @@ import { SharedService } from '../shared/shared.service';
 })
 export class AuthService {
   user = {} as User;
-  // userSub: BehaviorSubject<User> = new BehaviorSubject<User>(this.user);
   userSub = new BehaviorSubject<User>({} as User);
-  // private requestCompleted = new Subject<void>();
-  // requestCompleted$ = this.requestCompleted.asObservable();
-  // currentUser = this.userSub.asObservable();
   appRoot = "auth";
   urlRoot = `${environment.BASE_URL}/${this.appRoot}`
   
@@ -185,12 +181,12 @@ export class AuthService {
     })
   }
 
-  reset(password: string, password_confirm: string, token: string) {
+  reset(password: string, passwordConfirm: string, token: string) {
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}/reset/`;
       const body = {
         password: password, 
-        password_confirm: password_confirm,
+        passwordConfirm: passwordConfirm,
         token: token
       };
 
@@ -210,20 +206,6 @@ export class AuthService {
       })
     })
   }
-
-  // private handleError(errorRes: HttpErrorResponse): Array<string> {
-  //   console.log("errorRes:", errorRes);
-    
-  //   let errors = errorRes.error.response
-
-  //   if('token' in errors) {
-  //     errors = [errors.token.message]
-  //   } {
-  //     errors = Object.values(errors)
-  //   }
-    
-  //   return errors;
-  // }
 
 
 }

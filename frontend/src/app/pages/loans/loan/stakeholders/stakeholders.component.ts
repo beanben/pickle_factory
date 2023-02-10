@@ -18,7 +18,6 @@ export class StakeholdersComponent implements OnInit {
   mode = '';
   
   constructor(
-    private _loanService: LoanService
   ) {
    }
 
@@ -38,28 +37,5 @@ export class StakeholdersComponent implements OnInit {
     this.openBorrowerModal = true;
     this.mode = mode;
   }
-  // onOpenCreate(){
-  //   this.openAddBorrowerModal = true;
-  // }
-
-  // getLoanSub(){
-  //   this.subscr = this._loanService.getLoanSub()
-  //     .subscribe((loan) => {
-  //         this.loan = loan;
-  //     })
-  // }
-
-
-  // ngOnDestroy(): void {
-  //   if(this.subscr){
-  //     this.subscr.unsubscribe()
-  //   }
-  // }
-
-  // onRemove(loan:Loan | null){
-  //   this.openRemoveBorrowerModal = false;
-  // }
-
-  
 
 }

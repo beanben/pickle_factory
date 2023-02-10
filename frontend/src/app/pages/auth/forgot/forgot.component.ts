@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 
 @Component({
@@ -25,26 +25,12 @@ export class ForgotComponent implements OnInit {
   ngOnInit(): void {
   }
 
-//   onSubmit(form: NgForm) {
-//     const email = form.value.email;
-
-//     this._authService.forgot(email)
-//      .then((result) => {
-//       this.successMsg = 'Email sent!';
-
-//       })
-//      .catch(err => this.errors = err)
-//  }
-
 onSubmit() {
   if (this.form.valid) {
     let email = this.email?.value;
 
     this._authService.forgot(email)
-    .then((result) => {
-      this.successMsg = 'Email sent!';
-
-      })
+    .then(() => this.successMsg = 'Email sent!')
     .catch(err => this.errors = err)
   }
 }
