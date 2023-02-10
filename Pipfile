@@ -18,6 +18,7 @@ django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
 sendgrid = "*"
 django-sendgrid-v5 = "*"
+djangorestframework-camel-case = "*"
 
 [dev-packages]
 
