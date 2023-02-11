@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { empty, EMPTY, Observable, of, Subscription} from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Loan } from './loan/loan';
@@ -30,16 +30,11 @@ export class LoansComponent implements OnInit, OnDestroy {
     private _authService: AuthService
   ) { }
 
-  ngOnInit(): void {
-    this.subs.push(
-      this._loanService.getLoanSub()
-        .subscribe(loan => this.loanSelected = loan)
-    )
-    
+  ngOnInit(): void {    
     if(this._authService.isLoggedIn()){
+      this.getLoan();
       this.getLoans();
     }
-
   }
 
   onOpenModal(modalMode: string){
@@ -52,35 +47,44 @@ export class LoansComponent implements OnInit, OnDestroy {
   }
 
 
-  getLoan(loanSlug:string){
-    this._loanService.getLoan(loanSlug)
-    .subscribe(loan => {
-      this._loanService.setLoanSub(loan);
-    })
+  getLoans(){
+    
+    const loansSub: Loan[] = this._loanService.loansSub.getValue();
+
+    if(loansSub.length !== 0){
+      this.getSubLoans();
+    }else {
+      this.getReqLoans();
+    }
   }
 
-  getLoans(){
-    const loansSub: Loan[] = this._loanService.loansSub.getValue();
-    
-    let loansObs: Observable<Loan[]> = loansSub.length === 0 && this._authService.isLoggedIn()
-      ? this._loanService.getLoans()
-      : this._loanService.getLoansSub();
-
-
-    this.subs.push(
-      loansObs.subscribe(loans => {
+  getSubLoans(){
+    this._loanService.getLoansSub()
+        .subscribe(loans => {
           this.loans = loans;
 
-          if(Object.keys(loansSub).length === 0 && loans.length !== 0){
-            this._loanService.setLoanSub(loans[0]);
-          }
-
-          if (loansSub.length === 0) {
-            this._loanService.setLoansSub(loans);
+          if(loans.length !== 0){
+            this.loanSelected = loans[0];
+            this._loanService.setLoanSub(this.loanSelected);
           }
         })
-    )
+  }
+  getReqLoans(){
+    this._loanService.getLoans()
+        .subscribe(loans => {
+          this.loans = loans;
+          this._loanService.setLoansSub(loans);
 
+          if(loans.length !== 0){
+            this.loanSelected = loans[0];
+            this._loanService.setLoanSub(this.loanSelected);
+          };
+        })
+  }
+
+  getLoan(){
+    this._loanService.getLoanSub()
+        .subscribe(loan => this.loanSelected = loan)
   }
 
   onLoanSelected(index: number ){ 

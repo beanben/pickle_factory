@@ -26,7 +26,6 @@ export class NavLeftComponent implements OnInit, OnDestroy {
   sub = Subscription.EMPTY;
   user = {} as User;
   
-
   constructor(
     private _authService: AuthService,
     private router: Router
