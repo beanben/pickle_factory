@@ -29,7 +29,7 @@ class UnitAdmin(admin.ModelAdmin):
         '__str__',
         'asset_class',
         'description',
-        'type',
+        'unit_type',
         'quantity',
         'author_firm')
 
