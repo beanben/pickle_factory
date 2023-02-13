@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { AssetClass, Scheme, Unit } from '../../scheme';
+import { Scheme, Unit } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { APIResult } from 'src/app/_services/api-result';
 
@@ -23,12 +23,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   totalBeds = 0;
   totalArea = 0;
   formIsSubmitted = false;
-  valueChanged = false;
+  // valueChanged = false;
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
-  assetClassCreated = {} as AssetClass;
-  @Output() modalSaveUnits = new EventEmitter<AssetClass | null>();
+  @Output() modalSaveUnits = new EventEmitter<Unit[] | null>();
   requiredControls: string[] = [];
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
@@ -50,27 +49,31 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   ];
 
   assetClassStructures: { [key: string]: any } = {
-    "BTS": { unitType: "units", beds: "beds", areaType: "NIA" },
-    "BTL": { unitType: "units", beds: "beds", areaType: "NIA" },
-    "H": { unitType: "rooms", beds: "beds", areaType: "NIA" },
-    "C": { unitType: "units", beds: null, areaType: "GIA" },
-    "O": { unitType: "units", beds: null, areaType: "GIA" },
-    "S": { unitType: "units", beds: null, areaType: "GIA" },
-    "PBSA": { unitType: "rooms", beds: "beds", areaType: "NIA" },
+    "BTS": { unitType: "unit", beds: "beds", areaType: "NIA" },
+    "BTL": { unitType: "unit", beds: "beds", areaType: "NIA" },
+    "H": { unitType: "room", beds: "beds", areaType: "NIA" },
+    "C": { unitType: "unit", beds: null, areaType: "GIA" },
+    "O": { unitType: "unit", beds: null, areaType: "GIA" },
+    "S": { unitType: "unit", beds: null, areaType: "GIA" },
+    "PBSA": { unitType: "room", beds: "beds", areaType: "NIA" },
   }
 
-  assetClassForm: FormGroup = this.fb.group({
-    assetClass: ['', Validators.required],
-  });
-  get assetClass() {
-    return this.assetClassForm.get('assetClass')
-  };
+  // assetClassForm: FormGroup = this.fb.group({
+  //   assetClass: ['', Validators.required],
+  // });
+  // get assetClass() {
+  //   return this.assetClassForm.get('assetClass')
+  // };
 
-  unitForm: FormGroup = this.fb.group({
+  form: FormGroup = this.fb.group({
+    assetClass: ['', Validators.required],
     units: this.fb.array([])
   })
+  get assetClass() {
+    return this.form.get('assetClass')
+  };
   get units(): FormArray {
-    return this.unitForm.get("units") as FormArray
+    return this.form.get("units") as FormArray
   }
   // get areaType() {
   //   return this.form.get('areaType')
@@ -99,13 +102,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     // this.addUnit();
 
-    // this.subs.push(
-    //   this.units.valueChanges.subscribe(() => {
-    //     this.valueChanged = true;
-    //     this.calculateTotals();
-    //     this.getInvalidControls();
-    //   })
-    // )
+    this.subs.push(
+      this.units.valueChanges.subscribe(() => {
+        // this.valueChanged = true;
+        this.calculateTotals();
+        this.getInvalidControls();
+      })
+    )
 
   };
 
@@ -143,24 +146,24 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   onNext() {
     this.nextIsClicked = true;
+    this.addUnit();
+    this.assetClassStatus = "complete";
+    this.detailStatus = "active";
+    this.step += 1;
 
-    if (this.assetClassForm.valid) {
-      let assetClass: AssetClass = {
-        assetClassType: this.assetClass!.value,
-        schemeId: this.scheme.id
-      };
+    // if (this.assetClassForm.valid) {
+    //   let assetClass: AssetClass = {
+    //     assetClassType: this.assetClass!.value,
+    //     schemeId: this.scheme.id
+    //   };
 
-      this._schemeService.createAssetClass(assetClass)
-        .then((res: APIResult) => {
-          this.assetClassCreated = res.response;
-          this.addUnit();
-          this.assetClassStatus = "complete";
-          this.detailStatus = "active";
-          this.step += 1;
-        })
-        .catch(err => this.errors = err)
+    //   this._schemeService.createAssetClass(assetClass)
+    //     .then((res: APIResult) => {
+    //       this.assetClassCreated = res.response;
+    //     })
+    //     .catch(err => this.errors = err)
 
-    }
+    // }
 
   }
 
@@ -183,16 +186,15 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.formIsSubmitted = true;
     this.getInvalidControls();
 
-    if(this.unitForm.valid) {
+    if(this.form.valid) {
       let units: Unit[] = [];
 
       this.units.controls.forEach(newUnit => {
 
         const unit = {} as Unit;
-        unit.assetClassId = this.assetClassCreated.id;
-        unit.unitType = this.assetClassStructures[this.assetClassCreated.assetClassType].unitType;
-
-        // CONTINUE HERE
+        unit.schemeId = this.scheme.id;
+        unit.assetClass = this.assetClass!.value.value;
+        unit.unitType = this.assetClassStructures[unit.assetClass].unitType;
         unit.description = newUnit.get("description")!.value;
         unit.quantity = newUnit.get("quantity")!.value;
 
@@ -201,9 +203,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         };
         if (newUnit.get("area")!.value) {
           unit.area = newUnit.get("area")!.value;
-          unit.areaType = this.assetClassStructures[this.assetClassCreated.assetClassType].areaType;
+          unit.areaType = this.assetClassStructures[unit.assetClass].areaType;
         };
-        // unit.schemeId = this.scheme.id;
 
         units.push(unit);
       });
@@ -215,11 +216,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   createUnits(units: Unit[]) {
     this._schemeService.createUnits(units)
       .then((res: APIResult) => {
-        let unitsCreated: Unit[] = res.response;
-
-        this.assetClassCreated.units = unitsCreated;
-        
-        this.modalSaveUnits.emit(this.assetClassCreated);
+        let unitsCreated: Unit[] = res.response;        
+        this.modalSaveUnits.emit(unitsCreated);
       })
       .catch(err => this.errors = err)
   }

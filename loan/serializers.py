@@ -3,51 +3,8 @@ from loan.models.borrower import Borrower
 from rest_framework.serializers import ValidationError
 from loan.models.loan import Loan
 from loan.models.borrower import Borrower
-from loan.models.scheme import Scheme, Unit, AssetClass
+from loan.models.scheme import Scheme, Unit
 import pdb
-
-class BorrowerNestedSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    id = serializers.IntegerField()
-
-class LoanNestedSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    id = serializers.IntegerField()
-    borrower = BorrowerNestedSerializer()
-
-class UnitSerializer(serializers.ModelSerializer):
-    asset_class_id = serializers.IntegerField()
-
-    class Meta:
-        model = Unit
-        fields = [
-            'asset_class',
-            'unit_type',
-            'description',
-            'quantity', 
-            'beds', 
-            'area',
-            'area_type',
-            'asset_class_id']
-
-    def create(self, validated_data):
-        asset_class_id = validated_data.pop("asset_class_id")
-        asset_class = AssetClass.objects.get(id=asset_class_id)
-
-        validated_data.update({"asset_class": asset_class})
-        unit = Unit.objects.create(**validated_data)
-        return unit
-
-
-class SchemeNestedSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    street_name = serializers.CharField(allow_blank=True)
-    postcode = serializers.CharField(allow_blank=True)
-    city = serializers.CharField()
-    country = serializers.CharField(allow_blank=True)
-    currency = serializers.CharField()
-    system = serializers.CharField()
 
 class BorrowerSerializer(serializers.ModelSerializer):
     loans = serializers.SerializerMethodField()
@@ -76,6 +33,56 @@ class BorrowerSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class UnitSerializer(serializers.ModelSerializer):
+    scheme_id = serializers.IntegerField()
+
+    class Meta:
+        model = Unit
+        fields = [
+            'asset_class',
+            'unit_type',
+            'description',
+            'quantity', 
+            'beds', 
+            'area',
+            'area_type',
+            'scheme_id']
+        depth = 1
+
+    def create(self, validated_data):
+        scheme_id = validated_data.pop("scheme_id")
+        scheme = Scheme.objects.get(id=scheme_id)
+
+        validated_data.update({"scheme": scheme})
+        unit = Unit.objects.create(**validated_data)
+        return unit
+
+class BorrowerNestedSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    id = serializers.IntegerField()
+
+class UnitNestedSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    asset_class = serializers.CharField()
+    unit_type = serializers.CharField()
+    description = serializers.CharField()
+    quantity = serializers.IntegerField()
+    beds = serializers.IntegerField()
+    area = serializers.DecimalField(max_digits = 10, decimal_places = 2)
+    area_type = serializers.CharField()
+
+class SchemeNestedSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    street_name = serializers.CharField(allow_blank=True)
+    postcode = serializers.CharField(allow_blank=True)
+    city = serializers.CharField()
+    country = serializers.CharField(allow_blank=True)
+    currency = serializers.CharField()
+    system = serializers.CharField()
+    units = UnitNestedSerializer(many=True, required=False)
+
 
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
@@ -130,10 +137,21 @@ class LoanSerializer(serializers.ModelSerializer):
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
+    units = serializers.SerializerMethodField()
 
     class Meta:
         model = Scheme
-        fields = ['id', 'name', 'street_name', 'postcode', 'city', 'country', 'currency', 'system', 'loan_id']
+        fields = [
+            'id', 
+            'name', 
+            'street_name', 
+            'postcode', 
+            'city', 
+            'country', 
+            'currency', 
+            'system', 
+            'loan_id', 
+            'units']
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")
@@ -143,19 +161,8 @@ class SchemeSerializer(serializers.ModelSerializer):
         scheme = Scheme.objects.create(**validated_data)
         return scheme
 
+    def get_units(self, obj):
+        units = Unit.objects.filter(scheme=obj)
+        return UnitNestedSerializer(units, many=True).data
 
-class AssetClassSerializer(serializers.ModelSerializer):
-    scheme_id = serializers.IntegerField()
-
-    class Meta:
-        model = AssetClass
-        fields = ['id', 'asset_class_type', 'scheme_id']
-
-    def create(self, validated_data):
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
-
-        validated_data.update({"scheme": scheme})
-        asset_class = AssetClass.objects.create(**validated_data)
-        return asset_class
 

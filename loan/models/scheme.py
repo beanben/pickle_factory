@@ -26,12 +26,12 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     def __str__(self):
         return self.name
 
-    @property
-    def gross_value(self):
-        return sum([asset_class.value for asset_class in self.asset_classes.all()])   
+    # @property
+    # def gross_value(self):
+    #     return sum([asset_class.value for asset_class in self.asset_classes.all()])   
 
-class AssetClass(TimestampedModel, AuthorTrackerModel):
-    TYPE_CHOICES =[
+class Unit(TimestampedModel, AuthorTrackerModel):
+    ASSET_CLASS_CHOICES =[
         ("BTS", "Residential - Build to Sell"),
         ("BTL", "Residential - Build to Let"),
         ("H", "Hotel"),
@@ -40,36 +40,28 @@ class AssetClass(TimestampedModel, AuthorTrackerModel):
         ("S", "Shopping Centre"),
         ("PBSA", "Student Accommodation")
     ]
-    asset_class_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
-
-    @property
-    def value(self):
-        return sum([unit.value for unit in self.units.all()])
-
-class Unit(TimestampedModel, AuthorTrackerModel):
-    TYPE_CHOICES={
-        ("unit", "unit"),
-        ("room", "room"),
-    }
-
+    UNIT_TYPE_CHOICES=[
+        ("unit", "Unit"),
+        ("room", "Room"),
+    ]
     AREA_TYPE_CHOICES =[
         ("NIA", "Net Internal Area"),
         ("NSA", "Net Salable Area"),
         ("GIA", "Gross Internal Area"),
     ]
-    asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
-    unit_type = models.CharField(max_length=100, choices=TYPE_CHOICES, default="unit")
+    asset_class = models.CharField(max_length=10, choices=ASSET_CLASS_CHOICES, default="BTS")
+    unit_type = models.CharField(max_length=100, choices=UNIT_TYPE_CHOICES, default="unit")
     description = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField(default=1)
     beds = models.PositiveIntegerField(blank=True, null=True)
     area = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
-    value = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    # gross_value = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="units")
     
     def __str__(self):
         description = self.description if self.description != "total" else f"{self.unit_type}"
-        return f"{self.quantity} {description} - {self.asset_class}"
+        return f"{self.quantity} {description} - {self.scheme}"
 
 
 

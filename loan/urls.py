@@ -6,8 +6,8 @@ from .views import (
     BorrowerDetail,
     SchemeList,
     SchemeDetail,
-    AssetClassList,
-    AssetClassDetail,
+    # AssetClassList,
+    # AssetClassDetail,
     UnitList,
     UnitDetail
 )
@@ -17,10 +17,10 @@ unit_patterns = ([
     path('<int:pk>/', UnitDetail.as_view()),
 ], 'unit')
 
-asset_class_patterns = ([
-    path('', AssetClassList.as_view()),
-    path('<int:pk>/', AssetClassDetail.as_view()),
-], 'asset_class')
+# asset_class_patterns = ([
+#     path('', AssetClassList.as_view()),
+#     path('<int:pk>/', AssetClassDetail.as_view()),
+# ], 'asset_class')
 
 scheme_patterns = ([
     path('', SchemeList.as_view()),
@@ -43,6 +43,6 @@ urlpatterns = [
     path('loan/', include(loan_patterns)),
     path('borrower/', include(borrower_patterns)),
     path('scheme/', include(scheme_patterns)),
-    path('asset-class/', include(asset_class_patterns)),
+    # path('asset-class/', include(asset_class_patterns)),
     path('unit/', include(unit_patterns)),
 ]

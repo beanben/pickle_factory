@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
-from .models.scheme import Scheme, AssetClass, Unit
-from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer, AssetClassSerializer
+from .models.scheme import Scheme, Unit
+from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer
 from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
 import pdb
@@ -104,42 +104,42 @@ class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
             'response': response.data
         })
 
-class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
-    queryset = AssetClass.objects.all()
-    serializer_class = AssetClassSerializer
+# class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
+#     queryset = AssetClass.objects.all()
+#     serializer_class = AssetClassSerializer
 
-    def get_queryset(self):
-        return self.queryset.prefetch_related('scheme')
+#     def get_queryset(self):
+#         return self.queryset.prefetch_related('scheme')
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        return Response({
-            'status': "success",
-            'message': "asset class created",
-            'response': response.data
-        })
+#     def create(self, request, *args, **kwargs):
+#         response = super().create(request, *args, **kwargs)
+#         return Response({
+#             'status': "success",
+#             'message': "asset class created",
+#             'response': response.data
+#         })
 
-class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
-    queryset = AssetClass.objects.all()
-    serializer_class = AssetClassSerializer
+# class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
+#     queryset = AssetClass.objects.all()
+#     serializer_class = AssetClassSerializer
 
-    def get_queryset(self):
-        return self.queryset.prefetch_related('scheme')
+#     def get_queryset(self):
+#         return self.queryset.prefetch_related('scheme')
 
-    def update(self, request, *args, **kwargs):
-        response = super().update(request, *args, **kwargs)
-        return Response({
-            'status': "success",
-            'message': 'asset class updated',
-            'response': response.data
-        })
+#     def update(self, request, *args, **kwargs):
+#         response = super().update(request, *args, **kwargs)
+#         return Response({
+#             'status': "success",
+#             'message': 'asset class updated',
+#             'response': response.data
+#         })
 
 class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('asset_class')
+        return self.queryset.prefetch_related('scheme')
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
@@ -164,7 +164,7 @@ class UnitDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UnitSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('asset_class')
+        return self.queryset.prefetch_related('scheme')
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

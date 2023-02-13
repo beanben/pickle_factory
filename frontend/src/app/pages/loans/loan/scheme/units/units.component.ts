@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AssetClass, Scheme, Unit } from '../scheme';
+import { Scheme, Unit } from '../scheme';
 
 @Component({
   selector: 'app-units',
@@ -14,18 +14,19 @@ export class UnitsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+   }
 
   onOpenModal(modalMode: string){
     this.openUnitModal = true;
     this.modalMode = modalMode;
   }
 
-  onSave(assetClass: AssetClass | null){
+  onSave(units: Unit[] | null){
     this.openUnitModal = false;
 
-    if(assetClass){
-      this.scheme.assetClasses!.push(assetClass);
+    if(units){
+      this.scheme.units!.concat(units);
     }
   }
 

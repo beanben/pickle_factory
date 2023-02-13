@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { AssetClass, Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
+import { Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -72,31 +72,30 @@ export class SchemeService {
     ); 
   }
 
-  createAssetClass(assetClass: AssetClass) {
-    const schemeId = assetClass.schemeId;
-    const url = `${this.relativeUrl}/${schemeId}/asset-class/`;
+  // createAssetClass(assetClass: AssetClass) {
+  //   const schemeId = assetClass.schemeId;
+  //   const url = `${this.relativeUrl}/${schemeId}/asset-class/`;
 
-    return new Promise<APIResult>((resolve, reject) => {
+  //   return new Promise<APIResult>((resolve, reject) => {
      
-      this.http.post(url, assetClass).subscribe({
-        next: (data) => {
-          const result = data as APIResult;
-          if (result.status === "success"){
-            resolve(result);
-          } else {
-            reject(result.message)
-          }
-        },
-        error: (error) => {
-          reject(this._sharedService.handleError(error));
-        }
-      })
-    })
-  };
+  //     this.http.post(url, assetClass).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
 
   createUnits(units: Unit[]) {
-    const assetClassId = units[0].assetClassId;
-    const url = 'api/unit/';
+    const url = '/api/unit/';
 
     return new Promise<APIResult>((resolve, reject) => {
      

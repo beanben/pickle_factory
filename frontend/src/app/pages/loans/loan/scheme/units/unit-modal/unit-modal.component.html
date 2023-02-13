@@ -27,7 +27,7 @@
             </ol>
           </nav>
 
-          <form [formGroup]="assetClassForm" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
             <span class="d-flex justify-content-center pb-2">Please select the unit asset class from the list </span>
 
             <div class="form-group mb-3 px-2">
@@ -51,7 +51,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
-          <button type="sumbit" class="btn btn-success" (click)="onNext()">Next ></button>
+          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
         </div>
 
       </ng-container>
@@ -77,7 +77,7 @@
             </ol>
           </nav>
 
-          <form [formGroup]="unitForm" #f="ngForm" class="mx-auto py-2" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
             <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units</span>
 
             <div class="form-group px-2">
@@ -91,11 +91,11 @@
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
                 <div class="col my-auto border-table">Description</div>
-                <div class="col my-auto border-table">{{assetClassStructures[assetClassCreated.assetClassType].unitType | titlecase}}</div>
-                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClassCreated.assetClassType].beds">
-                  {{assetClassStructures[assetClassCreated.assetClassType].beds | titlecase}}</div>
+                <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value.value].unitType | titlecase}}s</div>
+                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClass!.value.value].beds">
+                  {{assetClassStructures[assetClass!.value.value].beds | titlecase}}</div>
                 <div class="col my-auto border-table">
-                  {{assetClassStructures[assetClassCreated.assetClassType].areaType}} ({{scheme.system | lowercase}})
+                  {{assetClassStructures[assetClass!.value.value].areaType}} ({{scheme.system | lowercase}})
                 </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
@@ -112,7 +112,7 @@
                       <div class="col my-auto px-0 text-end">
                           <input class="form-control text-end" formControlName="quantity" placeholder="0" >
                       </div>
-                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClassCreated.assetClassType].beds">
+                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClass!.value.value].beds">
                           <input class="form-control text-end" formControlName="beds" placeholder="0" />
                       </div>
                       <div class="col my-auto px-0 text-end">
@@ -145,7 +145,7 @@
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
 
-              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClassCreated.assetClassType].unitType}}</button>
+              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClass!.value.value].unitType}}s</button>
 
               <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
                 The following fields are required: {{ requiredControls.join(', ') }}.
