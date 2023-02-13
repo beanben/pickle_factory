@@ -67,7 +67,6 @@ class Unit(TimestampedModel, AuthorTrackerModel):
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
     value = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     
-
     def __str__(self):
         description = self.description if self.description != "total" else f"{self.unit_type}"
         return f"{self.quantity} {description} - {self.asset_class}"

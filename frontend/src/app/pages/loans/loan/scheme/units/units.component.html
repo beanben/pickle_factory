@@ -1,13 +1,17 @@
-<app-unit-modal *ngIf="openUnitModal" [mode]="modalMode" [scheme]="scheme" (modalSaveUnits)="onSave($event)">
+<app-unit-modal 
+*ngIf="openUnitModal" 
+[mode]="modalMode" 
+[scheme]="scheme" 
+(modalSaveUnits)="onSave($event)">
 </app-unit-modal>
 
-<div class="d-flex flex-row " [ngClass]="{'justify-content-center pt-4': scheme.units.length ===0}">
+<div class="d-flex flex-row " [ngClass]="{'justify-content-center pt-4': !scheme.assetClasses}">
   <button class="btn btn-primary" (click)="onOpenModal('add')">Add unit</button>
 </div>
 
 <div class="p-3">
-  <ng-container *ngIf="scheme.units.length !=0">
-    <div class="row border-bottom text-center fw-bolder mt-2">
+  <ng-container *ngIf="!!scheme.assetClasses">
+    <!-- <div class="row border-bottom text-center fw-bolder mt-2">
       <div class="col">
         Asset Class
       </div>
@@ -35,7 +39,7 @@
       <div class="col">
         {{unit.area}} {{unit.area}}
       </div>
-    </div>
+    </div> -->
   </ng-container>
 
 </div>

@@ -18,9 +18,7 @@ export class SchemeComponent implements OnInit{
   constructor( 
   ) { }
 
-  ngOnInit(): void { 
-
-  }
+  ngOnInit(): void {  }
 
   onOpenModal(modalMode: string){
     this.openSchemeModal = true;
