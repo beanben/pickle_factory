@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme, Unit, AssetClassMap } from 'src/app/pages/loans/loan/scheme/scheme';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
@@ -10,11 +10,16 @@ import { SharedService } from '../shared/shared.service';
 })
 export class SchemeService {
   relativeUrl = "/api/scheme";
+  assetClassMapSub = new BehaviorSubject<AssetClassMap>({} as AssetClassMap);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
+
+  setAssetClassMapSub(AssetClassMap: AssetClassMap){
+    return this.assetClassMapSub.next(AssetClassMap);
+  }
 
   createScheme(scheme: Scheme) {
     const url = `${this.relativeUrl}/`;
@@ -117,7 +122,9 @@ export class SchemeService {
 
   getAssetClassMap(): Observable<AssetClassMap> {
     const url = '/api/unit/asset-class-map/';
-    return this.http.get<AssetClassMap>(url);
+    return this.http.get<AssetClassMap>(url).pipe(
+      tap(() => console.log('getAssetClassMap()', Math.random())),
+    );
   }
 
 

@@ -38,11 +38,18 @@ export class UnitsComponent implements OnInit {
   }
 
   getAssetClassMap(){
-    this._schemeService.getAssetClassMap()
-      .subscribe(assetClassMap => {
-        this.assetClassMap = assetClassMap;
-        // console.log("assetClassMap:", this.assetClassMap)
-      })
+    let assetClassMapSubValue = this._schemeService.assetClassMapSub.getValue();
+
+    if(Object.keys(assetClassMapSubValue).length === 0) {
+      this._schemeService.getAssetClassMap()
+        .subscribe(assetClassMap => {
+          this.assetClassMap = assetClassMap;
+          this._schemeService.setAssetClassMapSub(assetClassMap);
+          // console.log("assetClassMap:", this.assetClassMap)
+        })
+    } else {
+      this.assetClassMap = assetClassMapSubValue;
+    }
   } 
 
 }
