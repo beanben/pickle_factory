@@ -36,6 +36,8 @@ class BorrowerSerializer(serializers.ModelSerializer):
 
 class UnitSerializer(serializers.ModelSerializer):
     scheme_id = serializers.IntegerField()
+    # asset_class = serializers.ChoiceField(choices=Unit.ASSET_CLASS_CHOICES)
+    # asset_class = serializers.SerializerMethodField()
 
     class Meta:
         model = Unit
@@ -55,22 +57,26 @@ class UnitSerializer(serializers.ModelSerializer):
         scheme = Scheme.objects.get(id=scheme_id)
 
         validated_data.update({"scheme": scheme})
+        # pdb.set_trace()
         unit = Unit.objects.create(**validated_data)
         return unit
+
+    # def get_asset_class(self, obj):
+    #     return obj.get_asset_class_display()
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.IntegerField()
 
-class UnitNestedSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    asset_class = serializers.CharField()
-    unit_type = serializers.CharField()
-    description = serializers.CharField()
-    quantity = serializers.IntegerField()
-    beds = serializers.IntegerField()
-    area = serializers.DecimalField(max_digits = 10, decimal_places = 2)
-    area_type = serializers.CharField()
+# class UnitNestedSerializer(serializers.Serializer):
+#     id = serializers.IntegerField()
+#     asset_class = serializers.ChoiceField(choices=Unit.ASSET_CLASS_CHOICES, read_only=False)
+#     unit_type = serializers.CharField()
+#     description = serializers.CharField()
+#     quantity = serializers.IntegerField()
+#     beds = serializers.IntegerField()
+#     area = serializers.DecimalField(max_digits = 10, decimal_places = 2)
+#     area_type = serializers.CharField()
 
 class SchemeNestedSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -81,7 +87,8 @@ class SchemeNestedSerializer(serializers.Serializer):
     country = serializers.CharField(allow_blank=True)
     currency = serializers.CharField()
     system = serializers.CharField()
-    units = UnitNestedSerializer(many=True, required=False)
+    # units = UnitNestedSerializer(many=True, required=False)
+    units = UnitSerializer(many=True, required=False)
 
 
 class LoanSerializer(serializers.ModelSerializer):
@@ -163,6 +170,6 @@ class SchemeSerializer(serializers.ModelSerializer):
 
     def get_units(self, obj):
         units = Unit.objects.filter(scheme=obj)
-        return UnitNestedSerializer(units, many=True).data
+        return UnitSerializer(units, many=True).data
 
 

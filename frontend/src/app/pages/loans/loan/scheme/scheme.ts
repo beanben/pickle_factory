@@ -32,10 +32,23 @@ export interface Scheme {
 //     value?: number
 // }
 
+// export interface Unit {
+//     id?: number,
+//     schemeId?: number,
+//     assetClass: "BTS" | "BTL" | "H" | "C" | "O" | "S" | "PBSA",
+//     unitType: "unit" | "rooms",
+//     description: string,
+//     quantity: number,
+//     beds: number | null,
+//     area: number | null,
+//     areaType: "NIA" | "NSA" | "GIA",
+//     areaSystem?: "SQFT" | "SQM",  
+// }
+
 export interface Unit {
     id?: number,
     schemeId?: number,
-    assetClass: "BTS" | "BTL" | "H" | "C" | "O" | "S" | "PBSA",
+    assetClass: string,
     unitType: "unit" | "rooms",
     description: string,
     quantity: number,
@@ -44,3 +57,7 @@ export interface Unit {
     areaType: "NIA" | "NSA" | "GIA",
     areaSystem?: "SQFT" | "SQM",  
 }
+
+export interface AssetClassMap {
+    [key: string]: string;
+  }

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Scheme, Unit } from '../scheme';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { AssetClassMap, Scheme, Unit } from '../scheme';
 
 @Component({
   selector: 'app-units',
@@ -9,12 +10,16 @@ import { Scheme, Unit } from '../scheme';
 export class UnitsComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
+  assetClassMap = {} as AssetClassMap;
 
   @Input() scheme = {} as Scheme
 
-  constructor() { }
+  constructor(
+    private _schemeService: SchemeService
+  ) { }
 
   ngOnInit(): void {
+    this.getAssetClassMap();
    }
 
   onOpenModal(modalMode: string){
@@ -25,9 +30,19 @@ export class UnitsComponent implements OnInit {
   onSave(units: Unit[] | null){
     this.openUnitModal = false;
 
+    console.log("new units:", units)
+
     if(units){
       this.scheme.units!.concat(units);
     }
   }
+
+  getAssetClassMap(){
+    this._schemeService.getAssetClassMap()
+      .subscribe(assetClassMap => {
+        this.assetClassMap = assetClassMap;
+        // console.log("assetClassMap:", this.assetClassMap)
+      })
+  } 
 
 }

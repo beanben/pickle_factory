@@ -214,9 +214,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   createUnits(units: Unit[]) {
+    console.log("create units - before POST:", units);
+
     this._schemeService.createUnits(units)
       .then((res: APIResult) => {
-        let unitsCreated: Unit[] = res.response;        
+        let unitsCreated: Unit[] = res.response;   
+        console.log("unitsCreated - after POST:", unitsCreated);     
         this.modalSaveUnits.emit(unitsCreated);
       })
       .catch(err => this.errors = err)

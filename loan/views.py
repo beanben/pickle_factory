@@ -6,8 +6,12 @@ from .models.scheme import Scheme, Unit
 from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer
 from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
+from django.http import JsonResponse
 import pdb
 
+def asset_class_map(request):
+    asset_class_map = dict(Unit.ASSET_CLASS_CHOICES)
+    return JsonResponse(asset_class_map)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Loan.objects.all()

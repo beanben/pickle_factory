@@ -9,12 +9,14 @@ from .views import (
     # AssetClassList,
     # AssetClassDetail,
     UnitList,
-    UnitDetail
+    UnitDetail,
+    asset_class_map
 )
 
 unit_patterns = ([
     path('', UnitList.as_view()),
     path('<int:pk>/', UnitDetail.as_view()),
+    path('asset-class-map/', asset_class_map)
 ], 'unit')
 
 # asset_class_patterns = ([

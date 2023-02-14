@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
+import { Scheme, Unit, AssetClassMap } from 'src/app/pages/loans/loan/scheme/scheme';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -114,6 +114,11 @@ export class SchemeService {
       })
     })
   };
+
+  getAssetClassMap(): Observable<AssetClassMap> {
+    const url = '/api/unit/asset-class-map/';
+    return this.http.get<AssetClassMap>(url);
+  }
 
 
 }
