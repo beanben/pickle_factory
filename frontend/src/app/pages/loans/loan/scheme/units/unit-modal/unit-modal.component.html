@@ -35,7 +35,7 @@
               <div class="form-floating text-center">
                 <select class="form-select" id="asset-class" formControlName="assetClass">
                   <option [ngValue]="''"> -- Select Asset Class --</option>
-                  <option *ngFor='let choice of assetClassChoices' [ngValue]="choice">{{ choice.display}}
+                  <option *ngFor='let choice of assetClassChoices | keyvalue' [ngValue]="choice.key">{{ choice.value}}
                   </option>
                 </select>
                 <label for="asset-class">Asset class</label>

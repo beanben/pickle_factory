@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { Scheme, Unit } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { APIResult } from 'src/app/_services/api-result';
+import { StringDictionary } from 'src/app/shared/shared';
 
 @Component({
   selector: 'app-unit-modal',
@@ -32,21 +33,23 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
+  assetClassChoices: StringDictionary = {};
+  // assetClassChoices:AssetClassChoice = {} as AssetClassChoice;
 
   areaTypeChoices = [
     { value: "NIA", display: "Net Internal Area" },
     { value: "NSA", display: "Net Salable Area" },
     { value: "GIA", display: "Gross Internal Area" },
   ];
-  assetClassChoices = [
-    { value: "BTS", display: "Residential - Build to Sell" },
-    { value: "BTL", display: "Residential - Build to Let" },
-    { value: "H", display: "Hotel" },
-    { value: "C", display: "Commercial" },
-    { value: "O", display: "Office" },
-    { value: "S", display: "Shopping Centre" },
-    { value: "PBSA", display: "Student Accommodation" }
-  ];
+  // assetClassChoices = [
+  //   { value: "BTS", display: "Residential - Build to Sell" },
+  //   { value: "BTL", display: "Residential - Build to Let" },
+  //   { value: "H", display: "Hotel" },
+  //   { value: "C", display: "Commercial" },
+  //   { value: "O", display: "Office" },
+  //   { value: "S", display: "Shopping Centre" },
+  //   { value: "PBSA", display: "Student Accommodation" }
+  // ];
 
   assetClassStructures: { [key: string]: any } = {
     "BTS": { unitType: "unit", beds: "beds", areaType: "NIA" },
@@ -96,6 +99,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
+    this.getAssetClassChoices();
 
     this.assetClassStatus = "active";
     this.detailStatus = "inactive";
@@ -274,6 +278,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.totalUnits += totalUnits;
     this.totalBeds += totalBeds;
     this.totalArea += totalArea;
+  }
+
+  getAssetClassChoices(){
+    this.assetClassChoices = this._schemeService.assetClassChoicesSub.getValue();
   }
 
   ngOnDestroy(): void {

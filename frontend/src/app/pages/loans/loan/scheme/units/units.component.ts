@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { StringDictionary } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { AssetClassMap, Scheme, Unit } from '../scheme';
+import { Scheme, Unit } from '../scheme';
 
 @Component({
   selector: 'app-units',
@@ -10,7 +11,7 @@ import { AssetClassMap, Scheme, Unit } from '../scheme';
 export class UnitsComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
-  assetClassMap = {} as AssetClassMap;
+  assetClassChoices: StringDictionary = {};
 
   @Input() scheme = {} as Scheme
 
@@ -19,7 +20,7 @@ export class UnitsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getAssetClassMap();
+    this.getAssetClassChoices();
    }
 
   onOpenModal(modalMode: string){
@@ -30,26 +31,28 @@ export class UnitsComponent implements OnInit {
   onSave(units: Unit[] | null){
     this.openUnitModal = false;
 
-    console.log("new units:", units)
 
     if(units){
       this.scheme.units!.concat(units);
     }
   }
 
-  getAssetClassMap(){
-    let assetClassMapSubValue = this._schemeService.assetClassMapSub.getValue();
+  getAssetClassChoices(){
+    let dict = {} as StringDictionary;
+    dict = this._schemeService.assetClassChoicesSub.getValue();
 
-    if(Object.keys(assetClassMapSubValue).length === 0) {
-      this._schemeService.getAssetClassMap()
-        .subscribe(assetClassMap => {
-          this.assetClassMap = assetClassMap;
-          this._schemeService.setAssetClassMapSub(assetClassMap);
-          // console.log("assetClassMap:", this.assetClassMap)
+    if(Object.keys(dict).length === 0) {
+      this._schemeService.getAssetClassChoices()
+        .subscribe(assetClassChoices => {
+
+          this.assetClassChoices = assetClassChoices;
+          this._schemeService.setAssetClassChoicesSub(assetClassChoices);
+
         })
     } else {
-      this.assetClassMap = assetClassMapSubValue;
+      this.assetClassChoices = dict;
     }
-  } 
+    
+  }
 
 }

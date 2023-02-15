@@ -57,7 +57,3 @@ export interface Unit {
     areaType: "NIA" | "NSA" | "GIA",
     areaSystem?: "SQFT" | "SQM",  
 }
-
-export interface AssetClassMap {
-    [key: string]: string;
-  }
