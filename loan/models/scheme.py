@@ -64,4 +64,23 @@ class Unit(TimestampedModel, AuthorTrackerModel):
         return f"{self.quantity} {description} - {self.scheme}"
 
 
+# class Hotel(TimestampedModel, AuthorTrackerModel):
+#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+#     description = models.CharField(max_length=100)
+#     rooms = models.PositiveIntegerField(blank=True, null=True)
+#     beds = models.PositiveIntegerField(blank=True, null=True)
 
+# class ResidentialBTS(TimestampedModel, AuthorTrackerModel):
+#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+#     description = models.CharField(max_length=100)
+#     units = models.PositiveIntegerField(blank=True, null=True)
+#     beds = models.PositiveIntegerField(blank=True, null=True)
+
+
+# class AssetClass(TimestampedModel, AuthorTrackerModel):
+#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+
+
+# class Hotel(AssetClass):
+#     rooms = models.PositiveIntegerField(blank=True, null=True)
+#     beds = models.PositiveIntegerField(blank=True, null=True)

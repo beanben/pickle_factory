@@ -14,11 +14,11 @@ import { StringDictionary } from 'src/app/shared/shared';
 export class UnitModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   chevronRight = "assets/images/chevronRight.svg";
-  assetClassStatus = "";
-  detailStatus = "";
+  assetClassStatus = "active";
+  detailStatus = "inactive";
   step = 1;
-  nextIsClicked = false;
-  showError = false;
+  // nextIsClicked = false;
+  // showError = false;
   numbersOnly = /^\d+$/;
   totalUnits = 0;
   totalBeds = 0;
@@ -29,27 +29,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveUnits = new EventEmitter<Unit[] | null>();
+
   requiredControls: string[] = [];
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
   assetClassChoices: StringDictionary = {};
-  // assetClassChoices:AssetClassChoice = {} as AssetClassChoice;
 
-  areaTypeChoices = [
-    { value: "NIA", display: "Net Internal Area" },
-    { value: "NSA", display: "Net Salable Area" },
-    { value: "GIA", display: "Gross Internal Area" },
-  ];
-  // assetClassChoices = [
-  //   { value: "BTS", display: "Residential - Build to Sell" },
-  //   { value: "BTL", display: "Residential - Build to Let" },
-  //   { value: "H", display: "Hotel" },
-  //   { value: "C", display: "Commercial" },
-  //   { value: "O", display: "Office" },
-  //   { value: "S", display: "Shopping Centre" },
-  //   { value: "PBSA", display: "Student Accommodation" }
-  // ];
 
   assetClassStructures: { [key: string]: any } = {
     "BTS": { unitType: "unit", beds: "beds", areaType: "NIA" },
@@ -101,9 +87,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
 
-    this.assetClassStatus = "active";
-    this.detailStatus = "inactive";
-
     // this.addUnit();
 
     this.subs.push(
@@ -125,7 +108,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   addUnit() {
-    this.formIsSubmitted = false;
+    // this.formIsSubmitted = false;
     this.units.insert(0, this.newUnit());
 
     if (this.units.length === 1) {
@@ -149,7 +132,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   onNext() {
-    this.nextIsClicked = true;
+    // this.nextIsClicked = true;
     this.addUnit();
     this.assetClassStatus = "complete";
     this.detailStatus = "active";
@@ -174,7 +157,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   onPrevious() {
     this.assetClassStatus = "active";
     this.detailStatus = "inactive";
-    this.formIsSubmitted = false;
+    // this.formIsSubmitted = false;
 
     this.step -= 1;
 
@@ -240,6 +223,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         Object.keys((newUnit as FormGroup).controls).forEach((controlName: string) => {
           let formControl = newUnit.get(controlName)! as FormControl;
 
+          // if (formControl.invalid && (formControl.submitted || newUnit.dirty)) {
           if (formControl.invalid && (this.formIsSubmitted || newUnit.dirty)) {
 
 
