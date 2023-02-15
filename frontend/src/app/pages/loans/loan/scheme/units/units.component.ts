@@ -31,7 +31,6 @@ export class UnitsComponent implements OnInit {
   onSave(units: Unit[] | null){
     this.openUnitModal = false;
 
-
     if(units){
       this.scheme.units!.concat(units);
     }
