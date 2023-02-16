@@ -30,6 +30,19 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     # def gross_value(self):
     #     return sum([asset_class.value for asset_class in self.asset_classes.all()])   
 
+# class AssetClass(TimestampedModel, AuthorTrackerModel):
+#     TYPE_CHOICES =[
+#         ("BTS", "Residential - Build to Sell"),
+#         ("BTL", "Residential - Build to Let"),
+#         ("H", "Hotel"),
+#         ("C", "Commercial"),
+#         ("O", "Office"),
+#         ("S", "Shopping Centre"),
+#         ("PBSA", "Student Accommodation")
+#     ]
+#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+#     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default="BTS")
+
 class Unit(TimestampedModel, AuthorTrackerModel):
     ASSET_CLASS_CHOICES =[
         ("BTS", "Residential - Build to Sell"),
@@ -63,24 +76,9 @@ class Unit(TimestampedModel, AuthorTrackerModel):
         description = self.description if self.description != "total" else f"{self.unit_type}"
         return f"{self.quantity} {description} - {self.scheme}"
 
-
-# class Hotel(TimestampedModel, AuthorTrackerModel):
-#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+# class Unit(TimestampedModel, AuthorTrackerModel):
+#     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
 #     description = models.CharField(max_length=100)
-#     rooms = models.PositiveIntegerField(blank=True, null=True)
+#     quantity = models.PositiveIntegerField(default=1)
 #     beds = models.PositiveIntegerField(blank=True, null=True)
-
-# class ResidentialBTS(TimestampedModel, AuthorTrackerModel):
-#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
-#     description = models.CharField(max_length=100)
-#     units = models.PositiveIntegerField(blank=True, null=True)
-#     beds = models.PositiveIntegerField(blank=True, null=True)
-
-
-# class AssetClass(TimestampedModel, AuthorTrackerModel):
-#     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
-
-
-# class Hotel(AssetClass):
-#     rooms = models.PositiveIntegerField(blank=True, null=True)
-#     beds = models.PositiveIntegerField(blank=True, null=True)
+    
