@@ -180,7 +180,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
         const unit = {} as Unit;
         unit.schemeId = this.scheme.id;
-        unit.assetClass = this.assetClass!.value.value;
+        unit.assetClass = this.assetClass!.value;
         unit.unitType = this.assetClassStructures[unit.assetClass].unitType;
         unit.description = newUnit.get("description")!.value;
         unit.quantity = newUnit.get("quantity")!.value;
@@ -201,12 +201,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   createUnits(units: Unit[]) {
-    console.log("create units - before POST:", units);
 
     this._schemeService.createUnits(units)
       .then((res: APIResult) => {
         let unitsCreated: Unit[] = res.response;   
-        console.log("unitsCreated - after POST:", unitsCreated);     
         this.modalSaveUnits.emit(unitsCreated);
       })
       .catch(err => this.errors = err)

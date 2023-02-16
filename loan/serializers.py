@@ -42,6 +42,7 @@ class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
         fields = [
+            'id',
             'asset_class',
             'unit_type',
             'description',

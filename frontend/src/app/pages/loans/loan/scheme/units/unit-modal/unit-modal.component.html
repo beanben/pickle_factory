@@ -83,7 +83,7 @@
             <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
-                  value="{{assetClass!.value.display}}" disabled>
+                  value="{{assetClassChoices[assetClass!.value]}}" disabled>
                 <label for="asset-class">Asset class</label>
               </div>
             </div>
@@ -91,11 +91,11 @@
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
                 <div class="col my-auto border-table">Description</div>
-                <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value.value].unitType | titlecase}}s</div>
-                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClass!.value.value].beds">
-                  {{assetClassStructures[assetClass!.value.value].beds | titlecase}}</div>
+                <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value].unitType | titlecase}}s</div>
+                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClass!.value].beds">
+                  {{assetClassStructures[assetClass!.value].beds | titlecase}}</div>
                 <div class="col my-auto border-table">
-                  {{assetClassStructures[assetClass!.value.value].areaType}} ({{scheme.system | lowercase}})
+                  {{assetClassStructures[assetClass!.value].areaType}} ({{scheme.system | lowercase}})
                 </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
@@ -112,7 +112,7 @@
                       <div class="col my-auto px-0 text-end">
                           <input class="form-control text-end" formControlName="quantity" placeholder="0" >
                       </div>
-                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClass!.value.value].beds">
+                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClass!.value].beds">
                           <input class="form-control text-end" formControlName="beds" placeholder="0" />
                       </div>
                       <div class="col my-auto px-0 text-end">
@@ -145,7 +145,7 @@
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
 
-              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClass!.value.value].unitType}}s</button>
+              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClass!.value].unitType}}s</button>
 
               <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
                 The following fields are required: {{ requiredControls.join(', ') }}.

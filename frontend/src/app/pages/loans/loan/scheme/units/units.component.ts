@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { StringDictionary } from 'src/app/shared/shared';
+import { StringDictionary, StringUnitsDictionary } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme, Unit } from '../scheme';
 
@@ -12,6 +12,7 @@ export class UnitsComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
   assetClassChoices: StringDictionary = {};
+  assetClassUnits = {} as StringUnitsDictionary;
 
   @Input() scheme = {} as Scheme
 
@@ -21,6 +22,11 @@ export class UnitsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAssetClassChoices();
+
+    if(this.scheme.units){
+      this.assetClassUnits = this.groupByAssetClass(this.scheme.units!);
+    }
+    
    }
 
   onOpenModal(modalMode: string){
@@ -31,8 +37,12 @@ export class UnitsComponent implements OnInit {
   onSave(units: Unit[] | null){
     this.openUnitModal = false;
 
+    
+
     if(units){
-      this.scheme.units!.concat(units);
+      // this.scheme.units = this.scheme.units!.concat(units);
+      this.scheme.units!.unshift(...units);
+
     }
   }
 
@@ -51,7 +61,21 @@ export class UnitsComponent implements OnInit {
     } else {
       this.assetClassChoices = dict;
     }
-    
+  }
+
+  groupByAssetClass(units: Unit[]): StringUnitsDictionary{
+    let dict = {} as StringUnitsDictionary;
+
+      units.forEach(unit => {
+        if(dict[unit.assetClass]){
+          dict[unit.assetClass].push(unit)
+
+        } else {
+          dict[unit.assetClass] = [unit]
+        }
+      })
+
+      return dict;
   }
 
 }
