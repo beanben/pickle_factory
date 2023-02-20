@@ -36,6 +36,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   assetClassChoices: StringDictionary = {};
 
+  // assetClasses: AssetClassOption[] = [
+  //   { label: 'Hotel', value: HotelAssetClass },
+  //   { label: 'Residential', value: ResidentialAssetClass },
+  //   { label: 'Commercial', value: CommercialAssetClass }
+  // ];
 
   assetClassStructures: { [key: string]: any } = {
     "BTS": { unitType: "unit", beds: "beds", areaType: "NIA" },
@@ -87,13 +92,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
 
-    // this.addUnit();
-
     this.subs.push(
       this.units.valueChanges.subscribe(() => {
-        // this.valueChanged = true;
-        this.calculateTotals();
-        this.getInvalidControls();
+        // this.calculateTotals();
+        // this.getInvalidControls();
       })
     )
 
@@ -171,76 +173,76 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   onSave() {
     this.formIsSubmitted = true;
-    this.getInvalidControls();
+    // this.getInvalidControls();
 
-    if(this.form.valid) {
-      let units: Unit[] = [];
+    // if(this.form.valid) {
+    //   let units: Unit[] = [];
 
-      this.units.controls.forEach(newUnit => {
+    //   this.units.controls.forEach(newUnit => {
 
-        const unit = {} as Unit;
-        unit.schemeId = this.scheme.id;
-        unit.assetClass = this.assetClass!.value;
-        unit.unitType = this.assetClassStructures[unit.assetClass].unitType;
-        unit.description = newUnit.get("description")!.value;
-        unit.quantity = newUnit.get("quantity")!.value;
+    //     const unit = {} as Unit;
+    //     unit.schemeId = this.scheme.id;
+    //     unit.assetClass = this.assetClass!.value;
+    //     unit.unitType = this.assetClassStructures[unit.assetClass].unitType;
+    //     unit.description = newUnit.get("description")!.value;
+    //     unit.quantity = newUnit.get("quantity")!.value;
 
-        if (newUnit.get("beds")!.value) {
-          unit.beds = newUnit.get("beds")!.value;
-        };
-        if (newUnit.get("area")!.value) {
-          unit.area = newUnit.get("area")!.value;
-          unit.areaType = this.assetClassStructures[unit.assetClass].areaType;
-        };
+    //     if (newUnit.get("beds")!.value) {
+    //       unit.beds = newUnit.get("beds")!.value;
+    //     };
+    //     if (newUnit.get("area")!.value) {
+    //       unit.area = newUnit.get("area")!.value;
+    //       unit.areaType = this.assetClassStructures[unit.assetClass].areaType;
+    //     };
 
-        units.push(unit);
-      });
+    //     units.push(unit);
+    //   });
 
-      this.createUnits(units);
-    }
+    //   this.createUnits(units);
+    // }
   }
 
   createUnits(units: Unit[]) {
 
-    this._schemeService.createUnits(units)
-      .then((res: APIResult) => {
-        let unitsCreated: Unit[] = res.response;   
-        this.modalSaveUnits.emit(unitsCreated);
-      })
-      .catch(err => this.errors = err)
+    // this._schemeService.createUnits(units)
+    //   .then((res: APIResult) => {
+    //     let unitsCreated: Unit[] = res.response;   
+    //     this.modalSaveUnits.emit(unitsCreated);
+    //   })
+    //   .catch(err => this.errors = err)
   }
 
   getInvalidControls() {
-    this.requiredControls = [];
-    this.invalidControlsType = [];
-    let assetClassValue: string = this.assetClass!.value.value;
+    // this.requiredControls = [];
+    // this.invalidControlsType = [];
+    // let assetClassValue: string = this.assetClass!.value.value;
 
-    this.units.controls.forEach((newUnit, index) => {
-      if (this.units.at(index).invalid) {
+    // this.units.controls.forEach((newUnit, index) => {
+    //   if (this.units.at(index).invalid) {
 
-        Object.keys((newUnit as FormGroup).controls).forEach((controlName: string) => {
-          let formControl = newUnit.get(controlName)! as FormControl;
+    //     Object.keys((newUnit as FormGroup).controls).forEach((controlName: string) => {
+    //       let formControl = newUnit.get(controlName)! as FormControl;
 
-          // if (formControl.invalid && (formControl.submitted || newUnit.dirty)) {
-          if (formControl.invalid && (this.formIsSubmitted || newUnit.dirty)) {
+    //       // if (formControl.invalid && (formControl.submitted || newUnit.dirty)) {
+    //       if (formControl.invalid && (this.formIsSubmitted || newUnit.dirty)) {
 
 
-            let controlDescription: string = controlName;
-            if (controlName === "quantity") {
-              controlDescription = this.assetClassStructures[assetClassValue].unitType
-            };
+    //         let controlDescription: string = controlName;
+    //         if (controlName === "quantity") {
+    //           controlDescription = this.assetClassStructures[assetClassValue].unitType
+    //         };
 
-            if (formControl.hasError('required') && !this.requiredControls.includes(controlDescription)) {
-              this.requiredControls.push(controlDescription)
+    //         if (formControl.hasError('required') && !this.requiredControls.includes(controlDescription)) {
+    //           this.requiredControls.push(controlDescription)
 
-            } else if (formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)) {
-              this.invalidControlsType.push({ name: controlDescription, type: "number" })
-            }
-          }
+    //         } else if (formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)) {
+    //           this.invalidControlsType.push({ name: controlDescription, type: "number" })
+    //         }
+    //       }
 
-        })
-      }
-    });
+    //     })
+    //   }
+    // });
   }
 
   calculateTotals(): void {

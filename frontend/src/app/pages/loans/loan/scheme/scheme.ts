@@ -1,72 +1,60 @@
 export interface Scheme {
     id: number;
+    loanId: number;
     name: string;
     streetName?: string;
     postcode?: string;
     city: string;
     country?: string;
-    currency: "GBP" | "EUR" | "USD";
-    system: "SQFT" | "SQM";
-    loanId: number;
+    openingDate?: Date;
+    assetClasses?: AssetClass[],
+}
+
+interface AssetClass {
+    id: number;
+    schemeId: number; 
+}
+
+interface Hotel extends AssetClass {
+    rooms?: Unit[],
+}
+
+interface Residential extends AssetClass {
+    units?: Unit[],
+}
+
+interface Retail extends AssetClass {
+    units?: Unit[],
+}
+
+interface StudentAccommodation extends AssetClass {
+    description: string,
     units?: Unit[],
 }
 
 export interface Unit {
     id?: number,
-    schemeId?: number,
-    assetClass: string,
-    unitType: "unit" | "room",
+    assetClassId?: number,
+    identifier: string,
     description: string,
-    quantity: number,
-    beds: number | null,
-    area: number | null,
-    areaType: "NIA" | "NSA" | "GIA",
-    areaSystem?: "SQFT" | "SQM",  
+    areas?: Area[],
+    beds?: Bed[],
 }
 
-// export interface Unit {
-//     id?: number,
-//     schemeId?: number,
-//     description: string,
-//     quantity: number,
-//     area: number | null
-// }
+export interface Area {
+    id?: number,
+    assetClassId?: number,
+    size: number,
+    type: "NIA" | "NSA" | "GIA",
+    system : "SQFT" | "SQM"
+}
 
-// export interface ResidentialUnit extends Unit {
-//     assetClass: "BTS" | "BTL",
-//     unitType: "unit",
-//     beds: number | null,
-//     areaType: "NIA"
-// }
-
-// export interface HotelRoom extends Unit {
-//     assetClass: "H",
-//     unitType: "room",
-//     beds: number | null,
-//     areaType: "NIA"
-// }
-
-// export interface CommercialUnit extends Unit {
-//     assetClass: "C",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface OfficeUnit extends Unit {
-//     assetClass: "O",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface ShoppingCenterUnit extends Unit {
-//     assetClass: "S",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface StudentRoom extends Unit {
-//     assetClass: "PBSA",
-//     unitType: "room",
-//     beds: number | null,
-//     areaType: "NIA"
-// }
+export interface Bed {
+    id?: number,
+    unitId?: number,
+    description: string,
+    width: number, 
+    length: number, 
+    height: number,
+    measure: "CM" | "IN",
+}

@@ -24,36 +24,28 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   sub = Subscription.EMPTY;
   loan = {} as Loan;
 
-  currencyChoices =[
-    {value: "GBP", display: "GBP (£)"},
-    {value: "EUR", display: "EUR (€)"},
-    {value: "USD", display: "USD ($)"},
-  ];
-  systemChoices =[
-    {value: "SQFT", display: "imperial (sqft)"},
-    {value: "SQM", display: "metric (sqm)"}
-  ];
+  // currencyChoices =[
+  //   {value: "GBP", display: "GBP (£)"},
+  //   {value: "EUR", display: "EUR (€)"},
+  //   {value: "USD", display: "USD ($)"},
+  // ];
+  // systemChoices =[
+  //   {value: "SQFT", display: "imperial (sqft)"},
+  //   {value: "SQM", display: "metric (sqm)"}
+  // ];
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    street_name: [''],
+    streetName: [''],
     postcode: [''],
     city: ['', Validators.required],
-    country: [''],
-    currency: [this.currencyChoices[0].value, Validators.required],
-    system: [this.systemChoices[0].value, Validators.required]
+    country: ['']
   });
   get name(){
     return this.form.get('name')
   };
   get city(){
     return this.form.get('city')
-  };
-  get currency(){
-    return this.form.get('currency')
-  };
-  get system(){
-    return this.form.get('system')
   };
 
   constructor(
@@ -112,8 +104,6 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
         'postcode': this.scheme.postcode,
         'city': this.scheme.city,
         'country': this.scheme.country,
-        'currency': this.scheme.currency,
-        'system': this.scheme.system
       })
     }
   }

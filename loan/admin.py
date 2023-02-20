@@ -24,16 +24,23 @@ class SchemeAdmin(admin.ModelAdmin):
         'slug',
         'created_at')
 
-class UnitAdmin(admin.ModelAdmin):
-    list_display = (
-        '__str__',
-        'asset_class',
-        'description',
-        'unit_type',
-        'quantity',
-        'author_firm')
+# class UnitAdmin(admin.ModelAdmin):
+#     list_display = (
+#         '__str__',
+#         'author_firm',
+#         'asset_class_name',
+#         'identifier',
+#         'description',
+#         'area',
+#         'area_type',
+#         )
+
+#     def asset_class_name(self, obj):
+#         return obj.asset_class.__class__.__name__
+
+#     asset_class_name.short_description = 'Asset Class Name'
 
 admin.site.register(Loan, LoanAdmin)
 admin.site.register(Borrower, BorrowerAdmin)
 admin.site.register(Scheme, SchemeAdmin)
-admin.site.register(Unit, UnitAdmin)
+# admin.site.register(Unit, UnitAdmin)

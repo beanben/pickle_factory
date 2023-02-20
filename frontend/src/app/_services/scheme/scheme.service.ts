@@ -103,30 +103,30 @@ export class SchemeService {
   createUnits(units: Unit[]) {
     const url = '/api/unit/';
 
-    return new Promise<APIResult>((resolve, reject) => {
+    // return new Promise<APIResult>((resolve, reject) => {
      
-      this.http.post(url, units).subscribe({
-        next: (data) => {
-          const result = data as APIResult;
-          if (result.status === "success"){
-            resolve(result);
-          } else {
-            reject(result.message)
-          }
-        },
-        error: (error) => {
-          reject(this._sharedService.handleError(error));
-        }
-      })
-    })
+    //   this.http.post(url, units).subscribe({
+    //     next: (data) => {
+    //       const result = data as APIResult;
+    //       if (result.status === "success"){
+    //         resolve(result);
+    //       } else {
+    //         reject(result.message)
+    //       }
+    //     },
+    //     error: (error) => {
+    //       reject(this._sharedService.handleError(error));
+    //     }
+    //   })
+    // })
   };
 
-  getAssetClassChoices(): Observable<StringDictionary> {
-    const url = '/api/unit/asset_class_choices/';
-    return this.http.get<StringDictionary>(url).pipe(
-      tap(() => console.log('getAssetClassChoices()', Math.random())),
-    );
-  }
+  // getAssetClassChoices(): Observable<StringDictionary> {
+  //   const url = '/api/unit/asset_class_choices/';
+  //   return this.http.get<StringDictionary>(url).pipe(
+  //     tap(() => console.log('getAssetClassChoices()', Math.random())),
+  //   );
+  // }
 
 
 }

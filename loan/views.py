@@ -3,15 +3,19 @@ from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
 from .models.scheme import Scheme, Unit
-from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer
+# from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer
+from loan.serializers.borrower_serializer import BorrowerSerializer
+from loan.serializers.loan_serializer import LoanSerializer
+from loan.serializers.scheme_serializer import SchemeSerializer, UnitSerializer
+
 from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
 from django.http import JsonResponse
 import pdb
 
-def asset_class_choices(request):
-    asset_class_choices = dict(Unit.ASSET_CLASS_CHOICES)
-    return JsonResponse(asset_class_choices)
+# def asset_class_choices(request):
+#     asset_class_choices = dict(Unit.ASSET_CLASS_CHOICES)
+#     return JsonResponse(asset_class_choices)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Loan.objects.all()
@@ -83,7 +87,7 @@ class SchemeList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     serializer_class = SchemeSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('loans')
+        return self.queryset.prefetch_related('loan')
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -98,7 +102,7 @@ class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SchemeSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('loans')
+        return self.queryset.prefetch_related('loan')
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -143,7 +147,11 @@ class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     serializer_class = UnitSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('scheme')
+        return self.queryset.prefetch_related('asset_class')
+
+    def get_serializer(self, *args, **kwargs):
+        if isinstance(kwargs.get("data", {}), list):
+            kwargs["many"] = True
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
@@ -168,7 +176,11 @@ class UnitDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UnitSerializer
 
     def get_queryset(self):
-        return self.queryset.prefetch_related('scheme')
+        return self.queryset.prefetch_related('asset_class')
+
+    def get_serializer(self, *args, **kwargs):
+        if isinstance(kwargs.get("data", {}), list):
+            kwargs["many"] = True
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)

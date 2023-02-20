@@ -8,15 +8,15 @@ from .views import (
     SchemeDetail,
     # AssetClassList,
     # AssetClassDetail,
-    UnitList,
-    UnitDetail,
-    asset_class_choices
+    # UnitList,
+    # UnitDetail,
+    # asset_class_choices
 )
 
 unit_patterns = ([
-    path('', UnitList.as_view()),
-    path('<int:pk>/', UnitDetail.as_view()),
-    path('asset_class_choices/', asset_class_choices)
+    # path('', UnitList.as_view()),
+    # path('<int:pk>/', UnitDetail.as_view()),
+    # path('asset_class_choices/', asset_class_choices)
 ], 'unit')
 
 # asset_class_patterns = ([
