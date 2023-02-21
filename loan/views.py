@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .models.loan import Loan
 from .models.borrower import Borrower
-from .models.scheme import Scheme, Unit
+from .models.scheme import Scheme, Unit, AssetClass
 # from .serializers import LoanSerializer, BorrowerSerializer, SchemeSerializer, UnitSerializer
 from loan.serializers.borrower_serializer import BorrowerSerializer
 from loan.serializers.loan_serializer import LoanSerializer
@@ -11,11 +11,18 @@ from loan.serializers.scheme_serializer import SchemeSerializer, UnitSerializer
 from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
 from django.http import JsonResponse
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 import pdb
 
 # def asset_class_choices(request):
 #     asset_class_choices = dict(Unit.ASSET_CLASS_CHOICES)
 #     return JsonResponse(asset_class_choices)
+
+def asset_classes_choices(request):
+    subclasses = AssetClass.__subclasses__()
+    asset_classes_choices = [subclass.__name__ for subclass in subclasses]
+    # pdb.set_trace()
+    return JsonResponse(asset_classes_choices, safe=False)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Loan.objects.all()

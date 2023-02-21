@@ -21,7 +21,7 @@ export class UnitsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.getAssetClassChoices();
+
 
     // if(this.scheme.units){
     //   this.assetClassUnits = this.groupByAssetClass(this.scheme.units!);
@@ -45,22 +45,7 @@ export class UnitsComponent implements OnInit {
     }
   }
 
-  // getAssetClassChoices(){
-  //   let dict = {} as StringDictionary;
-  //   dict = this._schemeService.assetClassChoicesSub.getValue();
 
-  //   if(Object.keys(dict).length === 0) {
-  //     this._schemeService.getAssetClassChoices()
-  //       .subscribe(assetClassChoices => {
-
-  //         this.assetClassChoices = assetClassChoices;
-  //         this._schemeService.setAssetClassChoicesSub(assetClassChoices);
-
-  //       })
-  //   } else {
-  //     this.assetClassChoices = dict;
-  //   }
-  // }
 
   // groupByAssetClass(units: Unit[]): StringUnitsDictionary{
   //   let dict = {} as StringUnitsDictionary;

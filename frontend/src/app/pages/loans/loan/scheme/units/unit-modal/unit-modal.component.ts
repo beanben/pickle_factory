@@ -1,10 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme, Unit } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { APIResult } from 'src/app/_services/api-result';
 import { StringDictionary } from 'src/app/shared/shared';
+import { PascalToTitle } from 'src/app/shared/utils';
 
 @Component({
   selector: 'app-unit-modal',
@@ -25,6 +25,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   totalArea = 0;
   formIsSubmitted = false;
   // valueChanged = false;
+  assetClassesChoices: string[] = [];
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
@@ -265,12 +266,46 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   getAssetClassChoices(){
-    this.assetClassChoices = this._schemeService.assetClassChoicesSub.getValue();
+    const assetClassChoices: string[] = this._schemeService.assetClassChoicesSub.getValue();
+
+    if(assetClassChoices.length === 0){
+      this.getReqAssetClassChoices()
+    }
+
   }
+
+  getReqAssetClassChoices(){
+    this._schemeService.getAssetClassChoices()
+      .subscribe((res: string[]) => {
+
+        const formattedChoices: string[] = [];
+        res.forEach(choice => {
+          formattedChoices.push(PascalToTitle(choice))
+        })
+
+        this.assetClassesChoices = formattedChoices;
+        this._schemeService.setAssetClassChoicesSub(formattedChoices); 
+      })
+  }
+
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
+  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first
+  // example: "camelCaseString" => "Camel case string"
+  // example: "camelCaseStringWithNumbers123" => "Camel case string with numbers123"
+  // example: "camelCaseStringWithNumbers123AndSpecialCharacters!@#$%^&*()" => "Camel case string with numbers123 and special characters!@#$%^&*()"
+
+
+  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first
+  // example: "camelCaseString" => "Camel case string"
+
+
+  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first  
+ 
+
+  
 
 }

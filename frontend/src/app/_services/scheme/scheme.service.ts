@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
-import { StringDictionary } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -11,14 +10,14 @@ import { SharedService } from '../shared/shared.service';
 })
 export class SchemeService {
   relativeUrl = "/api/scheme";
-  assetClassChoicesSub = new BehaviorSubject<StringDictionary>({} as StringDictionary);
+  assetClassChoicesSub = new BehaviorSubject<string[]>([]);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
 
-  setAssetClassChoicesSub(AssetClassChoices: StringDictionary){
+  setAssetClassChoicesSub(AssetClassChoices: string[]){
     return this.assetClassChoicesSub.next(AssetClassChoices);
   }
 
@@ -121,12 +120,12 @@ export class SchemeService {
     // })
   };
 
-  // getAssetClassChoices(): Observable<StringDictionary> {
-  //   const url = '/api/unit/asset_class_choices/';
-  //   return this.http.get<StringDictionary>(url).pipe(
-  //     tap(() => console.log('getAssetClassChoices()', Math.random())),
-  //   );
-  // }
+  getAssetClassChoices(): Observable<string[]>  {
+    const url = `${this.relativeUrl}/asset_class_choices/`;
+    return this.http.get<string[]>(url).pipe(
+      tap(() => console.log('getAssetClassChoices()', Math.random())),
+    );
+  }
 
 
 }

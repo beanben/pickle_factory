@@ -10,7 +10,7 @@ from .views import (
     # AssetClassDetail,
     # UnitList,
     # UnitDetail,
-    # asset_class_choices
+    asset_classes_choices
 )
 
 unit_patterns = ([
@@ -29,6 +29,7 @@ scheme_patterns = ([
     path('<int:pk>/', SchemeDetail.as_view()),
     # path('<int:pk>/asset-class/', include(asset_class_patterns)),
     # path('<int:pk>/unit/', include(unit_patterns)),
+    path('asset_class_choices/', asset_classes_choices)
 ], 'scheme')
 
 borrower_patterns = ([
