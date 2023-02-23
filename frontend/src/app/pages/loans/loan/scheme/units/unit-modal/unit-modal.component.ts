@@ -16,6 +16,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   chevronRight = "assets/images/chevronRight.svg";
   assetClassStatus = "active";
   detailStatus = "inactive";
+  areaStatus = "inactive";
   step = 1;
   areaType = "";
   areaSystem = "";
@@ -153,11 +154,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   addArea() {
     const unitArea = this.units.at(0).get('area') as FormArray;
     unitArea.insert(0, this.newArea());
-
-    console.log("unitArea", unitArea.value)
-    console.log("unitArea.value.type", unitArea.value.type)
-    console.log("unitArea.at(0).value.type", unitArea.at(0).value.type)
- 
   }
 
   removeUnit(index: number) {
@@ -178,9 +174,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     if(!!this.assetClass!.valid){
       this.assetClassIs(this.assetClass!.value);
       this.addUnit();
-      this.assetClassStatus = "complete";
-      this.detailStatus = "active";
       this.step += 1;
+      this.updateStatus();
 
       const unitArea = this.units.at(0).get('area') as FormArray;
       this.areaType = unitArea.at(0).get('type')!.value;
@@ -201,6 +196,24 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     //     .catch(err => this.errors = err)
 
     // }
+
+  }
+
+  updateStatus(){
+
+    if(this.step===1){
+      this.assetClassStatus = "active";
+      this.detailStatus = "inactive";
+      this.areaStatus = "inactive";
+    } else if(this.step === 2){
+      this.assetClassStatus = "complete";
+      this.detailStatus = "active";
+      this.areaStatus = "inactive";
+    } else {
+      this.assetClassStatus = "complete";
+      this.detailStatus = "complete";
+      this.areaStatus = "active";
+    }
 
   }
 
@@ -242,15 +255,14 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
 
   onPrevious() {
-    this.assetClassStatus = "active";
-    this.detailStatus = "inactive";
+
     // this.formIsSubmitted = false;
 
     this.step -= 1;
 
+    this.updateStatus();
     this.units.clear();
 
-    // EDIT ASSET CLASS HERE
     
     // this.requiredControls = [];
     // this.invalidControlsType = [];
@@ -350,9 +362,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   getAssetClassChoices(){
-    const assetClassChoices: string[] = this._schemeService.assetClassChoicesSub.getValue();
+    const assetClassChoicesSub: string[] = this._schemeService.assetClassChoicesSub.getValue();
+    this.assetClassesChoices = assetClassChoicesSub;
 
-    if(assetClassChoices.length === 0){
+    if(this.assetClassesChoices.length === 0){
       this.getReqAssetClassChoices()
     }
 

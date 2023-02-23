@@ -20,14 +20,7 @@ export class UnitsComponent implements OnInit {
     private _schemeService: SchemeService
   ) { }
 
-  ngOnInit(): void {
-
-
-    // if(this.scheme.units){
-    //   this.assetClassUnits = this.groupByAssetClass(this.scheme.units!);
-    // }
-    
-   }
+  ngOnInit(): void { }
 
   onOpenModal(modalMode: string){
     this.openUnitModal = true;

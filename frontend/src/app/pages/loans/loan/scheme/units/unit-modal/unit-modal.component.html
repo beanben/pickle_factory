@@ -10,6 +10,7 @@
 
       <ng-container *ngIf="step===1">
         <div class="modal-body">
+
           <nav
             style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
             aria-label="breadcrumb">
@@ -23,6 +24,11 @@
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2" appDot [status]="detailStatus"></span>
                 <span class="px-2">Detail</span>
+              </li>
+              <img src="{{chevronRight}}" alt="">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2" appDot [status]="areaStatus"></span>
+                <span class="px-2">Area</span>
               </li>
             </ol>
           </nav>
@@ -64,15 +70,21 @@
             aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus">
-                  <span style="color:green">&#10003;</span>
-                </span>
-                <span class="px-2">Asset class</span>
+                <span class="px-2 d-flex align-items-center justify-content-center" 
+                      appDot [status]="assetClassStatus">
+                      <span style="color:rgba(0, 128, 0, 1);">&#10003;</span>
+                  </span>
+                <span class="px-2 text-active">Asset class</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2" appDot [status]="detailStatus"></span>
-                <span class="px-2 text-active">Detail</span>
+                <span class="px-2">Detail</span>
+              </li>
+              <img src="{{chevronRight}}" alt="">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2" appDot [status]="areaStatus"></span>
+                <span class="px-2">Area</span>
               </li>
             </ol>
           </nav>
@@ -90,11 +102,11 @@
             
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
-                <div class="col my-auto border-table">Description</div>
-                <div class="col my-auto border-table">{{units.at(0).value.label | titlecase}}s</div>
-                <div class="col my-auto border-table" 
+                <div class="col border-table">Description</div>
+                <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
+                <div class="col border-table" 
                       *ngIf="assetClass!.value !== 'Office' && assetClass!.value !== 'Shopping Centre'">Beds </div>
-                <div class="col my-auto border-table">{{areaType}} ({{areaSystem | lowercase}})</div> 
+                <div class="col border-table">{{areaType}} ({{areaSystem | lowercase}})</div> 
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -175,10 +187,46 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
+          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+        </div>
+
+      </ng-container>
+
+      <ng-container *ngIf="step===3">
+        <div class="modal-body">
+
+          <nav
+            style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
+            aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot
+                  [status]="assetClassStatus"></span>
+                <span class="px-2 text-active">Asset class</span>
+              </li>
+              <img src="{{chevronRight}}" alt="">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2" appDot [status]="detailStatus"></span>
+                <span class="px-2">Detail</span>
+              </li>
+              <img src="{{chevronRight}}" alt="">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2" appDot [status]="areaStatus"></span>
+                <span class="px-2">Area</span>
+              </li>
+            </ol>
+          </nav>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 
+          <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
           <button form="form" type="submit" class="btn btn-success" (click)="onSave()">Save</button>
         </div>
 
       </ng-container>
+
 
     </div>
   </div>
