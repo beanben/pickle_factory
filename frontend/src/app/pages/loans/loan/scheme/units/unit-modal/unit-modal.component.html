@@ -40,8 +40,8 @@
                 </select>
                 <label for="asset-class">Asset class</label>
               </div>
-              <div *ngIf="assetClass?.invalid && (f.dirty || f.submitted)"
-                class="alert alert-danger">
+              <div *ngIf="assetClass?.invalid && (f.dirty || nextIsClicked)"
+                class="mt-2 alert alert-danger">
                 Please select the unit asset class
               </div>
             </div>
@@ -56,7 +56,7 @@
 
       </ng-container>
 
-      <!-- <ng-container *ngIf="step===2">
+      <ng-container *ngIf="step===2">
         <div class="modal-body">
 
           <nav
@@ -83,12 +83,23 @@
             <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
-                  value="{{assetClassChoices[assetClass!.value]}}" disabled>
+                  value="{{assetClass!.value}}" disabled>
                 <label for="asset-class">Asset class</label>
               </div>
             </div>
-
+            
             <div class="px-2">
+              <div class="row mx-0 pt-2 text-center">
+                <div class="col my-auto border-table">Description</div>
+                <div class="col my-auto border-table">{{units.at(0).value.label | titlecase}}s</div>
+                <div class="col my-auto border-table" 
+                      *ngIf="assetClass!.value !== 'Office' && assetClass!.value !== 'Shopping Centre'">Beds </div>
+                <div class="col my-auto border-table">{{areaType}} ({{areaSystem | lowercase}})</div> 
+                <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
+              </div>
+            </div>
+
+            <!-- <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
                 <div class="col my-auto border-table">Description</div>
                 <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value].unitType | titlecase}}s</div>
@@ -156,7 +167,7 @@
                 </div>
               </div>
 
-            </div>
+            </div> -->
 
           </form>
         </div>
@@ -167,7 +178,7 @@
           <button form="form" type="submit" class="btn btn-success" (click)="onSave()">Save</button>
         </div>
 
-      </ng-container> -->
+      </ng-container>
 
     </div>
   </div>

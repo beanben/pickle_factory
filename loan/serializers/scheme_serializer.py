@@ -68,9 +68,7 @@ class UnitSerializer(serializers.ModelSerializer):
             'asset_class_id',
             'identifier',
             'description',
-            'quantity',
-            'area',
-            'area_type']
+            'quantity']
         depth = 1
 
     def create(self, validated_data):
@@ -103,6 +101,26 @@ class BedSerializer(serializers.ModelSerializer):
         validated_data.update({"unit": unit})
         bed = Bed.objects.create(**validated_data)
         return bed
+
+class AreaSerializer(serializers.ModelSerializer):
+    unit_id = serializers.IntegerField()
+
+    class Meta:
+        model = Bed
+        fields = [
+            'id',
+            'unit_id',
+            'size',
+            'type',
+            'system']
+
+    def create(self, validated_data):
+        unit_id = validated_data.pop("unit_id")
+        unit = Unit.objects.get(id=unit_id)
+
+        validated_data.update({"unit": unit})
+        area = Area.objects.create(**validated_data)
+        return area
 
 
 class HotelSerializer(AssetClassSerializer):

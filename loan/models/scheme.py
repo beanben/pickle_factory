@@ -49,7 +49,12 @@ class ShoppingCentre(AssetClass):
     pass
 
 class Unit(TimestampedModel, AuthorTrackerModel):
+    LABEL_CHOICES =[
+        ("UNIT", "unit"),
+        ("ROOM", "room")
+    ]
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
+    label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
     identifier = models.CharField(default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
 
@@ -65,6 +70,7 @@ class Area(models.Model):
         ("NIA", "Net Internal Area"),
         ("NSA", "Net Salable Area"),
         ("GIA", "Gross Internal Area"),
+        ("GEA", "Gross External Area"),
     ]
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="area_definitions", blank=True, null=True)
     size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
