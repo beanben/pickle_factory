@@ -15,3 +15,7 @@
 input.ng-invalid {
     border: 1px solid red;
 }
+
+.complete {
+    color: rgba(0, 128, 0, 1)
+}

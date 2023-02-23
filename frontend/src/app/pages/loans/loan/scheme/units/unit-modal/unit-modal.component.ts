@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme, Unit, Hotel, Residential, Retail, StudentAccommodation, Office, ShoppingCentre } from '../../scheme';
@@ -9,7 +9,7 @@ import { PascalToTitle } from 'src/app/shared/utils';
 @Component({
   selector: 'app-unit-modal',
   templateUrl: './unit-modal.component.html',
-  styleUrls: ['./unit-modal.component.css']
+  styleUrls: ['./unit-modal.component.css'],
 })
 export class UnitModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
@@ -93,24 +93,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   //   return this.form.get('areaType')
   // };
 
-  newUnit(): FormGroup {
-    return this.fb.group({
-      label: ['unit'],
-      description: ['', Validators.required],
-      quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
-      area: this.fb.array([]),
-      beds: [null, Validators.pattern(this.numbersOnly)]
-    })
-  }
-
-  newArea(): FormGroup {
-    return this.fb.group({
-      size: [null, Validators.pattern(this.numbersOnly)],
-      type: ['NIA', Validators.required],
-      system: ['SQFT', Validators.required],
-    })
-  }
-
   constructor(
     private el: ElementRef,
     private fb: FormBuilder,
@@ -118,6 +100,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.step = 1;
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
 
@@ -136,6 +119,24 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       }
     });
   };
+
+  newUnit(): FormGroup {
+    return this.fb.group({
+      label: ['unit'],
+      description: ['', Validators.required],
+      quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
+      area: this.fb.array([]),
+      beds: [null, Validators.pattern(this.numbersOnly)]
+    })
+  }
+
+  newArea(): FormGroup {
+    return this.fb.group({
+      size: [null, Validators.pattern(this.numbersOnly)],
+      type: ['NIA', Validators.required],
+      system: ['SQFT', Validators.required],
+    })
+  }
 
   addUnit() {
     // this.formIsSubmitted = false;

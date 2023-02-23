@@ -1,8 +1,7 @@
-import { Directive, ElementRef, Renderer2, Input, SimpleChanges, HostListener, forwardRef } from '@angular/core';
-import { NG_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
+import { Directive, ElementRef, Renderer2, Input, SimpleChanges, HostBinding } from '@angular/core';
 
 @Directive({
-  selector: '[appDot]'
+  selector: '[appDot]',
 })
 export class DotDirective {
   @Input() status = "";
@@ -28,4 +27,17 @@ export class DotDirective {
       this.el.nativeElement.style.backgroundColor = this.statusColor[this.status];
     }
   }
+
+  @HostBinding('innerHTML')
+  get innerHTML(): string {
+    // const tick = '<span style="color:rgba(0, 128, 0, 1);">&#10003;</span>';
+    // const tick = '<span style="color:red;">&#10003;</span>';
+    return this.status === "complete" ? '&#10003;' : '';
+  }
+
+  @HostBinding('class.complete')
+  get isComplete(): boolean {
+    return this.status === "complete";
+  }
+
 }
