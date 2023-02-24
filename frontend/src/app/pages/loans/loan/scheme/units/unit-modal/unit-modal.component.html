@@ -17,7 +17,7 @@
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus"></span>
-                <span class="px-2 text-active">Asset class</span>
+                <span class="px-2" [ngClass]="{'text-active': step ===1 }">Asset class</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
@@ -56,7 +56,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
-          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+          <button type="button" class="btn btn-success" (click)="nextToDetail()">Next ></button>
         </div>
 
       </ng-container>
@@ -72,12 +72,12 @@
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus">
                       <!-- <span style="color:rgba(0, 128, 0, 1);">&#10003;</span> -->
                 </span>
-                <span class="px-2 text-active">Asset class</span>
+                <span class="px-2">Asset class</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center ">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="detailStatus"></span>
-                <span class="px-2">Detail</span>
+                <span class="px-2" [ngClass]="{'text-active': step ===2 }">Detail</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
@@ -102,82 +102,59 @@
               <div class="row mx-0 pt-2 text-center">
                 <div class="col border-table">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
-                <div class="col border-table" 
-                      *ngIf="assetClass!.value !== 'Office' && assetClass!.value !== 'Shopping Centre'">Beds </div>
-                <div class="col border-table">{{areaType}} ({{areaSystem | lowercase}})</div> 
+                <div class="col border-table" *ngIf="assetClassHasBeds()">Beds </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
-
-            <!-- <div class="px-2">
-              <div class="row mx-0 pt-2 text-center">
-                <div class="col my-auto border-table">Description</div>
-                <div class="col my-auto border-table">{{assetClassStructures[assetClass!.value].unitType | titlecase}}s</div>
-                <div class="col my-auto border-table" *ngIf="assetClassStructures[assetClass!.value].beds">
-                  {{assetClassStructures[assetClass!.value].beds | titlecase}}</div>
-                <div class="col my-auto border-table">
-                  {{assetClassStructures[assetClass!.value].areaType}} ({{scheme.system | lowercase}})
-                </div>
-                <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
-              </div>
               
-
-              <ng-container formArrayName="units">
-                <ng-container *ngFor="let unit of units.controls; let i=index">
-                  <div [formGroupName]="i">
-                    <div class="row mx-0">
-                      
-                      <div class="col my-auto px-0" >
-                          <input class="form-control" formControlName="description" placeholder="description" [ngClass]="{'border-0 fw-bolder': units.length ===1}">
-                      </div>
-                      <div class="col my-auto px-0 text-end">
-                          <input class="form-control text-end" formControlName="quantity" placeholder="0" >
-                      </div>
-                      <div class="col my-auto px-0 text-end" *ngIf="assetClassStructures[assetClass!.value].beds">
-                          <input class="form-control text-end" formControlName="beds" placeholder="0" />
-                      </div>
-                      <div class="col my-auto px-0 text-end">
-                         <input class="form-control text-end" formControlName="area" placeholder="0" />
-                      </div>
-                      <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
-                          style="width: 20px" 
-                          [ngClass]="units.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
-                          (click)="removeUnit(i)">
-                        &times;
-                      </div> 
+            <ng-container formArrayName="units">
+              <ng-container *ngFor="let unit of units.controls; let i=index">
+                <div [formGroupName]="i">
+                  <div class="row mx-0">
+                    
+                    <div class="col my-auto px-0" >
+                        <input class="form-control" formControlName="description" placeholder="description" [ngClass]="{'border-0 fw-bolder': units.length ===1}">
                     </div>
+                    <div class="col my-auto px-0 text-end">
+                        <input class="form-control text-end" formControlName="quantity" placeholder="0" >
+                    </div>
+                    <div class="col my-auto px-0 text-end" *ngIf="assetClassHasBeds()">
+                        <input class="form-control text-end" formControlName="beds" placeholder="0" />
+                    </div>
+                    <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
+                        style="width: 20px" 
+                        [ngClass]="units.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
+                        (click)="removeUnit(i)">
+                      &times;
+                    </div> 
                   </div>
-                </ng-container>
+                </div>
               </ng-container>
+            </ng-container>
 
-              <div class="row mx-0" *ngIf="units.length > 1">
-                <div class="col px-0 my-auto">
-                  <span class="form-control fw-bolder border-0">Total</span>
-                </div>
-                <div class="col my-auto px-0 text-end">
-                  <span class="form-control fw-bolder border-0">{{totalUnits}}</span>
-                </div>
-                <div class="col my-auto px-0 text-end">
-                  <span class="form-control fw-bolder border-0">{{totalBeds}}</span>
-                </div>
-                <div class="col my-auto px-0 text-end">
-                  <span class="form-control fw-bolder border-0">{{totalArea}}</span>
-                </div>
-                <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
+            <div class="row mx-0" *ngIf="units.length > 1">
+              <div class="col px-0 my-auto">
+                <span class="form-control fw-bolder border-0">Total</span>
               </div>
-
-              <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{assetClassStructures[assetClass!.value].unitType}}s</button>
-
-              <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
-                The following fields are required: {{ requiredControls.join(', ') }}.
-               </div>
-              <div class="mt-2 alert alert-danger text-center" *ngIf="invalidControlsType.length > 0" [ngClass]="requiredControls.length > 0 ? 'mt-0': 'mt-2'">
-                <div *ngFor="let control of invalidControlsType">
-                  {{control.name}} must be a {{control.type}}
-                </div>
+              <div class="col my-auto px-0 text-end">
+                <span class="form-control fw-bolder border-0">{{totalUnits}}</span>
               </div>
+              <div class="col my-auto px-0 text-end">
+                <span class="form-control fw-bolder border-0">{{totalBeds}}</span>
+              </div>
+              <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
+            </div>
 
-            </div> -->
+            <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{units.at(0).value.label}}s</button>
+
+            <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
+              The following fields are required: {{ requiredControls.join(', ') }}.
+            </div>
+            <div class="mt-2 alert alert-danger text-center" *ngIf="invalidControlsType.length > 0" [ngClass]="requiredControls.length > 0 ? 'mt-0': 'mt-2'">
+              <div *ngFor="let control of invalidControlsType">
+                {{control.name}} must be a {{control.type}}
+              </div>
+            </div>
 
           </form>
         </div>
@@ -185,7 +162,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
-          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+          <button type="button" class="btn btn-success" (click)="nextToArea()">Next ></button>
         </div>
 
       </ng-container>
@@ -200,7 +177,7 @@
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot 
                   [status]="assetClassStatus"></span>
-                <span class="px-2 text-active">Asset class</span>
+                <span class="px-2">Asset class</span>
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
@@ -210,7 +187,7 @@
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot  [status]="areaStatus"></span>
-                <span class="px-2">Area</span>
+                <span class="px-2" [ngClass]="{'text-active': step ===3 }">Area</span>
               </li>
             </ol>
           </nav>
