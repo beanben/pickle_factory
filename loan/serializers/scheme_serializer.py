@@ -2,8 +2,7 @@ from rest_framework import serializers
 from loan.models.loan import Loan
 from loan.models.scheme import (
     Scheme, AssetClass, Unit, Hotel, Residential, Retail,
-    StudentAccommodation, Office, ShoppingCentre, Unit, Area, Bed)
-
+    StudentAccommodation, Office, ShoppingCentre, Unit, Bed)
 
     
 class AssetClassSerializer(serializers.ModelSerializer):
@@ -38,7 +37,8 @@ class SchemeSerializer(serializers.ModelSerializer):
             'city', 
             'country', 
             'opening_date',
-            'asset_classes']
+            'asset_classes',
+            'system']
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")
@@ -68,8 +68,10 @@ class UnitSerializer(serializers.ModelSerializer):
             'asset_class_id',
             'identifier',
             'description',
-            'quantity']
-        depth = 1
+            'quantity',
+            'area_size',
+            'area_type']
+
 
     def create(self, validated_data):
         asset_class_id = validated_data.pop("asset_class_id")
@@ -101,26 +103,6 @@ class BedSerializer(serializers.ModelSerializer):
         validated_data.update({"unit": unit})
         bed = Bed.objects.create(**validated_data)
         return bed
-
-class AreaSerializer(serializers.ModelSerializer):
-    unit_id = serializers.IntegerField()
-
-    class Meta:
-        model = Bed
-        fields = [
-            'id',
-            'unit_id',
-            'size',
-            'type',
-            'system']
-
-    def create(self, validated_data):
-        unit_id = validated_data.pop("unit_id")
-        unit = Unit.objects.get(id=unit_id)
-
-        validated_data.update({"unit": unit})
-        area = Area.objects.create(**validated_data)
-        return area
 
 
 class HotelSerializer(AssetClassSerializer):

@@ -43,7 +43,7 @@ export interface Area {
     id?: number,
     unitId?: number,
     size: number,
-    type: "NIA" | "NSA" | "GIA",
+    type: string,
     system : "SQFT" | "SQM"
 }
 

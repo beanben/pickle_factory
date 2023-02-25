@@ -21,8 +21,18 @@ import pdb
 def asset_classes_choices(request):
     subclasses = AssetClass.__subclasses__()
     asset_classes_choices = [subclass.__name__ for subclass in subclasses]
-    # pdb.set_trace()
+
+    # choices = {
+    #     "asset_classes": asset_classes_choices,
+    #     "area_systems": dict((x, y) for x, y in Area.SYSTEM_CHOICES),
+    #     "area_types": dict((x, y) for x, y in Area.TYPE_CHOICES),
+    # }
+    # return JsonResponse(choices)
     return JsonResponse(asset_classes_choices, safe=False)
+
+def unit_area_types(request):
+    area_type_choices = dict((x, y) for x, y in Unit.AREA_TYPE_CHOICES)
+    return JsonResponse(area_type_choices)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Loan.objects.all()

@@ -5,6 +5,11 @@ from .loan import Loan
 # from loan.managers import SchemeManager
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
+    SYSTEM_CHOICES =[
+        ("SQFT", "imperial (sqft)"),
+        ("SQM", "metric (sqm)")
+    ]
+
     loan = models.ForeignKey(Loan, on_delete=models.SET_NULL, blank=True, null=True, related_name="schemes")
     name = models.CharField(max_length=100)
     street_name = models.CharField(max_length=100, blank=True, default="")
@@ -12,8 +17,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100, blank=True , default="")
     opening_date = models.DateField(blank=True, null=True)
-
-    # objects = SchemeManager()
+    system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
 
     def __str__(self):
         return self.name
@@ -53,29 +57,37 @@ class Unit(TimestampedModel, AuthorTrackerModel):
         ("UNIT", "unit"),
         ("ROOM", "room")
     ]
-    asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
-    label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
-    identifier = models.CharField(default="1", max_length=10)
-    description = models.CharField(max_length=100, blank=True , default="")
-
-    def __str__(self):
-        self.identifier
-
-class Area(models.Model):
-    SYSTEM_CHOICES =[
-        ("SQFT", "imperial (sqft)"),
-        ("SQM", "metric (sqm)")
-    ]
-    TYPE_CHOICES =[
+    AREA_TYPE_CHOICES =[
         ("NIA", "Net Internal Area"),
         ("NSA", "Net Salable Area"),
         ("GIA", "Gross Internal Area"),
         ("GEA", "Gross External Area"),
     ]
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="area_definitions", blank=True, null=True)
-    size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    type = models.CharField(max_length=3, choices=TYPE_CHOICES, blank=True)
-    system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
+    asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
+    label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
+    identifier = models.CharField(default="1", max_length=10)
+    description = models.CharField(max_length=100, blank=True , default="")
+    area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
+
+    def __str__(self):
+        self.identifier
+
+# class Area(models.Model):
+#     SYSTEM_CHOICES =[
+#         ("SQFT", "imperial (sqft)"),
+#         ("SQM", "metric (sqm)")
+#     ]
+#     TYPE_CHOICES =[
+#         ("NIA", "Net Internal Area"),
+#         ("NSA", "Net Salable Area"),
+#         ("GIA", "Gross Internal Area"),
+#         ("GEA", "Gross External Area"),
+#     ]
+#     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="area_definitions", blank=True, null=True)
+#     size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+#     type = models.CharField(max_length=3, choices=TYPE_CHOICES, blank=True)
+#     system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
 
 
 class Bed(TimestampedModel, AuthorTrackerModel):

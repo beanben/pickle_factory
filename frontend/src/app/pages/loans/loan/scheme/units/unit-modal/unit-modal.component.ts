@@ -20,6 +20,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   step = 1;
   areaType = "";
   areaSystem = "";
+  areaSystemChoices = ["SQFT", "SQM"];
 
   clickToDetail = false;
   clickToArea = false
@@ -73,6 +74,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   form: FormGroup = this.fb.group({
     assetClass: ['', Validators.required],
+    areaType: [''],
+    system: [''],
     units: this.fb.array([])
   })
   get assetClass() {
@@ -140,7 +143,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   addUnit() {
-    // this.formIsSubmitted = false;
     this.units.insert(0, this.newUnit());
     this.units.at(0).get('label')?.patchValue(this.unitLabelIs());
     this.addArea();
@@ -216,7 +218,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
 
   updateStatus(){
-
     if(this.step===1){
       this.assetClassStatus = "active";
       this.detailStatus = "inactive";

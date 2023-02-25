@@ -14,6 +14,10 @@ import { Scheme } from '../scheme';
 export class SchemeModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   errors: string[] = [];
+  systemChoices =[
+    {value: "SQFT", display: "imperial (sqft)"},
+    {value: "SQM", display: "metric (sqm)"}
+  ];
 
   @Output() modalSaveScheme = new EventEmitter<void>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
@@ -29,17 +33,15 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   //   {value: "EUR", display: "EUR (€)"},
   //   {value: "USD", display: "USD ($)"},
   // ];
-  // systemChoices =[
-  //   {value: "SQFT", display: "imperial (sqft)"},
-  //   {value: "SQM", display: "metric (sqm)"}
-  // ];
+
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
     streetName: [''],
     postcode: [''],
     city: ['', Validators.required],
-    country: ['']
+    country: [''],
+    system: ['SQFT', Validators.required]
   });
   get name(){
     return this.form.get('name')

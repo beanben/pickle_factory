@@ -27,7 +27,7 @@
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="areaStatus"></span>
-                <span class="px-2">Area</span>
+                <span class="px-2">Area (optional)</span>
               </li>
             </ol>
           </nav>
@@ -82,13 +82,13 @@
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="areaStatus"></span>
-                <span class="px-2">Area</span>
+                <span class="px-2">Area (optional)</span>
               </li>
             </ol>
           </nav>
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'clickToArea': clickToArea}">
-            <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units</span>
+            <span class="d-flex justify-content-center pb-2">Please detail the breakdown of units</span>
 
             <div class="form-group px-2">
               <div class="form-floating">
@@ -103,6 +103,7 @@
                 <div class="col border-table">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
                 <div class="col border-table" *ngIf="assetClassHasBeds()">Beds </div>
+                <div class="col border-table">Area</div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -120,6 +121,9 @@
                     </div>
                     <div class="col my-auto px-0 text-end" *ngIf="assetClassHasBeds()">
                         <input class="form-control text-end" formControlName="beds" placeholder="0" />
+                    </div>
+                    <div class="col my-auto px-0 text-end">
+                      
                     </div>
                     <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                         style="width: 20px" 
@@ -187,12 +191,47 @@
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot  [status]="areaStatus"></span>
-                <span class="px-2" [ngClass]="{'text-active': step ===3 }">Area</span>
+                <span class="px-2"><span [ngClass]="{'text-active': step ===3 }">Area</span> (optional)</span>
               </li>
             </ol>
           </nav>
 
-        </div>
+          <p class="text-center">Step 1/2: Please select the unit area type and system</p>
+
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'clickToArea': clickToArea}">
+            <div class="form-group px-2">
+              <div class="form-floating">
+                <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
+                  value="{{assetClass!.value}}" disabled>
+                <label for="asset-class">Asset class</label>
+              </div>
+            </div>
+
+            <!-- <div class="form-group mb-3 px-2">
+              <div class="form-floating text-center">
+                <select class="form-select" id="asset-class" formControlName="assetClass">
+                  <option [ngValue]="''"> -- Select Area Type --</option>
+                  <option *ngFor='let choice of assetClassesChoices' [ngValue]="choice">{{ choice}}
+                  </option>
+                </select>
+                <label for="asset-class">Asset class</label>
+              </div>
+              <div *ngIf="assetClass?.invalid && (f.dirty || clickToDetail)"
+                class="mt-2 alert alert-danger">
+                Please select the unit asset class
+              </div>
+            </div> -->
+
+
+
+
+          </form>
+
+
+
+
+
+          </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 

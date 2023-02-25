@@ -127,5 +127,10 @@ export class SchemeService {
     );
   }
 
-
+  getAreaTypeChoices() {
+    const url = `${this.relativeUrl}/area_type_choices/`;
+    return this.http.get(url).pipe(
+      tap(() => console.log('getAreaTypeChoices()', Math.random())),
+    );
+  }
 }

@@ -74,6 +74,24 @@
               </div>
             </div>
 
+            <div class="row mb-3 mx-0">
+                <div class="col-auto px-0 form-section-title">
+                  <span class="px-2">System</span>
+                </div>
+              
+                <div class="col px-0">
+                  <div class="form-group">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" formControlName="system" id="sqft" value="SQFT">
+                      <label class="form-check-label" for="sqft">imperial (sqft)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" formControlName="system" id="sqm" value="SQM">
+                      <label class="form-check-label" for="sqm">metric (sqm)</label>
+                    </div>
+                </div>
+              </div>
+            </div>
 
             <div *ngFor="let error of errors " class="alert alert-danger text-center">
               {{error}}
