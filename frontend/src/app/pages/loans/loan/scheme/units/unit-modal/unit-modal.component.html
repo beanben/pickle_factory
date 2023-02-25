@@ -45,7 +45,7 @@
                 </select>
                 <label for="asset-class">Asset class</label>
               </div>
-              <div *ngIf="assetClass?.invalid && (f.dirty || nextIsClicked)"
+              <div *ngIf="assetClass?.invalid && (f.dirty || clickToDetail)"
                 class="mt-2 alert alert-danger">
                 Please select the unit asset class
               </div>
@@ -87,7 +87,7 @@
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'clickToArea': clickToArea}">
             <span class="d-flex justify-content-center pb-2">Please provide the breakdown of units</span>
 
             <div class="form-group px-2">

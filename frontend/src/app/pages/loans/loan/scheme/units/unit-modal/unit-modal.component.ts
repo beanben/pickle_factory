@@ -21,7 +21,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   areaType = "";
   areaSystem = "";
 
-  nextIsClicked = false;
+  clickToDetail = false;
+  clickToArea = false
   // showError = false;
   numbersOnly = /^\d+$/;
   totalUnits = 0;
@@ -97,8 +98,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     this.subs.push(
       this.units.valueChanges.subscribe(() => {
-        // this.calculateTotals();
-        this.nextIsClicked ? this.getInvalidControls(): null ;
+        this.calculateTotals();
+        this.clickToArea ? this.getInvalidControls(): null ;
       })
     )
   };
@@ -172,6 +173,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   nextToDetail() {
+    this.clickToDetail = true;
+
     if(!!this.assetClass!.valid){
       this.assetClassIs(this.assetClass!.value);
       this.addUnit();
@@ -201,7 +204,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   nextToArea() {
-    this.nextIsClicked = true;
+    this.clickToArea = true;
     this.getInvalidControls();
 
     if(this.units.valid){
@@ -264,17 +267,15 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
 
-
-
-
   onPrevious() {
 
     // this.formIsSubmitted = false;
 
     this.step -= 1;
-
     this.updateStatus();
-    this.units.clear();
+    this.step === 1 ? this.units.clear() : null;
+
+    // this.units.clear();
 
     
     // this.requiredControls = [];
@@ -325,36 +326,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   getInvalidControls() {
     this.requiredControls = [];
     this.invalidControlsType = [];
-    let assetClassValue: string = this.assetClass!.value;
-    let unitLabel: string = this.unitLabelIs();
-
-    // this.units.controls.forEach((newUnit, index) => {
-
-    //   if (this.units.at(index).invalid) {
-
-    //     Object.keys((newUnit as FormGroup).controls).forEach((controlName: string) => {
-    //       let formControl = newUnit.get(controlName)! as FormControl;
-
-    //       // if (formControl.invalid && (formControl.submitted || newUnit.dirty)) {
-    //       if (formControl.invalid && (this.nextIsClicked || newUnit.dirty)) {
-
-
-    //         let controlDescription: string = controlName;
-    //         if (controlName === "quantity") {
-    //           controlDescription = this.assetClassStructures[assetClassValue].unitType
-    //         };
-
-    //         if (formControl.hasError('required') && !this.requiredControls.includes(controlDescription)) {
-    //           this.requiredControls.push(controlDescription)
-
-    //         } else if (formControl.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlDescription)) {
-    //           this.invalidControlsType.push({ name: controlDescription, type: "number" })
-    //         }
-    //       }
-
-    //     })
-    //   }
-    // });
 
     // get all the invalid form controls from units
     let invalidUnits: FormGroup[] = [];
@@ -376,22 +347,18 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         if(control.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlLabel)){
           let requiredType:string = controlName === "description" ? "text" : "number";
           
-
           this.invalidControlsType.push({ name: controlLabel, type: requiredType })
         }
-
 
         control.valid ? null : invalidUnitControls.push(control);
       })
     })
-    console.log("invalidUnitControls:", invalidUnitControls)
-
   }
 
   calculateTotals(): void {
     this.totalUnits = 0;
     this.totalBeds = 0;
-    this.totalArea = 0;
+    // this.totalArea = 0;
 
     let totalUnits = 0;
     let totalBeds = 0;
@@ -399,12 +366,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.units.controls.forEach(control => {
       totalUnits += +control.get('quantity')?.value || 0;
       totalBeds += +control.get('beds')?.value || 0;
-      totalArea += +control.get('area')?.value || 0;
+      // totalArea += +control.get('area')?.value || 0;
     });
 
     this.totalUnits += totalUnits;
     this.totalBeds += totalBeds;
-    this.totalArea += totalArea;
+    // this.totalArea += totalArea;
   }
 
   getAssetClassChoices(){
@@ -435,20 +402,5 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
-
-  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first
-  // example: "camelCaseString" => "Camel case string"
-  // example: "camelCaseStringWithNumbers123" => "Camel case string with numbers123"
-  // example: "camelCaseStringWithNumbers123AndSpecialCharacters!@#$%^&*()" => "Camel case string with numbers123 and special characters!@#$%^&*()"
-
-
-  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first
-  // example: "camelCaseString" => "Camel case string"
-
-
-  // build a method , in typescript, which take a string in camel case and returns a string with space between capital letters and converts all letters into lower case, exact the first  
- 
-
-  
 
 }
