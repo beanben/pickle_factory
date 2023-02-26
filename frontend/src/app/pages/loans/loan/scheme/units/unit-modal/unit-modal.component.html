@@ -24,11 +24,6 @@
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="detailStatus"></span>
                 <span class="px-2">Detail</span>
               </li>
-              <img src="{{chevronRight}}" alt="">
-              <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="areaStatus"></span>
-                <span class="px-2">Area (optional)</span>
-              </li>
             </ol>
           </nav>
 
@@ -45,7 +40,7 @@
                 </select>
                 <label for="asset-class">Asset class</label>
               </div>
-              <div *ngIf="assetClass?.invalid && (f.dirty || clickToDetail)"
+              <div *ngIf="assetClass?.invalid && (f.dirty || nextIsClicked)"
                 class="mt-2 alert alert-danger">
                 Please select the unit asset class
               </div>
@@ -56,7 +51,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
-          <button type="button" class="btn btn-success" (click)="nextToDetail()">Next ></button>
+          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
         </div>
 
       </ng-container>
@@ -79,15 +74,10 @@
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="detailStatus"></span>
                 <span class="px-2" [ngClass]="{'text-active': step ===2 }">Detail</span>
               </li>
-              <img src="{{chevronRight}}" alt="">
-              <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="areaStatus"></span>
-                <span class="px-2">Area (optional)</span>
-              </li>
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'clickToArea': clickToArea}">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
             <span class="d-flex justify-content-center pb-2">Please detail the breakdown of units</span>
 
             <div class="form-group px-2">
@@ -103,7 +93,7 @@
                 <div class="col border-table">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
                 <div class="col border-table" *ngIf="assetClassHasBeds()">Beds </div>
-                <div class="col border-table">Area</div>
+                <div class="col border-table">{{units.at(0).value.area_type}} ({{scheme.system | lowercase}})</div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -123,7 +113,7 @@
                         <input class="form-control text-end" formControlName="beds" placeholder="0" />
                     </div>
                     <div class="col my-auto px-0 text-end">
-                      
+                      <input class="form-control text-end" formControlName="area_size" placeholder="0" />
                     </div>
                     <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                         style="width: 20px" 
@@ -146,6 +136,9 @@
               <div class="col my-auto px-0 text-end">
                 <span class="form-control fw-bolder border-0">{{totalBeds}}</span>
               </div>
+              <div class="col my-auto px-0 text-end">
+                <span class="form-control fw-bolder border-0">{{totalArea}}</span>
+              </div>
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
             </div>
 
@@ -159,79 +152,8 @@
                 {{control.name}} must be a {{control.type}}
               </div>
             </div>
-
           </form>
         </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 
-          <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
-          <button type="button" class="btn btn-success" (click)="nextToArea()">Next ></button>
-        </div>
-
-      </ng-container>
-
-      <ng-container *ngIf="step===3">
-        <div class="modal-body">
-
-          <nav
-            style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
-            aria-label="breadcrumb">
-            <ol class="breadcrumb justify-content-center">
-              <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot 
-                  [status]="assetClassStatus"></span>
-                <span class="px-2">Asset class</span>
-              </li>
-              <img src="{{chevronRight}}" alt="">
-              <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot  [status]="detailStatus"></span>
-                <span class="px-2">Detail</span>
-              </li>
-              <img src="{{chevronRight}}" alt="">
-              <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot  [status]="areaStatus"></span>
-                <span class="px-2"><span [ngClass]="{'text-active': step ===3 }">Area</span> (optional)</span>
-              </li>
-            </ol>
-          </nav>
-
-          <p class="text-center">Step 1/2: Please select the unit area type and system</p>
-
-          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'clickToArea': clickToArea}">
-            <div class="form-group px-2">
-              <div class="form-floating">
-                <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
-                  value="{{assetClass!.value}}" disabled>
-                <label for="asset-class">Asset class</label>
-              </div>
-            </div>
-
-            <!-- <div class="form-group mb-3 px-2">
-              <div class="form-floating text-center">
-                <select class="form-select" id="asset-class" formControlName="assetClass">
-                  <option [ngValue]="''"> -- Select Area Type --</option>
-                  <option *ngFor='let choice of assetClassesChoices' [ngValue]="choice">{{ choice}}
-                  </option>
-                </select>
-                <label for="asset-class">Asset class</label>
-              </div>
-              <div *ngIf="assetClass?.invalid && (f.dirty || clickToDetail)"
-                class="mt-2 alert alert-danger">
-                Please select the unit asset class
-              </div>
-            </div> -->
-
-
-
-
-          </form>
-
-
-
-
-
-          </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-primary" (click)="onPrevious()">< Previous</button> 

@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { Subscription } from 'rxjs';
 import { Scheme, Unit, Hotel, Residential, Retail, StudentAccommodation, Office, ShoppingCentre } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { StringDictionary } from 'src/app/shared/shared';
+import { Choice, StringDictionary } from 'src/app/shared/shared';
 import { PascalToTitle } from 'src/app/shared/utils';
 
 @Component({
@@ -16,27 +16,23 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   chevronRight = "assets/images/chevronRight.svg";
   assetClassStatus = "active";
   detailStatus = "inactive";
-  areaStatus = "inactive";
   step = 1;
   areaType = "";
   areaSystem = "";
-  areaSystemChoices = ["SQFT", "SQM"];
-
-  clickToDetail = false;
-  clickToArea = false
-  // showError = false;
+  nextIsClicked = false;
+  formIsSubmitted = false;
   numbersOnly = /^\d+$/;
   totalUnits = 0;
   totalBeds = 0;
   totalArea = 0;
-  formIsSubmitted = false;
-  // valueChanged = false;
-  assetClassesChoices: string[] = [];
+  
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveUnits = new EventEmitter<Unit[] | null>();
 
+  unitAreaTypes: Choice[] = [];
+  assetClassesChoices: string[] = [];
   requiredControls: string[] = [];
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
@@ -49,33 +45,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
                     Office | 
                     ShoppingCentre;
 
-  // assetClasses: AssetClassOption[] = [
-  //   { label: 'Hotel', value: HotelAssetClass },
-  //   { label: 'Residential', value: ResidentialAssetClass },
-  //   { label: 'Commercial', value: CommercialAssetClass }
-  // ];
-
-  // assetClassStructures: { [key: string]: any } = {
-  //   "BTS": { unitType: "unit", beds: "beds", areaType: "NIA" },
-  //   "BTL": { unitType: "unit", beds: "beds", areaType: "NIA" },
-  //   "H": { unitType: "room", beds: "beds", areaType: "NIA" },
-  //   "C": { unitType: "unit", beds: null, areaType: "GIA" },
-  //   "O": { unitType: "unit", beds: null, areaType: "GIA" },
-  //   "S": { unitType: "unit", beds: null, areaType: "GIA" },
-  //   "PBSA": { unitType: "room", beds: "beds", areaType: "NIA" },
-  // }
-
-  // assetClassForm: FormGroup = this.fb.group({
-  //   assetClass: ['', Validators.required],
-  // });
-  // get assetClass() {
-  //   return this.assetClassForm.get('assetClass')
-  // };
-
   form: FormGroup = this.fb.group({
     assetClass: ['', Validators.required],
-    areaType: [''],
-    system: [''],
     units: this.fb.array([])
   })
   get assetClass() {
@@ -84,9 +55,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   get units(): FormArray {
     return this.form.get("units") as FormArray
   }
-  // get areaType() {
-  //   return this.form.get('areaType')
-  // };
 
   constructor(
     private el: ElementRef,
@@ -98,11 +66,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.step = 1;
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
+    this.getUnitAreaTypes();
 
     this.subs.push(
       this.units.valueChanges.subscribe(() => {
         this.calculateTotals();
-        this.clickToArea ? this.getInvalidControls(): null ;
+        this.formIsSubmitted ? this.getInvalidControls(): null ;
       })
     )
   };
@@ -121,15 +90,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       description: ['', Validators.required],
       quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [null, Validators.pattern(this.numbersOnly)],
-      area: this.fb.array([]),
-    })
-  }
-
-  newArea(): FormGroup {
-    return this.fb.group({
-      size: [null, Validators.pattern(this.numbersOnly)],
-      type: ['NIA', Validators.required],
-      system: ['SQFT', Validators.required],
+      area_size: [null, Validators.pattern(this.numbersOnly)],
+      area_type: ['NIA', Validators.required],
     })
   }
 
@@ -137,15 +99,14 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return this.assetClass!.value !== 'Office' && this.assetClass!.value !== 'Shopping Centre';
   }
 
-  addArea() {
-    const unitArea = this.units.at(0).get('area') as FormArray;
-    unitArea.insert(0, this.newArea());
-  }
 
   addUnit() {
     this.units.insert(0, this.newUnit());
+
     this.units.at(0).get('label')?.patchValue(this.unitLabelIs());
-    this.addArea();
+    this.units.at(0).get('area_type')?.patchValue(
+      this.defineUnitAreaType(this.assetClass!.value)
+    );
 
     if (this.units.length === 1) {
       this.units.at(0).get("description")!.patchValue("Total");
@@ -155,12 +116,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeArea(indexUnit: number, indexArea: number) {
-    const unitArea = this.units.at(indexUnit).get('area') as FormArray;
-    unitArea.removeAt(indexArea);
-  }
-
-  
+  // removeArea(indexUnit: number, indexArea: number) {
+  //   const unitArea = this.units.at(indexUnit).get('area') as FormArray;
+  //   unitArea.removeAt(indexArea);
+  // }
 
   removeUnit(index: number) {
     this.units.removeAt(index);
@@ -174,18 +133,14 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.modalSaveUnits.emit();
   };
 
-  nextToDetail() {
-    this.clickToDetail = true;
+  onNext() {
+    this.nextIsClicked = true;
 
     if(!!this.assetClass!.valid){
       this.assetClassIs(this.assetClass!.value);
       this.addUnit();
       this.step += 1;
       this.updateStatus();
-
-      const unitArea = this.units.at(0).get('area') as FormArray;
-      this.areaType = unitArea.at(0).get('type')!.value;
-      this.areaSystem = unitArea.at(0).get('system')!.value;
     }
     
 
@@ -205,33 +160,31 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   }
 
-  nextToArea() {
-    this.clickToArea = true;
-    this.getInvalidControls();
-
-    if(this.units.valid){
-      this.addArea();
-      this.step += 1;
-      this.updateStatus();
-    }
-  }
-
-
   updateStatus(){
     if(this.step===1){
       this.assetClassStatus = "active";
       this.detailStatus = "inactive";
-      this.areaStatus = "inactive";
-    } else if(this.step === 2){
-      this.assetClassStatus = "complete";
-      this.detailStatus = "active";
-      this.areaStatus = "inactive";
     } else {
       this.assetClassStatus = "complete";
-      this.detailStatus = "complete";
-      this.areaStatus = "active";
+      this.detailStatus = "active";
     }
+  }
 
+  defineUnitAreaType(assetClassType:string): string{
+    switch(assetClassType){
+      case "Hotel":
+      case "Residential":
+      case "Student Accommodation":
+        return "NIA";
+      
+      case "Retail":
+      case "Office":
+      case "Shopping Centre":
+        return "GIA";
+
+      default:
+        return "NIA";
+    }
   }
 
   assetClassIs(type:string){
@@ -269,22 +222,21 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
 
   onPrevious() {
-
-    // this.formIsSubmitted = false;
+    this.formIsSubmitted = false;
 
     this.step -= 1;
     this.updateStatus();
-    this.step === 1 ? this.units.clear() : null;
+    this.units.clear()
 
-    // this.units.clear();
-
-    
     // this.requiredControls = [];
     // this.invalidControlsType = [];
   }
 
   onSave() {
     this.formIsSubmitted = true;
+    this.getInvalidControls();
+    console.log("this.form.value: ", this.form.value);
+    // this.formIsSubmitted = true;
     // this.getInvalidControls();
 
     // if(this.form.valid) {
@@ -325,6 +277,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   getInvalidControls() {
+    console.log("inside getInvalidControls")
     this.requiredControls = [];
     this.invalidControlsType = [];
 
@@ -339,14 +292,14 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       
       Object.keys(invalidUnit.controls).forEach(controlName => {
         let control = invalidUnit.get(controlName) as FormControl;
-        let controlLabel: string = controlName === "quantity" ? this.unitLabelIs() : controlName;
+        let controlLabel: string = this.controlLabels(controlName);
 
         if(control.hasError('required') && !this.requiredControls.includes(controlLabel)){
           this.requiredControls.push(controlLabel)
         }
 
         if(control.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlLabel)){
-          let requiredType:string = controlName === "description" ? "text" : "number";
+          let requiredType:string = this.requiredType(controlName);
           
           this.invalidControlsType.push({ name: controlLabel, type: requiredType })
         }
@@ -356,10 +309,24 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     })
   }
 
+  controlLabels(controlName: string): string{
+    if(controlName === "quantity"){
+      return this.unitLabelIs();
+    } else if(controlName === "area_size") {
+      return "area";
+    } else {
+      return controlName;
+    }
+  }
+
+  requiredType(controlName: string): string{
+    return controlName === "description" ? "text" : "number";
+  }
+
   calculateTotals(): void {
     this.totalUnits = 0;
     this.totalBeds = 0;
-    // this.totalArea = 0;
+    this.totalArea = 0;
 
     let totalUnits = 0;
     let totalBeds = 0;
@@ -367,12 +334,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.units.controls.forEach(control => {
       totalUnits += +control.get('quantity')?.value || 0;
       totalBeds += +control.get('beds')?.value || 0;
-      // totalArea += +control.get('area')?.value || 0;
+      totalArea += +control.get('area_size')?.value || 0;
     });
 
     this.totalUnits += totalUnits;
     this.totalBeds += totalBeds;
-    // this.totalArea += totalArea;
+    this.totalArea += totalArea;
   }
 
   getAssetClassChoices(){
@@ -396,6 +363,13 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
         this.assetClassesChoices = formattedChoices;
         this._schemeService.setAssetClassChoicesSub(formattedChoices); 
+      })
+  }
+
+  getUnitAreaTypes(){
+    this._schemeService.getUnitAreaTypes()
+      .subscribe((unitAreaTypes: Choice[]) => {
+        this.unitAreaTypes = unitAreaTypes;
       })
   }
 

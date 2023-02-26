@@ -7,7 +7,7 @@ export interface Scheme {
     city: string;
     country?: string;
     openingDate?: Date;
-    system: string;
+    system: "SQFT" | "SQM";
     assetClasses?: AssetClass[],
 }
 

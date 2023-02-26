@@ -2,29 +2,16 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from loan.models.loan import Loan
 from loan.models.borrower import Borrower
-from loan.serializers.scheme_serializer import AssetClassSerializer
+from loan.serializers.scheme_serializer import AssetClassSerializer, SchemeSerializer
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
     id = serializers.IntegerField()
 
-class SchemeNestedSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    street_name = serializers.CharField(allow_blank=True)
-    postcode = serializers.CharField(allow_blank=True)
-    city = serializers.CharField()
-    country = serializers.CharField(allow_blank=True)
-    # currency = serializers.CharField()
-    # system = serializers.CharField()
-    # units = UnitNestedSerializer(many=True, required=False)
-    opening_date = serializers.DateField(required=False, allow_null=True)
-    asset_classes = AssetClassSerializer(many=True, required=False)
-
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
-    schemes = SchemeNestedSerializer(required=False, allow_null=True, many=True)
+    schemes = SchemeSerializer(required=False, allow_null=True, many=True)
     
     class Meta:
         model = Loan

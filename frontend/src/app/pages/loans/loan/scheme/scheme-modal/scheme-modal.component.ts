@@ -131,7 +131,6 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   getSystemTypes(){
     this._schemeService.getSystemTypes()
       .subscribe((systemTypes: Choice[]) => {
-        // let choices: Choice[] = result as Choice[];
         this.systemTypes = systemTypes;
       })
   }

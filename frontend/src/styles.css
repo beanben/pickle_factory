@@ -47,7 +47,7 @@ body { margin: 0; }
 .input-section{
     border-radius: 0 .25rem .25rem 0;
 }
-#form.ng-submitted input.ng-invalid {
+#form.ng-submitted input.ng-invalid, #f.ng-submitted input.ng-invalidv{
     border: 1px solid red;
 }
 .border-table {

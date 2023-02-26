@@ -128,10 +128,10 @@ export class SchemeService {
     );
   }
 
-  getAreaTypeChoices() {
-    const url = `${this.relativeUrl}/area_type_choices/`;
-    return this.http.get(url).pipe(
-      tap(() => console.log('getAreaTypeChoices()', Math.random())),
+  getUnitAreaTypes(): Observable<Choice[]> {
+    const url = `${this.relativeUrl}/unit_area_types/`;
+    return this.http.get<Choice[]>(url).pipe(
+      tap(() => console.log('getUnitAreaTypes()', Math.random())),
     );
   }
   

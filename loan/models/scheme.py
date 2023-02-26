@@ -59,9 +59,7 @@ class Unit(TimestampedModel, AuthorTrackerModel):
     ]
     AREA_TYPE_CHOICES =[
         ("NIA", "Net Internal Area"),
-        ("NSA", "Net Salable Area"),
         ("GIA", "Gross Internal Area"),
-        ("GEA", "Gross External Area"),
     ]
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)

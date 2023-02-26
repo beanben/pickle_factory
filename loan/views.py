@@ -31,8 +31,8 @@ def asset_classes_choices(request):
     return JsonResponse(asset_classes_choices, safe=False)
 
 def unit_area_types(request):
-    area_type_choices = dict((x, y) for x, y in Unit.AREA_TYPE_CHOICES)
-    return JsonResponse(area_type_choices)
+    unit_area_types = dict((x, y) for x, y in Unit.AREA_TYPE_CHOICES)
+    return JsonResponse(unit_area_types)
 
 def system_types(request):
     system_choices = [{"value":x, "display":y} for x, y in Scheme.SYSTEM_CHOICES]
