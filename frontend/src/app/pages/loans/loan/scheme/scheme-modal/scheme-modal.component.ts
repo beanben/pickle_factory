@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { Choice } from 'src/app/shared/shared';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Loan } from '../../loan';
@@ -14,10 +15,12 @@ import { Scheme } from '../scheme';
 export class SchemeModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   errors: string[] = [];
-  systemChoices =[
-    {value: "SQFT", display: "imperial (sqft)"},
-    {value: "SQM", display: "metric (sqm)"}
-  ];
+  // systemChoices =[
+  //   {value: "SQFT", display: "imperial (sqft)"},
+  //   {value: "SQM", display: "metric (sqm)"}
+  // ];
+  systemTypes: Choice[] = [];
+
 
   @Output() modalSaveScheme = new EventEmitter<void>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
@@ -60,6 +63,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.addEventBackgroundClose();
     this.initForm();
+    this.getSystemTypes();
 
     this.sub = this._loanService.getLoanSub()
       .subscribe(loan => this.loan = loan)
@@ -106,6 +110,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
         'postcode': this.scheme.postcode,
         'city': this.scheme.city,
         'country': this.scheme.country,
+        'system': this.scheme.system,
       })
     }
   }
@@ -122,6 +127,14 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     }
     });
   };
+
+  getSystemTypes(){
+    this._schemeService.getSystemTypes()
+      .subscribe((systemTypes: Choice[]) => {
+        // let choices: Choice[] = result as Choice[];
+        this.systemTypes = systemTypes;
+      })
+  }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe()

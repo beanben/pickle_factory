@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
+import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
 
@@ -133,4 +134,12 @@ export class SchemeService {
       tap(() => console.log('getAreaTypeChoices()', Math.random())),
     );
   }
+  
+  getSystemTypes(): Observable<Choice[]> {
+    const url = `${this.relativeUrl}/system_types/`;
+    return this.http.get<Choice[]>(url).pipe(
+      tap(() => console.log('getSystemTypes()', Math.random())),
+    );
+  }
+
 }

@@ -7,3 +7,8 @@ export interface StringDictionary {
 export interface StringUnitsDictionary {
   [index: string]: Unit[];
 }
+
+export interface Choice {
+  value: string;
+  display: string;
+}

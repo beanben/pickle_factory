@@ -34,6 +34,10 @@ def unit_area_types(request):
     area_type_choices = dict((x, y) for x, y in Unit.AREA_TYPE_CHOICES)
     return JsonResponse(area_type_choices)
 
+def system_types(request):
+    system_choices = [{"value":x, "display":y} for x, y in Scheme.SYSTEM_CHOICES]
+    return JsonResponse(system_choices, safe=False)
+
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
