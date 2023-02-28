@@ -1,4 +1,5 @@
 <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+  <!-- <div class="modal-dialog modal-centered" [ngClass]="{'modal-extend':step ===2}"> -->
   <div class="modal-dialog modal-centered">
     <div class="modal-content">
 
@@ -65,7 +66,6 @@
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus">
-                      <!-- <span style="color:rgba(0, 128, 0, 1);">&#10003;</span> -->
                 </span>
                 <span class="px-2">Asset class</span>
               </li>
@@ -90,10 +90,10 @@
             
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
-                <div class="col border-table">Description</div>
+                <div class="col-3 border-table">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
-                <div class="col border-table" *ngIf="assetClassHasBeds()">Beds </div>
-                <div class="col border-table">{{units.at(0).value.area_type}} ({{scheme.system | lowercase}})</div>
+                <div class="col border-table">{{units.at(0).value.areaType}} ({{scheme.system | lowercase}})</div>
+                <div class="col-3 border-table px-0" *ngIf="assetClassHasBeds()">Beds per {{units.at(0).value.label}}</div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -103,18 +103,24 @@
                 <div [formGroupName]="i">
                   <div class="row mx-0">
                     
-                    <div class="col my-auto px-0" >
-                        <input class="form-control" formControlName="description" placeholder="description" [ngClass]="{'border-0 fw-bolder': units.length ===1}">
+                    <div class="col-3 my-auto px-0" >
+                      <ng-container *ngIf="units.length > 1; else noDescription">
+                        <input class="form-control" formControlName="description" placeholder="description">
+                      </ng-container>
+                      <ng-template #noDescription>
+                       <span class="border-0 fw-bolder">Total</span> 
+                      </ng-template>
                     </div>
                     <div class="col my-auto px-0 text-end">
                         <input class="form-control text-end" formControlName="quantity" placeholder="0" >
                     </div>
-                    <div class="col my-auto px-0 text-end" *ngIf="assetClassHasBeds()">
-                        <input class="form-control text-end" formControlName="beds" placeholder="0" />
-                    </div>
                     <div class="col my-auto px-0 text-end">
-                      <input class="form-control text-end" formControlName="area_size" placeholder="0" />
+                      <input class="form-control text-end" formControlName="areaSize" placeholder="0" />
                     </div>
+                    <div class="col-3 my-auto px-0 text-end" *ngIf="assetClassHasBeds()">
+                      <input class="form-control text-end" formControlName="beds" placeholder="0" />
+                    </div>
+                    
                     <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                         style="width: 20px" 
                         [ngClass]="units.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
@@ -127,17 +133,17 @@
             </ng-container>
 
             <div class="row mx-0" *ngIf="units.length > 1">
-              <div class="col px-0 my-auto">
+              <div class="col-3 px-0 my-auto">
                 <span class="form-control fw-bolder border-0">Total</span>
               </div>
               <div class="col my-auto px-0 text-end">
                 <span class="form-control fw-bolder border-0">{{totalUnits}}</span>
               </div>
               <div class="col my-auto px-0 text-end">
-                <span class="form-control fw-bolder border-0">{{totalBeds}}</span>
-              </div>
-              <div class="col my-auto px-0 text-end">
                 <span class="form-control fw-bolder border-0">{{totalArea}}</span>
+              </div>
+              <div class="col-3 my-auto px-0 text-end">
+                <span class="form-control fw-bolder border-0"></span>
               </div>
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
             </div>

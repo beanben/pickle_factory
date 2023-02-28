@@ -26,11 +26,14 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
 class AssetClass(TimestampedModel, AuthorTrackerModel):
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
     
-    @property
-    def category(self):
-        return self.__class__.__name__
-        
+    # @property
+    # def category(self):
+    #     return self.__class__.__name__
 
+    class Meta:
+        verbose_name_plural = "Asset Classes" #for the admin panel
+    
+        
 class Hotel(AssetClass):
     pass
     
@@ -65,6 +68,7 @@ class Unit(TimestampedModel, AuthorTrackerModel):
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
     identifier = models.CharField(default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
+    beds = models.IntegerField(blank=True, null=True)
     area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
 
@@ -88,18 +92,18 @@ class Unit(TimestampedModel, AuthorTrackerModel):
 #     system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
 
 
-class Bed(TimestampedModel, AuthorTrackerModel):
-    MEASURE_CHOICES=[
-        ("CM", "centimetres"),
-        ("IN", "inches"),
-    ]
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="beds", blank=True, null=True)
-    description = models.CharField(max_length=100, blank=True , default="")
-    width = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    length = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    height = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    measure = models.CharField(max_length=3, choices=MEASURE_CHOICES, blank=True)
+# class Bed(TimestampedModel, AuthorTrackerModel):
+#     MEASURE_CHOICES=[
+#         ("CM", "centimetres"),
+#         ("IN", "inches"),
+#     ]
+#     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="beds", blank=True, null=True)
+#     description = models.CharField(max_length=100, blank=True , default="")
+#     width = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+#     length = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+#     height = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+#     measure = models.CharField(max_length=3, choices=MEASURE_CHOICES, blank=True)
 
-    def __str__(self):
-        return self.description
+#     def __str__(self):
+#         return self.description
 

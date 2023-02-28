@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Scheme, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
+import { AssetClass, Hotel, Office, Residential, Retail, Scheme, ShoppingCentre, StudentAccommodation, Unit } from 'src/app/pages/loans/loan/scheme/scheme';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
@@ -101,24 +101,27 @@ export class SchemeService {
   // };
 
   createUnits(units: Unit[]) {
+    // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = '/api/unit/';
+    // const body = JSON.stringify(units);
+    // console.log("body: ", body);
 
-    // return new Promise<APIResult>((resolve, reject) => {
+    return new Promise<APIResult>((resolve, reject) => {
      
-    //   this.http.post(url, units).subscribe({
-    //     next: (data) => {
-    //       const result = data as APIResult;
-    //       if (result.status === "success"){
-    //         resolve(result);
-    //       } else {
-    //         reject(result.message)
-    //       }
-    //     },
-    //     error: (error) => {
-    //       reject(this._sharedService.handleError(error));
-    //     }
-    //   })
-    // })
+      this.http.post(url, units).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this._sharedService.handleError(error));
+        }
+      })
+    })
   };
 
   getAssetClassChoices(): Observable<string[]>  {
@@ -141,5 +144,306 @@ export class SchemeService {
       tap(() => console.log('getSystemTypes()', Math.random())),
     );
   }
+
+  // createHotel(hotel: Hotel) {
+  //   const url = "api/hotel/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, hotel).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateHotel(hotel: Scheme) {
+  //   const url = `api/hotel/${hotel.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, hotel).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  createAssetClass(assetClass: AssetClass, assetClassType: string) {
+    const url = "/api/asset_class/";
+    const body = {
+      assetClass,
+      assetClassType
+    };
+
+    return new Promise<APIResult>((resolve, reject) => {
+     
+      this.http.post(url, body).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this._sharedService.handleError(error));
+        }
+      })
+    })
+  };
+
+  deleteAssetClass(assetClass: AssetClass): Observable<any> {
+    const url = `api/asset_class/${assetClass.id}/`;
+
+    const options = {
+      body: assetClass
+    }
+
+    return this.http.delete(url, options).pipe(
+      tap(() => console.log('deleteAssetClass()', Math.random()))
+    ); 
+  }
+
+  // createResidential(residential: Residential) {
+  //   const url = "api/residential/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, residential).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateResidential(residential: Scheme) {
+  //   const url = `api/residential/${residential.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, residential).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // createRetail(retail: Retail) {
+  //   const url = "api/retail/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, retail).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateRetail(retail: Retail) {
+  //   const url = `api/retail/${retail.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, retail).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // createStudentAccommodation(studentAccommodation: StudentAccommodation) {
+  //   const url = "api/student_accommodation/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, studentAccommodation).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateStudentAccommodation(studentAccommodation: StudentAccommodation) {
+  //   const url = `api/student_accommodation/${studentAccommodation.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, studentAccommodation).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // createOffice(office: Office) {
+  //   const url = "api/office/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, office).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateOffice(office: Office) {
+  //   const url = `api/office/${office.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, office).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // createShoppingCentre(shoppingCentre: ShoppingCentre) {
+  //   const url = "api/shopping_centre/";
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+     
+  //     this.http.post(url, shoppingCentre).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
+
+  // updateShoppingCentre(shoppingCentre: ShoppingCentre) {
+  //   const url = `api/office/${shoppingCentre.id}/`;
+
+  //   return new Promise<APIResult>((resolve, reject) => {
+
+  //     this.http.put(url, shoppingCentre).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
+          
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
+
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
 
 }

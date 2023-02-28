@@ -12,9 +12,9 @@ export interface Scheme {
 }
 
 export interface AssetClass {
-    id: number;
+    id?: number;
     schemeId: number;
-    units: Unit[]
+    units?: Unit[]
 }
 export interface Hotel extends AssetClass {
 }
@@ -34,10 +34,11 @@ export interface Unit {
     id?: number,
     assetClassId?: number,
     label: "unit" | "room",
-    identifier: string,
-    description: string,
-    areas?: Area[],
-    beds?: Bed[],
+    identifier?: string,
+    description?: string,
+    areaSize?: number,
+    areaType?: string,
+    beds?: number,
 }
 
 export interface Area {
@@ -48,12 +49,12 @@ export interface Area {
     system : "SQFT" | "SQM"
 }
 
-export interface Bed {
-    id?: number,
-    unitId?: number,
-    description?: string,
-    width?: number, 
-    length?: number, 
-    height?: number,
-    measure?: "CM" | "IN",
-}
+// export interface Bed {
+//     id?: number,
+//     unitId?: number,
+//     description?: string,
+//     width?: number, 
+//     length?: number, 
+//     height?: number,
+//     measure?: "CM" | "IN",
+// }

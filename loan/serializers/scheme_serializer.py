@@ -2,7 +2,8 @@ from rest_framework import serializers
 from loan.models.loan import Loan
 from loan.models.scheme import (
     Scheme, AssetClass, Unit, Hotel, Residential, Retail,
-    StudentAccommodation, Office, ShoppingCentre, Unit, Bed)
+    StudentAccommodation, Office, ShoppingCentre, Unit)
+import pdb
 
     
 class AssetClassSerializer(serializers.ModelSerializer):
@@ -11,15 +12,15 @@ class AssetClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssetClass
         fields = ['id', 'scheme_id']
-        depth = 1
+        # depth = 1
 
-    def create(self, validated_data):
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+    # def create(self, validated_data):
+    #     scheme_id = validated_data.pop("scheme_id")
+    #     scheme = Scheme.objects.get(id=scheme_id)
 
-        validated_data.update({"scheme": scheme})
-        asset_class = AssetClass.objects.create(**validated_data)
-        return asset_class
+    #     validated_data.update({"scheme": scheme})
+    #     asset_class = AssetClass.objects.create(**validated_data)
+    #     return asset_class
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
@@ -57,9 +58,42 @@ class SchemeSerializer(serializers.ModelSerializer):
         serializer = AssetClassSerializer(asset_classes, many=True)
         return serializer.data
 
+# class BedSerializer(serializers.ModelSerializer):
+#     unit_id = serializers.IntegerField(required=False)
+#     description = serializers.CharField(required=False)
+#     width = serializers.DecimalField(required=False, max_digits=20, decimal_places=2)
+#     length = serializers.DecimalField(required=False, max_digits=20, decimal_places=2)
+#     height = serializers.DecimalField(required=False, max_digits=20, decimal_places=2)
+#     dimensions_type = serializers.CharField(required=False)
 
+#     class Meta:
+#         model = Bed
+#         fields = [
+#             'id',
+#             'unit_id',
+#             'description',
+#             'width',
+#             'length',
+#             'height',
+#             'dimensions_type']
+#         depth = 1
+
+#     def create(self, validated_data):
+#         unit_id = validated_data.pop("unit_id")
+#         unit = Unit.objects.get(id=unit_id)
+
+#         validated_data.update({"unit": unit})
+#         bed = Bed.objects.create(**validated_data)
+#         return bed
+    
 class UnitSerializer(serializers.ModelSerializer):
     asset_class_id = serializers.IntegerField()
+    identifier = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
+    area_size = serializers.DecimalField(required=False, max_digits=20, decimal_places=2)
+    area_type = serializers.CharField(required=False)
+    bed = serializers.IntegerField(required=False)
+    
 
     class Meta:
         model = Unit
@@ -68,12 +102,13 @@ class UnitSerializer(serializers.ModelSerializer):
             'asset_class_id',
             'identifier',
             'description',
-            'quantity',
             'area_size',
-            'area_type']
+            'area_type',
+            'bed']
 
 
     def create(self, validated_data):
+        # pdb.set_trace()
         asset_class_id = validated_data.pop("asset_class_id")
         asset_class = AssetClass.objects.get(id=asset_class_id)
 
@@ -81,28 +116,7 @@ class UnitSerializer(serializers.ModelSerializer):
         unit = Unit.objects.create(**validated_data)
         return unit
 
-class BedSerializer(serializers.ModelSerializer):
-    unit_id = serializers.IntegerField()
 
-    class Meta:
-        model = Bed
-        fields = [
-            'id',
-            'unit_id',
-            'description',
-            'width',
-            'length',
-            'height',
-            'dimensions_type']
-        depth = 1
-
-    def create(self, validated_data):
-        unit_id = validated_data.pop("unit_id")
-        unit = Unit.objects.get(id=unit_id)
-
-        validated_data.update({"unit": unit})
-        bed = Bed.objects.create(**validated_data)
-        return bed
 
 
 class HotelSerializer(AssetClassSerializer):

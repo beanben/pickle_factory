@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { StringDictionary, StringUnitsDictionary } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Scheme, Unit } from '../scheme';
+import { AssetClass, Scheme, Unit } from '../scheme';
 
 @Component({
   selector: 'app-units',
@@ -27,14 +27,14 @@ export class UnitsComponent implements OnInit {
     this.modalMode = modalMode;
   }
 
-  onSave(units: Unit[] | null){
+  onSave(assetClass: AssetClass | null){
     this.openUnitModal = false;
 
-    
+    console.log("scheme", this.scheme);
 
-    if(units){
-      // this.scheme.units!.unshift(...units);
-
+    if(assetClass){
+      this.scheme.assetClasses!.unshift(assetClass);
+      
     }
   }
 
