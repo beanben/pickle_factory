@@ -25,6 +25,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
 
 class AssetClass(TimestampedModel, AuthorTrackerModel):
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
+    # use = models.CharField(max_length=100, blank=True, default="")
     
     # @property
     # def category(self):

@@ -10,10 +10,10 @@
 </div>
 
 <div class="row">
-  <div class="col" *ngFor="let assetClass of scheme.assetClasses">
+  <div class="col p-2 border" *ngFor="let assetClass of scheme.assetClasses">
     <!-- <app-unit-card [assetClass]="assetClass" (editAssetClass)="onOpenModal('edit', $event)" (deleteAssetClass)="onDelete($event)"></app-unit-card> -->
-    <app-unit-card [assetClass]="assetClass"></app-unit-card>
-
+    <!-- <app-unit-card [assetClass]="assetClass"></app-unit-card> -->
+    <!-- typeof assetClass: {{getType(assetClass)}} -->
   </div>
 </div>
 
