@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from loan.models.loan import Loan
 from loan.models.borrower import Borrower
-from loan.serializers.scheme_serializer import AssetClassSerializer, SchemeSerializer
+from loan.serializers.scheme_serializer import SchemeSerializer
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()

@@ -3,7 +3,6 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { Subscription } from 'rxjs';
 import { Scheme} from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Choice, StringDictionary } from 'src/app/shared/shared';
 import { pascalToTitle } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
 import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
@@ -64,6 +63,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         this.formIsSubmitted ? this.getInvalidControls(): null ;
       })
     );
+
   };
 
   addEventBackgroundClose() {
@@ -80,7 +80,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return this.fb.group({
       id: [newUnit.id],
       label: [newUnit.label],
-      description: ['', Validators.required],
+      description: ['', Validators.pattern(this.numbersOnly)],
       quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [null, Validators.pattern(this.numbersOnly)],
       areaSize: [null, Validators.pattern(this.numbersOnly)],
@@ -96,9 +96,9 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   removeUnit(index: number) {
     this.units.removeAt(index);
 
-    if (this.units.length === 1) {
-      this.units.at(0).get("description")!.patchValue("Total");
-    }
+    // if (this.units.length === 1) {
+    //   this.units.at(0).get("description")!.patchValue("Total");
+    // }
   }
 
   onCancel() {
@@ -124,12 +124,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   addUnit() {
     this.units.insert(0, this.newUnit());
 
-    if(this.units.length === 1){
-      this.units.at(0).get("description")!.patchValue("Total");
-    };
-    if(this.units.length === 2){
-      this.units.at(1).get("description")!.reset();
-    }
+    // if(this.units.length === 1){
+    //   this.units.at(0).get("description")!.patchValue("Total");
+    // };
+    // if(this.units.length === 2){
+    //   this.units.at(1).get("description")!.reset();
+    // }
 
   }
 
@@ -181,7 +181,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this._schemeService.createAssetClass(this.assetClass)
       .then((result:APIResult) => {
         let assetClassCreated = result.response as AssetClassType;
-
         this.units.controls.forEach(newUnit => {
 
           const unit: Unit = this.defineUnit(assetClassCreated, newUnit);
@@ -205,7 +204,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   }
 
   defineUnit(assetClass:AssetClassType, newUnit:AbstractControl): Unit{
-
     const unit = new Unit(assetClass);
     unit.description = newUnit.get('description')!.value;
     unit.areaSize = newUnit.get('areaSize')!.value;

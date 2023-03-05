@@ -26,9 +26,7 @@ export class UnitsComponent implements OnInit {
   }
 
   onSave(assetClass: AssetClassType | null){
-
     this.openUnitModal = false;
-
 
     if(assetClass){
       console.log("assetClass from inside units", assetClass);

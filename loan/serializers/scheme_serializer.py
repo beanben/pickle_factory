@@ -4,6 +4,7 @@ from loan.models.loan import Loan
 from loan.models.scheme import (
     Scheme, AssetClass, Unit, Hotel, Residential, Retail,
     StudentAccommodation, Office, ShoppingCentre, Unit)
+from rest_framework.serializers import ValidationError
 import pdb
 
 class AssetClassUnitSerializer(serializers.Serializer):
@@ -14,8 +15,8 @@ class AssetClassUnitSerializer(serializers.Serializer):
 
 class UnitSerializer(serializers.ModelSerializer):
     asset_class = AssetClassUnitSerializer()
-    identifier = serializers.CharField(required=False)
-    description = serializers.CharField(required=False)
+    identifier = serializers.CharField(required=False, default="")
+    description = serializers.CharField(required=False, allow_blank= True, default="")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     beds = serializers.IntegerField(required=False, allow_null= True)
     
@@ -33,14 +34,14 @@ class UnitSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        use_map = {
-            'Hotel': Hotel,
-            'Residential': Residential,
-            'Retail': Retail,
-            'Office': Office,
-            'Shopping Centre': ShoppingCentre,
-            'Student Accommodation': StudentAccommodation
-        }
+        # use_map = {
+        #     'Hotel': Hotel,
+        #     'Residential': Residential,
+        #     'Retail': Retail,
+        #     'Office': Office,
+        #     'Shopping Centre': ShoppingCentre,
+        #     'Student Accommodation': StudentAccommodation
+        # }
         
         # pdb.set_trace()
         
@@ -65,6 +66,13 @@ class AssetClassSerializer(serializers.ModelSerializer):
         model = AssetClass
         fields = ['id', 'scheme_id']
         # depth = 1
+
+    # def create(self, validated_data):
+    #     scheme_id = validated_data.pop("scheme_id")
+    #     scheme = Scheme.objects.get(id=scheme_id)
+    #     validated_data.update({"scheme": scheme})
+
+    #     return super().create(validated_data)
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
@@ -103,23 +111,33 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 
 class HotelSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
 
     class Meta:
         model = Hotel
         fields = AssetClassSerializer.Meta.fields + ['use']
 
-    def create(self, validated_data):
-        # pdb.set_trace()
+    def create(self, validated_data): 
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
+        self.validate_use(validated_data["use"])
+
         hotel = Hotel.objects.create(**validated_data)
         return hotel
+    
+    def validate_use(self, value):
+        if value.lower() != "hotel":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value
 
 class ResidentialSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
 
     class Meta:
         model = Residential
@@ -130,12 +148,23 @@ class ResidentialSerializer(AssetClassSerializer):
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
-        
+
+        self.validate_use(validated_data["use"])
+
         residential = Residential.objects.create(**validated_data)
         return residential
+    
+    def validate_use(self, value):
+        if value.lower() != "residential":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value
 
 class RetailSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
     description = serializers.CharField(required=False)
 
     class Meta:
@@ -146,13 +175,24 @@ class RetailSerializer(AssetClassSerializer):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
-
         validated_data.update({"scheme": scheme})
+
+        self.validate_use(validated_data["use"])
+
         retail = Retail.objects.create(**validated_data)
         return retail
+    
+    def validate_use(self, value):
+        if value.lower() != "retail":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value
 
 class OfficeSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
 
     class Meta:
         model = Office
@@ -162,13 +202,24 @@ class OfficeSerializer(AssetClassSerializer):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
-
         validated_data.update({"scheme": scheme})
+
+        self.validate_use(validated_data["use"])
+
         office = Office.objects.create(**validated_data)
         return office
+    
+    def validate_use(self, value):
+        if value.lower() != "office":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value
 
 class ShoppingCentreSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
 
     class Meta:
         model = ShoppingCentre
@@ -178,13 +229,24 @@ class ShoppingCentreSerializer(AssetClassSerializer):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
-
         validated_data.update({"scheme": scheme})
+
+        self.validate_use(validated_data["use"])
+
         shopping_centre = ShoppingCentre.objects.create(**validated_data)
         return shopping_centre
+    
+    def validate_use(self, value):
+        if value.lower() != "shopping centre":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value
 
 class StudentAccommodationSerializer(AssetClassSerializer):
-    use = serializers.CharField(read_only=True)
+    use = serializers.CharField()
 
     class Meta:
         model = StudentAccommodation
@@ -194,7 +256,18 @@ class StudentAccommodationSerializer(AssetClassSerializer):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = Scheme.objects.get(id=scheme_id)
-
         validated_data.update({"scheme": scheme})
+
+        self.validate_use(validated_data["use"])
+
         student_accommodation = StudentAccommodation.objects.create(**validated_data)
         return student_accommodation
+    
+    def validate_use(self, value):
+        if value.lower() != "student accommodation":
+            data = {
+                'status': 'error',
+                'message': 'use type not valid'
+                }
+            raise ValidationError(data, code=400)
+        return value

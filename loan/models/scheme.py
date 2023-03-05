@@ -37,7 +37,7 @@ class AssetClass(TimestampedModel, AuthorTrackerModel):
         return self.use
    
 class Hotel(AssetClass):
-    use = "hotel"
+    pass
 
 
     # @property
@@ -46,14 +46,13 @@ class Hotel(AssetClass):
     
     
 class Residential(AssetClass): 
-    use = "residential"
+    pass
     
     # @property
     # def use(self):
     #     return self.__class__.__name__
 
 class Retail(AssetClass):
-    use = "retail"
     description = models.CharField(max_length=100, blank=True, default="") #could be cafe or restaurant or...
 
     # def __str__(self):
@@ -64,21 +63,21 @@ class Retail(AssetClass):
     #     return self.__class__.__name__
 
 class StudentAccommodation(AssetClass): 
-    use = "student accommodation"
+    pass
 
     # @property
     # def use(self):
     #     return "Student Accommodation"
 
 class Office(AssetClass): 
-    use = "office"
+    pass
 
     # @property
     # def use(self):
     #     return self.__class__.__name__
 
 class ShoppingCentre(AssetClass): 
-    use = "shopping centre"
+    pass
 
     # @property
     # def use(self):
@@ -110,6 +109,17 @@ class Unit(TimestampedModel, AuthorTrackerModel):
 
     def __str__(self):
         self.identifier
+
+    def save(self, *args, **kwargs):
+        # define description field as number of beds , if beds is not null
+        if self.beds:
+            self.description = f"{self.beds}-bed"
+
+        # define identifier field as the unit number, for a given asset class
+        if not self.identifier:
+            self.identifier = self.asset_class.units.count() + 1
+
+        super().save(*args, **kwargs)
 
     # @property
     # def use(self):
