@@ -89,7 +89,7 @@
             
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
-                <div class="col-3 border-table">Description</div>
+                <div class="border-table" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
                 <div class="col border-table">{{units.at(0).value.areaType}} ({{scheme.system | lowercase}})</div>
                 <div class="col-3 border-table px-0" *ngIf="assetClassHasBeds()"> Beds per {{units.at(0).value.label}} </div>
@@ -102,8 +102,8 @@
                 <div [formGroupName]="i">
                   <div class="row mx-0">
                     
-                    <div class="col-3 my-auto px-0" >
-                      <ng-container *ngIf="units.length > 1; else noDescription">
+                    <div class="my-auto px-0" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
+                      <ng-container *ngIf="units.length > 1 || assetClass.use.toLowerCase() === 'retail'; else noDescription">
                         <input class="form-control" formControlName="description" placeholder="description">
                       </ng-container>
                       <ng-template #noDescription>
@@ -132,7 +132,7 @@
             </ng-container>
 
             <div class="row mx-0" *ngIf="units.length > 1">
-              <div class="col-3 px-0 my-auto">
+              <div class="px-0 my-auto" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
                 <span class="form-control fw-bolder border-0">Total</span>
               </div>
               <div class="col my-auto px-0 text-end">

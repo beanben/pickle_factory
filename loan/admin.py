@@ -85,13 +85,13 @@ class UnitAdmin(admin.ModelAdmin):
     list_display = (
         'asset_class',
         'identifier',
+        'description',
+        'beds',
         'area_size',
         )
 
 #     def asset_class_name(self, obj):
 #         return obj.asset_class.__class__.__name__
-
-#     asset_class_name.short_description = 'Asset Class Name'
 
 admin.site.register(Loan, LoanAdmin)
 admin.site.register(Borrower, BorrowerAdmin)

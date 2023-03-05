@@ -101,14 +101,16 @@ class Unit(TimestampedModel, AuthorTrackerModel):
     # shopping_centre = models.ForeignKey(ShoppingCentre, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
     
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
-    identifier = models.CharField(default="1", max_length=10)
+    identifier = models.CharField(verbose_name="unit number", default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
     beds = models.IntegerField(blank=True, null=True)
     area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
 
     def __str__(self):
-        self.identifier
+        # display th eunit identified for a given asset class
+        return self.identifier
+
 
     def save(self, *args, **kwargs):
         # define description field as number of beds , if beds is not null
