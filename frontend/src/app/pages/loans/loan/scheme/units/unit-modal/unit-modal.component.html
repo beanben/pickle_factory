@@ -1,5 +1,4 @@
 <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
-  <!-- <div class="modal-dialog modal-centered" [ngClass]="{'modal-extend':step ===2}"> -->
   <div class="modal-dialog modal-centered">
     <div class="modal-content">
 
@@ -34,14 +33,14 @@
             <div class="form-group mb-3 px-2">
               <app-required></app-required>
               <div class="form-floating text-center">
-                <select class="form-select" id="asset-class" formControlName="assetClass">
+                <select class="form-select" id="asset-class" formControlName="assetClassTypeString">
                   <option [ngValue]="''"> -- Select Asset Class --</option>
                   <option *ngFor='let choice of assetClassesChoices' [ngValue]="choice">{{ choice}}
                   </option>
                 </select>
                 <label for="asset-class">Asset class</label>
               </div>
-              <div *ngIf="assetClass?.invalid && (f.dirty || nextIsClicked)"
+              <div *ngIf="assetClassTypeString?.invalid && (f.dirty || nextIsClicked)"
                 class="mt-2 alert alert-danger">
                 Please select the unit asset class
               </div>
@@ -83,7 +82,7 @@
             <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
-                  value="{{assetClass!.value}}" disabled>
+                  value="{{assetClass.use}}" disabled>
                 <label for="asset-class">Asset class</label>
               </div>
             </div>
@@ -93,7 +92,7 @@
                 <div class="col-3 border-table">Description</div>
                 <div class="col border-table">{{units.at(0).value.label | titlecase}}s</div>
                 <div class="col border-table">{{units.at(0).value.areaType}} ({{scheme.system | lowercase}})</div>
-                <div class="col-3 border-table px-0" *ngIf="assetClassHasBeds()">Beds per {{units.at(0).value.label}}</div>
+                <div class="col-3 border-table px-0" *ngIf="assetClassHasBeds()"> Beds per {{units.at(0).value.label}} </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -158,7 +157,9 @@
                 {{control.name}} must be a {{control.type}}
               </div>
             </div>
+
           </form>
+
         </div>
 
         <div class="modal-footer">
@@ -172,4 +173,5 @@
 
     </div>
   </div>
+
 </div>

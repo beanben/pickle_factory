@@ -2,7 +2,7 @@ import pdb
 from django.db import models
 from core.models import TimestampedModel, AuthorTrackerModel
 from .loan import Loan
-# from loan.managers import SchemeManager
+from loan.managers import SchemeManager
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
     SYSTEM_CHOICES =[
@@ -19,53 +19,88 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     opening_date = models.DateField(blank=True, null=True)
     system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
 
+    objects = SchemeManager()
+
     def __str__(self):
         return self.name
 
 
 class AssetClass(TimestampedModel, AuthorTrackerModel):
-    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name="asset_classes")
-    # use = models.CharField(max_length=100, blank=True, default="")
-    
-    # @property
-    # def category(self):
-    #     return self.__class__.__name__
+    use = models.CharField(max_length=40)
+    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE)
 
     class Meta:
+        # abstract = True
         verbose_name_plural = "Asset Classes" #for the admin panel
-    
-        
-class Hotel(AssetClass):
-    pass
-    
-class Residential(AssetClass): 
-    pass
-
-class Retail(AssetClass):
-    description = models.CharField(max_length=100, blank=True, default="") #could be cafe or restaurant or...
 
     def __str__(self):
-        return self.description
+        return self.use
+   
+class Hotel(AssetClass):
+    use = "hotel"
+
+
+    # @property
+    # def use(self):
+    #     return self.__class__.__name__
+    
+    
+class Residential(AssetClass): 
+    use = "residential"
+    
+    # @property
+    # def use(self):
+    #     return self.__class__.__name__
+
+class Retail(AssetClass):
+    use = "retail"
+    description = models.CharField(max_length=100, blank=True, default="") #could be cafe or restaurant or...
+
+    # def __str__(self):
+    #     return self.description
+    
+    # @property
+    # def use(self):
+    #     return self.__class__.__name__
 
 class StudentAccommodation(AssetClass): 
-    pass
+    use = "student accommodation"
+
+    # @property
+    # def use(self):
+    #     return "Student Accommodation"
 
 class Office(AssetClass): 
-    pass
+    use = "office"
+
+    # @property
+    # def use(self):
+    #     return self.__class__.__name__
 
 class ShoppingCentre(AssetClass): 
-    pass
+    use = "shopping centre"
+
+    # @property
+    # def use(self):
+    #     return "Shopping Centre"
 
 class Unit(TimestampedModel, AuthorTrackerModel):
     LABEL_CHOICES =[
-        ("UNIT", "unit"),
-        ("ROOM", "room")
+        ("unit", "unit"),
+        ("room", "room")
     ]
     AREA_TYPE_CHOICES =[
         ("NIA", "Net Internal Area"),
         ("GIA", "Gross Internal Area"),
     ]
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units")
+    # hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=True, blank=True , related_name="units")
+    # residential = models.ForeignKey(Residential, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
+    # retail = models.ForeignKey(Retail, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
+    # student_accommodation = models.ForeignKey(StudentAccommodation, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
+    # office = models.ForeignKey(Office, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
+    # shopping_centre = models.ForeignKey(ShoppingCentre, on_delete=models.CASCADE, null=True, blank=True, related_name="units")
+    
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
     identifier = models.CharField(default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
@@ -75,6 +110,11 @@ class Unit(TimestampedModel, AuthorTrackerModel):
 
     def __str__(self):
         self.identifier
+
+    # @property
+    # def use(self):
+    #     return self.asset_class.use
+    
 
 # class Area(models.Model):
 #     SYSTEM_CHOICES =[

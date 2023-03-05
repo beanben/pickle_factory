@@ -1,10 +1,13 @@
-# from django.db import models
+from django.db import models
+from itertools import chain
 
-# class SchemeManager(models.Manager):
-#     def asset_classes(self):
-#         return self.prefetch_related('hotel_asset_classes',
-#                                     'residential_asset_classes',
-#                                     'retail_asset_classes',
-#                                     'office_asset_classes',
-#                                     'shoppingcentre_asset_classes',
-#                                     'studentaccommodation_asset_classes')
+class SchemeManager(models.Manager):
+
+    def get_asset_classes(self, scheme):
+        from loan.models.scheme import AssetClass
+        
+        subclasses = AssetClass.__subclasses__()
+        querysets = [
+            subclass.objects.filter(scheme=scheme) for subclass in subclasses
+        ]
+        return chain(*querysets)

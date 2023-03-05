@@ -1,4 +1,6 @@
-import { Unit } from "../pages/loans/loan/scheme/scheme";
+// import { Unit } from "../pages/loans/loan/scheme/scheme";
+
+import { Unit } from "../pages/loans/loan/scheme/scheme.model";
 
 export interface StringDictionary {
     [index: string]: string;

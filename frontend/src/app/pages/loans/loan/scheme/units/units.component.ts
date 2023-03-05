@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { StringDictionary, StringUnitsDictionary } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { AssetClass, Hotel, Office, Residential, Retail, Scheme, ShoppingCentre, StudentAccommodation, Unit } from '../scheme';
+import { Scheme } from '../scheme';
+import { AssetClassType} from '../scheme.model';
+
 
 @Component({
   selector: 'app-units',
@@ -11,13 +12,10 @@ import { AssetClass, Hotel, Office, Residential, Retail, Scheme, ShoppingCentre,
 export class UnitsComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
-  assetClassChoices: StringDictionary = {};
-  assetClassUnits = {} as StringUnitsDictionary;
 
   @Input() scheme = {} as Scheme
 
   constructor(
-    private _schemeService: SchemeService
   ) { }
 
   ngOnInit(): void { }
@@ -27,63 +25,15 @@ export class UnitsComponent implements OnInit {
     this.modalMode = modalMode;
   }
 
-  onSave(assetClass: Hotel |
-                     Residential | 
-                     Retail | 
-                     StudentAccommodation | 
-                     Office | 
-                     ShoppingCentre | 
-                     null){
+  onSave(assetClass: AssetClassType | null){
 
     this.openUnitModal = false;
 
-    console.log("scheme", this.scheme);
 
     if(assetClass){
-      this.scheme.assetClasses!.unshift(assetClass);
-      
+      console.log("assetClass from inside units", assetClass);
     }
   }
 
-  // getType(assetClass: Hotel |
-  //                       Residential | 
-  //                       Retail | 
-  //                       StudentAccommodation | 
-  //                       Office | 
-  //                       ShoppingCentre): string{
-  //     switch (true) {
-  //       case assetClass instanceof Hotel:
-  //         return 'Hotel';
-  //       case assetClass instanceof Residential:
-  //         return 'Residential';
-  //       case assetClass instanceof Retail:
-  //         return 'Retail';
-  //       case assetClass instanceof StudentAccommodation:
-  //         return 'Student Accommodation';
-  //       case assetClass instanceof Office:
-  //         return 'Office';
-  //       case assetClass instanceof ShoppingCentre:
-  //         return 'Shopping Centre';
-  //       default:
-  //         return 'Unknown';
-  //     }
-  // }
-
-
-
-  // groupByAssetClass(units: Unit[]): StringUnitsDictionary{
-  //   let dict = {} as StringUnitsDictionary;
-
-  //     units.forEach(unit => {
-  //       if(dict[unit.assetClass]){
-  //         dict[unit.assetClass].push(unit)
-
-  //       } else {
-  //         dict[unit.assetClass] = [unit]
-  //       }
-  //     })
-
-  //     return dict;
-  // }
 
 }

@@ -1,11 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Scheme, Unit, Hotel, Residential, Retail, StudentAccommodation, Office, ShoppingCentre, AssetClass } from '../../scheme';
+import { Scheme} from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Choice, StringDictionary } from 'src/app/shared/shared';
-import { PascalToTitle } from 'src/app/shared/utils';
+import { pascalToTitle } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
+import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
 
 @Component({
   selector: 'app-unit-modal',
@@ -18,40 +19,29 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   assetClassStatus = "active";
   detailStatus = "inactive";
   step = 1;
-  areaType = "";
-  areaSystem = "";
   nextIsClicked = false;
   formIsSubmitted = false;
   numbersOnly = /^\d+$/;
   totalUnits = 0;
-  totalBeds = 0;
   totalArea = 0;
 
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
-  @Output() modalSaveUnits = new EventEmitter<Unit[] | null>();
-  @Output() modalSaveAssetClass = new EventEmitter<AssetClass | null>();
+  @Output() modalSaveAssetClass = new EventEmitter<AssetClassType | null>();
 
-  unitAreaTypes: Choice[] = [];
   assetClassesChoices: string[] = [];
   requiredControls: string[] = [];
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
-  assetClassChoices: StringDictionary = {};
-  assetClassType = {} as Hotel |
-                    Residential | 
-                    Retail | 
-                    StudentAccommodation | 
-                    Office | 
-                    ShoppingCentre;
+  assetClass = {} as AssetClassType;
 
   form: FormGroup = this.fb.group({
-    assetClass: ['', Validators.required],
+    assetClassTypeString: ['', Validators.required],
     units: this.fb.array([])
   })
-  get assetClass() {
-    return this.form.get('assetClass')
+  get assetClassTypeString() {
+    return this.form.get('assetClassTypeString')
   };
   get units(): FormArray {
     return this.form.get("units") as FormArray
@@ -67,7 +57,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.step = 1;
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
-    this.getUnitAreaTypes();
 
     this.subs.push(
       this.units.valueChanges.subscribe(() => {
@@ -86,35 +75,22 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   newUnit(): FormGroup {
-    const newUnit = this.fb.group({
-      label: ['unit'],
-      description: [''],
+    const newUnit = new Unit(this.assetClass);
+
+    return this.fb.group({
+      id: [newUnit.id],
+      label: [newUnit.label],
+      description: ['', Validators.required],
       quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [null, Validators.pattern(this.numbersOnly)],
-      // beds_total: [null],
       areaSize: [null, Validators.pattern(this.numbersOnly)],
-      areaType: ['NIA', Validators.required],
-    });
-
-    return newUnit
+      areaType: [newUnit.areaType]
+    })
   }
-
-
 
   assetClassHasBeds():boolean {
     const hasBeds = ['student accommodation', 'hotel', 'residential']
-    return hasBeds.includes(this.assetClass!.value.toLowerCase())
-  }
-
-
-  addUnit() {
-    this.units.insert(0, this.newUnit());
-
-    this.units.at(0).get('label')?.patchValue(this.unitLabelIs());
-    this.units.at(0).get('areaType')?.patchValue(
-      this.defineUnitAreaType(this.assetClass!.value)
-    );
-
+    return hasBeds.includes(this.assetClass.use.toLowerCase())
   }
 
   removeUnit(index: number) {
@@ -132,11 +108,27 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   onNext() {
     this.nextIsClicked = true;
 
-    if(!!this.assetClass!.valid){
-      this.assetClassIs(this.assetClass!.value);
-      this.addUnit();
+    if(!!this.assetClassTypeString!.valid){
+      
       this.step += 1;
       this.updateStatus();
+
+      const assetClassType = this.assetClassTypeString!.value;
+      this.assetClass = this.newAssetClass(assetClassType);
+
+      this.addUnit();
+    }
+
+  }
+
+  addUnit() {
+    this.units.insert(0, this.newUnit());
+
+    if(this.units.length === 1){
+      this.units.at(0).get("description")!.patchValue("Total");
+    };
+    if(this.units.length === 2){
+      this.units.at(1).get("description")!.reset();
     }
 
   }
@@ -151,57 +143,21 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  defineUnitAreaType(assetClassType:string): string{
-    switch(assetClassType){
-      case "Hotel":
-      case "Residential":
-      case "Student Accommodation":
-        return "NIA";
-      
-      case "Retail":
-      case "Office":
-      case "Shopping Centre":
-        return "GIA";
+  newAssetClass(type:string): AssetClassType{
 
-      default:
-        return "NIA";
-    }
+    const assetClassTypeMap: Record<string, new () => AssetClassType> = {
+      "Hotel": Hotel,
+      "Residential": Residential,
+      "Retail": Retail,
+      "Student Accommodation": StudentAccommodation,
+      "Office": Office,
+      "Shopping Centre": ShoppingCentre,
+    };
+
+    const AssetClass = assetClassTypeMap[type] || Residential;
+    return new AssetClass();
   }
 
-  assetClassIs(type:string){
-    switch(type){
-      case "Hotel":
-        this.assetClassType = {} as Hotel;
-        break;
-      case "Residential":
-        this.assetClassType = {} as Residential;
-        break;
-      case "Retail":
-        this.assetClassType = {} as Retail;
-        break;
-      case "Student Accommodation":
-        this.assetClassType = {} as StudentAccommodation;
-        break;
-      case "Office":
-        this.assetClassType = {} as Office;
-        break;
-      case "Shopping Centre":
-        this.assetClassType = {} as ShoppingCentre;
-        break;
-    }
-  }
-
-
-
-  unitLabelIs(): string{
-    const assetClass: string = this.assetClass!.value;
-    
-    if(assetClass === "Hotel" || assetClass === "Student Accommodation"){
-        return "room";
-    } else {
-       return "unit"
-    }
-  }
 
 
   onPrevious() {
@@ -210,31 +166,27 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.step -= 1;
     this.updateStatus();
     this.units.clear()
-
   }
 
   onSave() {
     this.formIsSubmitted = true;
     this.getInvalidControls();
 
-    console.log("onSave: ")
-    console.log("this.form.valid: ", this.form.valid)
     if (!this.form.valid) {
       return;
     }
 
-    const assetClassType = this.assetClass!.value;
+    this.assetClass.schemeId = this.scheme.id;
 
-    const assetClass = {} as AssetClass;
-    assetClass.schemeId = this.scheme.id;
-
-    this._schemeService.createAssetClass(assetClass, assetClassType)
+    this._schemeService.createAssetClass(this.assetClass)
       .then((result:APIResult) => {
-        let assetClassCreated = this.allocateAssetClassInterface(result, this.assetClass!.value);
+        let assetClassCreated = result.response as AssetClassType;
 
         this.units.controls.forEach(newUnit => {
-          const unit: Unit = this.createUnitInterface(assetClassCreated, newUnit);
 
+          const unit: Unit = this.defineUnit(assetClassCreated, newUnit);
+
+          // create an array of units
           const units: Unit[] = Array.from(
             {length: newUnit.get('quantity')!.value},
             () => unit
@@ -252,42 +204,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       })
   }
 
-  allocateAssetClassInterface(result: APIResult, assetClassValue: string) {
+  defineUnit(assetClass:AssetClassType, newUnit:AbstractControl): Unit{
 
-    if(assetClassValue === "Hotel"){
-      return result.response as Hotel;
-    } else if(assetClassValue === "Residential"){
-      return result.response as Residential;
-    } else if(assetClassValue === "Retail"){
-      return result.response as Retail;
-    } else if(assetClassValue === "Student Accommodation"){
-      return result.response as StudentAccommodation;
-    } else if(assetClassValue === "Office"){
-      return result.response as Office;
-    } else if(assetClassValue === "Shopping Centre"){
-      return result.response as ShoppingCentre;
-    } else {
-      return result.response as AssetClass;
-    }
-
-}
-
-  createUnitInterface(assetClass:AssetClass, newUnit:AbstractControl): Unit{
-    const unit: Unit = {
-              assetClassId: assetClass.id,
-              label: newUnit.get('label')!.value,
-    };
-    if(newUnit.get('description')?.value){
-      unit.description = newUnit.get('description')!.value;
-    };
-    if(newUnit.get('areaSize')?.value){
-      unit.areaSize = newUnit.get('areaSize')!.value;
-      unit.areaType = newUnit.get('areaType')!.value;
-    };
-    if(newUnit.get('beds')?.value){
-      unit.beds = newUnit.get('beds')!.value;
-    }
-
+    const unit = new Unit(assetClass);
+    unit.description = newUnit.get('description')!.value;
+    unit.areaSize = newUnit.get('areaSize')!.value;
+    unit.beds = newUnit.get('beds')!.value;
     return unit;
   }
 
@@ -327,8 +249,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   controlLabels(controlName: string): string{
     if(controlName === "quantity"){
-      return this.unitLabelIs();
-    } else if(controlName === "area_size") {
+      return this.units.at(0).value.label
+    } else if(controlName === "areaSize") {
       return "area";
     } else {
       return controlName;
@@ -341,20 +263,16 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   calculateTotals(): void {
     this.totalUnits = 0;
-    // this.totalBeds = 0;
     this.totalArea = 0;
 
     let totalUnits = 0;
-    // let totalBeds = 0;
     let totalArea = 0;
     this.units.controls.forEach(control => {
       totalUnits += +control.get('quantity')?.value || 0;
-      // totalBeds += +control.get('beds_total')?.value || 0;
       totalArea += +control.get('areaSize')?.value || 0;
     });
 
     this.totalUnits += totalUnits;
-    // this.totalBeds += totalBeds;
     this.totalArea += totalArea;
   }
 
@@ -374,18 +292,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
         const formattedChoices: string[] = [];
         res.forEach(choice => {
-          formattedChoices.push(PascalToTitle(choice))
+          formattedChoices.push(pascalToTitle(choice))
         })
 
         this.assetClassesChoices = formattedChoices;
         this._schemeService.setAssetClassChoicesSub(formattedChoices); 
-      })
-  }
-
-  getUnitAreaTypes(){
-    this._schemeService.getUnitAreaTypes()
-      .subscribe((unitAreaTypes: Choice[]) => {
-        this.unitAreaTypes = unitAreaTypes;
       })
   }
 
