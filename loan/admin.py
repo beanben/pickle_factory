@@ -90,13 +90,17 @@ class UnitAdmin(admin.ModelAdmin):
         'area_size',
         )
 
-#     def asset_class_name(self, obj):
-#         return obj.asset_class.__class__.__name__
+class AssetClassAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'use',
+        'scheme',
+        )
 
 admin.site.register(Loan, LoanAdmin)
 admin.site.register(Borrower, BorrowerAdmin)
 admin.site.register(Scheme, SchemeAdmin)
-admin.site.register(AssetClass)
+admin.site.register(AssetClass, AssetClassAdmin)
 admin.site.register(Hotel, HotelAdmin)
 admin.site.register(Residential, ResidentialAdmin)
 admin.site.register(Retail, RetailAdmin)

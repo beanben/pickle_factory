@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
-import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
+import { AssetClassType,  Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';

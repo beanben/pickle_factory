@@ -34,45 +34,43 @@ class UnitSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        # use_map = {
-        #     'Hotel': Hotel,
-        #     'Residential': Residential,
-        #     'Retail': Retail,
-        #     'Office': Office,
-        #     'Shopping Centre': ShoppingCentre,
-        #     'Student Accommodation': StudentAccommodation
-        # }
-        
-        # pdb.set_trace()
-        
         asset_class_id = validated_data.pop("asset_class")["id"]
         asset_class = AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
-        
-        # asset_class = validated_data["asset_class"]
 
         if "identifier" not in validated_data:
             units_per_asset_class = len(Unit.objects.filter(asset_class=asset_class))
             validated_data["identifier"] = f"{units_per_asset_class + 1}"
         
-        # pdb.set_trace()
         return Unit.objects.create(**validated_data)
-    
+
+class GroupAssetClassUnit(serializers.Serializer):
+    description = serializers.CharField()
+    group_quantity = serializers.IntegerField()
+    group_beds = serializers.IntegerField()
+    group_area_size = serializers.DecimalField(max_digits=20, decimal_places=2)
+
+    class Meta:
+        fields = [
+            'description', 
+            'group_quantity',
+            'group_beds',
+            'group_area_size']
+
+
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
     scheme_id = serializers.IntegerField()
+    group_units_by_description = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = AssetClass
-        fields = ['id', 'scheme_id']
-        # depth = 1
+        fields = ['id', 'scheme_id', 'use', 'group_units_by_description']
 
-    # def create(self, validated_data):
-    #     scheme_id = validated_data.pop("scheme_id")
-    #     scheme = Scheme.objects.get(id=scheme_id)
-    #     validated_data.update({"scheme": scheme})
-
-    #     return super().create(validated_data)
+    def get_group_units_by_description(self, obj):
+        qs = AssetClass.objects.group_units_by_description(obj)
+        # pdb.set_trace()
+        return GroupAssetClassUnit(qs, many=True).data
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
@@ -101,9 +99,6 @@ class SchemeSerializer(serializers.ModelSerializer):
         scheme = Scheme.objects.create(**validated_data)
         return scheme
 
-    # def get_asset_classes(self, obj):
-    #     asset_classes = AssetClass.objects.filter(scheme=obj)
-    #     return AssetClassSerializer(asset_classes, many=True).data
 
     def get_asset_classes(self, obj):
         qs = Scheme.objects.get_asset_classes(obj) #uses the custom manager
@@ -123,6 +118,8 @@ class HotelSerializer(AssetClassSerializer):
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
+
+        
 
         hotel = Hotel.objects.create(**validated_data)
         return hotel

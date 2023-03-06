@@ -18,7 +18,9 @@ export class UnitsComponent implements OnInit {
   constructor(
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    console.log("scheme.assetClasses", this.scheme.assetClasses)
+  }
 
   onOpenModal(modalMode: string){
     this.openUnitModal = true;

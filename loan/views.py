@@ -187,7 +187,7 @@ class UnitDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
         })
 
 
-class AssetClassList(AuthorQuerySetMixin, generics.CreateAPIView):
+class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     use_serialiser_map = {
         'hotel': HotelSerializer,
         'residential': ResidentialSerializer,

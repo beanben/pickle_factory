@@ -80,7 +80,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return this.fb.group({
       id: [newUnit.id],
       label: [newUnit.label],
-      description: ['', Validators.pattern(this.numbersOnly)],
+      description: [''],
       quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [null, Validators.pattern(this.numbersOnly)],
       areaSize: [null, Validators.pattern(this.numbersOnly)],
@@ -178,9 +178,36 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     this.assetClass.schemeId = this.scheme.id;
 
-    this._schemeService.createAssetClass(this.assetClass)
+
+    const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
+      (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
+    );
+
+    if (existingAssetClass) {
+      this.units.controls.forEach(newUnit => {
+        const unit: Unit = this.defineUnit(existingAssetClass, newUnit);
+
+        // create an array of units
+        const units: Unit[] = Array.from(
+          {length: newUnit.get('quantity')!.value},
+          () => unit
+        );
+
+        this._schemeService.createUnits(units)
+          .then((result:APIResult) => {
+            const unitsCreated: Unit[] = result.response;
+            existingAssetClass.units = unitsCreated;
+
+            this.modalSaveAssetClass.emit(existingAssetClass);
+
+          })
+
+      })
+    } else {
+      this._schemeService.createAssetClass(this.assetClass)
       .then((result:APIResult) => {
         let assetClassCreated = result.response as AssetClassType;
+
         this.units.controls.forEach(newUnit => {
 
           const unit: Unit = this.defineUnit(assetClassCreated, newUnit);
@@ -201,6 +228,10 @@ export class UnitModalComponent implements OnInit, OnDestroy {
             })
         })
       })
+
+    }
+
+
   }
 
   defineUnit(assetClass:AssetClassType, newUnit:AbstractControl): Unit{

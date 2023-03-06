@@ -14,7 +14,7 @@ export interface Scheme {
     country?: string;
     openingDate?: Date;
     system: "SQFT" | "SQM";
-    assetClasses?: AssetClassType[],
+    assetClasses: AssetClassType[],
 }
 
 // export interface AssetClass {
