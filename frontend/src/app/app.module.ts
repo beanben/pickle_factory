@@ -34,6 +34,7 @@ import { SchemeModalComponent } from './pages/loans/loan/scheme/scheme-modal/sch
 import { UnitsComponent } from './pages/loans/loan/scheme/units/units.component';
 import { UnitModalComponent } from './pages/loans/loan/scheme/units/unit-modal/unit-modal.component';
 import { DotDirective } from './shared/shared.directive';
+import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/unit-card.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { DotDirective } from './shared/shared.directive';
     BorrowersComponent,
     UnitsComponent,
     UnitModalComponent,
-    DotDirective
+    DotDirective,
+    UnitCardComponent
   ],
   imports: [
     BrowserModule,

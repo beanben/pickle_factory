@@ -1,72 +1,70 @@
+// import { AssetClass } from "./scheme.model";
+
+import { AssetClassType } from "./scheme.model";
+
+
+
 export interface Scheme {
     id: number;
+    loanId: number;
     name: string;
     streetName?: string;
     postcode?: string;
     city: string;
     country?: string;
-    currency: "GBP" | "EUR" | "USD";
+    openingDate?: Date;
     system: "SQFT" | "SQM";
-    loanId: number;
-    units?: Unit[],
+    assetClasses: AssetClassType[],
 }
 
-export interface Unit {
-    id?: number,
-    schemeId?: number,
-    assetClass: string,
-    unitType: "unit" | "room",
-    description: string,
-    quantity: number,
-    beds: number | null,
-    area: number | null,
-    areaType: "NIA" | "NSA" | "GIA",
-    areaSystem?: "SQFT" | "SQM",  
-}
+// export interface AssetClass {
+//     id?: number;
+//     schemeId: number;
+//     units?: Unit[]
+// }
+// export interface Hotel extends AssetClass {
+// }
+// export interface Residential extends AssetClass {
+// }
+// export interface Retail extends AssetClass {
+//     description: string,
+// }
+// export interface StudentAccommodation extends AssetClass {
+// }
+// export interface Office extends AssetClass {
+// }
+// export interface ShoppingCentre extends AssetClass {
+// }
+
+// convert AssetClass interface into classes
+
 
 // export interface Unit {
 //     id?: number,
-//     schemeId?: number,
-//     description: string,
-//     quantity: number,
-//     area: number | null
+//     assetClassId?: number,
+//     label: "unit" | "room",
+//     identifier?: string,
+//     description?: string,
+//     areaSize?: number,
+//     areaType?: string,
+//     beds?: number,
 // }
 
-// export interface ResidentialUnit extends Unit {
-//     assetClass: "BTS" | "BTL",
-//     unitType: "unit",
-//     beds: number | null,
-//     areaType: "NIA"
+export interface Area {
+    id?: number,
+    unitId?: number,
+    size: number,
+    type: string,
+    system : "SQFT" | "SQM"
+}
+
+// export interface Bed {
+//     id?: number,
+//     unitId?: number,
+//     description?: string,
+//     width?: number, 
+//     length?: number, 
+//     height?: number,
+//     measure?: "CM" | "IN",
 // }
 
-// export interface HotelRoom extends Unit {
-//     assetClass: "H",
-//     unitType: "room",
-//     beds: number | null,
-//     areaType: "NIA"
-// }
-
-// export interface CommercialUnit extends Unit {
-//     assetClass: "C",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface OfficeUnit extends Unit {
-//     assetClass: "O",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface ShoppingCenterUnit extends Unit {
-//     assetClass: "S",
-//     unitType: "unit",
-//     areaType: "GIA"
-// }
-
-// export interface StudentRoom extends Unit {
-//     assetClass: "PBSA",
-//     unitType: "room",
-//     beds: number | null,
-//     areaType: "NIA"
-// }

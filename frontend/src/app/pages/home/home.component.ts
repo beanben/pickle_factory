@@ -29,17 +29,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     if(this._authService.isLoggedIn()){
       this.getLoans();
-    
-      this.subs.push(
-        this._authService.getUserSub()
-        .subscribe(user => this.user = user)
-      )
+      this.getUser();
     }
   }
 
+  getUser(){
+    this.subs.push(
+      this._authService.getUserSub()
+        .subscribe(user => this.user = user)
+    )
+  }
 
   closePopup(){
     this.openLoanModal = false;
@@ -70,20 +71,39 @@ export class HomeComponent implements OnInit, OnDestroy {
   getLoans(){
     const loansSub: Loan[] = this._loanService.loansSub.getValue();
 
-    let loansObs: Observable<Loan[]> = loansSub.length === 0 
-      ? this._loanService.getLoans()
-      : this._loanService.getLoansSub();
+    if(loansSub.length !== 0){
+      this.getSubLoans();
+    } else {
+      this.getReqLoans();
+    }
 
-    this.subs.push(
-      loansObs.subscribe(loans => {
-        this.loans = loans;
+  }
 
-        if (loansSub.length === 0) {
+  getSubLoans(){
+    const loanSub: Loan = this._loanService.loanSub.getValue();
+
+    this._loanService.getLoansSub()
+        .subscribe(loans => {
+          this.loans = loans;
+
+          if(Object(loanSub).keys.length === 0){
+            this._loanService.setLoanSub(loans[0]);
+          }
+        })
+  }
+
+  getReqLoans(){
+    const loanSub: Loan = this._loanService.loanSub.getValue();
+
+    this._loanService.getLoans()
+        .subscribe(loans => {
+          this.loans = loans;
           this._loanService.setLoansSub(loans);
-        }
-      })
-    )
 
+          if(loans.length !== 0 && !Object(loanSub).keys){
+            this._loanService.setLoanSub(this.loans[0]);
+          };
+        })
   }
 
   ngOnDestroy(): void {

@@ -47,12 +47,18 @@ body { margin: 0; }
 .input-section{
     border-radius: 0 .25rem .25rem 0;
 }
-#form.ng-submitted input.ng-invalid {
+#form.ng-submitted input.ng-invalid, #f.ng-submitted input.ng-invalidv{
     border: 1px solid red;
 }
-.border-table {
+.border-table-title {
     border-bottom: 1px solid rgb(128,128,128);
 }
+
+.border-table-row {
+    border-bottom: 0.5px solid rgb(128,128,128);
+}
+
+
 .tableTitle{
     font-weight: 450;
     border-top: 1px solid rgba(119,119,119);

@@ -46,9 +46,7 @@ export class LoansComponent implements OnInit, OnDestroy {
     }
   }
 
-
   getLoans(){
-    
     const loansSub: Loan[] = this._loanService.loansSub.getValue();
 
     if(loansSub.length !== 0){
@@ -83,8 +81,10 @@ export class LoansComponent implements OnInit, OnDestroy {
   }
 
   getLoan(){
-    this._loanService.getLoanSub()
+    this.subs.push(
+      this._loanService.getLoanSub()
         .subscribe(loan => this.loanSelected = loan)
+    )
   }
 
   onLoanSelected(index: number ){ 
@@ -127,7 +127,6 @@ export class LoansComponent implements OnInit, OnDestroy {
 
     if(this.loans.length !=0 ) {
       this._loanService.setLoanSub(this.loans[0]);
-
     }
   }
 

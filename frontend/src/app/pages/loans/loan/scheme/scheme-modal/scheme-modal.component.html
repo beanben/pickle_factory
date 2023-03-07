@@ -77,28 +77,11 @@
             <app-required></app-required>
             <div class="row mb-3 mx-0">
               <div class="col-auto py-2 px-0 form-section-title">
-                <span class="px-2">Currency</span>
-              </div>
-
-              <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of currencyChoices; let i = index">
-                  <input class="form-check-input" type="radio" name="currency" [id]="'currency-'+i"
-                    formControlName="currency" [value]="choice.value">
-                  <label class="form-check-label" [for]="'currency-'+i">
-                    {{choice.display}}
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <app-required></app-required>
-            <div class="row mb-3 mx-0">
-              <div class="col-auto py-2 px-0 form-section-title">
                 <span class="px-2">System</span>
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of systemChoices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of systemTypes; let i = index">
                   <input class="form-check-input" type="radio" name="system" [id]="'system-'+i" formControlName="system"
                     [value]="choice.value">
                   <label class="form-check-label" [for]="'system-'+i">
@@ -190,28 +173,11 @@
             <app-required></app-required>
             <div class="row mb-3 mx-0">
               <div class="col-auto py-2 px-0 form-section-title">
-                <span class="px-2">Currency</span>
-              </div>
-
-              <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of currencyChoices; let i = index">
-                  <input class="form-check-input" type="radio" name="currency" [id]="'currency-'+i"
-                    formControlName="currency" [value]="choice.value">
-                  <label class="form-check-label" [for]="'currency-'+i">
-                    {{choice.display}}
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <app-required></app-required>
-            <div class="row mb-3 mx-0">
-              <div class="col-auto py-2 px-0 form-section-title">
                 <span class="px-2">System</span>
               </div>
 
               <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of systemChoices; let i = index">
+                <div class="form-check form-check-inline" *ngFor="let choice of systemTypes; let i = index">
                   <input class="form-check-input" type="radio" name="system" [id]="'system-'+i" formControlName="system"
                     [value]="choice.value">
                   <label class="form-check-label" [for]="'system-'+i">

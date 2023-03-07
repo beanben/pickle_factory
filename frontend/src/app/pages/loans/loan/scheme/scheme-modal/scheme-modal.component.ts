@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { Choice } from 'src/app/shared/shared';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Loan } from '../../loan';
@@ -14,6 +15,12 @@ import { Scheme } from '../scheme';
 export class SchemeModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";
   errors: string[] = [];
+  // systemChoices =[
+  //   {value: "SQFT", display: "imperial (sqft)"},
+  //   {value: "SQM", display: "metric (sqm)"}
+  // ];
+  systemTypes: Choice[] = [];
+
 
   @Output() modalSaveScheme = new EventEmitter<void>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
@@ -24,36 +31,26 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   sub = Subscription.EMPTY;
   loan = {} as Loan;
 
-  currencyChoices =[
-    {value: "GBP", display: "GBP (£)"},
-    {value: "EUR", display: "EUR (€)"},
-    {value: "USD", display: "USD ($)"},
-  ];
-  systemChoices =[
-    {value: "SQFT", display: "imperial (sqft)"},
-    {value: "SQM", display: "metric (sqm)"}
-  ];
+  // currencyChoices =[
+  //   {value: "GBP", display: "GBP (£)"},
+  //   {value: "EUR", display: "EUR (€)"},
+  //   {value: "USD", display: "USD ($)"},
+  // ];
+
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    street_name: [''],
+    streetName: [''],
     postcode: [''],
     city: ['', Validators.required],
     country: [''],
-    currency: [this.currencyChoices[0].value, Validators.required],
-    system: [this.systemChoices[0].value, Validators.required]
+    system: ['SQFT', Validators.required]
   });
   get name(){
     return this.form.get('name')
   };
   get city(){
     return this.form.get('city')
-  };
-  get currency(){
-    return this.form.get('currency')
-  };
-  get system(){
-    return this.form.get('system')
   };
 
   constructor(
@@ -66,6 +63,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.addEventBackgroundClose();
     this.initForm();
+    this.getSystemTypes();
 
     this.sub = this._loanService.getLoanSub()
       .subscribe(loan => this.loan = loan)
@@ -112,8 +110,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
         'postcode': this.scheme.postcode,
         'city': this.scheme.city,
         'country': this.scheme.country,
-        'currency': this.scheme.currency,
-        'system': this.scheme.system
+        'system': this.scheme.system,
       })
     }
   }
@@ -130,6 +127,13 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     }
     });
   };
+
+  getSystemTypes(){
+    this._schemeService.getSystemTypes()
+      .subscribe((systemTypes: Choice[]) => {
+        this.systemTypes = systemTypes;
+      })
+  }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe()
