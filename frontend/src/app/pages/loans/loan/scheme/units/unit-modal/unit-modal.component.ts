@@ -179,6 +179,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.assetClass.schemeId = this.scheme.id;
 
 
+    // check if asset class already exists, if not create it
     const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
       (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
     );
@@ -230,7 +231,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       })
 
     }
-
 
   }
 
@@ -333,5 +333,24 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
+
+//   async getOrCreateAssetClass():Promise<AssetClassType>{
+//     const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
+//       (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
+//     );
+
+//     const assetClassPromise = new Promise((resolve) => {
+
+//       if(existingAssetClass){
+//         return existingAssetClass
+
+//       } else {
+//         this._schemeService.createAssetClass(this.assetClass)
+//         .then((result:APIResult) => {
+//           resolve(result.response as AssetClassType);
+//         })
+//     }
+//   })
+// }
 
 }

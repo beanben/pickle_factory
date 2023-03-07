@@ -14,12 +14,13 @@ class AssetClassUnitSerializer(serializers.Serializer):
         fields = ['id', 'scheme_id']
 
 class UnitSerializer(serializers.ModelSerializer):
-    asset_class = AssetClassUnitSerializer()
+    asset_class = AssetClassUnitSerializer(required=False)
     identifier = serializers.CharField(required=False, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     beds = serializers.IntegerField(required=False, allow_null= True)
-    
+    quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
+
     class Meta:
         model = Unit
         fields = [
@@ -30,7 +31,8 @@ class UnitSerializer(serializers.ModelSerializer):
             'description',
             'beds',
             'area_size',
-            'area_type']
+            'area_type',
+            'quantity']
 
 
     def create(self, validated_data):
@@ -44,33 +46,33 @@ class UnitSerializer(serializers.ModelSerializer):
         
         return Unit.objects.create(**validated_data)
 
-class GroupAssetClassUnit(serializers.Serializer):
-    description = serializers.CharField()
-    group_quantity = serializers.IntegerField()
-    group_beds = serializers.IntegerField()
-    group_area_size = serializers.DecimalField(max_digits=20, decimal_places=2)
+# class GroupAssetClassUnit(serializers.Serializer):
+#     description = serializers.CharField()
+#     group_quantity = serializers.IntegerField()
+#     group_beds = serializers.IntegerField()
+#     group_area_size = serializers.DecimalField(max_digits=20, decimal_places=2)
 
-    class Meta:
-        fields = [
-            'description', 
-            'group_quantity',
-            'group_beds',
-            'group_area_size']
+#     class Meta:
+#         fields = [
+#             'description', 
+#             'group_quantity',
+#             'group_beds',
+#             'group_area_size']
 
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
     scheme_id = serializers.IntegerField()
-    group_units_by_description = serializers.SerializerMethodField(required=False, allow_null=True)
+    units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = AssetClass
-        fields = ['id', 'scheme_id', 'use', 'group_units_by_description']
+        fields = ['id', 'scheme_id', 'use', 'units_grouped']
 
-    def get_group_units_by_description(self, obj):
+    def get_units_grouped(self, obj):
         qs = AssetClass.objects.group_units_by_description(obj)
         # pdb.set_trace()
-        return GroupAssetClassUnit(qs, many=True).data
+        return UnitSerializer(qs, many=True).data
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()

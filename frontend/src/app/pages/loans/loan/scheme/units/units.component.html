@@ -9,18 +9,9 @@
   <button class="btn btn-primary" (click)="onOpenModal('add')">Add unit</button>
 </div>
 
-<!-- <div class="row">
-  <div class="col p-2 border" *ngFor="let assetClass of scheme.assetClasses"> -->
-    <!-- <app-unit-card [assetClass]="assetClass" (editAssetClass)="onOpenModal('edit', $event)" (deleteAssetClass)="onDelete($event)"></app-unit-card> -->
-    <!-- <app-unit-card [assetClass]="assetClass"></app-unit-card> -->
-    <!-- typeof assetClass: {{getType(assetClass)}} -->
-  <!-- </div>
-</div> -->
-
-<!-- for assetClass in scheme.assetClasses
-    for unit_group in assetclass.group_units_by_description()
-      {{unit_group.description}}
-      {{unit_group.quantity}}
-      {{unit_group.beds}}
-      {{unit_group.area}} -->
+<div class="row py-2">
+  <div class="col p-2 border border-primary mx-2 rounded" *ngFor="let assetClass of scheme.assetClasses">
+    <app-unit-card [assetClass]="assetClass"></app-unit-card>
+  </div>
+</div>
 

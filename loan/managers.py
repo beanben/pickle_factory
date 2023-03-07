@@ -18,7 +18,7 @@ class AssetClassManager(models.Manager):
     def group_units_by_description(self, assetclass):
 
         return assetclass.units.values('description').annotate(
-            group_quantity=Count('id'), 
-            group_beds=Sum('beds'),
-            group_area_size = Sum('area_size')
+            quantity=Count('id'), 
+            beds=Sum('beds'),
+            area_size = Sum('area_size')
             )
