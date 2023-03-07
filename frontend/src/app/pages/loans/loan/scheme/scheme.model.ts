@@ -9,7 +9,7 @@ export type AssetClassType = Hotel |
 
 export abstract class AssetClassAbstract {
     abstract readonly use: string;
-    public units_grouped: Unit[] = [];
+    public unitsGrouped: Unit[] = [];
 
     constructor(
         public schemeId?: number, 
@@ -120,6 +120,11 @@ export class Unit {
         const isNIA = ["hotel", "student accommodation", "residential"];
         const isGIA = ["retail", "office", "shopping Centre", ];
         return isNIA.includes(this.assetClass.use.toLowerCase()) ? "NIA" : "GIA";
+    }
+
+    hasBeds(): boolean {
+        const hasBeds = ["student accommodation", "hotel", "residential"];
+        return hasBeds.includes(this.assetClass.use.toLowerCase());
     }
     
 }

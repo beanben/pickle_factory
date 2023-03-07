@@ -19,7 +19,7 @@ export class UnitsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void { 
-    console.log("scheme.assetClasses", this.scheme.assetClasses)
+    // console.log("scheme.assetClasses", this.scheme.assetClasses)
   }
 
   onOpenModal(modalMode: string){
@@ -31,7 +31,8 @@ export class UnitsComponent implements OnInit {
     this.openUnitModal = false;
 
     if(assetClass){
-      console.log("assetClass from inside units", assetClass);
+      this.scheme.assetClasses.push(assetClass);
+      // console.log("assetClass from inside units", assetClass);
     }
   }
 

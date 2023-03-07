@@ -34,6 +34,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
   assetClass = {} as AssetClassType;
+  unitStructure = {} as Unit;
 
   form: FormGroup = this.fb.group({
     assetClassTypeString: ['', Validators.required],
@@ -75,7 +76,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   };
 
   newUnit(): FormGroup {
-    const newUnit = new Unit(this.assetClass);
+    const newUnit = this.unitStructure;
 
     return this.fb.group({
       id: [newUnit.id],
@@ -115,7 +116,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
       const assetClassType = this.assetClassTypeString!.value;
       this.assetClass = this.newAssetClass(assetClassType);
-
+      this.unitStructure = new Unit(this.assetClass);
+      
       this.addUnit();
     }
 

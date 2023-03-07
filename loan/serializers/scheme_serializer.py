@@ -21,6 +21,7 @@ class UnitSerializer(serializers.ModelSerializer):
     beds = serializers.IntegerField(required=False, allow_null= True)
     quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
+
     class Meta:
         model = Unit
         fields = [
@@ -33,6 +34,7 @@ class UnitSerializer(serializers.ModelSerializer):
             'area_size',
             'area_type',
             'quantity']
+        depth = 1
 
 
     def create(self, validated_data):
@@ -45,6 +47,11 @@ class UnitSerializer(serializers.ModelSerializer):
             validated_data["identifier"] = f"{units_per_asset_class + 1}"
         
         return Unit.objects.create(**validated_data)
+    
+    # def get_has_beds(self, obj):
+    #     print("obj['beds']:", obj['beds'])
+    #     print("obj['beds'] is not None:", obj['beds'] is not None)
+    #     return obj['beds'] is not None
 
 # class GroupAssetClassUnit(serializers.Serializer):
 #     description = serializers.CharField()
@@ -64,15 +71,20 @@ class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
     scheme_id = serializers.IntegerField()
     units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
+    units = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = AssetClass
-        fields = ['id', 'scheme_id', 'use', 'units_grouped']
+        fields = ['id', 'scheme_id', 'use', 'units_grouped', 'units']
 
     def get_units_grouped(self, obj):
         qs = AssetClass.objects.group_units_by_description(obj)
         # pdb.set_trace()
         return UnitSerializer(qs, many=True).data
+    
+    def get_units(self, obj):
+        units = Unit.objects.filter(asset_class=obj)
+        return UnitSerializer(units, many=True).data
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()

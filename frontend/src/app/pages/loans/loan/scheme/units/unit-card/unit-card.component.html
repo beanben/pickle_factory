@@ -1,11 +1,19 @@
 <p>{{assetClass.use | titlecase}}</p>
 
-assetClass.unitsGrouped: {{assetClass.unitsGrouped | json}}
-<div class="row" *ngFor="let unit_group of assetClass.unitsGrouped">
-    <div class="col">
+<ng-container *ngIf="!!unitStructure">
 
-
-
-
+    <div class="row mx-0 pt-2 text-center">
+        <div class="border-table-title" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">Description</div>
+        <div class="col border-table-title">{{unitStructure.label | titlecase}}s</div>
+        <div class="col border-table-title">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+        <div class="col-3 border-table-title px-0" *ngIf="unitStructure.hasBeds()"> Beds per {{unitStructure.label}} </div>
+      </div>
+      
+      <div class="row mx-0 pt-2 text-center" *ngFor="let unitGroup of assetClass.unitsGrouped">
+        <div class="col border-table-row">{{unitGroup.description}} </div>
+        <div class="col border-table-row">{{unitGroup.quantity}}</div>
+        <div class="col border-table-row">{{unitGroup.areaSize}}</div>
+        <div class="col-3 border-table-row" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</div>
     </div>
-</div>
+
+</ng-container>
