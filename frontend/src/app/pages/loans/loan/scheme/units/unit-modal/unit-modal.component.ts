@@ -206,6 +206,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
           })
 
       })
+      
     } else {
       this._schemeService.createAssetClass(this.assetClass)
       .then((result:APIResult) => {

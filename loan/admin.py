@@ -28,6 +28,7 @@ class BorrowerAdmin(admin.ModelAdmin):
 
 class SchemeAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'name',
         'author_firm',
         'slug',

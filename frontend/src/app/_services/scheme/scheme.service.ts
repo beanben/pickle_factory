@@ -136,7 +136,7 @@ export class SchemeService {
   };
 
   deleteAssetClass(assetClass: AssetClassType): Observable<any> {
-    const url = `api/asset_class/${assetClass.id}/`;
+    const url = `/api/asset_class/${assetClass.id}/`;
 
     const options = {
       body: assetClass
@@ -146,5 +146,14 @@ export class SchemeService {
       tap(() => console.log('deleteAssetClass()', Math.random()))
     ); 
   }
+
+  getAssetClass(assetclass: AssetClassType): Observable<AssetClassType> {
+    const url = `/api/asset_class/${assetclass.id}/`;
+    
+    return this.http.get<AssetClassType>(url)
+      .pipe(
+        tap(() => console.log('getAssetClass()', Math.random()))
+      )
+  };
 
 }

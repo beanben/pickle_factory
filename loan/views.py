@@ -221,7 +221,8 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         })
 
 
-class AssetClassDetail(AuthorQuerySetMixin, generics.DestroyAPIView):
+class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
+    lookup_field = 'pk'
     use_model_map = {
         'hotel': Hotel,
         'residential': Residential,
@@ -231,11 +232,28 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.DestroyAPIView):
         'student accommodation': StudentAccommodation
     }
 
+    use_serialiser_map = {
+        'hotel': HotelSerializer,
+        'residential': ResidentialSerializer,
+        'retail': RetailSerializer,
+        'office': OfficeSerializer,
+        'shopping centre': ShoppingCentreSerializer,
+        'student accommodation': StudentAccommodationSerializer
+    }
+
     def get_object(self):
-        use = self.kwargs.get('use').lower()
-        pk = self.kwargs.get('pk')
+        
+        pk = self.kwargs[self.lookup_field]
+        asset_class = AssetClass.objects.get(id=pk)
+        use = asset_class.use.lower()
         use_model = self.use_model_map[use]
-        return use_model.objects.filter(pk=pk).first()
+        return use_model.objects.filter(id=pk).first()
+    
+    def get_serializer_class(self):
+        pk = self.kwargs[self.lookup_field]
+        asset_class = AssetClass.objects.get(id=pk)
+        use = asset_class.use.lower()
+        return self.use_serialiser_map[use]
 
 
     
