@@ -17,7 +17,6 @@ export abstract class AssetClassAbstract {
         public id?: number
     ) {}
     
-    
 }
 
 export class Hotel extends AssetClassAbstract {
