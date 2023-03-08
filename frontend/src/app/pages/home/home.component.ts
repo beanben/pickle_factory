@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { User } from '../auth/user';

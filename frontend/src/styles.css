@@ -75,7 +75,7 @@ body { margin: 0; }
 app-edit {
     visibility: hidden;
 }
-.highlight:hover app-edit {
+.highlight:hover app-edit, .selected:hover app-edit{
     visibility: visible;
 }
 .selected {

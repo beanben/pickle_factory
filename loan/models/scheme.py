@@ -84,6 +84,9 @@ class Unit(TimestampedModel, AuthorTrackerModel):
         if self.beds:
             self.description = f"{self.beds}-bed"
 
+        elif (self.asset_class.use == 'retail' or self.asset_class.use == 'office') and not self.description:
+            self.description = self.asset_class.use
+
         # define identifier field as the unit number, for a given asset class
         if not self.identifier:
             self.identifier = self.asset_class.units.count() + 1

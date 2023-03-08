@@ -8,9 +8,11 @@ import { AssetClassType, Unit } from '../../scheme.model';
   styleUrls: ['./unit-card.component.css']
 })
 export class UnitCardComponent implements OnInit {
+  openUnitModal = false;
+  modalMode = "";
+
   @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
-  // assetClassRetrieved = {} as AssetClassType;
   unitStructure = {} as Unit | null;
 
   constructor(
@@ -26,6 +28,19 @@ export class UnitCardComponent implements OnInit {
   getAssetClass() {
     this._schemeService.getAssetClass(this.assetClass)
       .subscribe(assetClass => this.assetClass = assetClass)
+  }
+
+  onOpenUnitModal(modalMode: string){
+    this.openUnitModal = true;
+    this.modalMode = modalMode;
+  }
+
+  onSave(assetClass: AssetClassType | null){
+    this.openUnitModal = false;
+
+    if(assetClass){
+      this.assetClass = assetClass;
+    }
   }
 
 }

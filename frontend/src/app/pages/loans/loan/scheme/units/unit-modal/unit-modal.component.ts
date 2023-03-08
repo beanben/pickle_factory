@@ -33,7 +33,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   errors: string[] = [];
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
-  assetClass = {} as AssetClassType;
+  @Input() assetClass = {} as AssetClassType;
   unitStructure = {} as Unit;
 
   form: FormGroup = this.fb.group({
@@ -57,6 +57,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.step = 1;
     this.addEventBackgroundClose();
     this.getAssetClassChoices();
+    this.initForm();
 
     this.subs.push(
       this.units.valueChanges.subscribe(() => {
@@ -125,14 +126,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   addUnit() {
     this.units.insert(0, this.newUnit());
-
-    // if(this.units.length === 1){
-    //   this.units.at(0).get("description")!.patchValue("Total");
-    // };
-    // if(this.units.length === 2){
-    //   this.units.at(1).get("description")!.reset();
-    // }
-
   }
 
   updateStatus(){
@@ -159,8 +152,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     const AssetClass = assetClassTypeMap[type] || Residential;
     return new AssetClass();
   }
-
-
 
   onPrevious() {
     this.formIsSubmitted = false;
@@ -337,23 +328,12 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-//   async getOrCreateAssetClass():Promise<AssetClassType>{
-//     const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
-//       (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
-//     );
+  initForm() {
+    const assetClassTypeString: string| null = this.assetClass.use;
 
-//     const assetClassPromise = new Promise((resolve) => {
-
-//       if(existingAssetClass){
-//         return existingAssetClass
-
-//       } else {
-//         this._schemeService.createAssetClass(this.assetClass)
-//         .then((result:APIResult) => {
-//           resolve(result.response as AssetClassType);
-//         })
-//     }
-//   })
-// }
+    if(assetClassTypeString){
+      this.form.controls['assetClassTypeString'].setValue(assetClassTypeString)
+    }
+  }
 
 }

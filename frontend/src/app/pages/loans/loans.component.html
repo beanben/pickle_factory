@@ -29,8 +29,7 @@
                                 (click)="onLoanSelected(i)"    
                                 [ngClass]="{'selected': loan.id == loanSelected.id}"
                                 style="height: 50px">
-                                <div 
-                                    class="scrollbar-thin pb-1 pt-1" 
+                                <div class="scrollbar-thin pb-1 pt-1" 
                                     (mouseenter)="onMouseEnter(i)" 
                                     (mouseleave)="onMouseLeave()" 
                                     [ngClass]="loan.id == loanHovered.id ? 'overflow-show' : 'overflow-hide'">

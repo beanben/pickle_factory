@@ -31,7 +31,6 @@ export class LoanComponent implements OnInit, OnDestroy {
       .subscribe(loan => {
         this.loan = loan;
       })
-
   }
 
    deleteScheme(index: number){
@@ -42,7 +41,7 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe()
   }
 
-  onOpenModal(modalMode: string){
+  onOpenLoanModal(modalMode: string){
     this.openLoanModal = true;
     this.modalMode = modalMode;
   }

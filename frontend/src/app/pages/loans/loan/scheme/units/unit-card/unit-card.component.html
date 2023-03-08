@@ -1,29 +1,28 @@
-<div class="border border-primary p-2 rounded">
-  <p class="fw-bolder">{{assetClass.use | titlecase}}</p>
+
+<app-unit-modal 
+    *ngIf="openUnitModal" 
+    [mode]="modalMode" 
+    [assetClass]="assetClass" 
+    (modalSaveAssetClass)="onSave($event)">
+</app-unit-modal>
+
+
+<div class="border border-primary p-2 rounded highlight">
+
+  <div class="d-flex align-items-center">
+    <div class="fw-bolder pe-2">{{assetClass.use | titlecase}}</div>
+    <app-edit (onOpenModalEdit)="onOpenUnitModal('edit')"></app-edit>
+  </div>
 
   <ng-container *ngIf="!!unitStructure">
-
-    <!-- <div class="row mx-0 pt-2 text-center fw-bolder">
-        <div class="col-auto border-table-title">Description</div>
-        <div class="col-auto border-table-title">{{unitStructure.label | titlecase}}s</div>
-        <div class="col-auto border-table-title">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
-        <div class="col-auto border-table-title px-0" *ngIf="unitStructure.hasBeds()"> Beds per {{unitStructure.label}} </div>
-      </div>
-      
-      <div class="row mx-0 pt-2 text-center" *ngFor="let unitGroup of assetClass.unitsGrouped">
-        <div class="col border-table-row">{{unitGroup.description}} 1</div>
-        <div class="col border-table-row">{{unitGroup.quantity}} 2</div>
-        <div class="col border-table-row">{{unitGroup.areaSize}} 3</div>
-        <div class="col border-table-row" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}} 4</div>
-    </div> -->
 
     <table class="table text-center">
       <thead>
         <tr>
-          <th scope="col border-table-title">Description</th>
-          <th scope="col border-table-title ">{{unitStructure.label | titlecase}}s</th>
-          <th scope="col border-table-title ">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</th>
-          <th scope="col border-table-title " *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</th>
+          <th scope="col">Description</th>
+          <th scope="col">{{unitStructure.label | titlecase}}s</th>
+          <th scope="col">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</th>
         </tr>
       </thead>
       <tbody>
@@ -35,6 +34,7 @@
         </tr>
       </tbody>
     </table>
+    
   </ng-container>
 
 </div>
