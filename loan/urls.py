@@ -8,10 +8,11 @@ from .views import (
     SchemeDetail,
     UnitList,
     UnitDetail,
-    asset_classes_choices,
+    asset_class_uses,
     system_types,
     AssetClassList,
-    AssetClassDetail
+    AssetClassDetail,
+    # available_asset_classes
 )
 
 unit_patterns = ([
@@ -22,7 +23,8 @@ unit_patterns = ([
 scheme_patterns = ([
     path('', SchemeList.as_view()),
     path('<int:pk>/', SchemeDetail.as_view()),
-    path('asset_class_choices/', asset_classes_choices),
+    # path('<int:pk>/available_asset_classes/', available_asset_classes),
+    path('asset_class_uses/', asset_class_uses),
     path('system_types/', system_types)
 ], 'scheme')
 

@@ -8,9 +8,8 @@
           (click)="onCancel()"></button>
       </div>
 
-      <ng-container *ngIf="step===1">
+      <ng-container *ngIf="step===1 && mode==='add'">
         <div class="modal-body">
-
           <nav
             style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
             aria-label="breadcrumb">
@@ -21,21 +20,23 @@
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="detailStatus"></span>
-                <span class="px-2">Detail</span>
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="unitStatus"></span>
+                <span class="px-2">Units</span>
               </li>
             </ol>
           </nav>
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
-            <span class="d-flex justify-content-center pb-2">Please select the unit asset class from the list </span>
+            <span class="d-flex justify-content-center pb-2">Please select the asset class from the list </span>
 
             <div class="form-group mb-3 px-2">
               <app-required></app-required>
               <div class="form-floating text-center">
-                <select class="form-select" id="asset-class" formControlName="assetClassTypeString">
+                <select class="form-select" 
+                        id="asset-class" 
+                        formControlName="assetClassTypeString">
                   <option [ngValue]="''"> -- Select Asset Class --</option>
-                  <option *ngFor='let choice of assetClassesChoices' [ngValue]="choice">{{ choice}}
+                  <option *ngFor='let choice of availableAssetClassUses' [ngValue]="choice">{{choice}}
                   </option>
                 </select>
                 <label for="asset-class">Asset class</label>
@@ -53,8 +54,49 @@
           <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
           <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
         </div>
-
       </ng-container>
+
+      <ng-container *ngIf="step===1 && mode==='edit'">
+        <div class="modal-body">
+          <nav
+            style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
+            aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="assetClassStatus"></span>
+                <span class="px-2" [ngClass]="{'text-active': step ===1 }">Asset class</span>
+              </li>
+              <img src="{{chevronRight}}" alt="">
+              <li class="breadcrumb-item d-flex align-items-center">
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="unitStatus"></span>
+                <span class="px-2">Units</span>
+              </li>
+            </ol>
+          </nav>
+
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
+            <span class="d-flex justify-content-center pb-2">
+              Delete asset class or next to unit mix
+            </span>
+
+            <div class="form-group px-2">
+              <div class="form-floating">
+                <input type="text" class="form-control" formControlName="assetClassTypeString" id="asset-class" placeholder="asset class"
+                  [value]="assetClassTypeString!.value" [attr.disabled]="true">
+                <label for="asset-class">Asset class</label>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="mode ='delete'">Delete {{assetClass.use | titlecase}}</button>
+          <button type="button" class="btn btn-secondary ms-auto" (click)="onCancel()">Cancel</button>
+          <button type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+        </div>
+      </ng-container>
+
 
       <ng-container *ngIf="step===2">
         <div class="modal-body">
@@ -70,8 +112,8 @@
               </li>
               <img src="{{chevronRight}}" alt="">
               <li class="breadcrumb-item d-flex align-items-center ">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="detailStatus"></span>
-                <span class="px-2" [ngClass]="{'text-active': step ===2 }">Detail</span>
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="unitStatus"></span>
+                <span class="px-2" [ngClass]="{'text-active': step ===2 }">Units</span>
               </li>
             </ol>
           </nav>
@@ -82,7 +124,7 @@
             <div class="form-group px-2">
               <div class="form-floating">
                 <input type="text" class="form-control bg-transparent border-0 text-secondary" id="asset-class" placeholder="asset class"
-                  value="{{assetClass.use}}" disabled>
+                  value="{{assetClass.use | titlecase}}" readonly>
                 <label for="asset-class">Asset class</label>
               </div>
             </div>
@@ -147,7 +189,7 @@
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
             </div>
 
-            <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{units.at(0).value.label}}s</button>
+            <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{unitStructure.label}}s</button>
 
             <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
               The following fields are required: {{ requiredControls.join(', ') }}.

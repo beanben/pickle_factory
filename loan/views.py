@@ -30,10 +30,24 @@ from rest_framework import status
 from django.http import JsonResponse
 import pdb
 
-def asset_classes_choices(request):
+# def available_asset_classes(request, pk):
+#     subclasses = AssetClass.__subclasses__()
+#     asset_classes_choices = [subclass.__name__ for subclass in subclasses]
+
+#     scheme = Scheme.objects.get(pk=pk)
+#     existing_asset_classes_uses = scheme.asset_classes.values_list('use', flat=True)
+
+#     # asset_classes = [subclass.__name__ for subclass in existing_asset_classes_uses]
+#     asset_classes_uses_available = [use for use in asset_classes_choices if use not in existing_asset_classes_uses]
+
+#     pdb.set_trace()
+
+#     return JsonResponse(asset_classes_uses_available, safe=False)
+
+def asset_class_uses(request):
     subclasses = AssetClass.__subclasses__()
-    asset_classes_choices = [subclass.__name__ for subclass in subclasses]
-    return JsonResponse(asset_classes_choices, safe=False)
+    asset_class_uses = [subclass.__name__ for subclass in subclasses]
+    return JsonResponse(asset_class_uses, safe=False)
 
 def system_types(request):
     system_choices = [{"value":x, "display":y} for x, y in Scheme.SYSTEM_CHOICES]

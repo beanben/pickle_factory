@@ -1,12 +1,13 @@
 <app-unit-modal 
     *ngIf="openUnitModal" 
     [mode]="modalMode" 
-    [scheme]="scheme" 
+    [scheme]="scheme"
+    [availableAssetClassUses]="availableAssetClassUses"
     (modalSaveAssetClass)="onSave($event)">
 </app-unit-modal>
 
 <div class="d-flex flex-row " [ngClass]="{'justify-content-center pt-4': scheme.assetClasses.length === 0}">
-  <button class="btn btn-primary" (click)="onOpenModal('add')">Add unit</button>
+  <button class="btn btn-primary" (click)="onOpenModal('add')" [disabled]="availableAssetClassUses.length === 0">Add asset class</button>
 </div>
 
 <div class="row pt-2">
@@ -14,4 +15,5 @@
     <app-unit-card [assetClass]="assetClass" [scheme]="scheme"></app-unit-card>
   </div>
 </div>
+
 

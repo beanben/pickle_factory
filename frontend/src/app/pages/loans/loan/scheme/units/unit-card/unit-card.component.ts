@@ -33,6 +33,7 @@ export class UnitCardComponent implements OnInit {
   onOpenUnitModal(modalMode: string){
     this.openUnitModal = true;
     this.modalMode = modalMode;
+    // console.log("this.scheme - unit card:", this.scheme)
   }
 
   onSave(assetClass: AssetClassType | null){

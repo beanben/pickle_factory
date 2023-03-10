@@ -1,7 +1,8 @@
 
 <app-unit-modal 
     *ngIf="openUnitModal" 
-    [mode]="modalMode" 
+    [mode]="modalMode"
+    [scheme]="scheme"
     [assetClass]="assetClass" 
     (modalSaveAssetClass)="onSave($event)">
 </app-unit-modal>

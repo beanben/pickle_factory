@@ -26,7 +26,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
 
 class AssetClass(TimestampedModel, AuthorTrackerModel):
     use = models.CharField(max_length=40)
-    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE)
+    scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name='asset_classes')
 
     class Meta:
         verbose_name_plural = "Asset Classes" #for the admin panel

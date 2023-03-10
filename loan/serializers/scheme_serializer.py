@@ -48,6 +48,12 @@ class UnitSerializer(serializers.ModelSerializer):
         
         return Unit.objects.create(**validated_data)
     
+    def update(self, instance, validated_data):
+        asset_class_id = validated_data.pop("asset_class")["id"]
+        asset_class = AssetClass.objects.get(id=asset_class_id)
+        validated_data.update({"asset_class": asset_class})
+        return super().update(instance, validated_data)
+    
     # def get_has_beds(self, obj):
     #     print("obj['beds']:", obj['beds'])
     #     print("obj['beds'] is not None:", obj['beds'] is not None)

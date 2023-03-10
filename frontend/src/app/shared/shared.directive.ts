@@ -30,8 +30,7 @@ export class DotDirective {
 
   @HostBinding('innerHTML')
   get innerHTML(): string {
-    // const tick = '<span style="color:rgba(0, 128, 0, 1);">&#10003;</span>';
-    // const tick = '<span style="color:red;">&#10003;</span>';
+    // console.log("this.status: ", this.status)
     return this.status === "complete" ? '&#10003;' : '';
   }
 

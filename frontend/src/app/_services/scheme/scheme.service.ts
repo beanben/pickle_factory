@@ -12,15 +12,15 @@ import { SharedService } from '../shared/shared.service';
 })
 export class SchemeService {
   relativeUrl = "/api/scheme";
-  assetClassChoicesSub = new BehaviorSubject<string[]>([]);
+  availableAssetClassUsesSub = new BehaviorSubject<string[]>([]);
 
   constructor(
     private http: HttpClient,
     private _sharedService: SharedService
   ) { }
 
-  setAssetClassChoicesSub(AssetClassChoices: string[]){
-    return this.assetClassChoicesSub.next(AssetClassChoices);
+  setAvailableAssetClassUsesSub(availableAssetClassUse: string[]){
+    return this.availableAssetClassUsesSub.next(availableAssetClassUse);
   }
 
   createScheme(scheme: Scheme) {
@@ -100,10 +100,10 @@ export class SchemeService {
     })
   };
 
-  getAssetClassChoices(): Observable<string[]>  {
-    const url = `${this.relativeUrl}/asset_class_choices/`;
+  getAssetClassUses(): Observable<string[]>  {
+    const url = `${this.relativeUrl}/asset_class_uses/`;
     return this.http.get<string[]>(url).pipe(
-      tap(() => console.log('getAssetClassChoices()', Math.random())),
+      tap(() => console.log('getAssetClassUses()', Math.random())),
     );
   }
   
@@ -155,5 +155,12 @@ export class SchemeService {
         tap(() => console.log('getAssetClass()', Math.random()))
       )
   };
+
+  // getAvailableAssetClasses(scheme: Scheme): Observable<string[]>  {
+  //   const url = `${this.relativeUrl}/${scheme.id}/available_asset_classes/`;
+  //   return this.http.get<string[]>(url).pipe(
+  //     tap(() => console.log('getAvailableAssetClasses()', Math.random())),
+  //   );
+  // }
 
 }
