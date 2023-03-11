@@ -1,11 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme} from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toTitleCase } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
 import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
+// import { duplicateDescriptionValidator, duplicateValidatorFormArray } from 'src/app/shared/validators';
 
 @Component({
   selector: 'app-unit-modal',
@@ -34,18 +35,18 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
   @Input() assetClass = {} as AssetClassType;
-  unitStructure = {} as Unit;
+  emptyUnit = {} as Unit;
   mapFormIndexToExistingUnits: { [key: number]: Unit[] } = {};
 
   form: FormGroup = this.fb.group({
     assetClassTypeString: ['', Validators.required],
-    units: this.fb.array([])
+    unitGroups: this.fb.array([], [this.duplicateDescriptionValidator()]),
   })
   get assetClassTypeString() {
     return this.form.get('assetClassTypeString')
   };
-  get units(): FormArray {
-    return this.form.get("units") as FormArray
+  get unitGroups(): FormArray {
+    return this.form.get("unitGroups") as FormArray
   }
 
   constructor(
@@ -61,7 +62,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     // this.initForm();
 
     this.subs.push(
-      this.units.valueChanges.subscribe(() => {
+      this.unitGroups.valueChanges.subscribe(() => {
         this.calculateTotals();
         this.formIsSubmitted ? this.getInvalidControls(): null ;
       })
@@ -83,18 +84,18 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     });
   };
 
-  newUnit(): FormGroup {
-    const newUnit = this.unitStructure;
+  newUnitGroup(): FormGroup {
+    const unitGroup: Unit = this.emptyUnit;
 
     return this.fb.group({
-      id: [newUnit.id],
-      label: [newUnit.label],
-      description: [''],
-      quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
-      beds: [null, Validators.pattern(this.numbersOnly)],
-      areaSize: [null, Validators.pattern(this.numbersOnly)],
-      areaType: [newUnit.areaType]
-    })
+      // isNew: true,
+      label: [unitGroup.label],
+      description: [unitGroup.description, {updatedOn:'blur'}],
+      quantity: [unitGroup.quantity, [Validators.required, Validators.pattern(this.numbersOnly)]],
+      beds: [unitGroup.beds, Validators.pattern(this.numbersOnly)],
+      areaSize: [unitGroup.areaSize, Validators.pattern(this.numbersOnly)],
+      areaType: [unitGroup.areaType]
+    }, )
   }
 
   assetClassHasBeds():boolean {
@@ -102,8 +103,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return hasBeds.includes(this.assetClass.use.toLowerCase())
   }
 
-  removeUnit(index: number) {
-    this.units.removeAt(index);
+  removeUnitGroup(index: number) {
+    this.unitGroups.removeAt(index);
 
     // if (this.units.length === 1) {
     //   this.units.at(0).get("description")!.patchValue("Total");
@@ -125,17 +126,19 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       if(this.mode === 'add'){
         const assetClassType = this.assetClassTypeString!.value;
         this.assetClass = this.newAssetClass(assetClassType);
-        this.addUnit();
+
+        this.emptyUnit = new Unit(this.assetClass);
+        this.addUnitGroup();
       };
 
-      this.unitStructure = new Unit(this.assetClass);
       console.log("this.form.value:", this.form.value)
     }
 
   }
 
-  addUnit() {
-    this.units.insert(0, this.newUnit());
+  addUnitGroup() {
+    // this.unitGroups.insert(0, this.newUnitGroup());
+    this.unitGroups.push(this.newUnitGroup());
   }
 
   updateStatus(){
@@ -168,77 +171,75 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     this.step -= 1;
     this.updateStatus();
-    this.units.clear()
+    this.unitGroups.clear()
   }
 
   onSave() {
     this.formIsSubmitted = true;
     this.getInvalidControls();
 
-    if (!this.form.valid) {
-      return;
-    }
+    console.log("inside save")
+    
 
-    this.assetClass.schemeId = this.scheme.id;
+    // if (!this.form.valid) {
+    //   return;
+    // }
 
-    // check if asset class already exists, if not create it - THIS WILL HAVE TO BE AMENDED FOR RETAIL
-    const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
-      (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
-    );
+    // this.assetClass.schemeId = this.scheme.id;
 
-    if (existingAssetClass) {
-      this.units.controls.forEach((unitGroup, index) => {
+    // // check if asset class already exists, if not create it - THIS WILL HAVE TO BE AMENDED FOR RETAIL
+    // const existingAssetClass: AssetClassType | undefined = this.scheme.assetClasses.find(
+    //   (assetClass: AssetClassType) => assetClass.use === this.assetClass.use
+    // );
 
-        const unitCategory: Unit = this.defineUnit(existingAssetClass, unitGroup);
+    // if (existingAssetClass) {
+    //   this.unitGroups.controls.forEach((unitGroup, index) => {
 
-        // const number_of_existing_units: number = this.mapDescriptionToExistingUnits['description'].length
-        // const number_of_new_units = unitGroup.get('quantity')!.value - number_of_existing_units;
+    //     const unitCategory: Unit = this.defineUnit(existingAssetClass, unitGroup);
 
-        // const formIndex = unitGroup.get('id')!.value;
+    //     // create an array of units
+    //     const units: Unit[] = Array.from(
+    //       {length: unitGroup.get('quantity')!.value},
+    //       () => unitCategory
+    //     );
 
-        // create an array of units
-        const units: Unit[] = Array.from(
-          {length: unitGroup.get('quantity')!.value},
-          () => unitCategory
-        );
+    //     this._schemeService.createUnits(units)
+    //       .then((result:APIResult) => {
+    //         const unitsCreated: Unit[] = result.response;
+    //         existingAssetClass.units = unitsCreated;
 
-        this._schemeService.createUnits(units)
-          .then((result:APIResult) => {
-            const unitsCreated: Unit[] = result.response;
-            existingAssetClass.units = unitsCreated;
+    //         this.modalSaveAssetClass.emit(existingAssetClass);
+    //       })
 
-            this.modalSaveAssetClass.emit(existingAssetClass);
-          })
-
-      })
+    //   })
       
-    } else {
-      this._schemeService.createAssetClass(this.assetClass)
-      .then((result:APIResult) => {
-        let assetClassCreated = result.response as AssetClassType;
+    // } else {
+    //   this._schemeService.createAssetClass(this.assetClass)
+    //   .then((result:APIResult) => {
+    //     let assetClassCreated = result.response as AssetClassType;
 
-        this.units.controls.forEach(newUnit => {
+    //     this.unitGroups.controls.forEach(unitGroup => {
 
-          const unitCategory: Unit = this.defineUnit(assetClassCreated, newUnit);
+    //       const unitCategory: Unit = this.defineUnit(assetClassCreated, unitGroup);
 
-          // create an array of units
-          const units: Unit[] = Array.from(
-            {length: newUnit.get('quantity')!.value},
-            () => unitCategory
-          );
+    //       // create an array of units
+    //       const units: Unit[] = Array.from(
+    //         {length: unitGroup.get('quantity')!.value},
+    //         () => unitCategory
+    //       );
           
-          this._schemeService.createUnits(units)
-            .then((result:APIResult) => {
-              const unitsCreated: Unit[] = result.response;
-              assetClassCreated.units = unitsCreated;
+    //       this._schemeService.createUnits(units)
+    //         .then((result:APIResult) => {
+    //           const unitsCreated: Unit[] = result.response;
+    //           assetClassCreated.units = unitsCreated;
 
-              this.modalSaveAssetClass.emit(assetClassCreated);
+    //           this.modalSaveAssetClass.emit(assetClassCreated);
 
-            })
-        })
-      })
+    //         })
+    //     })
+    //   })
 
-    }
+    // }
 
   }
 
@@ -257,16 +258,22 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.invalidControlsType = [];
 
     // get all the invalid form controls from units
-    let invalidUnits: FormGroup[] = [];
-    this.units.controls.forEach(unit => unit.valid ? null : invalidUnits.push(unit as FormGroup));
-    
+    let invalidUnitGroups: FormGroup[] = [];
+    this.unitGroups.controls.forEach(unitGroup => unitGroup.valid ? null : invalidUnitGroups.push(unitGroup as FormGroup));
+    console.log("invalidUnitGroups:", invalidUnitGroups);
+
+    // const hasDuplicateDescription = this.unitGroups.controls.some((unitGroup) => {
+    //   return unitGroup.get('description')?.hasError('duplicateDescription');
+    // });
+    // console.log("hasDuplicateDescription:", hasDuplicateDescription);
+    // console.log("this.unitGroups.errors:", this.unitGroups.errors)
 
     // get all the invalid form controls from each invalid unit
     let invalidUnitControls: FormControl[] = [];
-    invalidUnits.forEach(invalidUnit => {
+    invalidUnitGroups.forEach(invalidUnitGroups => {
       
-      Object.keys(invalidUnit.controls).forEach(controlName => {
-        let control = invalidUnit.get(controlName) as FormControl;
+      Object.keys(invalidUnitGroups.controls).forEach(controlName => {
+        let control = invalidUnitGroups.get(controlName) as FormControl;
         let controlLabel: string = this.controlLabels(controlName);
 
         if(control.hasError('required') && !this.requiredControls.includes(controlLabel)){
@@ -286,7 +293,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   controlLabels(controlName: string): string{
     if(controlName === "quantity"){
-      return this.units.at(0).value.label
+      return this.unitGroups.at(0).value.label
     } else if(controlName === "areaSize") {
       return "area";
     } else {
@@ -304,7 +311,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     let totalUnits = 0;
     let totalArea = 0;
-    this.units.controls.forEach(control => {
+    this.unitGroups.controls.forEach(control => {
       totalUnits += +control.get('quantity')?.value || 0;
       totalArea += +control.get('areaSize')?.value || 0;
     });
@@ -313,96 +320,41 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.totalArea += totalArea;
   }
 
-  // getAssetClassesUseChoices(){
-  //   const assetClassUseChoicesSub: string[] = this._schemeService.assetClassUseChoicesSub.getValue();
-
-
-  //   this.assetClassUseChoices = assetClassUseChoicesSub;
-
-
-  //   if(this.assetClassUseChoices.length === 0){
-  //     this.getReqAssetClassUseChoices()
-  //   }
-
-  // }
-
-
-  // getReqAssetClassUseChoices(){
-  //   this._schemeService.getAssetClassUseChoices()
-  //     .subscribe((res: string[]) => {
-
-  //       const formattedUseChoices: string[] = [];
-  //       res.forEach(choice => {
-  //         formattedUseChoices.push(pascalToTitle(choice))
-  //       })
-
-  //       const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
-  //       const availableSchemeUses: string[] = formattedUseChoices.filter(
-  //         assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
-  //       );
-
-  //       this.assetClassUseChoices = availableSchemeUses;
-  //       this._schemeService.setAssetClassUseChoicesSub(availableSchemeUses); 
-  //     })
-  // }
-
-  // getAvailableAssetClasses(){
-
-  //   this._schemeService.getAvailableAssetClasses(this.scheme)
-  //     .subscribe((res: string[]) => {
-  //       console.log("res:", res)
-  //     })  
-      
-  // }
-
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  // initForm() {
-  //   const assetClassTypeString: string| null = this.assetClass.use;
-
-  //   console.log("assetClassTypeString", assetClassTypeString)
-
-  //   if(assetClassTypeString){
-  //     this.form.controls['assetClassTypeString'].setValue(
-  //       toTitleCase(assetClassTypeString)
-  //       )
-  //   }
-  // }
-
-  // compareFn(choice1: string, choice2: string): boolean {
-  //   return choice1 === choice2;
-  // }
 
   populateForm() {
     // update value of assetClassTypeString
     this.form.controls['assetClassTypeString'].setValue(
       toTitleCase(this.assetClass.use)
     );
-    // this.assetClassTypeString!.disable()
+    
+    // to make sure form showing unitGrops is correct
+    this.emptyUnit = new Unit(this.assetClass);
 
     // update units
-    this.units.clear();
+    this.unitGroups.clear();
 
-    // console.log("this.assetClass: ", this.assetClass)
     let index = 0;
     this.assetClass.unitsGrouped.forEach((unitGroup: Unit) => {
-      this.units.push(
+      this.unitGroups.push(
         this.fb.group({
-          id: index,
-          description: [unitGroup.description],
+          // isNew: false,
+          description: [unitGroup.description, {updatedOn:'blur'}],
           quantity: [unitGroup.quantity, [Validators.required, Validators.pattern(this.numbersOnly)]],
           beds: [unitGroup.beds, Validators.pattern(this.numbersOnly)],
-          areaSize: [unitGroup.areaSize, Validators.pattern(this.numbersOnly)],
+          areaSize: [+unitGroup.areaSize!, Validators.pattern(this.numbersOnly)],
         })
       );
-      index++;
 
       // group units by description
       const unitByDescription: Unit[] = this.assetClass.unitsGrouped.filter(unit => unit.description === unitGroup.description);
       this.mapFormIndexToExistingUnits[index] = unitByDescription;
+
+      index++;
       // create a map of description to existing units
       // this.assetClass.units!.forEach(unit => {
       //   const description = unit.description || "";
@@ -416,6 +368,43 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     });
 
     // console.log("this.mapDescriptionToExistingUnits:", this.mapDescriptionToExistingUnits)
+  }
+
+  duplicateDescriptionValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!(control instanceof FormArray)) {
+        return null;
+      }
+  
+      const descriptions = control.value.map((unit: any) => unit.description);
+      const hasDuplicates = descriptions.some((value: string, index: number) => descriptions.indexOf(value) !== index);
+
+      // set the error on the relevant 'description' formControls
+      if(hasDuplicates){
+        // get the duplicated descriptions
+        const duplicatedDescriptions: string[] = [];
+        const uniqueDescriptions: string[]= []
+        descriptions.forEach((description:string) => {
+
+          if(!uniqueDescriptions.includes(description)){
+            uniqueDescriptions.push(description)
+          } else if (!duplicatedDescriptions.includes(description)) {
+            duplicatedDescriptions.push(description)
+          }
+        });
+
+        // identify the formcontrols with the duplicated descriptions and set the error
+        control.controls.forEach(unitGroup => {
+          const description = unitGroup.get('description') as FormControl;
+          if(duplicatedDescriptions.includes(description.value)){
+            description.setErrors({ duplicateDescription: true });
+          }
+        })
+      }
+
+
+      return hasDuplicates ? { duplicateDescription: true } : null;
+    };
   }
 
 

@@ -63,9 +63,8 @@ export class UnitsComponent implements OnInit {
         const availableSchemeUses: string[] = assetClassUsesFormatted.filter(
           assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
         );
-        
-        console.log("availableSchemeUses", availableSchemeUses)
-        
+
+
         this.availableAssetClassUses = availableSchemeUses;
         this._schemeService.setAvailableAssetClassUsesSub(availableSchemeUses); 
       })

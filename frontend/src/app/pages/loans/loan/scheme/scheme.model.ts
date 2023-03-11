@@ -100,7 +100,7 @@ export class Unit {
         public assetClass: AssetClassType,
         public id?: number,
         public identifier?: string,
-        public description?: string,
+        public description: string = "",
         public areaSize?: number,
         public beds?: number,
         public quantity?: number,

@@ -76,7 +76,7 @@
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
             <span class="d-flex justify-content-center pb-2">
-              Delete asset class or next to unit mix
+              Delete asset class or click next to amend the unit mix
             </span>
 
             <div class="form-group px-2">
@@ -132,20 +132,20 @@
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
                 <div class="border-table-title" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">Description</div>
-                <div class="col border-table-title">{{unitStructure.label | titlecase}}s</div>
-                <div class="col border-table-title">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
-                <div class="col-3 border-table-title px-0" *ngIf="unitStructure.hasBeds()"> Beds per {{unitStructure.label}} </div>
+                <div class="col border-table-title">{{emptyUnit.label | titlecase}}s</div>
+                <div class="col border-table-title">{{emptyUnit.areaType}} ({{scheme.system | lowercase}})</div>
+                <div class="col-3 border-table-title px-0" *ngIf="emptyUnit.hasBeds()"> Beds per {{emptyUnit.label}} </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
               
-            <ng-container formArrayName="units">
-              <ng-container *ngFor="let unit of units.controls; let i=index">
+            <ng-container formArrayName="unitGroups">
+              <ng-container *ngFor="let unit of unitGroups.controls; let i=index">
                 <div [formGroupName]="i">
                   <div class="row mx-0">
                     
                     <div class="my-auto px-0" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
-                      <ng-container *ngIf="units.length > 1 || assetClass.use.toLowerCase() === 'retail'; else noDescription">
+                      <ng-container *ngIf="unitGroups.length > 1 || assetClass.use.toLowerCase() === 'retail'; else noDescription">
                         <input class="form-control" formControlName="description" placeholder="description">
                       </ng-container>
                       <ng-template #noDescription>
@@ -158,14 +158,14 @@
                     <div class="col my-auto px-0 text-end">
                       <input class="form-control text-end" formControlName="areaSize" placeholder="0" />
                     </div>
-                    <div class="col-3 my-auto px-0 text-end" *ngIf="unitStructure.hasBeds()">
+                    <div class="col-3 my-auto px-0 text-end" *ngIf="emptyUnit.hasBeds()">
                       <input class="form-control text-end" formControlName="beds" placeholder="0" />
                     </div>
                     
                     <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
                         style="width: 20px" 
-                        [ngClass]="units.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
-                        (click)="removeUnit(i)">
+                        [ngClass]="unitGroups.length ===1? 'text-invisible': 'text-visible deleteHover cursorPointer'"
+                        (click)="removeUnitGroup(i)">
                       &times;
                     </div> 
                   </div>
@@ -173,7 +173,7 @@
               </ng-container>
             </ng-container>
 
-            <div class="row mx-0" *ngIf="units.length > 1">
+            <div class="row mx-0" *ngIf="unitGroups.length > 1">
               <div class="px-0 my-auto" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
                 <span class="form-control fw-bolder border-0">Total</span>
               </div>
@@ -189,7 +189,7 @@
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
             </div>
 
-            <button type="button" class="btn btn-primary mt-2" (click)="addUnit()">Add {{unitStructure.label}}s</button>
+            <button type="button" class="btn btn-primary mt-2" (click)="addUnitGroup()">Add {{emptyUnit.label}}s</button>
 
             <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
               The following fields are required: {{ requiredControls.join(', ') }}.
@@ -199,6 +199,9 @@
                 {{control.name}} must be a {{control.type}}
               </div>
             </div>
+            <p class="mt-2 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('duplicateDescription')">
+             Descriptions must be unique
+            </p>
 
           </form>
 
