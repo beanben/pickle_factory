@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, NgForm, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Scheme} from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
@@ -25,6 +25,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   totalUnits = 0;
   totalArea = 0;
 
+  @ViewChild('f') f!: NgForm;
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
   @Output() modalSaveAssetClass = new EventEmitter<AssetClassType | null>();
@@ -32,15 +33,25 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   @Input() availableAssetClassUses: string[] = [];
   requiredControls: string[] = [];
   errors: string[] = [];
-  invalidControlsType: { name: string, type: string }[] = [];
+  // invalidControlsType: { name: string, type: string }[] = [];
   subs: Subscription[] = [];
   @Input() assetClass = {} as AssetClassType;
   emptyUnit = {} as Unit;
   mapFormIndexToExistingUnits: { [key: number]: Unit[] } = {};
 
+
   form: FormGroup = this.fb.group({
     assetClassTypeString: ['', Validators.required],
-    unitGroups: this.fb.array([], [this.duplicateDescriptionValidator()]),
+    unitGroups: this.fb.array([], {
+      validators: [
+        this.allDescriptionsDuplicateValidator(), 
+        this.allRequiredValidator('description'),
+        this.allRequiredValidator('quantity'),
+        this.allNumbersOnlyValidator('quantity'),
+        this.allNumbersOnlyValidator('beds'),
+        this.allNumbersOnlyValidator('areaSize')
+      ], 
+      updateOn:'submit'}) // updateOn:'submit' does not work - validation trigger on everychange. Not sure how to make this work.
   })
   get assetClassTypeString() {
     return this.form.get('assetClassTypeString')
@@ -64,7 +75,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.subs.push(
       this.unitGroups.valueChanges.subscribe(() => {
         this.calculateTotals();
-        this.formIsSubmitted ? this.getInvalidControls(): null ;
+        // this.formIsSubmitted ? this.getInvalidControls(): null ;
       })
     );
 
@@ -84,18 +95,32 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     });
   };
 
+  addUnitGroup() {
+    this.formIsSubmitted = false;
+    
+    if (this.unitGroups.length === 1) {
+      this.unitGroups.at(0).get("description")!.reset();
+    }
+
+    this.unitGroups.push(this.newUnitGroup());
+
+    // allow description to be emtpy if there is only one unitGroup
+    if (this.unitGroups.length === 1) {
+      this.unitGroups.at(0).get("description")!.patchValue("-");
+    }
+  }
+
   newUnitGroup(): FormGroup {
     const unitGroup: Unit = this.emptyUnit;
 
     return this.fb.group({
-      // isNew: true,
       label: [unitGroup.label],
-      description: [unitGroup.description, {updatedOn:'blur'}],
+      description: [unitGroup.description, Validators.required],
       quantity: [unitGroup.quantity, [Validators.required, Validators.pattern(this.numbersOnly)]],
       beds: [unitGroup.beds, Validators.pattern(this.numbersOnly)],
       areaSize: [unitGroup.areaSize, Validators.pattern(this.numbersOnly)],
-      areaType: [unitGroup.areaType]
-    }, )
+      // areaType: [unitGroup.areaType]
+    })
   }
 
   assetClassHasBeds():boolean {
@@ -136,11 +161,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   }
 
-  addUnitGroup() {
-    // this.unitGroups.insert(0, this.newUnitGroup());
-    this.unitGroups.push(this.newUnitGroup());
-  }
-
   updateStatus(){
     if(this.step===1){
       this.assetClassStatus = "active";
@@ -176,7 +196,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   onSave() {
     this.formIsSubmitted = true;
-    this.getInvalidControls();
+    // this.getInvalidControls();
 
     console.log("inside save")
     
@@ -251,46 +271,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return unit;
   }
 
-
-
-  getInvalidControls() {
-    this.requiredControls = [];
-    this.invalidControlsType = [];
-
-    // get all the invalid form controls from units
-    let invalidUnitGroups: FormGroup[] = [];
-    this.unitGroups.controls.forEach(unitGroup => unitGroup.valid ? null : invalidUnitGroups.push(unitGroup as FormGroup));
-    console.log("invalidUnitGroups:", invalidUnitGroups);
-
-    // const hasDuplicateDescription = this.unitGroups.controls.some((unitGroup) => {
-    //   return unitGroup.get('description')?.hasError('duplicateDescription');
-    // });
-    // console.log("hasDuplicateDescription:", hasDuplicateDescription);
-    // console.log("this.unitGroups.errors:", this.unitGroups.errors)
-
-    // get all the invalid form controls from each invalid unit
-    let invalidUnitControls: FormControl[] = [];
-    invalidUnitGroups.forEach(invalidUnitGroups => {
-      
-      Object.keys(invalidUnitGroups.controls).forEach(controlName => {
-        let control = invalidUnitGroups.get(controlName) as FormControl;
-        let controlLabel: string = this.controlLabels(controlName);
-
-        if(control.hasError('required') && !this.requiredControls.includes(controlLabel)){
-          this.requiredControls.push(controlLabel)
-        }
-
-        if(control.hasError('pattern') && !this.invalidControlsType.find(control => control.name === controlLabel)){
-          let requiredType:string = this.requiredType(controlName);
-          
-          this.invalidControlsType.push({ name: controlLabel, type: requiredType })
-        }
-
-        control.valid ? null : invalidUnitControls.push(control);
-      })
-    })
-  }
-
   controlLabels(controlName: string): string{
     if(controlName === "quantity"){
       return this.unitGroups.at(0).value.label
@@ -343,11 +323,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       this.unitGroups.push(
         this.fb.group({
           // isNew: false,
-          description: [unitGroup.description, {updatedOn:'blur'}],
+          description: [unitGroup.description, Validators.required],
           quantity: [unitGroup.quantity, [Validators.required, Validators.pattern(this.numbersOnly)]],
           beds: [unitGroup.beds, Validators.pattern(this.numbersOnly)],
           areaSize: [+unitGroup.areaSize!, Validators.pattern(this.numbersOnly)],
-        })
+        }  )
       );
 
       // group units by description
@@ -370,7 +350,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     // console.log("this.mapDescriptionToExistingUnits:", this.mapDescriptionToExistingUnits)
   }
 
-  duplicateDescriptionValidator(): ValidatorFn {
+  allDescriptionsDuplicateValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!(control instanceof FormArray)) {
         return null;
@@ -379,31 +359,68 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       const descriptions = control.value.map((unit: any) => unit.description);
       const hasDuplicates = descriptions.some((value: string, index: number) => descriptions.indexOf(value) !== index);
 
-      // set the error on the relevant 'description' formControls
-      if(hasDuplicates){
-        // get the duplicated descriptions
-        const duplicatedDescriptions: string[] = [];
-        const uniqueDescriptions: string[]= []
-        descriptions.forEach((description:string) => {
+      // // set the error on the relevant 'description' formControls
+      // if(hasDuplicates){
+      //   // get the duplicated descriptions
+      //   const duplicatedDescriptions: string[] = [];
+      //   const uniqueDescriptions: string[]= []
+      //   descriptions.forEach((description:string) => {
 
-          if(!uniqueDescriptions.includes(description)){
-            uniqueDescriptions.push(description)
-          } else if (!duplicatedDescriptions.includes(description)) {
-            duplicatedDescriptions.push(description)
-          }
-        });
+      //     if(!uniqueDescriptions.includes(description)){
+      //       uniqueDescriptions.push(description)
+      //     } else if (!duplicatedDescriptions.includes(description)) {
+      //       duplicatedDescriptions.push(description)
+      //     }
+      //   });
 
-        // identify the formcontrols with the duplicated descriptions and set the error
-        control.controls.forEach(unitGroup => {
-          const description = unitGroup.get('description') as FormControl;
-          if(duplicatedDescriptions.includes(description.value)){
-            description.setErrors({ duplicateDescription: true });
-          }
-        })
-      }
+      //   // identify the formcontrols with the duplicated descriptions and set the error
+      //   control.controls.forEach(unitGroup => {
+      //     const description = unitGroup.get('description') as FormControl;
+      //     if(duplicatedDescriptions.includes(description.value)){
+      //       description.setErrors({ duplicateDescription: true });
+      //     }
+      //   })
+      // }
 
 
       return hasDuplicates ? { duplicateDescription: true } : null;
+    };
+  }
+
+  allRequiredValidator(controlName: string): ValidatorFn {
+
+    return (control: AbstractControl): ValidationErrors | null => {
+
+      if (!(control instanceof FormArray)) {
+        return null;
+      }
+
+      const hasEmptyControl:boolean = control.controls.some((abstractControl: AbstractControl) => {
+        const formGroup = abstractControl as FormGroup;
+        const controlInstance = formGroup.get(controlName);
+        return controlInstance?.value === undefined || controlInstance.value === null || controlInstance.value === "" || controlInstance.value === 0; 
+      })
+      
+      return hasEmptyControl ? { [`${controlName}Required`]: true } : null;
+    };
+  }
+
+  allNumbersOnlyValidator(controlName: string): ValidatorFn {
+    const numbersOnly = /^\d+$/;
+    
+    return (control: AbstractControl): ValidationErrors | null => {
+
+      if (!(control instanceof FormArray)) {
+        return null;
+      }
+
+      const hasInvalidControl:boolean = control.controls.some((abstractControl: AbstractControl) => {
+        const formGroup = abstractControl as FormGroup;
+        const controlInstance = formGroup.get(controlName);
+        return controlInstance?.hasError('pattern');
+      })
+      
+      return hasInvalidControl ? { [`${controlName}Number`]: true } : null;
     };
   }
 

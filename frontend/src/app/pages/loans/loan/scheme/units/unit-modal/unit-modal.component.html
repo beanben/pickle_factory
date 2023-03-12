@@ -118,7 +118,7 @@
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="form" [ngClass]="{'is-submitted': formIsSubmitted}">
             <span class="d-flex justify-content-center pb-2">Please detail the breakdown of units</span>
 
             <div class="form-group px-2">
@@ -191,17 +191,33 @@
 
             <button type="button" class="btn btn-primary mt-2" (click)="addUnitGroup()">Add {{emptyUnit.label}}s</button>
 
-            <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
+
+            <!-- <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
               The following fields are required: {{ requiredControls.join(', ') }}.
-            </div>
-            <div class="mt-2 alert alert-danger text-center" *ngIf="invalidControlsType.length > 0" [ngClass]="requiredControls.length > 0 ? 'mt-0': 'mt-2'">
+            </div> -->
+            <!-- <div class="mt-2 alert alert-danger text-center" *ngIf="invalidControlsType.length > 0" [ngClass]="requiredControls.length > 0 ? 'mt-0': 'mt-2'">
               <div *ngFor="let control of invalidControlsType">
                 {{control.name}} must be a {{control.type}}
               </div>
-            </div>
-            <p class="mt-2 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('duplicateDescription')">
+            </div> -->
+            <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('descriptionRequired')">
+              Descriptions are required
+             </p>
+            <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('duplicateDescription')">
              Descriptions must be unique
             </p>
+            <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityRequired')">
+              Define the number of {{emptyUnit.label}}s
+             </p>
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityNumber')">
+              {{emptyUnit.label |titlecase}}s must be numbers
+             </p>
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('bedsNumber')">
+              beds must be numbers
+             </p>
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('areaSizeNumber')">
+              {{emptyUnit.areaType}}s must be numbers
+             </p>
 
           </form>
 
