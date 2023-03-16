@@ -18,24 +18,32 @@
 
   <ng-container *ngIf="!!unitStructure">
 
-    <table class="table text-center">
-      <thead>
-        <tr>
-          <th scope="col">Description</th>
-          <th scope="col">{{unitStructure.label | titlecase}}s</th>
-          <th scope="col">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</th>
-          <th scope="col" *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let unitGroup of assetClass.unitsGrouped">
-          <td>{{unitGroup.description}}</td>
-          <td >{{unitGroup.quantity}}</td>
-          <td >{{unitGroup.areaSize}}</td>
-          <td *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="row pt-3">
+      <div class="col">
+
+        <div class="table">
+          <div class="table-row header">
+            <div class="table-cell">Description</div>
+            <div class="table-cell">{{unitStructure.label | titlecase}}s</div>
+            <div class="table-cell">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+            <div class="table-cell" *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</div>
+          </div>
+          <div class="table-row" *ngFor="let unitGroup of assetClass.unitsGrouped">
+            <div class="table-cell">{{unitGroup.description}}</div>
+            <div class="table-cell text-center">{{unitGroup.quantity}}</div>
+            <div class="table-cell text-end">{{unitGroup.areaSize}}</div>
+            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</div>
+          </div>
+          <div class="table-row footer">
+            <div class="table-cell">Total</div>
+            <div class="table-cell text-center">{{totalQuantity}}</div>
+            <div class="table-cell text-end">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
+            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{totalBeds}}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
     
   </ng-container>
 

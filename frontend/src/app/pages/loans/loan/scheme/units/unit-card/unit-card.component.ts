@@ -10,6 +10,9 @@ import { AssetClassType, Unit } from '../../scheme.model';
 export class UnitCardComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
+  totalQuantity = 0;
+  totalAreaSize = 0;
+  totalBeds = 0;
 
   @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
@@ -22,8 +25,8 @@ export class UnitCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.unitStructure = new Unit(this.assetClass);
-
     this.getAssetClass();
+    this.calculateTotals()
   }
 
   getAssetClass() {
@@ -47,6 +50,12 @@ export class UnitCardComponent implements OnInit {
   onDeleteAssetClass(){
     this.openUnitModal = false;
     this.deleteIsConfirmed.emit()
+  }
+
+  calculateTotals(){
+    this.totalQuantity = this.assetClass.unitsGrouped.reduce((acc, unitsGroup) => acc + (+unitsGroup.quantity), 0)
+    this.totalAreaSize = this.assetClass.unitsGrouped.reduce((acc, unitsGroup) => acc + (+(unitsGroup.areaSize ?? 0)), 0)
+    this.totalBeds = this.assetClass.unitsGrouped.reduce((acc, unitsGroup) => acc + (+(unitsGroup.beds ?? 0)), 0)
   }
 
 }

@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from loan.models.loan import Loan
-from loan.models.scheme import (
-    Scheme, AssetClass, Unit, Hotel, Residential, Retail,
-    StudentAccommodation, Office, ShoppingCentre, Unit)
+from loan.models import scheme_models, loan_models
+# from loan.models.loan_models import Loan
+# from loan.models.scheme_models import (
+#     Scheme, AssetClass, Unit, Hotel, Residential, Retail,
+#     StudentAccommodation, Office, ShoppingCentre, Unit)
 from rest_framework.serializers import ValidationError
 import pdb
 
@@ -13,17 +14,31 @@ class AssetClassUnitSerializer(serializers.Serializer):
     class Meta:
         fields = ['id', 'scheme_id']
 
+class UnitListSerializer(serializers.ListSerializer):
+    def update(self, instances, validated_data):
+        unit_mapping = {unit.id: unit for unit in instances}
+        data_mapping = {item['id']: item for item in validated_data}
+        
+        ret = []
+        for unit_id, data in data_mapping.items():
+            unit = unit_mapping.get(unit_id, None)
+            if unit is not None:
+                ret.append(self.child.update(unit, data))
+
+        return ret
+
 class UnitSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     asset_class = AssetClassUnitSerializer(required=False)
-    identifier = serializers.CharField(required=False, default="")
+    identifier = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     beds = serializers.IntegerField(required=False, allow_null= True)
-    quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
+    # quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
 
     class Meta:
-        model = Unit
+        model = scheme_models.Unit
         fields = [
             'id',
             'asset_class',
@@ -32,44 +47,49 @@ class UnitSerializer(serializers.ModelSerializer):
             'description',
             'beds',
             'area_size',
-            'area_type',
-            'quantity']
+            'area_type']
         depth = 1
+        list_serializer_class = UnitListSerializer
 
 
     def create(self, validated_data):
         asset_class_id = validated_data.pop("asset_class")["id"]
-        asset_class = AssetClass.objects.get(id=asset_class_id)
+        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
 
         if "identifier" not in validated_data:
-            units_per_asset_class = len(Unit.objects.filter(asset_class=asset_class))
+            units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
             validated_data["identifier"] = f"{units_per_asset_class + 1}"
         
-        return Unit.objects.create(**validated_data)
+        return scheme_models.Unit.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
         asset_class_id = validated_data.pop("asset_class")["id"]
-        asset_class = AssetClass.objects.get(id=asset_class_id)
+        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
         return super().update(instance, validated_data)
-    
-    # def get_has_beds(self, obj):
-    #     print("obj['beds']:", obj['beds'])
-    #     print("obj['beds'] is not None:", obj['beds'] is not None)
-    #     return obj['beds'] is not None
 
-# class GroupAssetClassUnit(serializers.Serializer):
-#     description = serializers.CharField()
-#     group_quantity = serializers.IntegerField()
-#     group_beds = serializers.IntegerField()
-#     group_area_size = serializers.DecimalField(max_digits=20, decimal_places=2)
+class UnitListSerializer(serializers.ListSerializer):
+    # child = UnitSerializer()
 
-#     class Meta:
-#         fields = [
-#             'description', 
-#             'group_quantity',
-#             'group_beds',
+    def update(self, instances, validated_data):  
+        instance_hash = {index: instance for index, instance in enumerate(instances)}
+
+        result = [
+            self.child.update(instance_hash[index], attrs)
+            for index, attrs in enumerate(validated_data)
+        ]
+
+        return result
+
+class UnitGroupSerializer(serializers.Serializer):
+    asset_class = AssetClassUnitSerializer(required=False)
+    # identifier = serializers.CharField(required=False, default="")
+    description = serializers.CharField(required=False, allow_blank= True, default="")
+    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    beds = serializers.IntegerField(required=False, allow_null= True)
+    quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
+
 #             'group_area_size']
 
 
@@ -80,16 +100,16 @@ class AssetClassSerializer(serializers.ModelSerializer):
     units = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
-        model = AssetClass
+        model = scheme_models.AssetClass
         fields = ['id', 'scheme_id', 'use', 'units_grouped', 'units']
 
     def get_units_grouped(self, obj):
-        qs = AssetClass.objects.group_units_by_description(obj)
+        qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
         # pdb.set_trace()
-        return UnitSerializer(qs, many=True).data
+        return UnitGroupSerializer(qs, many=True).data
     
     def get_units(self, obj):
-        units = Unit.objects.filter(asset_class=obj)
+        units = scheme_models.Unit.objects.filter(asset_class=obj)
         return UnitSerializer(units, many=True).data
 
 class SchemeSerializer(serializers.ModelSerializer):
@@ -98,7 +118,7 @@ class SchemeSerializer(serializers.ModelSerializer):
     opening_date = serializers.DateField(required=False, allow_null=True)
 
     class Meta:
-        model = Scheme
+        model = scheme_models.Scheme
         fields = [
             'id',
             'loan_id',
@@ -113,15 +133,15 @@ class SchemeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")
-        loan = Loan.objects.get(id=loan_id)
+        loan = loan_models.Loan.objects.get(id=loan_id)
 
         validated_data.update({"loan": loan})
-        scheme = Scheme.objects.create(**validated_data)
+        scheme = scheme_models.Scheme.objects.create(**validated_data)
         return scheme
 
 
     def get_asset_classes(self, obj):
-        qs = Scheme.objects.get_asset_classes(obj) #uses the custom manager
+        qs = scheme_models.Scheme.objects.get_asset_classes(obj) #uses the custom manager
         return AssetClassSerializer(qs, many=True).data
 
 
@@ -129,19 +149,17 @@ class HotelSerializer(AssetClassSerializer):
     use = serializers.CharField()
 
     class Meta:
-        model = Hotel
+        model = scheme_models.Hotel
         fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data): 
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        
-
-        hotel = Hotel.objects.create(**validated_data)
+        hotel = scheme_models.Hotel.objects.create(**validated_data)
         return hotel
     
     def validate_use(self, value):
@@ -157,18 +175,18 @@ class ResidentialSerializer(AssetClassSerializer):
     use = serializers.CharField()
 
     class Meta:
-        model = Residential
+        model = scheme_models.Residential
         fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        residential = Residential.objects.create(**validated_data)
+        residential = scheme_models.Residential.objects.create(**validated_data)
         return residential
     
     def validate_use(self, value):
@@ -182,21 +200,20 @@ class ResidentialSerializer(AssetClassSerializer):
 
 class RetailSerializer(AssetClassSerializer):
     use = serializers.CharField()
-    description = serializers.CharField(required=False)
 
     class Meta:
-        model = Retail
-        fields = AssetClassSerializer.Meta.fields + ['description', 'use']
+        model = scheme_models.Retail
+        fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        retail = Retail.objects.create(**validated_data)
+        retail = scheme_models.Retail.objects.create(**validated_data)
         return retail
     
     def validate_use(self, value):
@@ -212,18 +229,18 @@ class OfficeSerializer(AssetClassSerializer):
     use = serializers.CharField()
 
     class Meta:
-        model = Office
+        model = scheme_models.Office
         fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        office = Office.objects.create(**validated_data)
+        office = scheme_models.Office.objects.create(**validated_data)
         return office
     
     def validate_use(self, value):
@@ -239,18 +256,18 @@ class ShoppingCentreSerializer(AssetClassSerializer):
     use = serializers.CharField()
 
     class Meta:
-        model = ShoppingCentre
+        model = scheme_models.ShoppingCentre
         fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        shopping_centre = ShoppingCentre.objects.create(**validated_data)
+        shopping_centre = scheme_models.ShoppingCentre.objects.create(**validated_data)
         return shopping_centre
     
     def validate_use(self, value):
@@ -266,18 +283,18 @@ class StudentAccommodationSerializer(AssetClassSerializer):
     use = serializers.CharField()
 
     class Meta:
-        model = StudentAccommodation
+        model = scheme_models.StudentAccommodation
         fields = AssetClassSerializer.Meta.fields + ['use']
 
     def create(self, validated_data):
         # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
-        scheme = Scheme.objects.get(id=scheme_id)
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
 
         self.validate_use(validated_data["use"])
 
-        student_accommodation = StudentAccommodation.objects.create(**validated_data)
+        student_accommodation = scheme_models.StudentAccommodation.objects.create(**validated_data)
         return student_accommodation
     
     def validate_use(self, value):

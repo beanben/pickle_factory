@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from loan.models.borrower import Borrower
-from loan.models.loan import Loan
-from loan.serializers.loan_serializer import LoanSerializer
+from loan.models.borrower_models import Borrower
+from loan.models import loan_models
+from loan.serializers import loan_serializers
 
 class BorrowerSerializer(serializers.ModelSerializer):
     loans = serializers.SerializerMethodField()
@@ -13,8 +13,8 @@ class BorrowerSerializer(serializers.ModelSerializer):
         depth = 1
 
     def get_loans(self, obj):
-        loans = Loan.objects.filter(borrower=obj)
-        return LoanSerializer(loans, many=True).data
+        loans = loan_models.Loan.objects.filter(borrower=obj)
+        return loan_serializers.LoanSerializer(loans, many=True).data
 
     def create(self, validated_data):
         # unique borrower per author firm

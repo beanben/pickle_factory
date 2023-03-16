@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
-from loan.models.loan import Loan
-from loan.models.borrower import Borrower
-from loan.serializers.scheme_serializer import SchemeSerializer
+from loan.models.loan_models import Loan
+from loan.models.borrower_models import Borrower
+from loan.serializers import scheme_serializers
 
 class BorrowerNestedSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -11,7 +11,7 @@ class BorrowerNestedSerializer(serializers.Serializer):
 class LoanSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255, default='new loan')
     borrower = BorrowerNestedSerializer(required=False, allow_null=True)
-    schemes = SchemeSerializer(required=False, allow_null=True, many=True)
+    schemes = scheme_serializers.SchemeSerializer(required=False, allow_null=True, many=True)
     
     class Meta:
         model = Loan

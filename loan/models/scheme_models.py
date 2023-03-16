@@ -1,7 +1,7 @@
 import pdb
 from django.db import models
 from core.models import TimestampedModel, AuthorTrackerModel
-from .loan import Loan
+from loan.models import loan_models
 from loan.managers import SchemeManager, AssetClassManager
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
@@ -10,7 +10,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
         ("SQM", "metric (sqm)")
     ]
 
-    loan = models.ForeignKey(Loan, on_delete=models.SET_NULL, blank=True, null=True, related_name="schemes")
+    loan = models.ForeignKey(loan_models.Loan, on_delete=models.SET_NULL, blank=True, null=True, related_name="schemes")
     name = models.CharField(max_length=100)
     street_name = models.CharField(max_length=100, blank=True, default="")
     postcode = models.CharField(max_length=100, blank=True, default="")
@@ -45,7 +45,7 @@ class Residential(AssetClass):
     pass
 
 class Retail(AssetClass):
-    description = models.CharField(max_length=100, blank=True, default="") #could be cafe or restaurant or...
+    pass
 
 
 class StudentAccommodation(AssetClass): 
@@ -71,7 +71,7 @@ class Unit(TimestampedModel, AuthorTrackerModel):
     identifier = models.CharField(verbose_name="unit number", default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
     beds = models.IntegerField(blank=True, null=True)
-    area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, default=0.00)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
 
     def __str__(self):
@@ -92,3 +92,8 @@ class Unit(TimestampedModel, AuthorTrackerModel):
             self.identifier = self.asset_class.units.count() + 1
 
         super().save(*args, **kwargs)
+
+# class Category(TimestampedModel, AuthorTrackerModel):
+#     description = models.CharField(max_length=100, blank=True , default="")
+#     quantity = models.IntegerField(blank=True, null=True)
+#     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="categories")
