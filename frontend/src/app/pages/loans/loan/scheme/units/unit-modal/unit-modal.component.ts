@@ -130,7 +130,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return hasBeds.includes(this.assetClass.use.toLowerCase())
   }
 
-  // CONTINUE HERE
   removeUnitGroup(index: number) {
     const unitsToDelete: Unit[] | undefined = this.unitGroupToExistingUnits(this.unitGroups.at(index));
     if(!!unitsToDelete) {

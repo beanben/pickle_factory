@@ -153,12 +153,12 @@
             </div>
               
             <ng-container formArrayName="unitGroups">
-              <ng-container *ngFor="let unit of unitGroups.controls; let i=index">
+              <ng-container *ngFor="let unitGroup of unitGroups.controls; let i=index">
                 <div [formGroupName]="i">
                   <div class="row mx-0">
                     
                     <div class="my-auto px-0" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
-                      <ng-container *ngIf="unitGroups.length > 1 || assetClass.use.toLowerCase() === 'retail'; else noDescription">
+                      <ng-container *ngIf="unitGroups.length > 1 || unitGroup.get('description')?.value !== '-'; else noDescription">
                         <input class="form-control" formControlName="description" placeholder="description">
                       </ng-container>
                       <ng-template #noDescription>
