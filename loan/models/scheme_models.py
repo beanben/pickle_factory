@@ -1,6 +1,6 @@
 import pdb
 from django.db import models
-from core.models import TimestampedModel, AuthorTrackerModel
+from core.models import TimestampedModel, AuthorTrackerModel, TimestampedModelReverse
 from loan.models import loan_models
 from loan.managers import SchemeManager, AssetClassManager
 
@@ -57,7 +57,7 @@ class Office(AssetClass):
 class ShoppingCentre(AssetClass): 
     pass
 
-class Unit(TimestampedModel, AuthorTrackerModel):
+class Unit(TimestampedModelReverse, AuthorTrackerModel):
     LABEL_CHOICES =[
         ("unit", "unit"),
         ("room", "room")

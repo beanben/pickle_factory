@@ -45,6 +45,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   emptyUnit = {} as Unit;
   mapFormIndexToUnitIds: { [key: number]: number[] } = {};
+  unitsToDelete: Unit[] = [];
 
 
   form: FormGroup = this.fb.group({
@@ -102,7 +103,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   addUnitGroup() {
     this.formIsSubmitted = false;
 
-    if (this.unitGroups.length === 1) {
+    if (this.unitGroups.length === 1 && this.unitGroups.at(0).get("description")!.value === "-") {
       this.unitGroups.at(0).get("description")!.reset();
     }
 
@@ -129,12 +130,20 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return hasBeds.includes(this.assetClass.use.toLowerCase())
   }
 
+  // CONTINUE HERE
   removeUnitGroup(index: number) {
+    const unitsToDelete: Unit[] | undefined = this.unitGroupToExistingUnits(this.unitGroups.at(index));
+    if(!!unitsToDelete) {
+      this.unitsToDelete!.push(...unitsToDelete);
+    }
+
     this.unitGroups.removeAt(index);
+   
   }
 
   onCancel() {
     this.modalSaveAssetClass.emit();
+    this.unitsToDelete = [];
   };
 
   onNext() {
@@ -220,18 +229,27 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
       observables.push(forkJoin(requestObj).pipe(
         tap((results: any) => {
-          const unitGrouped: UnitGroup = this.assetClass.unitsGrouped[index]
+          const unitGrouped: UnitGroup = this.assetClass.unitsGrouped[index] || {};
 
-          unitGrouped.description = unitGroup.value.description;
-          unitGrouped.areaSize = unitGroup.value.areaSize;
-          unitGrouped.beds = unitGroup.value.beds;
-          unitGrouped.quantity = unitGroup.value.quantity;
+          if(unitGroup.value.quantity === 0){
+            // remove unitGrouped from assetClass
+            this.assetClass.unitsGrouped.splice(index, 1);
+          } else {
+            unitGrouped.description = unitGroup.value.description;
+            unitGrouped.areaSize = unitGroup.value.areaSize;
+            unitGrouped.beds = unitGroup.value.beds;
+            unitGrouped.quantity = unitGroup.value.quantity;
+            
+            this.assetClass.unitsGrouped[index] = unitGrouped;
+          }
           
-          this.assetClass.unitsGrouped[index] = unitGrouped;
         })
       ));
     });
 
+    if(this.unitsToDelete.length > 0 ){
+      observables.push(this._schemeService.deleteUnits(this.unitsToDelete));
+    }
     forkJoin(observables).subscribe(() => {
       this.modalSaveAssetClass.emit(this.assetClass);
     });
@@ -282,7 +300,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     setUnitParametres(unit: Unit, unitGroup:AbstractControl): Unit{
       unit.description = unitGroup.get('description')!.value;
-      unit.areaSize = unitGroup.get('areaSize')!.value;
+      unit.areaSize = (unitGroup.get('areaSize')?.value || 0) / unitGroup.get('quantity')!.value;
       unit.beds = unitGroup.get('beds')!.value;
       return unit;
     }
@@ -292,15 +310,29 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       const groupQuantity: number = +unitGroup.value.quantity;
       const numberOfUnitsToDelete: number = Math.max(existingIds - groupQuantity,0);
 
+      console.log("inside defineUnitsToDelete - existingIds", existingIds)
+
       if(numberOfUnitsToDelete === 0 ){ 
         return undefined 
       }
-
+      
       const unitsToDelete: Unit[] | undefined = this.assetClass.units?.filter((unit: Unit) => (
         unitGroup.value.ids.includes(unit.id) && !unitsToUpdate?.includes(unit)
       ))
 
       return unitsToDelete;
+    }
+
+    unitGroupToExistingUnits(unitGroup: AbstractControl): Unit[] | undefined {
+      const units: Unit[]| undefined = this.assetClass.units?.filter((unit: Unit) => (
+        unitGroup.value.ids.includes(unit.id)
+      ));
+
+      if (units?.length === 0) {
+        return
+      }
+
+      return units;
     }
 
   

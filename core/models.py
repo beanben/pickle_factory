@@ -34,6 +34,14 @@ class TimestampedModel(models.Model):
         ordering = ['-created_at']
         abstract = True
 
+class TimestampedModelReverse(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['created_at']
+        abstract = True
+
 class AuthorTrackerModel(BaseModel):
     author = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     author_firm = models.ForeignKey(Firm, blank=True, null=True, on_delete=models.SET_NULL)

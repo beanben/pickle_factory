@@ -34,7 +34,7 @@
             <div class="table-cell text-end">{{unitGroup.areaSize}}</div>
             <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</div>
           </div>
-          <div class="table-row footer">
+          <div class="table-row footer" *ngIf="assetClass.unitsGrouped.length > 1">
             <div class="table-cell">Total</div>
             <div class="table-cell text-center">{{totalQuantity}}</div>
             <div class="table-cell text-end">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
