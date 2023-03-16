@@ -70,6 +70,16 @@ export class UnitsComponent implements OnInit {
       })
   }
 
+  onDeleteAssetClass(index: number){
+    this.openUnitModal = false;
+
+    this.availableAssetClassUses.push(
+      this.scheme.assetClasses[index].use
+    );
+    
+    this.scheme.assetClasses.splice(index, 1);
+  }
+
   
 
 }

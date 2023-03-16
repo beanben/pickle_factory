@@ -2,13 +2,13 @@
   <div class="modal-dialog modal-centered">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          (click)="onCancel()"></button>
-      </div>
-
       <ng-container *ngIf="step===1 && mode==='add'">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="onCancel()"></button>
+        </div>
+
         <div class="modal-body">
           <nav
             style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
@@ -57,6 +57,13 @@
       </ng-container>
 
       <ng-container *ngIf="step===1 && mode==='edit'">
+
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="onCancel()"></button>
+        </div>
+
         <div class="modal-body">
           <nav
             style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
@@ -99,6 +106,12 @@
 
 
       <ng-container *ngIf="step===2">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="onCancel()"></button>
+        </div>
+
         <div class="modal-body">
 
           <nav
@@ -183,7 +196,7 @@
               <div class="col my-auto px-0 text-end">
                 <span class="form-control fw-bolder border-0">{{totalArea}}</span>
               </div>
-              <div class="col-3 my-auto px-0 text-end">
+              <div class="col-3 my-auto px-0 text-end"  *ngIf="emptyUnit.hasBeds()">
                 <span class="form-control fw-bolder border-0"></span>
               </div>
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
@@ -209,13 +222,13 @@
             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityRequired')">
               Define the number of {{emptyUnit.label}}s
              </p>
-             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityNumber')">
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityPattern')">
               {{emptyUnit.label |titlecase}}s must be numbers
              </p>
-             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('bedsNumber')">
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('bedsPattern')">
               beds must be numbers
              </p>
-             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('areaSizeNumber')">
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('areaSizePattern')">
               {{emptyUnit.areaType}}s must be numbers
              </p>
 
@@ -231,6 +244,23 @@
 
       </ng-container>
 
+      <ng-container *ngIf="mode === 'delete'">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center">{{mode | titlecase}} {{assetClass.use | titlecase}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="onCancel()"></button>
+        </div>
+
+        <div class="modal-body">
+          <p class="text-center my-auto">Are you sure you want to delete this asset class ?</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary m-2 me-auto" (click)="onCancel()">Cancel</button>
+          <button type="submit" class="btn btn-danger m-2" (click)="onConfirmDelete()">Delete</button>
+        </div>
+
+      </ng-container>
 
     </div>
   </div>

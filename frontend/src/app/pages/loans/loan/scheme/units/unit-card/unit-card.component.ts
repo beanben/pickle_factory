@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../../scheme';
 import { AssetClassType, Unit } from '../../scheme.model';
@@ -13,6 +13,7 @@ export class UnitCardComponent implements OnInit {
 
   @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
+  @Output() deleteIsConfirmed = new EventEmitter<void>()
   unitStructure = {} as Unit | null;
 
   constructor(
@@ -33,7 +34,6 @@ export class UnitCardComponent implements OnInit {
   onOpenUnitModal(modalMode: string){
     this.openUnitModal = true;
     this.modalMode = modalMode;
-    // console.log("this.scheme - unit card:", this.scheme)
   }
 
   onSave(assetClass: AssetClassType | null){
@@ -42,6 +42,11 @@ export class UnitCardComponent implements OnInit {
     if(assetClass){
       this.assetClass = assetClass;
     }
+  }
+
+  onDeleteAssetClass(){
+    this.openUnitModal = false;
+    this.deleteIsConfirmed.emit()
   }
 
 }

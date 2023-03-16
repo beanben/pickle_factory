@@ -1,6 +1,6 @@
 // import { AssetClass } from "./scheme.model";
 
-import { AssetClassType } from "./scheme.model";
+import { AssetClassType, Unit } from "./scheme.model";
 
 
 
@@ -17,38 +17,6 @@ export interface Scheme {
     assetClasses: AssetClassType[],
 }
 
-// export interface AssetClass {
-//     id?: number;
-//     schemeId: number;
-//     units?: Unit[]
-// }
-// export interface Hotel extends AssetClass {
-// }
-// export interface Residential extends AssetClass {
-// }
-// export interface Retail extends AssetClass {
-//     description: string,
-// }
-// export interface StudentAccommodation extends AssetClass {
-// }
-// export interface Office extends AssetClass {
-// }
-// export interface ShoppingCentre extends AssetClass {
-// }
-
-// convert AssetClass interface into classes
-
-
-// export interface Unit {
-//     id?: number,
-//     assetClassId?: number,
-//     label: "unit" | "room",
-//     identifier?: string,
-//     description?: string,
-//     areaSize?: number,
-//     areaType?: string,
-//     beds?: number,
-// }
 
 export interface Area {
     id?: number,
@@ -58,13 +26,8 @@ export interface Area {
     system : "SQFT" | "SQM"
 }
 
-// export interface Bed {
-//     id?: number,
-//     unitId?: number,
-//     description?: string,
-//     width?: number, 
-//     length?: number, 
-//     height?: number,
-//     measure?: "CM" | "IN",
-// }
+
+export interface UnitGroup extends Unit {
+    quantity: number
+}
 

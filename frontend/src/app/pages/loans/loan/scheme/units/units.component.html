@@ -11,8 +11,12 @@
 </div>
 
 <div class="row pt-2">
-  <div class="col-6 py-2" *ngFor="let assetClass of scheme.assetClasses">
-    <app-unit-card [assetClass]="assetClass" [scheme]="scheme"></app-unit-card>
+  <div class="col-6 py-2" *ngFor="let assetClass of scheme.assetClasses; let i = index ">
+    <app-unit-card 
+      [assetClass]="assetClass" 
+      [scheme]="scheme"
+      (deleteIsConfirmed)="onDeleteAssetClass(i)">
+    </app-unit-card>
   </div>
 </div>
 

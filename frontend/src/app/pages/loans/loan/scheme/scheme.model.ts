@@ -1,3 +1,4 @@
+import { UnitGroup } from "./scheme";
 
 
 export type AssetClassType = Hotel | 
@@ -9,7 +10,7 @@ export type AssetClassType = Hotel |
 
 export abstract class AssetClassAbstract {
     abstract readonly use: string;
-    public unitsGrouped: Unit[] = [];
+    public unitsGrouped: UnitGroup[] = [];
 
     constructor(
         public schemeId?: number, 
@@ -103,7 +104,7 @@ export class Unit {
         public description: string = "",
         public areaSize?: number,
         public beds?: number,
-        public quantity?: number,
+        // public quantity?: number,
     ) {
         this.label = this.defineLabel();
         this.areaType = this.defineAreaType();

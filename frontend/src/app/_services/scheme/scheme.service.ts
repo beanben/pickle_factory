@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
@@ -79,26 +79,32 @@ export class SchemeService {
     ); 
   }
 
-  createUnits(units: Unit[]) {
+  createUnits(units: Unit[]): Observable<Unit[]>{
     const url = '/api/unit/';
 
-    return new Promise<APIResult>((resolve, reject) => {
-     
-      this.http.post(url, units).subscribe({
-        next: (data) => {
-          const result = data as APIResult;
-          if (result.status === "success"){
-            resolve(result);
-          } else {
-            reject(result.message)
-          }
-        },
-        error: (error) => {
-          reject(this._sharedService.handleError(error));
-        }
-      })
-    })
-  };
+    return this.http.post<Unit[]>(url, units).pipe(
+      tap(() => console.log('createUnits()', Math.random()))
+    );
+  }
+
+  updateUnits(units: Unit[]): Observable<Unit[]>{
+    const url = '/api/unit/bulk_update_delete/';
+
+    return this.http.put<Unit[]>(url, units).pipe(
+      tap(() => console.log('updateUnits()', Math.random()))
+    );
+  }
+    
+  deleteUnits(units: Unit[]): Observable<any>{
+    const url = '/api/unit/bulk_update_delete/';
+    const httpOptions = {
+      body: units
+    };
+
+    return this.http.delete(url, httpOptions).pipe(
+      tap(() => console.log('deleteUnits()', Math.random()))
+    );
+  }
 
   getAssetClassUses(): Observable<string[]>  {
     const url = `${this.relativeUrl}/asset_class_uses/`;
@@ -155,12 +161,5 @@ export class SchemeService {
         tap(() => console.log('getAssetClass()', Math.random()))
       )
   };
-
-  // getAvailableAssetClasses(scheme: Scheme): Observable<string[]>  {
-  //   const url = `${this.relativeUrl}/${scheme.id}/available_asset_classes/`;
-  //   return this.http.get<string[]>(url).pipe(
-  //     tap(() => console.log('getAvailableAssetClasses()', Math.random())),
-  //   );
-  // }
 
 }

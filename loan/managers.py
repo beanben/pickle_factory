@@ -5,9 +5,9 @@ from django.db.models import Count, Sum
 class SchemeManager(models.Manager):
 
     def get_asset_classes(self, scheme):
-        from loan.models.scheme import AssetClass
+        from loan.models import scheme_models
         
-        subclasses = AssetClass.__subclasses__()
+        subclasses = scheme_models.AssetClass.__subclasses__()
         querysets = [
             subclass.objects.filter(scheme=scheme) for subclass in subclasses
         ]

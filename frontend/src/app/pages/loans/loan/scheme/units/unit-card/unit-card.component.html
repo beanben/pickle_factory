@@ -3,8 +3,9 @@
     *ngIf="openUnitModal" 
     [mode]="modalMode"
     [scheme]="scheme"
-    [assetClass]="assetClass" 
-    (modalSaveAssetClass)="onSave($event)">
+    [assetClass]="assetClass"
+    (modalSaveAssetClass)="onSave($event)"
+    (deleteIsConfirmed)="onDeleteAssetClass()">
 </app-unit-modal>
 
 
