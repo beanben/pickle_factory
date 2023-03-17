@@ -13,6 +13,7 @@ import { SharedService } from '../shared/shared.service';
 export class SchemeService {
   relativeUrl = "/api/scheme";
   availableAssetClassUsesSub = new BehaviorSubject<string[]>([]);
+  assetClassUsesSub = new BehaviorSubject<string[]>([]);
 
   constructor(
     private http: HttpClient,
@@ -22,6 +23,10 @@ export class SchemeService {
   setAvailableAssetClassUsesSub(availableAssetClassUse: string[]){
     return this.availableAssetClassUsesSub.next(availableAssetClassUse);
   }
+  setAssetClassUsesSub(assetClassUsesSub: string[]){
+    return this.availableAssetClassUsesSub.next(assetClassUsesSub);
+  }
+
 
   createScheme(scheme: Scheme) {
     const url = `${this.relativeUrl}/`;

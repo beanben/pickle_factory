@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 import { pascalToTitle } from 'src/app/shared/utils';
+import { APIResult } from 'src/app/_services/api-result';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../scheme';
 import { AssetClassType} from '../scheme.model';
@@ -14,6 +16,7 @@ export class UnitsComponent implements OnInit {
   openUnitModal = false;
   modalMode = "";
   availableAssetClassUses: string[] = [];
+  assetClassUses: string[] = [];
 
   @Input() scheme = {} as Scheme
 
@@ -38,35 +41,57 @@ export class UnitsComponent implements OnInit {
     }
   }
 
-  getAvailableAssetClassesUseChoices(){
-    const availableAssetClassUsesSub: string[] = this._schemeService.availableAssetClassUsesSub.getValue();
-    this.availableAssetClassUses = availableAssetClassUsesSub;
+  async getAvailableAssetClassesUseChoices(){
+    this.assetClassUses = await this.getAssetClassUses()
 
-    if(this.availableAssetClassUses.length === 0){
-      this.getReqAvailableAssetClassUses()
+    const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
+    const availableSchemeUses: string[] = this.assetClassUses.filter(
+            assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
+    );
+
+    this.availableAssetClassUses = availableSchemeUses;
+  } 
+
+  async getAssetClassUses(): Promise<string[]>{
+    const assetClassUsesSub: string[] = this._schemeService.assetClassUsesSub.getValue();
+    if(assetClassUsesSub.length !== 0){
+      return assetClassUsesSub;
     }
 
+    const assetClassUses: string[] = await lastValueFrom(this._schemeService.getAssetClassUses());
+    return assetClassUses
   }
 
-  getReqAvailableAssetClassUses(){
-    this._schemeService.getAssetClassUses()
-      .subscribe((res: string[]) => {
+  // getAvailableAssetClassesUseChoices(){
+  //   const availableAssetClassUsesSub: string[] = this._schemeService.availableAssetClassUsesSub.getValue();
+  //   this.availableAssetClassUses = availableAssetClassUsesSub;
 
-        const assetClassUsesFormatted: string[] = [];
-        res.forEach(choice => {
-          assetClassUsesFormatted.push(pascalToTitle(choice))
-        })
+  //   if(this.availableAssetClassUses.length === 0){
+  //     this.getReqAvailableAssetClassUses()
+  //   }
 
-        const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
-        const availableSchemeUses: string[] = assetClassUsesFormatted.filter(
-          assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
-        );
+  // } 
+
+  // getReqAvailableAssetClassUses(){
+  //   this._schemeService.getAssetClassUses()
+  //     .subscribe((res: string[]) => {
+
+  //       const assetClassUsesFormatted: string[] = [];
+  //       res.forEach(choice => {
+  //         assetClassUsesFormatted.push(pascalToTitle(choice))
+  //       })
+
+  //       const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
+  //       // console.log("existingSchemeUses: ", existingSchemeUses)
+  //       const availableSchemeUses: string[] = assetClassUsesFormatted.filter(
+  //         assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
+  //       );
 
 
-        this.availableAssetClassUses = availableSchemeUses;
-        this._schemeService.setAvailableAssetClassUsesSub(availableSchemeUses); 
-      })
-  }
+  //       this.availableAssetClassUses = availableSchemeUses;
+  //       this._schemeService.setAvailableAssetClassUsesSub(availableSchemeUses); 
+  //     })
+  // }
 
   onDeleteAssetClass(index: number){
     this.openUnitModal = false;
