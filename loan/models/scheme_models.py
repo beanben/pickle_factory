@@ -71,7 +71,7 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
     identifier = models.CharField(verbose_name="unit number", default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
     beds = models.IntegerField(blank=True, null=True)
-    area_size = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True, default=0.00)
+    area_size = models.DecimalField(max_digits=20, decimal_places=4, default=0.0000)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True)
 
     def __str__(self):

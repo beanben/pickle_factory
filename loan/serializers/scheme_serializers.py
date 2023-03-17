@@ -32,7 +32,7 @@ class UnitSerializer(serializers.ModelSerializer):
     asset_class = AssetClassUnitSerializer(required=False)
     identifier = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="")
-    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     # quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
@@ -84,13 +84,12 @@ class UnitListSerializer(serializers.ListSerializer):
 
 class UnitGroupSerializer(serializers.Serializer):
     asset_class = AssetClassUnitSerializer(required=False)
-    # identifier = serializers.CharField(required=False, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="")
-    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    beds = serializers.IntegerField(required=False, allow_null= True)
+    group_area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    beds_per_unit = serializers.IntegerField(required=False, allow_null= True)
+    group_beds = serializers.IntegerField(required=False, allow_null= True)
     quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
-#             'group_area_size']
 
 
 class AssetClassSerializer(serializers.ModelSerializer):
@@ -105,7 +104,6 @@ class AssetClassSerializer(serializers.ModelSerializer):
 
     def get_units_grouped(self, obj):
         qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
-        # pdb.set_trace()
         return UnitGroupSerializer(qs, many=True).data
     
     def get_units(self, obj):

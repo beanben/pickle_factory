@@ -27,7 +27,12 @@ export interface Area {
 }
 
 
-export interface UnitGroup extends Unit {
-    quantity: number
+export interface UnitGroup{
+    ids?: number[],
+    description: string,
+    quantity: number,
+    groupBeds?: number,
+    bedsPerUnit: number,
+    groupAreaSize: number,
 }
 

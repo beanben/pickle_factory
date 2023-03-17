@@ -6,7 +6,6 @@ import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toTitleCase } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
 import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
-// import { duplicateDescriptionValidator, duplicateValidatorFormArray } from 'src/app/shared/validators';
 import { tap } from 'rxjs/operators';
 
 interface RequestObject {
@@ -29,6 +28,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   nextIsClicked = false;
   formIsSubmitted = false;
   numbersOnly = /^\d+$/;
+  decimalsOnly = /^\d*\.?\d*$/;
   totalUnits = 0;
   totalArea = 0;
 
@@ -43,7 +43,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   requiredControls: string[] = [];
   errors: string[] = [];
   subs: Subscription[] = [];
-  emptyUnit = {} as Unit;
+  unitStructure = {} as Unit;
   mapFormIndexToUnitIds: { [key: number]: number[] } = {};
   unitsToDelete: Unit[] = [];
 
@@ -57,8 +57,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         this.allRequiredValidator('description'),
         this.allRequiredValidator('quantity'),
         this.allPatternValidator('quantity'),
-        this.allPatternValidator('beds'),
-        this.allPatternValidator('areaSize')
+        this.allPatternValidator('groupBeds'),
+        this.allPatternValidator('groupAreaSize')
       ], 
       // updateOn:'submit'
     }
@@ -120,8 +120,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       ids: this.fb.array([]),
       description: ["", Validators.required],
       quantity: [null, [Validators.required, Validators.pattern(this.numbersOnly)]],
-      beds: [null, Validators.pattern(this.numbersOnly)],
-      areaSize: [null, Validators.pattern(this.numbersOnly)],
+      bedsPerUnit: [null, Validators.pattern(this.numbersOnly)],
+      groupAreaSize: [null, Validators.pattern(this.decimalsOnly)],
     })
   }
 
@@ -134,7 +134,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     const unitsToDelete: Unit[] | undefined = this.unitGroupToExistingUnits(this.unitGroups.at(index));
     if(!!unitsToDelete) {
       this.unitsToDelete!.push(...unitsToDelete);
-    }
+    };
+
+
+    const assetClassUnitsGroupIndex = this.assetClass.unitsGrouped.findIndex((group) => group.description === this.unitGroups.at(index).value.description);
+    this.assetClass.unitsGrouped.splice(assetClassUnitsGroupIndex, 1);
 
     this.unitGroups.removeAt(index);
    
@@ -157,7 +161,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
         const assetClassType = this.assetClassTypeString!.value;
         this.assetClass = this.newAssetClass(assetClassType);
 
-        this.emptyUnit = new Unit(this.assetClass);
+        this.unitStructure = new Unit(this.assetClass);
         this.addUnitGroup();
       };
     }
@@ -235,9 +239,9 @@ export class UnitModalComponent implements OnInit, OnDestroy {
             this.assetClass.unitsGrouped.splice(index, 1);
           } else {
             unitGrouped.description = unitGroup.value.description;
-            unitGrouped.areaSize = unitGroup.value.areaSize;
-            unitGrouped.beds = unitGroup.value.beds;
             unitGrouped.quantity = unitGroup.value.quantity;
+            unitGrouped.groupBeds = unitGroup.value.groupBeds; 
+            unitGrouped.groupAreaSize = unitGroup.value.groupAreaSize;
             
             this.assetClass.unitsGrouped[index] = unitGrouped;
           }
@@ -257,8 +261,8 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
   defineUnitsToUpdate(unitGroup: AbstractControl): Unit[] | undefined {
       const existingIds: number = unitGroup.value.ids?.length || 0;
-      const groupQuantity: number = +unitGroup.value.quantity;
-      const numberOfUnitsToUpdate: number = Math.min(groupQuantity, existingIds);
+      const quantity: number = +unitGroup.value.quantity;
+      const numberOfUnitsToUpdate: number = Math.min(quantity, existingIds);
 
       if(numberOfUnitsToUpdate === 0){
         return undefined;
@@ -271,25 +275,45 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
         if(!!existingUnit){
           existingUnit = this.setUnitParametres(existingUnit, unitGroup);
-          unitsToUpdate.push(existingUnit)
+          unitsToUpdate.push(existingUnit);
+          this.setAssetClassUnitGroupParametres(unitGroup);
         }
       }
 
       return unitsToUpdate;
     }
+
+    setAssetClassUnitGroupParametres(unitGroup: AbstractControl){
+      const unitGrouped: UnitGroup = {
+        description: unitGroup.value.description,
+        quantity: unitGroup.value.quantity,
+        bedsPerUnit: unitGroup.value.bedsPerUnit,
+        groupAreaSize: unitGroup.value.groupAreaSize
+      }
+
+      const assetClassUnitsGroupIndex = this.assetClass.unitsGrouped.findIndex((group) => group.description === unitGroup.value.description);
+
+      if(assetClassUnitsGroupIndex === -1){
+        this.assetClass.unitsGrouped.push(unitGrouped)
+       } else {
+        this.assetClass.unitsGrouped[assetClassUnitsGroupIndex] = unitGrouped;
+       }
+    }
+
   
     defineUnitsToCreate(unitGroup: AbstractControl): Unit[] | undefined {
       const existingIds: number = unitGroup.value.ids?.length || 0;
-      const groupQuantity: number = +unitGroup.value.quantity;
-      const numberOfUnitsToCreate: number = Math.max(groupQuantity - existingIds, 0);
-
+      const quantity: number = +unitGroup.value.quantity;
+      const numberOfUnitsToCreate: number = Math.max(quantity - existingIds, 0);
+      
       if(numberOfUnitsToCreate === 0 ){ 
         return undefined
       }
 
       let newUnit: Unit = new Unit(this.assetClass);
       newUnit = this.setUnitParametres(newUnit, unitGroup);
-  
+      this.setAssetClassUnitGroupParametres(unitGroup);
+
       const newUnits: Unit[] = Array.from(
               {length: numberOfUnitsToCreate},
               () => newUnit
@@ -299,17 +323,18 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     setUnitParametres(unit: Unit, unitGroup:AbstractControl): Unit{
       unit.description = unitGroup.get('description')!.value;
-      unit.areaSize = (unitGroup.get('areaSize')?.value || 0) / unitGroup.get('quantity')!.value;
-      unit.beds = unitGroup.get('beds')!.value;
+
+      let areaPerUnit = (unitGroup.get('groupAreaSize')?.value || 0) / unitGroup.get('quantity')!.value
+      unit.areaSize = +areaPerUnit.toFixed(4);
+
+      unit.beds = unitGroup.get('bedsPerUnit')!.value;
       return unit;
     }
 
     defineUnitsToDelete(unitGroup: AbstractControl, unitsToUpdate: Unit[] | undefined): Unit[] | undefined {
       const existingIds: number = unitGroup.value.ids?.length || 0;
-      const groupQuantity: number = +unitGroup.value.quantity;
-      const numberOfUnitsToDelete: number = Math.max(existingIds - groupQuantity,0);
-
-      console.log("inside defineUnitsToDelete - existingIds", existingIds)
+      const quantity: number = +unitGroup.value.quantity;
+      const numberOfUnitsToDelete: number = Math.max(existingIds - quantity,0);
 
       if(numberOfUnitsToDelete === 0 ){ 
         return undefined 
@@ -347,17 +372,6 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     return assetClassCreated;
   }
 
-
-  controlLabels(controlName: string): string{
-    if(controlName === "quantity"){
-      return this.unitGroups.at(0).value.label
-    } else if(controlName === "areaSize") {
-      return "area";
-    } else {
-      return controlName;
-    }
-  }
-
   calculateTotals(): void {
     this.totalUnits = 0;
     this.totalArea = 0;
@@ -366,11 +380,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     let totalArea = 0;
     this.unitGroups.controls.forEach(control => {
       totalUnits += +control.get('quantity')?.value || 0;
-      totalArea += +control.get('areaSize')?.value || 0;
+      totalArea += +control.get('groupAreaSize')?.value || 0;
     });
 
     this.totalUnits += totalUnits;
-    this.totalArea += totalArea;
+    this.totalArea = +totalArea.toFixed(2);
   }
 
 
@@ -386,7 +400,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     );
     
     this.unitGroups.clear();
-    this.emptyUnit = new Unit(this.assetClass);
+    this.unitStructure = new Unit(this.assetClass);
 
     this.assetClass.unitsGrouped.forEach((unitGroup: UnitGroup, index) => {
       this.unitGroups.push(
@@ -394,12 +408,14 @@ export class UnitModalComponent implements OnInit, OnDestroy {
           ids: this.getUnitGroupIds(unitGroup),
           description: [unitGroup.description, Validators.required],
           quantity: [unitGroup.quantity, [Validators.required, Validators.pattern(this.numbersOnly)]],
-          beds: [unitGroup.beds, Validators.pattern(this.numbersOnly)],
-          areaSize: [+unitGroup.areaSize!, Validators.pattern(this.numbersOnly)],
+          bedsPerUnit: [unitGroup.bedsPerUnit , Validators.pattern(this.numbersOnly)],
+          groupAreaSize: [+unitGroup.groupAreaSize, Validators.pattern(this.decimalsOnly)],
       }));
-
     });
 
+    if(this.unitGroups.length === 0){
+      this.addUnitGroup();
+    };
   }
 
   getUnitGroupIds(unitGroup: UnitGroup): FormArray{

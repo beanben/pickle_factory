@@ -28,8 +28,6 @@ export class UnitsComponent implements OnInit {
   onOpenModal(modalMode: string){
     this.openUnitModal = true;
     this.modalMode = modalMode;
-    // console.log("open modal from insude units compo")
-    // console.log("this.scheme", this.scheme)
   }
 
   onSave(assetClass: AssetClassType | null){

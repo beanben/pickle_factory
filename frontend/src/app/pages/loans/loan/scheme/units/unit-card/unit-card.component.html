@@ -1,4 +1,3 @@
-
 <app-unit-modal 
     *ngIf="openUnitModal" 
     [mode]="modalMode"
@@ -7,7 +6,6 @@
     (modalSaveAssetClass)="onSave($event)"
     (deleteIsConfirmed)="onDeleteAssetClass()">
 </app-unit-modal>
-
 
 <div class="border border-primary p-2 rounded highlight">
 
@@ -29,16 +27,18 @@
             <div class="table-cell" *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</div>
           </div>
           <div class="table-row" *ngFor="let unitGroup of assetClass.unitsGrouped">
-            <div class="table-cell">{{unitGroup.description}}</div>
+            <div class="table-cell">
+              {{(unitGroup.description === "-" && assetClass.unitsGrouped.length === 1)? "Total" : unitGroup.description}}
+            </div>
             <div class="table-cell text-center">{{unitGroup.quantity}}</div>
-            <div class="table-cell text-end">{{unitGroup.areaSize}}</div>
-            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</div>
+            <div class="table-cell text-end">{{unitGroup.groupAreaSize | number: '1.2-2' : 'en-GB'}}</div>
+            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.bedsPerUnit}}</div>
           </div>
           <div class="table-row footer" *ngIf="assetClass.unitsGrouped.length > 1">
             <div class="table-cell">Total</div>
-            <div class="table-cell text-center">{{totalQuantity}}</div>
+            <div class="table-cell text-center">{{totalQuantity }}</div>
             <div class="table-cell text-end">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
-            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{totalBeds}}</div>
+            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()"></div>
           </div>
         </div>
 

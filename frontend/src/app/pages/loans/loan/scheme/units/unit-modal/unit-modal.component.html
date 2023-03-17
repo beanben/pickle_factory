@@ -104,7 +104,6 @@
         </div>
       </ng-container>
 
-
       <ng-container *ngIf="step===2">
         <div class="modal-header">
           <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit</h5>
@@ -145,9 +144,9 @@
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
                 <div class="border-table-title" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">Description</div>
-                <div class="col border-table-title">{{emptyUnit.label | titlecase}}s</div>
-                <div class="col border-table-title">{{emptyUnit.areaType}} ({{scheme.system | lowercase}})</div>
-                <div class="col-3 border-table-title px-0" *ngIf="emptyUnit.hasBeds()"> Beds per {{emptyUnit.label}} </div>
+                <div class="col border-table-title">{{unitStructure.label | titlecase}}s</div>
+                <div class="col border-table-title">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+                <div class="col-3 border-table-title px-0" *ngIf="unitStructure.hasBeds()"> Beds per {{unitStructure.label}} </div>
                 <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
               </div>
             </div>
@@ -169,10 +168,10 @@
                         <input class="form-control text-end" formControlName="quantity" placeholder="0" >
                     </div>
                     <div class="col my-auto px-0 text-end">
-                      <input class="form-control text-end" formControlName="areaSize" placeholder="0" />
+                      <input class="form-control text-end" formControlName="groupAreaSize" placeholder="0" />
                     </div>
-                    <div class="col-3 my-auto px-0 text-end" *ngIf="emptyUnit.hasBeds()">
-                      <input class="form-control text-end" formControlName="beds" placeholder="0" />
+                    <div class="col-3 my-auto px-0 text-end" *ngIf="unitStructure.hasBeds()">
+                      <input class="form-control text-end" formControlName="bedsPerUnit" placeholder="0" />
                     </div>
                     
                     <div class="col-auto px-0 text-center rounded d-flex align-items-center justify-content-center" 
@@ -191,28 +190,20 @@
                 <span class="form-control fw-bolder border-0">Total</span>
               </div>
               <div class="col my-auto px-0 text-end">
-                <span class="form-control fw-bolder border-0">{{totalUnits}}</span>
+                <span class="form-control fw-bolder border-0">{{totalUnits | number: '1.0-0' : 'en-GB'}}</span>
               </div>
               <div class="col my-auto px-0 text-end">
-                <span class="form-control fw-bolder border-0">{{totalArea}}</span>
+                <span class="form-control fw-bolder border-0" *ngIf="totalArea % 1 !== 0 ">{{totalArea | number: '1.2-2' : 'en-GB'}}</span>
+                <span class="form-control fw-bolder border-0" *ngIf="totalArea % 1 === 0 ">{{totalArea | number: '1.0-0' : 'en-GB'}}</span>
               </div>
-              <div class="col-3 my-auto px-0 text-end"  *ngIf="emptyUnit.hasBeds()">
+              <div class="col-3 my-auto px-0 text-end"  *ngIf="unitStructure.hasBeds()">
                 <span class="form-control fw-bolder border-0"></span>
               </div>
               <div class="col-auto my-auto px-0 text-invisible" style="width: 20px"> &times;</div>
             </div>
 
-            <button type="button" class="btn btn-primary mt-2" (click)="addUnitGroup()">Add {{emptyUnit.label}}s</button>
+            <button type="button" class="btn btn-primary mt-2" (click)="addUnitGroup()">Add {{unitStructure.label}}s</button>
 
-
-            <!-- <div class="mt-2 alert alert-danger text-center" *ngIf="requiredControls.length > 0" [ngClass]="{'mb-0': invalidControlsType.length > 0}">
-              The following fields are required: {{ requiredControls.join(', ') }}.
-            </div> -->
-            <!-- <div class="mt-2 alert alert-danger text-center" *ngIf="invalidControlsType.length > 0" [ngClass]="requiredControls.length > 0 ? 'mt-0': 'mt-2'">
-              <div *ngFor="let control of invalidControlsType">
-                {{control.name}} must be a {{control.type}}
-              </div>
-            </div> -->
             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('descriptionRequired')">
               Descriptions are required
              </p>
@@ -220,16 +211,16 @@
              Descriptions must be unique
             </p>
             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityRequired')">
-              Define the number of {{emptyUnit.label}}s
+              Define the number of {{unitStructure.label}}s
              </p>
              <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('quantityPattern')">
-              {{emptyUnit.label |titlecase}}s must be numbers
+              {{unitStructure.label |titlecase}}s must be numbers
              </p>
-             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('bedsPattern')">
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('groupBedsPattern')">
               beds must be numbers
              </p>
-             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('areaSizePattern')">
-              {{emptyUnit.areaType}}s must be numbers
+             <p class="mt-1 alert alert-danger text-center" *ngIf="formIsSubmitted && unitGroups.getError('groupAreaSizePattern')">
+              Areas must be numbers
              </p>
 
           </form>
