@@ -11,3 +11,8 @@ export function pascalToSnakeCase(str: string): string {
 export function toTitleCase(str: string): string {
     return str.replace(/\b\w/g, (match) => match.toUpperCase());
 }
+
+export function addSpaceBetweenCapitalLetters(str: string): string {
+    const world: string = str.replace(/([A-Z])/g, (match) => ` ${match}`);
+    return world.trim();
+}

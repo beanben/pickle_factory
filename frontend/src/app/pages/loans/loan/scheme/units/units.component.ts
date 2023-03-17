@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { pascalToTitle } from 'src/app/shared/utils';
+import { addSpaceBetweenCapitalLetters, pascalToTitle } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../scheme';
@@ -43,6 +43,7 @@ export class UnitsComponent implements OnInit {
 
   async getAvailableAssetClassesUseChoices(){
     this.assetClassUses = await this.getAssetClassUses()
+    this._schemeService.setAssetClassUsesSub(this.assetClassUses); 
 
     const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
     const availableSchemeUses: string[] = this.assetClassUses.filter(
@@ -58,7 +59,9 @@ export class UnitsComponent implements OnInit {
       return assetClassUsesSub;
     }
 
-    const assetClassUses: string[] = await lastValueFrom(this._schemeService.getAssetClassUses());
+    const assetClassNames: string[] = await lastValueFrom(this._schemeService.getAssetClassUses());
+    const assetClassUses = assetClassNames.map(assetClassName => addSpaceBetweenCapitalLetters(assetClassName))
+
     return assetClassUses
   }
 
