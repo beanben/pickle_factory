@@ -91,6 +91,24 @@
               </div>
             </div>
 
+            <app-required></app-required>
+            <div class="row mb-3 mx-0">
+              <div class="col-auto py-2 px-0 form-section-title">
+                <span class="px-2">Built</span>
+              </div>
+
+              <div class="col input-section border py-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="isBuilt" id="option-true" [value]="true" formControlName="isBuilt" [attr.disabled]="true">
+                  <label class="form-check-label" for="option-true" [attr.disabled]="true">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="isBuilt" id="option-false" [value]="false" formControlName="isBuilt">
+                  <label class="form-check-label" for="option-false">No</label>
+                </div>
+              </div>
+            </div>
+
             <div *ngFor="let error of errors " class="alert alert-danger text-center">
               {{error}}
             </div>
@@ -183,6 +201,25 @@
                   <label class="form-check-label" [for]="'system-'+i">
                     {{choice.display}}
                   </label>
+                </div>
+              </div>
+            </div>
+
+
+            <app-required></app-required>
+            <div class="row mb-3 mx-0">
+              <div class="col-auto py-2 px-0 form-section-title">
+                <span class="px-2">Built</span>
+              </div>
+
+              <div class="col input-section border py-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="isBuilt" id="option-true" [value]="true" formControlName="isBuilt" [attr.disabled]="true">
+                  <label class="form-check-label" for="option-true" [attr.disabled]="true">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="isBuilt" id="option-false" [value]="false" formControlName="isBuilt">
+                  <label class="form-check-label" for="option-false">No</label>
                 </div>
               </div>
             </div>

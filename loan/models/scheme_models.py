@@ -18,6 +18,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     country = models.CharField(max_length=100, blank=True , default="")
     opening_date = models.DateField(blank=True, null=True)
     system = models.CharField(max_length=4, choices=SYSTEM_CHOICES, default="SQFT")
+    is_built = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -97,3 +98,5 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
 #     description = models.CharField(max_length=100, blank=True , default="")
 #     quantity = models.IntegerField(blank=True, null=True)
 #     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="categories")
+
+# TENANCY TYPE : Open Market Residential /. Discounted Rental REsidential

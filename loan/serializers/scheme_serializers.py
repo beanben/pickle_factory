@@ -127,7 +127,8 @@ class SchemeSerializer(serializers.ModelSerializer):
             'country', 
             'opening_date',
             'asset_classes',
-            'system']
+            'system',
+            'is_built']
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")

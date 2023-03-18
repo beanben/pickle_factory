@@ -89,3 +89,7 @@ app-edit {
     color: rgb(15,86,179);
     font-weight: bolder;
 }
+
+input[type="radio"]:disabled {
+    background-color: grey;
+}

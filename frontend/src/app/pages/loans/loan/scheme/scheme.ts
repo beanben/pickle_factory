@@ -1,8 +1,4 @@
-// import { AssetClass } from "./scheme.model";
-
 import { AssetClassType, Unit } from "./scheme.model";
-
-
 
 export interface Scheme {
     id: number;
@@ -14,6 +10,7 @@ export interface Scheme {
     country?: string;
     openingDate?: Date;
     system: "SQFT" | "SQM";
+    isBuilt: boolean;
     assetClasses: AssetClassType[],
 }
 
