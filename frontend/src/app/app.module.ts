@@ -23,7 +23,7 @@ import { LoanComponent } from './pages/loans/loan/loan.component';
 import { LoanModalComponent } from './pages/loans/loan/loan-modal/loan-modal.component';
 import { EditComponent } from './shared/edit.component';
 import { InitialsPipe } from './shared/initials.pipe';
-import { StakeholdersComponent } from './pages/loans/loan/stakeholders/stakeholders.component';
+import { FundersComponent } from './pages/loans/loan/funders/funders.component';
 import { BorrowerComponent } from './pages/borrowers/borrower/borrower.component';
 import { BorrowerModalComponent } from './pages/borrowers/borrower/borrower-modal/borrower-modal.component';
 import { DeleteComponent } from './shared/delete.component';
@@ -35,6 +35,9 @@ import { UnitsComponent } from './pages/loans/loan/scheme/units/units.component'
 import { UnitModalComponent } from './pages/loans/loan/scheme/units/unit-modal/unit-modal.component';
 import { DotDirective } from './shared/shared.directive';
 import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/unit-card.component';
+import { IncomeAndValueComponent } from './pages/loans/loan/scheme/income-and-value/income-and-value.component';
+import { ResidentialComponent } from './pages/loans/loan/scheme/income-and-value/residential/residential.component';
+import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-value/strategy-modal/strategy-modal.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,7 @@ import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/uni
     LoanModalComponent,
     EditComponent,
     InitialsPipe,
-    StakeholdersComponent,
+    FundersComponent,
     BorrowerComponent,
     BorrowerModalComponent,
     DeleteComponent,
@@ -65,7 +68,10 @@ import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/uni
     UnitsComponent,
     UnitModalComponent,
     DotDirective,
-    UnitCardComponent
+    UnitCardComponent,
+    IncomeAndValueComponent,
+    ResidentialComponent,
+    StrategyModalComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { addSpaceBetweenCapitalLetters, pascalToTitle } from 'src/app/shared/utils';
-import { APIResult } from 'src/app/_services/api-result';
+import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../scheme';
 import { AssetClassType} from '../scheme.model';
@@ -39,6 +38,7 @@ export class UnitsComponent implements OnInit {
     if(assetClass){
       this.scheme.assetClasses.push(assetClass);
     }
+
   }
 
   async getAvailableAssetClassesUseChoices(){
@@ -64,37 +64,6 @@ export class UnitsComponent implements OnInit {
 
     return assetClassUses
   }
-
-  // getAvailableAssetClassesUseChoices(){
-  //   const availableAssetClassUsesSub: string[] = this._schemeService.availableAssetClassUsesSub.getValue();
-  //   this.availableAssetClassUses = availableAssetClassUsesSub;
-
-  //   if(this.availableAssetClassUses.length === 0){
-  //     this.getReqAvailableAssetClassUses()
-  //   }
-
-  // } 
-
-  // getReqAvailableAssetClassUses(){
-  //   this._schemeService.getAssetClassUses()
-  //     .subscribe((res: string[]) => {
-
-  //       const assetClassUsesFormatted: string[] = [];
-  //       res.forEach(choice => {
-  //         assetClassUsesFormatted.push(pascalToTitle(choice))
-  //       })
-
-  //       const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
-  //       // console.log("existingSchemeUses: ", existingSchemeUses)
-  //       const availableSchemeUses: string[] = assetClassUsesFormatted.filter(
-  //         assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
-  //       );
-
-
-  //       this.availableAssetClassUses = availableSchemeUses;
-  //       this._schemeService.setAvailableAssetClassUsesSub(availableSchemeUses); 
-  //     })
-  // }
 
   onDeleteAssetClass(index: number){
     this.openUnitModal = false;

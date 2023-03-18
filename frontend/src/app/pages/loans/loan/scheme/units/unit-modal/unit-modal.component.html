@@ -27,7 +27,7 @@
           </nav>
 
           <form [formGroup]="form" #f="ngForm" class="mx-auto py-2" id="asset-class-form">
-            <span class="d-flex justify-content-center pb-2">Please select the asset class from the list </span>
+            <span class="d-flex justify-content-center pb-2">Please select the asset class</span>
 
             <div class="form-group mb-3 px-2">
               <app-required></app-required>
@@ -143,7 +143,7 @@
             
             <div class="px-2">
               <div class="row mx-0 pt-2 text-center">
-                <div class="border-table-title" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">Description</div>
+                <div class="border-table-title" [ngClass]="assetClass.use.toLowerCase() === 'commercial' ? 'col-4' : 'col'">Description</div>
                 <div class="col border-table-title">{{unitStructure.label | titlecase}}s</div>
                 <div class="col border-table-title">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
                 <div class="col-3 border-table-title px-0" *ngIf="unitStructure.hasBeds()"> Beds per {{unitStructure.label}} </div>
@@ -156,9 +156,12 @@
                 <div [formGroupName]="i">
                   <div class="row mx-0">
                     
-                    <div class="my-auto px-0" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
-                      <ng-container *ngIf="unitGroups.length > 1 || unitGroup.get('description')?.value !== '-'; else noDescription">
-                        <input class="form-control" formControlName="description" placeholder="description">
+                    <div class="my-auto px-0" [ngClass]="assetClass.use.toLowerCase() === 'commercial' ? 'col-4' : 'col'">
+                      <ng-container *ngIf="assetClass.use.toLowerCase() === 'commercial' || 
+                                          unitGroups.length > 1 ||
+                                          unitGroup.get('description')?.value !== '-'; 
+                                          else noDescription">
+                        <input class="form-control" formControlName="description" placeholder="-">
                       </ng-container>
                       <ng-template #noDescription>
                        <span class="border-0 fw-bolder">Total</span> 
@@ -186,7 +189,7 @@
             </ng-container>
 
             <div class="row mx-0" *ngIf="unitGroups.length > 1">
-              <div class="px-0 my-auto" [ngClass]="assetClass.use.toLowerCase() === 'retail' ? 'col-4' : 'col'">
+              <div class="px-0 my-auto" [ngClass]="assetClass.use.toLowerCase() === 'commercial' ? 'col-4' : 'col'">
                 <span class="form-control fw-bolder border-0">Total</span>
               </div>
               <div class="col my-auto px-0 text-end">

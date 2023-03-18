@@ -5,11 +5,11 @@ import { Borrower } from '../../../borrowers/borrower/borrower';
 import { Loan } from '../loan';
 
 @Component({
-  selector: 'app-stakeholders',
-  templateUrl: './stakeholders.component.html',
-  styleUrls: ['./stakeholders.component.css']
+  selector: 'app-funders',
+  templateUrl: './funders.component.html',
+  styleUrls: ['./funders.component.css']
 })
-export class StakeholdersComponent implements OnInit {
+export class FundersComponent implements OnInit {
   tabActive = "funders";
   openAddBorrowerModal = false;
   openRemoveBorrowerModal = false;

@@ -1,18 +1,15 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from loan.models import scheme_models, loan_models
-# from loan.models.loan_models import Loan
-# from loan.models.scheme_models import (
-#     Scheme, AssetClass, Unit, Hotel, Residential, Retail,
-#     StudentAccommodation, Office, ShoppingCentre, Unit)
 from rest_framework.serializers import ValidationError
 import pdb
 
 class AssetClassUnitSerializer(serializers.Serializer):
     id = serializers.IntegerField() #otherwise not displayed as it is a readonly field by default
+    investment_strategy = serializers.CharField(required=False, allow_blank= True)
 
     class Meta:
-        fields = ['id', 'scheme_id']
+        fields = ['id', 'scheme_id', 'investment_strategy', 'use']
 
 class UnitListSerializer(serializers.ListSerializer):
     def update(self, instances, validated_data):
@@ -35,7 +32,6 @@ class UnitSerializer(serializers.ModelSerializer):
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     # quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
-
 
     class Meta:
         model = scheme_models.Unit
@@ -145,11 +141,10 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 
 class HotelSerializer(AssetClassSerializer):
-    use = serializers.CharField()
 
     class Meta:
         model = scheme_models.Hotel
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        fields = AssetClassSerializer.Meta.fields 
 
     def create(self, validated_data): 
         scheme_id = validated_data.pop("scheme_id")
@@ -171,11 +166,10 @@ class HotelSerializer(AssetClassSerializer):
         return value
 
 class ResidentialSerializer(AssetClassSerializer):
-    use = serializers.CharField()
 
     class Meta:
         model = scheme_models.Residential
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
         # pdb.set_trace()
@@ -197,12 +191,11 @@ class ResidentialSerializer(AssetClassSerializer):
             raise ValidationError(data, code=400)
         return value
 
-class RetailSerializer(AssetClassSerializer):
-    use = serializers.CharField()
+class CommercialSerializer(AssetClassSerializer):
 
     class Meta:
-        model = scheme_models.Retail
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        model = scheme_models.Commercial
+        fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
         # pdb.set_trace()
@@ -212,11 +205,11 @@ class RetailSerializer(AssetClassSerializer):
 
         self.validate_use(validated_data["use"])
 
-        retail = scheme_models.Retail.objects.create(**validated_data)
-        return retail
+        commercial = scheme_models.Commercial.objects.create(**validated_data)
+        return commercial
     
     def validate_use(self, value):
-        if value.lower() != "retail":
+        if value.lower() != "commercial":
             data = {
                 'status': 'error',
                 'message': 'use type not valid'
@@ -225,11 +218,10 @@ class RetailSerializer(AssetClassSerializer):
         return value
 
 class OfficeSerializer(AssetClassSerializer):
-    use = serializers.CharField()
 
     class Meta:
         model = scheme_models.Office
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        fields = AssetClassSerializer.Meta.fields 
 
     def create(self, validated_data):
         # pdb.set_trace()
@@ -252,11 +244,10 @@ class OfficeSerializer(AssetClassSerializer):
         return value
 
 class ShoppingCentreSerializer(AssetClassSerializer):
-    use = serializers.CharField()
 
     class Meta:
         model = scheme_models.ShoppingCentre
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
         # pdb.set_trace()
@@ -279,11 +270,10 @@ class ShoppingCentreSerializer(AssetClassSerializer):
         return value
 
 class StudentAccommodationSerializer(AssetClassSerializer):
-    use = serializers.CharField()
 
     class Meta:
         model = scheme_models.StudentAccommodation
-        fields = AssetClassSerializer.Meta.fields + ['use']
+        fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
         # pdb.set_trace()

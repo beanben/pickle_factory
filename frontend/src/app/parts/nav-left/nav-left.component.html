@@ -2,7 +2,7 @@
 
  <div class="d-flex flex-column text-white h-100">
 
-  <div class="p-2 mb-2" (click)="stakeholdersIsActive = false">
+  <div class="p-2 mb-2" (click)="fundersIsActive = false">
     <a routerLink="/" class="text-white text-decoration-none d-flex">
       <img src="{{logoWhite}}" alt=""><h3 class="my-auto fw-bold">Pickle</h3>
     </a>
@@ -31,7 +31,7 @@
 
       <li style="cursor: pointer">
         <span (click)="isExpanded = !isExpanded" >
-          <img src="{{person}}" alt="">Stakeholders 
+          <img src="{{person}}" alt="">Funders 
           <span class="filter-white" >
             <img *ngIf="!isExpanded" src="{{arrowDown}}" alt="" >
             <img *ngIf="isExpanded" src="{{arrowUp}}" alt="">

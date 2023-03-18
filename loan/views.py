@@ -216,7 +216,7 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     use_serialiser_map = {
         'hotel': scheme_serializers.HotelSerializer,
         'residential': scheme_serializers.ResidentialSerializer,
-        'retail': scheme_serializers.RetailSerializer,
+        'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
         'shopping centre': scheme_serializers.ShoppingCentreSerializer,
         'student accommodation': scheme_serializers.StudentAccommodationSerializer
@@ -240,7 +240,7 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
     use_model_map = {
         'hotel': scheme_models.Hotel,
         'residential': scheme_models.Residential,
-        'retail': scheme_models.Retail,
+        'commercial': scheme_models.Commercial,
         'office': scheme_models.Office,
         'shopping centre': scheme_models.ShoppingCentre,
         'student accommodation': scheme_models.StudentAccommodation
@@ -249,7 +249,7 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
     use_serialiser_map = {
         'hotel': scheme_serializers.HotelSerializer,
         'residential': scheme_serializers.ResidentialSerializer,
-        'retail': scheme_serializers.RetailSerializer,
+        'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
         'shopping centre': scheme_serializers.ShoppingCentreSerializer,
         'student accommodation': scheme_serializers.StudentAccommodationSerializer

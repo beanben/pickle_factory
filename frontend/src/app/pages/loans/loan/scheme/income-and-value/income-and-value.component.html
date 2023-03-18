@@ -1,0 +1,26 @@
+<div>
+    <div class="btn btn-primary" [attr.disabled]="this.scheme.assetClasses.length === 0" (click)="isShow = !isShow">
+        {{isShow ? 'Hide detail' : 'Show detail'}}
+    </div>
+</div>
+
+<ul class="nav nav-tabs pt-2" *ngIf="isShow">
+    <li class="nav-item px-2" *ngFor="let assetClass of scheme.assetClasses">
+      <p class="nav-link" (click)="tabActive =  assetClass.use.toLowerCase()" [ngClass]="{'active': tabActive === assetClass.use.toLowerCase()}">{{assetClass.use | titlecase}}</p>
+    </li>
+</ul>
+
+<div class="row p-2">
+    <div class="col">
+        <ng-container *ngIf="isShow && tabActive === 'residential' ">
+            <app-residential 
+            [assetClass] = "getAssetClass('residential')"
+            ></app-residential>
+        </ng-container>
+    </div>
+</div>
+
+
+
+
+

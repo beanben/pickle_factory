@@ -39,7 +39,7 @@ class ResidentialAdmin(admin.ModelAdmin):
         'created_at',
         'scheme')
     
-class RetailAdmin(admin.ModelAdmin):
+class CommercialAdmin(admin.ModelAdmin):
     list_display = (
         '__str__',
         'id',
@@ -101,7 +101,7 @@ admin.site.register(scheme_models.Scheme, SchemeAdmin)
 admin.site.register(scheme_models.AssetClass, AssetClassAdmin)
 admin.site.register(scheme_models.Hotel, HotelAdmin)
 admin.site.register(scheme_models.Residential, ResidentialAdmin)
-admin.site.register(scheme_models.Retail, RetailAdmin)
+admin.site.register(scheme_models.Commercial, CommercialAdmin)
 admin.site.register(scheme_models.StudentAccommodation, StudentAccommodationAdmin)
 admin.site.register(scheme_models.Office, OfficeAdmin)
 admin.site.register(scheme_models.ShoppingCentre, ShoppingCentreAdmin)

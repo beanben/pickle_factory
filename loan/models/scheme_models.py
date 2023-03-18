@@ -26,8 +26,14 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
     objects = SchemeManager()
 
 class AssetClass(TimestampedModel, AuthorTrackerModel):
+    INVESTMENT_STRATEGY_CHOICES =[
+        ("build_to_sell", "build to sell"),
+        ("build_to_rent", "build to rent")
+    ]
+
     use = models.CharField(max_length=40)
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name='asset_classes')
+    investment_strategy = models.CharField(max_length=100, blank=True , choices = INVESTMENT_STRATEGY_CHOICES, default="")
 
     class Meta:
         verbose_name_plural = "Asset Classes" #for the admin panel
@@ -45,7 +51,7 @@ class Hotel(AssetClass):
 class Residential(AssetClass): 
     pass
 
-class Retail(AssetClass):
+class Commercial(AssetClass):
     pass
 
 
@@ -85,7 +91,7 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         if self.beds:
             self.description = f"{self.beds}-bed"
 
-        elif (self.asset_class.use == 'retail' or self.asset_class.use == 'office') and not self.description:
+        elif (self.asset_class.use == 'commercial' or self.asset_class.use == 'office') and not self.description:
             self.description = self.asset_class.use
 
         # define identifier field as the unit number, for a given asset class

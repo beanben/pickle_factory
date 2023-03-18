@@ -93,3 +93,7 @@ app-edit {
 input[type="radio"]:disabled {
     background-color: grey;
 }
+
+.nav-link{
+    cursor: pointer;
+}

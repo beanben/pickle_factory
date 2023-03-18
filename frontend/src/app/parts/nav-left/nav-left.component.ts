@@ -21,7 +21,7 @@ export class NavLeftComponent implements OnInit, OnDestroy {
   house = "assets/images/house.svg";
   isExpanded = false;
   openPopup = false;
-  stakeholdersIsActive = false;
+  fundersIsActive = false;
 
   sub = Subscription.EMPTY;
   user = {} as User;

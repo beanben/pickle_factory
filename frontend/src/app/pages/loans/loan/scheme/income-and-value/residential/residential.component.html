@@ -1,0 +1,10 @@
+<app-strategy-modal *ngIf="openStrategyModal"
+                    [assetClass]="assetClass!">
+</app-strategy-modal>
+
+<div class="d-flex justify-content-center" style="margin-top: 50px">
+    <button type="button" class="btn btn-primary px-auto" (click)="openStrategyModal=true" [disabled]="!assetClass">
+        Select investment strategy
+    </button>
+</div>
+

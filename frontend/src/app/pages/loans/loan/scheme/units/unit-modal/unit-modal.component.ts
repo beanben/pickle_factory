@@ -5,7 +5,7 @@ import { Scheme, UnitGroup} from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toTitleCase } from 'src/app/shared/utils';
 import { APIResult } from 'src/app/_services/api-result';
-import { AssetClassType, Hotel, Office, Residential, Retail, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
+import { AssetClassType, Hotel, Office, Residential, Commercial, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
 import { tap } from 'rxjs/operators';
 
 interface RequestObject {
@@ -110,7 +110,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.unitGroups.push(this.newUnitGroup());
 
     // allow description to be emtpy if there is only one unitGroup
-    if (this.unitGroups.length === 1) {
+    if (this.unitGroups.length === 1 && this.assetClass.use !== 'commercial') {
       this.unitGroups.at(0).get("description")!.patchValue("-");
     }
   }
@@ -181,7 +181,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     const assetClassTypeMap: Record<string, new () => AssetClassType> = {
       "Hotel": Hotel,
       "Residential": Residential,
-      "Retail": Retail,
+      "Commercial": Commercial,
       "Student Accommodation": StudentAccommodation,
       "Office": Office,
       "Shopping Centre": ShoppingCentre,

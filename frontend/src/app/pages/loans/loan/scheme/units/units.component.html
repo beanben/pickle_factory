@@ -6,11 +6,11 @@
     (modalSaveAssetClass)="onSave($event)">
 </app-unit-modal>
 
-<div class="d-flex flex-row " [ngClass]="{'justify-content-center pt-4': scheme.assetClasses.length === 0}">
+<div>
   <button class="btn btn-primary" (click)="onOpenModal('add')" [disabled]="availableAssetClassUses.length === 0">Add asset class</button>
 </div>
 
-<div class="row pt-4 justify-content-around">
+<div class="row py-4 justify-content-around">
   <div class="col-5" *ngFor="let assetClass of scheme.assetClasses; let i = index ">
     <app-unit-card 
       [assetClass]="assetClass" 

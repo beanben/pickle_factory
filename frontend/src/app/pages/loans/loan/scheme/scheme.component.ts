@@ -9,7 +9,7 @@ import { Scheme } from './scheme';
 export class SchemeComponent implements OnInit{
   openSchemeModal = false;
   modalMode = "";
-  tabActive = "units";
+  tabActive = "incomeAndValue";
 
   @Input() scheme = {} as Scheme;
   @Input() index = -1;
