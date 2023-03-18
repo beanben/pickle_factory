@@ -30,7 +30,7 @@ export class LoansComponent implements OnInit, OnDestroy {
     private _authService: AuthService
   ) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     if(this._authService.isLoggedIn()){
       this.getLoan();
       this.getLoans();
@@ -51,7 +51,7 @@ export class LoansComponent implements OnInit, OnDestroy {
 
     if(loansSub.length !== 0){
       this.getSubLoans();
-    }else {
+    } else {
       this.getReqLoans();
     }
   }
@@ -61,7 +61,8 @@ export class LoansComponent implements OnInit, OnDestroy {
         .subscribe(loans => {
           this.loans = loans;
 
-          if(loans.length !== 0){
+          const loanSub: Loan = this._loanService.loanSub.getValue();
+          if(loans.length !== 0 && Object.keys(loanSub).length === 0){
             this.loanSelected = loans[0];
             this._loanService.setLoanSub(this.loanSelected);
           }
@@ -77,14 +78,16 @@ export class LoansComponent implements OnInit, OnDestroy {
             this.loanSelected = loans[0];
             this._loanService.setLoanSub(this.loanSelected);
           };
-        })
+    });
   }
 
   getLoan(){
     this.subs.push(
       this._loanService.getLoanSub()
-        .subscribe(loan => this.loanSelected = loan)
-    )
+        .subscribe(loan => {
+          this.loanSelected = loan;
+        })
+    );
   }
 
   onLoanSelected(index: number ){ 

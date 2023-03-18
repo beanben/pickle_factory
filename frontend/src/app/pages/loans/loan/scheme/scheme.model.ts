@@ -14,9 +14,9 @@ export abstract class AssetClassAbstract {
     constructor(
         public id?: number,
         public schemeId?: number, 
-        public units?: Unit[], 
-        public unitsGrouped?: UnitGroup[],
+        public units?: Unit[],
         public investmentStrategy?: string,
+        public unitsGrouped: UnitGroup[] =[],
     ) {}  
 }
 

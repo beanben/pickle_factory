@@ -7,7 +7,7 @@
     (deleteIsConfirmed)="onDeleteScheme()">
 </app-scheme-modal>
 
-<div class="row m-0 full-height">
+<div class="row m-0">
     <div class="col">
 
         <ng-container *ngIf="!!scheme.name; else noScheme">
@@ -47,7 +47,7 @@
                         <li class="nav-item p-2" (click)="tabActive = 'development'" [ngClass]="tabActive === 'development' ? 'activeTab' : 'tab'">Development</li>
                     </ul>
                     <div class="row p-2">
-                        <div class="col">
+                        <div class="col p-3">
                             <ng-container *ngIf="tabActive === 'units'">
                                 <app-units [scheme]="scheme"></app-units>
                             </ng-container>

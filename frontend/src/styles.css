@@ -94,6 +94,6 @@ input[type="radio"]:disabled {
     background-color: grey;
 }
 
-.nav-link{
+.nav-link:not(.active){
     cursor: pointer;
 }

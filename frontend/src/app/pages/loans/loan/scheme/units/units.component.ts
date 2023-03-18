@@ -4,7 +4,7 @@ import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../scheme';
 import { AssetClassType} from '../scheme.model';
-
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-units',
@@ -17,10 +17,11 @@ export class UnitsComponent implements OnInit {
   availableAssetClassUses: string[] = [];
   assetClassUses: string[] = [];
 
-  @Input() scheme = {} as Scheme
+  @Input() scheme = {} as Scheme;
 
   constructor(
-    private _schemeService: SchemeService
+    private _schemeService: SchemeService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void { 
@@ -42,6 +43,8 @@ export class UnitsComponent implements OnInit {
   }
 
   async getAvailableAssetClassesUseChoices(){
+    // this.scheme = await this.getScheme();
+
     this.assetClassUses = await this.getAssetClassUses()
     this._schemeService.setAssetClassUsesSub(this.assetClassUses); 
 
@@ -75,6 +78,15 @@ export class UnitsComponent implements OnInit {
     this.scheme.assetClasses.splice(index, 1);
   }
 
-  
+  // async getScheme(): Promise<Scheme>{
+  //   const schemeId = this.route.snapshot.params['schemeId'];
+  //   let scheme = {} as Scheme;
+
+  //   if(!!schemeId){
+  //     scheme = await lastValueFrom(this._schemeService.getScheme(schemeId));
+  //   };
+
+  //   return scheme;
+  // }
 
 }

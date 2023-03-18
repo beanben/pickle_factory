@@ -81,12 +81,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   getSubLoans(){
     const loanSub: Loan = this._loanService.loanSub.getValue();
+    // console.log("getSubLoans - loanSub: ", loanSub);
+    // console.log("Object(loanSub).keys:", Object(loanSub).keys);
 
     this._loanService.getLoansSub()
         .subscribe(loans => {
           this.loans = loans;
 
-          if(Object(loanSub).keys.length === 0){
+          if(!Object(loanSub).keys){
             this._loanService.setLoanSub(loans[0]);
           }
         })

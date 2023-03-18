@@ -27,6 +27,15 @@ export class SchemeService {
     return this.availableAssetClassUsesSub.next(assetClassUsesSub);
   }
 
+  getScheme(schemeId: number): Observable<Scheme> {
+    const url = `${this.relativeUrl}/${schemeId}/`;
+    
+    return this.http.get<Scheme>(url)
+      .pipe(
+        tap(() => console.log('getScheme()', Math.random()))
+      )
+  };
+
 
   createScheme(scheme: Scheme) {
     const url = `${this.relativeUrl}/`;

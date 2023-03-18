@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Scheme } from '../scheme';
-import { AssetClassType, Unit } from '../scheme.model';
+import { AssetClassType } from '../scheme.model';
+import { LoanService } from 'src/app/_services/loan/loan.service';
+
 
 @Component({
   selector: 'app-income-and-value',
@@ -12,14 +14,16 @@ export class IncomeAndValueComponent implements OnInit {
   tabActive = "";
   isShow = true;
 
-  constructor() { }
+  constructor(
+    private _loanService: LoanService,
+  ) { }
 
   ngOnInit(): void {
     this.setDefaultTabActive()
   }
 
   setDefaultTabActive(){
-    this.tabActive = !!this.scheme.assetClasses ? this.scheme.assetClasses[0].use : "";
+    this.tabActive = this.scheme.assetClasses.length > 0 ? this.scheme.assetClasses[0].use : "";
   }
 
   getAssetClass(assetClassUse: string): AssetClassType | undefined{

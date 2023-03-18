@@ -28,9 +28,7 @@ export class LoanComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void { 
     this.sub = this._loanService.getLoanSub()
-      .subscribe(loan => {
-        this.loan = loan;
-      })
+      .subscribe(loan =>this.loan = loan)
   }
 
    deleteScheme(index: number){
@@ -58,8 +56,6 @@ export class LoanComponent implements OnInit, OnDestroy {
 
     this.router.navigate(["/"]);
   }
-
-
 
   onSave(loan: Loan | null){
     this.openLoanModal = false;
