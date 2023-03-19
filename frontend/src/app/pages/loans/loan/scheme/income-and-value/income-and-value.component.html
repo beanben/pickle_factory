@@ -1,3 +1,9 @@
+<app-strategy-modal *ngIf="openStrategyModal"
+                    [assetClass]="assetClassSelected"
+                    [mode]="modalMode"
+                    (modalAssetClassUpdate)="updateAssetClass($event)">
+</app-strategy-modal>
+
 <ng-container *ngIf="scheme.assetClasses.length > 0; else noAssetClass">
 
     <div>
@@ -7,17 +13,128 @@
     </div>
 
     <ul class="nav nav-tabs pt-2" *ngIf="isShow">
-        <li class="nav-item px-2" *ngFor="let assetClass of scheme.assetClasses">
-          <p class="nav-link" (click)="tabActive =  assetClass.use.toLowerCase()" [ngClass]="{'active': tabActive === assetClass.use.toLowerCase()}">{{assetClass.use | titlecase}}</p>
+        <li class="nav-item px-2" *ngFor="let assetClass of scheme.assetClasses; let i=index">
+          <p class="nav-link" (click)="onSelectTab(i)" [ngClass]="{'active': tabActive === assetClass.use.toLowerCase()}">{{assetClass.use | titlecase}}</p>
         </li>
     </ul>
     
     <div class="row p-2">
         <div class="col">
-            <ng-container *ngIf="isShow && tabActive === 'residential' ">
-                <app-residential 
-                [assetClass] = "getAssetClass('residential')"
-                ></app-residential>
+            <!-- <ng-container *ngIf="isShow && tabActive === 'residential'">
+                <app-residential [residentialAssetClass] = "getAssetClass('residential')"></app-residential>
+            </ng-container> -->
+            <ng-container *ngIf="isShow">
+
+                <div class="row">
+                    <div class="col" *ngIf="assetClassSelected.investmentStrategy === ''">
+                        <div class="d-flex justify-content-center" style="margin-top: 50px">
+                            <button type="button" class="btn btn-primary px-auto" (click)="onOpenStrategyModal('define')">
+                                Select investment strategy
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col d-flex justify-content-end" *ngIf="assetClassSelected.investmentStrategy !== ''">
+                        <div class="p-2 rounded highlight d-flex align-items-center">
+                            <div class="fw-bolder pe-2">{{ investmentStrategy | titlecase}}</div>
+                            <app-edit (onOpenModalEdit)="onOpenStrategyModal('edit')"></app-edit>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="assetClassSelected.investmentStrategy !== ''">
+
+                    <ng-container *ngIf="assetClassSelected.investmentStrategy === 'buildToSell'; else buildToRent">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row py-2">
+                                    <div class="col background-section-title">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Sales schedule</span>
+                                            <app-toggle-button [toggle]="!expandSalesSchedule" (click)="expandSalesSchedule = !expandSalesSchedule"></app-toggle-button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row py-2" *ngIf="expandSalesSchedule">
+                                    <div class="col">
+                                        <app-sales-schedule [assetClass]="assetClassSelected"></app-sales-schedule>
+                                    </div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col">
+                    
+                                <div class="row py-2">
+                                    <div class="col background-section-title">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Sales velocity</span>
+                                            <app-toggle-button [toggle]="!expandSalesVelocity" (click)="expandSalesVelocity = !expandSalesVelocity"></app-toggle-button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row py-2" *ngIf="expandSalesVelocity">
+                                    <div class="col">
+                                        sales velocity
+                                    </div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                    </ng-container>
+                    
+                    <ng-template #buildToRent>
+                    
+                        <div class="row">
+                            <div class="col">
+                    
+                                <div class="row py-2">
+                                    <div class="col background-section-title">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Tenancy schedule</span>
+                                            <app-toggle-button [toggle]="!expandTenancySchedule" (click)="expandTenancySchedule = !expandTenancySchedule"></app-toggle-button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row py-2" *ngIf="expandTenancySchedule">
+                                    <div class="col">
+                                        tenancy schedule
+                                    </div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="col">
+                    
+                                <div class="row py-2">
+                                    <div class="col background-section-title">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Letting assumptions</span>
+                                            <app-toggle-button [toggle]="!expandLettingAssumptions" (click)="expandLettingAssumptions = !expandLettingAssumptions"></app-toggle-button>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="row py-2" *ngIf="expandLettingAssumptions">
+                                    <div class="col">
+                                        letting assumptions
+                                    </div>
+                                </div>
+                    
+                            </div>
+                        </div>
+                        
+                        
+                    </ng-template>
+
+                </ng-container>
+
             </ng-container>
         </div>
     </div>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AssetClassType, Residential } from '../../scheme.model';
 
 @Component({
   selector: 'app-sales-schedule',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sales-schedule.component.css']
 })
 export class SalesScheduleComponent implements OnInit {
+  @Input() assetClass = {} as AssetClassType;
 
   constructor() { }
 

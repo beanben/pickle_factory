@@ -1,4 +1,4 @@
-import { AssetClassType, Unit } from "./scheme.model";
+import { AssetClassType } from "./scheme.model";
 
 export interface Scheme {
     id: number;

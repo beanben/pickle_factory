@@ -37,7 +37,7 @@ import { UnitModalComponent } from './pages/loans/loan/scheme/units/unit-modal/u
 import { DotDirective } from './shared/shared.directive';
 import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/unit-card.component';
 import { IncomeAndValueComponent } from './pages/loans/loan/scheme/income-and-value/income-and-value.component';
-import { ResidentialComponent } from './pages/loans/loan/scheme/income-and-value/residential/residential.component';
+// import { ResidentialComponent } from '../../../draft/residential/residential.component';
 import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-value/strategy-modal/strategy-modal.component';
 import { SalesScheduleComponent } from './pages/loans/loan/scheme/income-and-value/sales-schedule/sales-schedule.component';
 
@@ -72,7 +72,7 @@ import { SalesScheduleComponent } from './pages/loans/loan/scheme/income-and-val
     DotDirective,
     UnitCardComponent,
     IncomeAndValueComponent,
-    ResidentialComponent,
+    // ResidentialComponent,
     StrategyModalComponent,
     SalesScheduleComponent,
     ToggleComponent
