@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Scheme } from './scheme';
+import { AssetClassType } from './scheme.model';
 
 @Component({
   selector: 'app-scheme',
@@ -33,4 +34,14 @@ export class SchemeComponent implements OnInit{
   selectUnitsTab(){
     this.tabActive = "units";
   }
+
+  // updateAssetClass(assetClass: AssetClassType | undefined){
+  //   this.openSchemeModal = false;
+
+  //   if(!!assetClass){
+  //     const assetClassIndex = this.scheme.assetClasses.findIndex(ac => ac.id === assetClass.id);
+  //     this.scheme.assetClasses[assetClassIndex] = assetClass;
+  //   }
+  // }
+
 }

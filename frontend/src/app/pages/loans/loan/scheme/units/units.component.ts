@@ -43,7 +43,6 @@ export class UnitsComponent implements OnInit {
   }
 
   async getAvailableAssetClassesUseChoices(){
-    // this.scheme = await this.getScheme();
 
     this.assetClassUses = await this.getAssetClassUses()
     this._schemeService.setAssetClassUsesSub(this.assetClassUses); 
@@ -58,6 +57,7 @@ export class UnitsComponent implements OnInit {
 
   async getAssetClassUses(): Promise<string[]>{
     const assetClassUsesSub: string[] = this._schemeService.assetClassUsesSub.getValue();
+    
     if(assetClassUsesSub.length !== 0){
       return assetClassUsesSub;
     }
@@ -77,16 +77,4 @@ export class UnitsComponent implements OnInit {
     
     this.scheme.assetClasses.splice(index, 1);
   }
-
-  // async getScheme(): Promise<Scheme>{
-  //   const schemeId = this.route.snapshot.params['schemeId'];
-  //   let scheme = {} as Scheme;
-
-  //   if(!!schemeId){
-  //     scheme = await lastValueFrom(this._schemeService.getScheme(schemeId));
-  //   };
-
-  //   return scheme;
-  // }
-
 }

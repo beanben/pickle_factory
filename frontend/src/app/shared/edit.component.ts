@@ -12,7 +12,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
     styles:[
         'img {width: 60%;}',
         'button {height: 25px; width: 25px}',
-        'button:hover {border-radius: 50%; background-color: rgba(217,217,217)}'
+        'button:hover {border-radius: 50%; background-color: rgba(217,217,217, 1)}'
     ]
 })
 export class EditComponent {

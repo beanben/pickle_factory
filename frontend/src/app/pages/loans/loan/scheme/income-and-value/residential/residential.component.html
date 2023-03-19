@@ -1,10 +1,28 @@
 <app-strategy-modal *ngIf="openStrategyModal"
-                    [assetClass]="assetClass!">
+                    [assetClass]="assetClass!"
+                    [mode]="modalMode"
+                    (modalAssetClassUpdate)="updateAssetClass($event)"
+                    >
 </app-strategy-modal>
 
-<div class="d-flex justify-content-center" style="margin-top: 50px">
-    <button type="button" class="btn btn-primary px-auto" (click)="openStrategyModal=true" [disabled]="!assetClass">
-        Select investment strategy
-    </button>
+<div class="row">
+    <div class="col" *ngIf="assetClass?.investmentStrategy === ''">
+        <div class="d-flex justify-content-center" style="margin-top: 50px">
+            <button type="button" class="btn btn-primary px-auto" (click)="onOpenModal('define')" [disabled]="!assetClass">
+                Select investment strategy
+            </button>
+        </div>
+    </div>
+    <div class="col d-flex justify-content-end" *ngIf="!!investmentStrategy">
+        <div class="p-2 rounded highlight d-flex align-items-center">
+            <div class="fw-bolder pe-2">{{ investmentStrategy | titlecase}}</div>
+            <app-edit (onOpenModalEdit)="onOpenModal('edit')"></app-edit>
+        </div>
+    </div>
 </div>
+
+
+
+
+
 

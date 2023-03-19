@@ -1,6 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AssetClassType } from '../../scheme.model';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { APIResult } from 'src/app/_services/api-result';
 
 @Component({
   selector: 'app-strategy-modal',
@@ -11,16 +13,18 @@ export class StrategyModalComponent implements OnInit {
   displayStyle = "block";
   @Input() assetClass = {} as AssetClassType;
   @Input() mode = "";
-  @Output() modalSaveStrategy = new EventEmitter();
+  @Output() modalAssetClassUpdate = new EventEmitter<AssetClassType | undefined>();
 
   form: FormGroup = new FormGroup({
     investmentStrategy: new FormControl('buildToSell'),
   })
   constructor(
     private el: ElementRef,
+    private _schemeService: SchemeService
   ) { }
 
   ngOnInit(): void {
+    this.addEventBackgroundClose();
   }
 
   addEventBackgroundClose() {
@@ -32,12 +36,24 @@ export class StrategyModalComponent implements OnInit {
   };
 
   onCancel() {
-    this.modalSaveStrategy.emit();
+    this.modalAssetClassUpdate.emit();
   };
 
   onSave(){
-    const investmentStrategy: string = this.form.value;
-    console.log("investmentStrategy: ", investmentStrategy);
+    if (!this.form.valid) {
+      return;
+    }
+
+    const investmentStrategy: string = this.form.get('investmentStrategy')?.value || "";
+    this.assetClass.investmentStrategy = investmentStrategy;
+
+    this._schemeService.updateAssetClass(this.assetClass)
+     .then((res: APIResult) => {
+      const assetClass = res.response as AssetClassType;
+      this.modalAssetClassUpdate.emit(assetClass);
+     })
+     .catch(err => console.log(err));
+
   }
 
 }

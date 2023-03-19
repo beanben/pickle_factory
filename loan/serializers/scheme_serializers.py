@@ -3,6 +3,7 @@ from rest_framework import serializers
 from loan.models import scheme_models, loan_models
 from rest_framework.serializers import ValidationError
 import pdb
+from django.utils.text import camel_case_to_spaces, slugify
 
 class AssetClassUnitSerializer(serializers.Serializer):
     id = serializers.IntegerField() #otherwise not displayed as it is a readonly field by default
@@ -93,10 +94,12 @@ class AssetClassSerializer(serializers.ModelSerializer):
     scheme_id = serializers.IntegerField()
     units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
-
+    investment_strategy = serializers.CharField(required=False, allow_blank= True)
+    
     class Meta:
         model = scheme_models.AssetClass
-        fields = ['id', 'scheme_id', 'use', 'units_grouped', 'units']
+        fields = ['id', 'scheme_id', 'use', 'units_grouped', 'units', 'investment_strategy']
+        depth = 1
 
     def get_units_grouped(self, obj):
         qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
@@ -105,6 +108,22 @@ class AssetClassSerializer(serializers.ModelSerializer):
     def get_units(self, obj):
         units = scheme_models.Unit.objects.filter(asset_class=obj)
         return UnitSerializer(units, many=True).data
+    
+
+    # def to_internal_value(self, data):
+    #     print("to_internal_value - before:", data["investment_strategy"])
+
+    #     investment_strategy = slugify(camel_case_to_spaces(data["investment_strategy"])).replace('-', '_')
+    #     print("to_internal_value - after:", data["investment_strategy"])
+
+    #     # ensure the value of investment_stratgey is written  in snake case
+    #     data["investment_strategy"] = investment_strategy
+    #     return super().to_internal_value(data)
+    
+    # def to_representation(self, instance):
+    #     print("to_representation:", instance.investment_strategy)
+    #     return super().to_representation(instance)
+    
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()

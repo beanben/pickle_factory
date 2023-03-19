@@ -36,7 +36,6 @@ export class SchemeService {
       )
   };
 
-
   createScheme(scheme: Scheme) {
     const url = `${this.relativeUrl}/`;
 
@@ -174,6 +173,27 @@ export class SchemeService {
       .pipe(
         tap(() => console.log('getAssetClass()', Math.random()))
       )
+  };
+
+  updateAssetClass(assetClass: AssetClassType) {
+    const url = `/api/asset_class/${assetClass.id}/`;
+
+    return new Promise<APIResult>((resolve, reject) => {
+     
+      this.http.put(url, assetClass).subscribe({
+        next: (data) => {
+          const result = data as APIResult;
+          if (result.status === "success"){
+            resolve(result);
+          } else {
+            reject(result.message)
+          }
+        },
+        error: (error) => {
+          reject(this._sharedService.handleError(error));
+        }
+      })
+    })
   };
 
 }

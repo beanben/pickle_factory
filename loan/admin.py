@@ -37,7 +37,8 @@ class ResidentialAdmin(admin.ModelAdmin):
         'id',
         'author_firm',
         'created_at',
-        'scheme')
+        'scheme',
+        'investment_strategy')
     
 class CommercialAdmin(admin.ModelAdmin):
     list_display = (
@@ -93,6 +94,7 @@ class AssetClassAdmin(admin.ModelAdmin):
         'id',
         'use',
         'scheme',
+        'investment_strategy'
         )
 
 admin.site.register(loan_models.Loan, LoanAdmin)

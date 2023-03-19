@@ -268,7 +268,13 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         use = asset_class.use.lower()
         return self.use_serialiser_map[use]
 
-
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return Response({
+            'status': "success",
+            'message': 'asset class updated',
+            'response': response.data
+        })
     
     
 
