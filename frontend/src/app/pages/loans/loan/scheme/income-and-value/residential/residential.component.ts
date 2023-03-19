@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { toTitleCase } from 'src/app/shared/utils';
-import { AssetClassType, Unit } from '../../scheme.model';
+import { AssetClassType } from '../../scheme.model';
 
 @Component({
   selector: 'app-residential',
@@ -8,10 +7,16 @@ import { AssetClassType, Unit } from '../../scheme.model';
   styleUrls: ['./residential.component.css']
 })
 export class ResidentialComponent implements OnInit {
+  minus = "assets/images/minus.jpg";
+  plus = "assets/images/plus.jpg";
   @Input() assetClass = {} as AssetClassType | undefined;
   investmentStrategy: string | undefined = "";
   modalMode = "";
   openStrategyModal = false;
+  expandSalesSchedule = false;
+  expandSalesVelocity = false;
+  expandTenancySchedule = false;
+  expandLettingAssumptions = false;
   
   constructor() { }
 

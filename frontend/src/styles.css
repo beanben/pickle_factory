@@ -97,3 +97,39 @@ input[type="radio"]:disabled {
 .nav-link:not(.active){
     cursor: pointer;
 }
+
+.table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-row {
+    display: table-row;
+    border-bottom: 0.5px solid grey;
+  }
+  
+  .header {
+    font-weight: bolder;
+    text-align: center;
+    border-bottom: 1px solid black;
+  }
+  
+  .table-cell {
+    display: table-cell;
+    /* border: 1px solid black; */
+    padding: 5px 10px;
+  }
+
+  .footer {
+    font-weight: bolder;
+    text-align: center;
+    border-top: 1px solid black;
+    border-bottom: 0;
+  }
+
+  .background-section-title {
+    background-color: rgba(0,123,255, 0.2) ;
+    padding: 10px;
+    border-radius: 5px;
+  }

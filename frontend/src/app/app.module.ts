@@ -22,6 +22,7 @@ import { InitialPipe } from './shared/initial.pipe';
 import { LoanComponent } from './pages/loans/loan/loan.component';
 import { LoanModalComponent } from './pages/loans/loan/loan-modal/loan-modal.component';
 import { EditComponent } from './shared/edit.component';
+import { ToggleComponent } from './shared/toggle.component';
 import { InitialsPipe } from './shared/initials.pipe';
 import { FundersComponent } from './pages/loans/loan/funders/funders.component';
 import { BorrowerComponent } from './pages/borrowers/borrower/borrower.component';
@@ -38,6 +39,7 @@ import { UnitCardComponent } from './pages/loans/loan/scheme/units/unit-card/uni
 import { IncomeAndValueComponent } from './pages/loans/loan/scheme/income-and-value/income-and-value.component';
 import { ResidentialComponent } from './pages/loans/loan/scheme/income-and-value/residential/residential.component';
 import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-value/strategy-modal/strategy-modal.component';
+import { SalesScheduleComponent } from './pages/loans/loan/scheme/income-and-value/sales-schedule/sales-schedule.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +73,9 @@ import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-val
     UnitCardComponent,
     IncomeAndValueComponent,
     ResidentialComponent,
-    StrategyModalComponent
+    StrategyModalComponent,
+    SalesScheduleComponent,
+    ToggleComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +83,7 @@ import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-val
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
+    // HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
   bootstrap: [AppComponent]

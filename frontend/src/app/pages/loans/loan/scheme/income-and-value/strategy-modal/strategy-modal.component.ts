@@ -25,6 +25,7 @@ export class StrategyModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
+    this.initForm();
   }
 
   addEventBackgroundClose() {
@@ -53,7 +54,12 @@ export class StrategyModalComponent implements OnInit {
       this.modalAssetClassUpdate.emit(assetClass);
      })
      .catch(err => console.log(err));
+  }
 
+  initForm(){
+    if(this.assetClass.investmentStrategy){
+      this.form.get('investmentStrategy')?.setValue(this.assetClass.investmentStrategy);
+    }
   }
 
 }

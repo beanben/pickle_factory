@@ -21,6 +21,43 @@
     </div>
 </div>
 
+<ng-container *ngIf="assetClass?.investmentStrategy === 'buildToSell'; else buildToRent">
+    <div class="row py-2">
+        <div class="col background-section-title">
+            <div class="d-flex justify-content-between">
+                <span>Sales schedule</span>
+                <app-toggle-button [toggle]="!expandSalesSchedule" (click)="expandSalesSchedule = !expandSalesSchedule"></app-toggle-button>
+            </div>
+        </div>
+    </div>
+    <div class="row py-2">
+        <div class="col background-section-title">
+            <div class="d-flex justify-content-between">
+                <span>Sales velocity</span>
+                <app-toggle-button [toggle]="!expandSalesVelocity" (click)="expandSalesVelocity = !expandSalesVelocity"></app-toggle-button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #buildToRent>
+    <div class="row py-2">
+        <div class="col background-section-title">
+            <div class="d-flex justify-content-between">
+                <span>Tenancy schedule</span>
+                <app-toggle-button [toggle]="!expandTenancySchedule" (click)="expandTenancySchedule = !expandTenancySchedule"></app-toggle-button>
+            </div>
+        </div>
+    </div>
+    <div class="row py-2">
+        <div class="col background-section-title">
+            <div class="d-flex justify-content-between">
+                <span>Letting assumptions</span>
+                <app-toggle-button [toggle]="!expandLettingAssumptions" (click)="expandLettingAssumptions = !expandLettingAssumptions"></app-toggle-button>
+            </div>
+        </div>
+    </div>
+</ng-template>
 
 
 
