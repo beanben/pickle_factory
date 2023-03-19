@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Scheme } from '../scheme';
 import { AssetClassType } from '../scheme.model';
 import { LoanService } from 'src/app/_services/loan/loan.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -13,9 +14,11 @@ export class IncomeAndValueComponent implements OnInit {
   @Input() scheme = {} as Scheme;
   tabActive = "";
   isShow = true;
+  @Output() onClickUnits = new EventEmitter<void>();
 
   constructor(
     private _loanService: LoanService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -32,6 +35,10 @@ export class IncomeAndValueComponent implements OnInit {
             );
 
     return assetClass;
+  }
+
+  onClick(){
+    this.onClickUnits.emit()
   }
   
 

@@ -30,5 +30,7 @@ export class SchemeComponent implements OnInit{
     this.deleteConfirmed.emit(this.index);
   }
   
-
+  selectUnitsTab(){
+    this.tabActive = "units";
+  }
 }

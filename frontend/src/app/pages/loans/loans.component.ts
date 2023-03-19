@@ -31,6 +31,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log("loans component init");
     if(this._authService.isLoggedIn()){
       this.getLoan();
       this.getLoans();
