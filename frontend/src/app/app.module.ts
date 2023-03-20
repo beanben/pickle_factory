@@ -12,7 +12,7 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NavLeftComponent } from './parts/nav-left/nav-left.component';
 import { ProfileComponent } from './parts/profile.component';
 import { authInterceptorProviders } from './_services/auth/auth.interceptor';
@@ -40,13 +40,14 @@ import { IncomeAndValueComponent } from './pages/loans/loan/scheme/income-and-va
 // import { ResidentialComponent } from '../../../draft/residential/residential.component';
 import { StrategyModalComponent } from './pages/loans/loan/scheme/income-and-value/strategy-modal/strategy-modal.component';
 import { SalesScheduleComponent } from './pages/loans/loan/scheme/income-and-value/sales-schedule/sales-schedule.component';
+import { AuthModule } from './pages/auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
     HomeComponent,
-    AuthComponent,
+    // AuthComponent,
     ForgotComponent,
     LoginComponent,
     RegisterComponent,
@@ -83,6 +84,7 @@ import { SalesScheduleComponent } from './pages/loans/loan/scheme/income-and-val
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AuthModule,
     // HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
