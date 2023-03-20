@@ -8,9 +8,11 @@ import { User } from '../user';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  // styleUrls: ['./register.component.css']
+  styleUrls: ['../auth.component.css']
 })
 export class RegisterComponent implements OnInit {
+  formIsSubmitted = false
   next = false;
   errors: string[] = new Array();
   firm = {} as Firm;
@@ -54,7 +56,11 @@ export class RegisterComponent implements OnInit {
   }
 
   onCreateFirm(){
+    this.formIsSubmitted = true;
+
     if(this.firmForm.valid){
+      this.formIsSubmitted = false; 
+
       let firm: Firm = {
         name: this.firmForm.get('name')?.value
       }
@@ -69,6 +75,8 @@ export class RegisterComponent implements OnInit {
   }
 
   onCreateUser() {
+    this.formIsSubmitted = true; 
+    
     if(this.userForm.valid){
       let user: User = this.userForm.value;
       this._authService.register(user)

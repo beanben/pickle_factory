@@ -151,22 +151,16 @@ class ResetAPIView(APIView):
 
     def post(self, request):
         serializer = ResetSerializer(data=request.data)
+        # pdb.set_trace()
         serializer.is_valid(raise_exception=True)
-        # token = serializer.validated_data["token"]
         data = {
             'response': serializer.data,
             # 'token': token,
             'status': 'success',
             'message': 'password reset!'
         }
+        
         return Response(data, status=status.HTTP_200_OK)
-              
-        # data = {
-        #     'response': serializer.errors,
-        #     'status': 'error',
-        #     'message': '****'
-        # }
-        # return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserAPIView(APIView):

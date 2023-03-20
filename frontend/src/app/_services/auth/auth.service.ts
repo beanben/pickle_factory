@@ -182,6 +182,8 @@ export class AuthService {
   }
 
   reset(password: string, passwordConfirm: string, token: string) {
+    console.log("reset request service")
+
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.urlRoot}/reset/`;
       const body = {

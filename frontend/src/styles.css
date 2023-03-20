@@ -57,9 +57,11 @@ body {
     border-radius: 0 .25rem .25rem 0;
 }
 
-/* #form.ng-submitted input.ng-invalid, #f.ng-submitted input.ng-invalid{ */
-#form.is-submitted input.ng-invalid,
+/* #form.is-submitted input.ng-invalid,
 #f.is-submitted input.ng-invalid {
+    border: 1px solid red;
+} */
+#form.is-submitted input.ng-invalid{
     border: 1px solid red;
 }
 
@@ -144,8 +146,6 @@ input[type="radio"]:disabled {
     display: table-cell;
     padding: 20px 10px 5px 10px;
 }
-
-
 
 .footer {
     font-weight: bolder;

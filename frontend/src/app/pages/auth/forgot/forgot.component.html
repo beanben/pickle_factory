@@ -4,7 +4,7 @@
     </h1>
 </div>
 
-<form [formGroup]="form" #f="ngForm" (ngSubmit)="onSubmit()" *ngIf="!successMsg">
+<form [formGroup]="form" #f="ngForm" (ngSubmit)="onSubmit()" *ngIf="!successMsg" id="form">
     <h1 class="h3 mb-3 fw-normal text-center">
         Please type in your email
     </h1>
@@ -25,9 +25,9 @@
         
     <div class="text-center">
         <button
-            class="btn btn-auth m-2 text-white"
+            class="btn m-2"
             type="submit"
-            [ngClass]="form.invalid ? 'btn-disabled' : 'btn-active'">
+            [ngClass]="form.invalid ? 'btn-disabled' : 'btn-auth'">
             Submit               
         </button>
     </div>

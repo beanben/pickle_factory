@@ -6,7 +6,7 @@
         </h1> 
 
         <ng-container *ngIf="!next">
-            <form [formGroup]="firmForm" #f="ngForm">
+            <form [formGroup]="firmForm" #f="ngForm" id="form" [ngClass]="{'is-submitted': formIsSubmitted}">
                 <div class="form-group mb-2">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="name"
@@ -22,9 +22,9 @@
                 </div>
 
                 <div class="text-center">
-                    <button class="btn btn-auth m-2 text-white"
+                    <button class="btn m-2"
                         type="submit"
-                        [ngClass]="firmForm.invalid ? 'btn-disabled' : 'btn-active'"
+                        [ngClass]="firmForm.invalid ? 'btn-disabled' : 'btn-auth'"
                         (click)="onCreateFirm()">Next >
                     </button>
                 </div>
@@ -33,7 +33,7 @@
 
         <ng-container *ngIf="next">
 
-            <form [formGroup]="userForm" #f="ngForm">
+            <form [formGroup]="userForm" #f="ngForm" id="form" [ngClass]="{'is-submitted': formIsSubmitted}">
                 <div class="form-group mb-1">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="firm" placeholder="firm" value="{{userForm.get('firm')?.value.name}}" disabled>
@@ -84,14 +84,14 @@
                 </div>
                 
                 <div class="text-center">
-                    <button class="btn btn-auth m-2 btn-active text-white"
+                    <button class="btn btn-auth m-2"
                         type="button"
                         (click)="next=false">
                         < Back 
                     </button>
-                    <button class="btn btn-auth m-2 text-white"
+                    <button class="btn m-2"
                         type="button"
-                        [ngClass]="userForm.invalid ? 'btn-disabled' : 'btn-active'"
+                        [ngClass]="userForm.invalid ? 'btn-disabled' : 'btn-auth'"
                         (click)="onCreateUser()">Register
                     </button>
                 </div>

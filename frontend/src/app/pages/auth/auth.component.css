@@ -1,17 +1,28 @@
-.landing { 
-    background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url('src/assets/images/sunrise.jpg')  no-repeat center center fixed;
+.landing {
+    background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)), url('src/assets/images/sunrise.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
 .btn-auth {
-    border: 2px solid #050537;
+    border: 2px solid rgba(5,5,55, 1);
     background-color: white;
+}
+.btn-auth:hover {
+    background-color: rgba(5,5,55, 1);
+    color:white
 }
 
 .btn {
     width: 132px;
     height: 48px;
     border-radius: 20px;
+}
+
+.btn-disabled {
+    border: 2px solid rgba(5,5,55, 1);
+    color: rgba(139, 139, 139, 1);
+    background-color:white;
+    /* cursor: default; */
 }
 
 .top-150 {
@@ -21,9 +32,18 @@
 
 .logo {
     color: #050537;
-   
+
 }
 
 .no-decoration {
     text-decoration: none;
+}
+
+.landing {
+    background: linear-gradient(rgba(255, 255, 255, .5), rgba(255, 255, 255, .5)), url("src/assets/images/sunrise.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+.logo {
+    color: rgb(5, 5, 55)
 }

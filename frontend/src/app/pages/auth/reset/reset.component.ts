@@ -6,9 +6,11 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 @Component({
   selector: 'app-reset',
   templateUrl: './reset.component.html',
-  styleUrls: ['./reset.component.css']
+  // styleUrls: ['./reset.component.css']
+  styleUrls: ['../auth.component.css']
 })
 export class ResetComponent implements OnInit {
+  formIsSubmitted = false;
   errors: string[] = new Array();
   successMsg = '';
   form = new FormGroup({
@@ -33,14 +35,18 @@ export class ResetComponent implements OnInit {
   }
 
   onSubmit() {
+    this.formIsSubmitted = true;
+    
     if (this.form.valid) {
+      console.log("submit reset")
+      
       let password = this.password?.value;
       let password_confirm = this.passwordConfirm?.value;
       let token = this.route.snapshot.params['token']
 
       this._authService
       .reset(password, password_confirm, token)
-      .then(() => this.router.navigate(['/auth/login']))
+      .then(() => {this.router.navigate(['/auth/login'])})
       .catch(err => this.errors = err)
     }
   }

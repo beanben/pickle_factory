@@ -19,13 +19,8 @@ import { Component, OnInit } from "@angular/core";
             </div>
 
             `,
-    styles:[
-        '.landing {background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("src/assets/images/sunrise.jpg")  no-repeat center center fixed; background-size: cover;}',
-        '.btn-auth {border: 2px solid rgba(5,5,55, 1); background-color: white;}',
-        '.btn-auth:hover {background-color: rgba(5,5,55, 1); color: white;}',
-        '.btn {width: 132px; height: 48px; border-radius: 20px;}',
-        '.logo {color: rgb(5, 5, 55)}'
-    ]
+    styleUrls: ['../auth/auth.component.css']
+
 })
 export class LandingComponent implements OnInit{
     logoDark = "assets/images/logoDark.svg";

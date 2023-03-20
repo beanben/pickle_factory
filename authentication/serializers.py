@@ -102,7 +102,8 @@ class ForgotSerializer(serializers.Serializer):
         return email
 
 class ResetSerializer(serializers.Serializer):
-    token = serializers.CharField(max_length=255, validators=[reset_exist])
+    token = serializers.CharField(max_length=255)
+    # token = serializers.CharField(max_length=255, validators=[reset_exist])
     password = serializers.CharField(max_length=255)
     password_confirm = serializers.CharField(max_length=255)
 
@@ -115,13 +116,14 @@ class ResetSerializer(serializers.Serializer):
             raise ValidationError(data, code=400)
 
         reset = Reset.objects.filter(token=attrs["token"])
+        # pdb.set_trace()
         if not reset.exists():
             data = {
                 'status': 'error',
                 'message': 'invalid link, resend the request email!'
                 }
             raise ValidationError(data, code=400)
-
+        
         reset = Reset.objects.get(token=attrs["token"])
         user = User.objects.filter(email=reset.email)
         if not user.exists():
@@ -136,8 +138,7 @@ class ResetSerializer(serializers.Serializer):
         user.set_password(attrs["password"])
         user.save()
         reset.delete()
-        
-        return data
+        return attrs
 
 
 class UserSerializer(serializers.ModelSerializer):
