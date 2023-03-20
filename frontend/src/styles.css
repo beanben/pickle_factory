@@ -5,25 +5,32 @@
 /* Firefox : hide arrow next to input type numbers*/
 input[type=number] {
     -moz-appearance: textfield;
-  }
+}
 
 
 .top-180 {
     position: absolute;
     top: 180px;
 }
-html, body { height: 100%; }
-body { margin: 0; }
 
-.text-disabled {
-    color:rgba(192, 192, 192, 0.5)
+html,
+body {
+    height: 100%;
 }
 
-.modal{
+body {
+    margin: 0;
+}
+
+.text-disabled {
+    color: rgba(192, 192, 192, 0.5)
+}
+
+.modal {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.modal-centered{
+.modal-centered {
     top: 7em
 }
 
@@ -37,56 +44,69 @@ body { margin: 0; }
     color: rgba(15, 86, 179, 1);
     font-weight: 500;
 }
+
 .form-section-title {
-    background-color: rgb(233, 236, 239 );
+    background-color: rgb(233, 236, 239);
     display: flex;
     align-items: center;
     border-radius: .25rem 0 0 .25rem;
     border: 1px solid #ced4da;
 }
-.input-section{
+
+.input-section {
     border-radius: 0 .25rem .25rem 0;
 }
+
 /* #form.ng-submitted input.ng-invalid, #f.ng-submitted input.ng-invalid{ */
-#form.is-submitted input.ng-invalid, #f.is-submitted input.ng-invalid{   
+#form.is-submitted input.ng-invalid,
+#f.is-submitted input.ng-invalid {
     border: 1px solid red;
 }
+
 .border-table-title {
-    border-bottom: 1px solid rgb(128,128,128);
+    border-bottom: 1px solid rgb(128, 128, 128);
 }
 
 .border-table-row {
-    border-bottom: 0.5px solid rgb(128,128,128);
+    border-bottom: 0.5px solid rgb(128, 128, 128);
 }
 
 
-.tableTitle{
+.tableTitle {
     font-weight: 450;
-    border-top: 1px solid rgba(119,119,119);
-    border-bottom: 1px solid rgba(119,119,119);
-    font-weight:bolder ;
+    border-top: 1px solid rgba(119, 119, 119);
+    border-bottom: 1px solid rgba(119, 119, 119);
+    font-weight: bolder;
 }
+
 .rowTable {
-    border-bottom: 0.5px solid rgba(119,119,119);
+    border-bottom: 0.5px solid rgba(119, 119, 119);
 }
+
 .highlight:hover {
     background-color: rgba(13, 202, 240, 0.15);
     cursor: pointer;
 }
+
 app-edit {
     visibility: hidden;
 }
-.highlight:hover app-edit, .selected:hover app-edit{
+
+.highlight:hover app-edit,
+.selected:hover app-edit {
     visibility: visible;
 }
+
 .selected {
     background-color: #0dcaf026;
 }
-.cursorPointer{
+
+.cursorPointer {
     cursor: pointer;
 }
-.text-active{
-    color: rgb(15,86,179);
+
+.text-active {
+    color: rgb(15, 86, 179);
     font-weight: bolder;
 }
 
@@ -94,7 +114,7 @@ input[type="radio"]:disabled {
     background-color: grey;
 }
 
-.nav-link:not(.active){
+.nav-link:not(.active) {
     cursor: pointer;
 }
 
@@ -102,34 +122,48 @@ input[type="radio"]:disabled {
     display: table;
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .table-row {
+}
+
+.table-row {
     display: table-row;
     border-bottom: 0.5px solid grey;
-  }
-  
-  .header {
+}
+
+.header {
     font-weight: bolder;
     text-align: center;
     border-bottom: 1px solid black;
-  }
-  
-  .table-cell {
-    display: table-cell;
-    /* border: 1px solid black; */
-    padding: 5px 10px;
-  }
+}
 
-  .footer {
+.table-cell {
+    display: table-cell;
+    padding: 5px 10px;
+}
+
+.table-cell-header {
+    display: table-cell;
+    padding: 20px 10px 5px 10px;
+}
+
+
+
+.footer {
     font-weight: bolder;
     text-align: center;
     border-top: 1px solid black;
     border-bottom: 0;
-  }
+}
 
-  .background-section-title {
-    background-color: rgba(0,123,255, 0.2) ;
+.total-row {
+    display: table-row;
+    border-top: 1px solid rgba(119, 119, 119, 0.8);
+    border-bottom: 1px solid rgba(119, 119, 119, 0.8);
+    background-color: rgba(119, 119, 119, 0.05);
+    padding-bottom: 10px;
+}
+
+.background-section-title {
+    background-color: rgba(0, 123, 255, 0.2);
     padding: 10px;
     border-radius: 5px;
-  }
+}

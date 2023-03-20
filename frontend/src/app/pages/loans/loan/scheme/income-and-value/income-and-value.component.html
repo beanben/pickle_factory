@@ -20,9 +20,6 @@
     
     <div class="row p-2">
         <div class="col">
-            <!-- <ng-container *ngIf="isShow && tabActive === 'residential'">
-                <app-residential [residentialAssetClass] = "getAssetClass('residential')"></app-residential>
-            </ng-container> -->
             <ng-container *ngIf="isShow">
 
                 <div class="row">
@@ -57,7 +54,10 @@
                     
                                 <div class="row py-2" *ngIf="expandSalesSchedule">
                                     <div class="col">
-                                        <app-sales-schedule [assetClass]="assetClassSelected"></app-sales-schedule>
+                                        <app-sales-schedule 
+                                            [assetClass]="assetClassSelected"
+                                            [scheme]="scheme"
+                                            ></app-sales-schedule>
                                     </div>
                                 </div>
                     

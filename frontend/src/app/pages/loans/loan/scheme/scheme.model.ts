@@ -55,6 +55,10 @@ export class Unit {
         public description: string = "",
         public areaSize?: number,
         public beds?: number,
+        public value?: number,
+        public salesStatus?: string,
+        public salesStatusDate?: Date,
+        public salesPrice?: number,
         // public quantity?: number,
     ) {
         this.label = this.defineLabel();

@@ -17,7 +17,7 @@ export class IncomeAndValueComponent implements OnInit {
   modalMode = "";
   investmentStrategy = "";
   strategyModalMode = "";
-  expandSalesSchedule = false;
+  expandSalesSchedule = true;
   expandSalesVelocity = false;
   expandTenancySchedule = false;
   expandLettingAssumptions = false;
