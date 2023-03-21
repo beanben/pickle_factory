@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription} from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
@@ -15,6 +16,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   indexLoan = -1;
   modalMode = "";
   loanSlug = "";
+  isCreateNewLoan = false
 
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
   arrowRightBlack = "assets/images/arrowRightBlack.svg";
@@ -27,11 +29,20 @@ export class LoansComponent implements OnInit, OnDestroy {
 
   constructor(
     private _loanService: LoanService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    console.log("loans component init");
+    this.isCreateNewLoan = this.route.snapshot.params['new'] ? true : false;
+    if(this.isCreateNewLoan) {
+
+      // CONTINUE HERE
+     
+      this.onOpenModal('new');
+      console.log("this.modalMode:", this.modalMode)
+    };
+
     if(this._authService.isLoggedIn()){
       this.getLoan();
       this.getLoans();
@@ -104,6 +115,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   }
 
   onSave(loan: Loan | null){
+
     this.openLoanModal = false;
 
     if(!!loan){

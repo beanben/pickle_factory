@@ -39,9 +39,11 @@
         </button>
     </div>
 
-    <div *ngFor="let error of errors"
-        class="alert alert-danger text-center">
-        {{error}}
-    </div>
+    <ng-container *ngIf="f.submitted && f.invalid">
+        <div *ngFor="let error of errors"
+            class="alert alert-danger text-center">
+            {{error}}
+        </div>
+    </ng-container>
 
 </form>

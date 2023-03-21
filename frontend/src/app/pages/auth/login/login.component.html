@@ -41,10 +41,12 @@
             <a routerLink="/auth/forgot" class="text-secondary">Forgot your password</a>
         </div>
     </div>
-
-    <div *ngFor="let error of errors"
-        class="alert alert-danger text-center">
-        {{error}}
-    </div>
-
+    
+    <ng-container *ngIf="f.submitted && f.invalid">
+        <div *ngFor="let error of errors"
+            class="alert alert-danger text-center">
+            {{error}}
+        </div>
+    </ng-container>
+   
 </form>

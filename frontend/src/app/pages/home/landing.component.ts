@@ -19,7 +19,7 @@ import { Component, OnInit } from "@angular/core";
             </div>
 
             `,
-    styleUrls: ['../auth/auth.component.css']
+    styleUrls: ['./home.component.css']
 
 })
 export class LandingComponent implements OnInit{

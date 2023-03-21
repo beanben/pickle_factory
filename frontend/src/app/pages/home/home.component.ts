@@ -112,4 +112,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
+  goToLoans(){
+    this.router.navigate(["loans", "new"]);
+  }
+
 }

@@ -20,6 +20,7 @@ const routes: Routes = [
     {path: 'reset/:token', component: ResetComponent},  
   ]},
   {path: 'loans', component: LoansComponent, canActivate: [AuthGuard]},
+  {path: 'loans/:new', component: LoansComponent, canActivate: [AuthGuard]},
   {path: 'borrowers', component: BorrowersComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: "/"}
 ];
