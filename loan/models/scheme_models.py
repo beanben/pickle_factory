@@ -25,7 +25,7 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
 
     objects = SchemeManager()
 
-class AssetClass(TimestampedModel, AuthorTrackerModel):
+class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
     INVESTMENT_STRATEGY_CHOICES =[
         ("build_to_sell", "build to sell"),
         ("build_to_rent", "build to rent")

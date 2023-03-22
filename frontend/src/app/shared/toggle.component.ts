@@ -16,9 +16,5 @@ import { Component, Input } from "@angular/core";
 })
 export class ToggleComponent {
     @Input() toggle = false;
-    // @Output() toggleChange = new EventEmitter<void>();
 
-    // onOpenModal(){
-    //     // this.onOpenModalEdit.emit()
-    // }
 }

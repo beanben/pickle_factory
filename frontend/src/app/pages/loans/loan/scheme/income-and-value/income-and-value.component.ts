@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Scheme } from '../scheme';
-import { AssetClassType, Commercial, Hotel, Office, Residential, ShoppingCentre, StudentAccommodation } from '../scheme.model';
+import { AssetClassType} from '../scheme.model';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Router } from '@angular/router';
 
