@@ -10,10 +10,10 @@ import { SchemeModalComponent } from './loan/scheme/scheme-modal/scheme-modal.co
 import { IncomeAndValueComponent } from './loan/scheme/income-and-value/income-and-value.component';
 import { StrategyModalComponent } from './loan/scheme/income-and-value/strategy-modal/strategy-modal.component';
 import { SalesScheduleComponent } from './loan/scheme/income-and-value/sales-schedule/sales-schedule.component';
-import { LoanModalComponent } from './loan/loan-modal/loan-modal.component';
 import { FundersComponent } from './loan/funders/funders.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoanModalComponent } from './loan/loan-modal/loan-modal.component';
 
 
 
@@ -21,7 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   declarations: [
     LoansComponent,

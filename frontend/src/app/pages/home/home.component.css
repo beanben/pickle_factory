@@ -5,14 +5,25 @@
 .btn-auth {
     border: 2px solid rgba(5,5,55, 1);
     background-color: white;
-}
-.btn-auth:hover {
-    background-color: rgba(5,5,55, 1);
-    color:white
-}
-
-.btn {
     width: 132px;
     height: 48px;
     border-radius: 20px;
 }
+.btn-auth:hover {
+    background-color: rgba(5,5,55, 1);
+    color:white;
+    width: 132px;
+    height: 48px;
+    border-radius: 20px;
+}
+
+/* .btn {
+    width: 132px;
+    height: 48px;
+    border-radius: 20px;
+} */
+
+/* .btn-highlight:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;  
+} */

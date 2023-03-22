@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription} from 'rxjs';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
@@ -30,17 +30,14 @@ export class LoansComponent implements OnInit, OnDestroy {
   constructor(
     private _loanService: LoanService,
     private _authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.isCreateNewLoan = this.route.snapshot.params['new'] ? true : false;
-    if(this.isCreateNewLoan) {
-
-      // CONTINUE HERE
-     
+    if(this.isCreateNewLoan) {  
       this.onOpenModal('new');
-      console.log("this.modalMode:", this.modalMode)
     };
 
     if(this._authService.isLoggedIn()){
@@ -89,7 +86,7 @@ export class LoansComponent implements OnInit, OnDestroy {
           if(loans.length !== 0){
             this.loanSelected = loans[0];
             this._loanService.setLoanSub(this.loanSelected);
-          };
+          }
     });
   }
 
@@ -98,6 +95,11 @@ export class LoansComponent implements OnInit, OnDestroy {
       this._loanService.getLoanSub()
         .subscribe(loan => {
           this.loanSelected = loan;
+
+          // if(this.openLoanModal){
+          //   this.openLoanModal = false
+          // }
+
         })
     );
   }
@@ -115,7 +117,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   }
 
   onSave(loan: Loan | null){
-
+    this.router.navigate(['/loans']);
     this.openLoanModal = false;
 
     if(!!loan){

@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
 import { Borrower } from './borrower/borrower';
@@ -13,6 +14,7 @@ export class BorrowersComponent implements OnInit, OnDestroy {
   openBorrowerModal = false;
   indexBorrower = -1;
   modalMode = "";
+  // modalAction = "";
 
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
   arrowRightBlack = "assets/images/arrowRightBlack.svg";
@@ -25,9 +27,15 @@ export class BorrowersComponent implements OnInit, OnDestroy {
 
   constructor(
     private _borrowerService: BorrowerService,
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    // console.log("inside borrowers component")
+    // this.modalAction = this.route.snapshot.params['action'];
+    // this.onOpenModal(this.modalAction);
+
     this.subs.push(
       this._borrowerService.getBorrowerSub()
         .subscribe(borrower => this.borrowerSelected = borrower)
@@ -58,6 +66,7 @@ export class BorrowersComponent implements OnInit, OnDestroy {
   };
 
   onSave(borrower: Borrower | null){
+    this.router.navigate(['//borrowers']);
     this.openBorrowerModal = false;
 
     if(!!borrower){

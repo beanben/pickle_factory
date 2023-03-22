@@ -1,4 +1,4 @@
-<form [formGroup]="form" #f="ngForm" id="form" (ngSubmit)="onSubmit()" [ngClass]="{'is-submitted': formIsSubmitted}">
+<form [formGroup]="form" #f="ngForm" id="form" (ngSubmit)="onSubmit()" [ngClass]="{'is-submitted': f.submitted}">
     <h1 class="h3 mb-3 fw-normal text-center">
         Please login
     </h1>
@@ -12,7 +12,9 @@
             <label for="email">Email address</label>
         </div>
     </div>
-    <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
+    <!-- <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
+        class="alert alert-danger"> -->
+    <div *ngIf="(email?.invalid && f.submitted)"
         class="alert alert-danger">
         Please enter your email
     </div>
@@ -26,7 +28,9 @@
             <label for="email">Password</label>
         </div>
     </div>
-    <div *ngIf="(password?.invalid && (password?.dirty || password?.touched)) || (f.submitted && password?.invalid)"
+    <!-- <div *ngIf="(password?.invalid && (password?.dirty || password?.touched)) || (f.submitted && password?.invalid)"
+        class="alert alert-danger"> -->
+    <div *ngIf="password?.invalid && f.submitted"
         class="alert alert-danger">
         Please enter your password
     </div>

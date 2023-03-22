@@ -14,10 +14,13 @@ import { Loan } from '../loans/loan/loan';
 export class HomeComponent implements OnInit, OnDestroy {
   openLoanModal = false;
   isLoggedIn = false;
+  modalMode = "";
 
   user = {} as User;
   subs: Subscription[] = []
   loans: Loan[] = [];
+  dollar = "assets/images/dollar.svg";
+  // loanSelected = {} as Loan;
 
   constructor(
     public _authService: AuthService,
@@ -112,8 +115,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  goToLoans(){
-    this.router.navigate(["loans", "new"]);
+  // goToLoans(){
+  //   this.router.navigate(["loans", "new"]);
+  // }
+
+  onOpenLoanModal(modalMode: string){
+    this.openLoanModal = true;
+    this.modalMode = modalMode;
+    // this.loanSelected = {} as Loan;
   }
 
 }

@@ -3,11 +3,6 @@
 </ng-container>
 
 <ng-container *ngIf="_authService.isLoggedIn()">
-    <!-- <app-loan-modal 
-        *ngIf="openLoanModal" 
-        (modalSaveLoan)="onSave($event)">
-    </app-loan-modal> -->
-    <!-- RETHINK THIS SECTION PROBABLY USING ROUTER -->
 
     <div class="container-fluid">
         <div class="row">
@@ -24,14 +19,6 @@
                     <div class="col m-2 py-2">
 
                         <ng-container *ngIf="loans.length !== 0 ; else noLoans">
-                            <div class="row">
-                                <div class="col d-flex justify-content-end m-2">
-                                    <button type="button" class="btn btn-primary p-1" (click)="goToLoans()">
-                                        New loan
-                                    </button>
-                                </div>
-                            </div>
-
                             <div class="row py-2 tableTitle bg-light">
                                 <div class="col my-1">Loan</div>
                                 <div class="col my-1">Borrower</div>
@@ -44,10 +31,21 @@
                         </ng-container>
         
                         <ng-template #noLoans>
-                            <div class="d-flex justify-content-center" style="margin-top: 100px">
-                                <button type="button" class="btn btn-primary px-auto" (click)="goToLoans()">
-                                    Add a new loan
-                                </button>
+                            <div class="d-flex justify-content-center" style="margin-top: 70px">
+                                <div class="d-flex flex-column">
+                                    <div class="text-instructions text-center p-2">You don't have any loans yet.</div>
+                                    <div class="text-instructions text-center p-2">
+                                        Navigate to 
+                                        <span class="px-2">
+                                            <button class="btn btn-auth" [routerLink]="['loans', 'new']">
+                                                <img src="{{dollar}}" alt="" class="me-2">
+                                                    Loans
+                                            </button> 
+                                        </span>
+                                        
+                                        to add a new loan.
+                                    </div>
+                                </div>
                             </div>
                         </ng-template>
 
@@ -57,11 +55,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 
 </ng-container>
 

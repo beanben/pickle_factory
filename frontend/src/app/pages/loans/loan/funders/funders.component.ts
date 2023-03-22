@@ -1,6 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { LoanService } from 'src/app/_services/loan/loan.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Borrower } from '../../../borrowers/borrower/borrower';
 import { Loan } from '../loan';
 
@@ -18,6 +17,7 @@ export class FundersComponent implements OnInit {
   mode = '';
   
   constructor(
+    private router: Router
   ) {
    }
 
@@ -32,6 +32,10 @@ export class FundersComponent implements OnInit {
       this.loan.borrower = borrower;
     }
   }
+
+  // gotToBorrower(action:string){
+  //   this.router.navigate(["borrowers", action]);
+  // }
 
   onOpenBorrowerModal(mode: string){
     this.openBorrowerModal = true;

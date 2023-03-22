@@ -2,11 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BorrowersComponent } from './borrowers.component';
 import { BorrowerComponent } from './borrower/borrower.component';
-import { BorrowerModalComponent } from './borrower/borrower-modal/borrower-modal.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-
-
+// import { BorrowerModalComponent } from '../../shared/borrower-modal/borrower-modal.component';
 
 @NgModule({
   imports: [
@@ -17,12 +15,12 @@ import { ReactiveFormsModule } from '@angular/forms';
   declarations: [
     BorrowersComponent,
     BorrowerComponent,
-    BorrowerModalComponent,
+    // BorrowerModalComponent,
   ],
   exports: [
     BorrowersComponent,
     BorrowerComponent,
-    BorrowerModalComponent,
+    // BorrowerModalComponent,
   ]
 })
 export class BorrowersModule { }

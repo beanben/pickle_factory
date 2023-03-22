@@ -20,7 +20,7 @@ import { LoanModalComponent } from './pages/loans/loan/loan-modal/loan-modal.com
 // import { InitialsPipe } from './shared/initials.pipe';
 import { FundersComponent } from './pages/loans/loan/funders/funders.component';
 import { BorrowerComponent } from './pages/borrowers/borrower/borrower.component';
-import { BorrowerModalComponent } from './pages/borrowers/borrower/borrower-modal/borrower-modal.component';
+import { BorrowerModalComponent } from './shared/borrower-modal/borrower-modal.component';
 // import { DeleteComponent } from './shared/delete.component';
 // import { LoansComponent } from './pages/loans/loans.component';
 // import { BorrowersComponent } from './pages/borrowers/borrowers.component';

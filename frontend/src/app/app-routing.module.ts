@@ -22,6 +22,7 @@ const routes: Routes = [
   {path: 'loans', component: LoansComponent, canActivate: [AuthGuard]},
   {path: 'loans/:new', component: LoansComponent, canActivate: [AuthGuard]},
   {path: 'borrowers', component: BorrowersComponent, canActivate: [AuthGuard]},
+  // {path: 'borrowers/:action', component: BorrowersComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: "/"}
 ];
 
