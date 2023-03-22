@@ -10,7 +10,7 @@ import { Scheme } from '../scheme';
 @Component({
   selector: 'app-scheme-modal',
   templateUrl: './scheme-modal.component.html',
-  styleUrls: ['./scheme-modal.component.css']
+  // styleUrls: ['./scheme-modal.component.css']
 })
 export class SchemeModalComponent implements OnInit, OnDestroy {
   displayStyle = "block";

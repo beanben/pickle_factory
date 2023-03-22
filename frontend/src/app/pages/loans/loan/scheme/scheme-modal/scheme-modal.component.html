@@ -8,126 +8,148 @@
           (click)="onCancel()"></button>
       </div>
 
-      <ng-container *ngIf="mode === 'new'">
+      <ng-container *ngIf="mode === 'new' || mode === 'edit'">
 
         <div class="modal-body d-flex align-items-center">
-          <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form" [ngClass]="{'is-submitted': f.submitted}">
 
-            <div class="form-group mb-3">
-              <app-required></app-required>
-              <div class="form-floating">
-                <input type="text" class="form-control" id="name" formControlName="name" name="name" placeholder="Name">
-                <label for="name">Name</label>
-              </div>
-              <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
-                class="alert alert-danger">
-                Please enter the name of the scheme
-              </div>
-            </div>
+            <div class="d-flex flex-column">
 
-            <app-required></app-required>
-            <div class="row mb-3 mx-0">
-              <div class="col-auto px-0 form-section-title">
-                <span class="px-2">Address</span>
-              </div>
-
-              <div class="col px-0">
-                <div class="form-group">
-                  <div class="form-floating">
-                    <input type="text" class="form-control input-section" id="street-name" formControlName="streetName"
-                      name="streetName" placeholder="Street">
-                    <label for="street-name">Street</label>
+              <div id="name">
+                <div id="name-input" class="row">
+                  <div class="col">
+                    <div class="form-group">
+                      <app-required></app-required>
+                      <div class="form-floating">
+                        <input type="text" class="form-control" id="name-form" formControlName="name" name="name"
+                          placeholder="Name">
+                        <label for="name-form">Name</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <div class="form-group">
-                  <div class="form-floating">
-                    <input type="text" class="form-control input-section" id="postcode" formControlName="postcode"
-                      name="postcode" placeholder="Postcode">
-                    <label for="postcode">Postcode</label>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <div class="form-floating">
-                    <input type="text" class="form-control input-section" id="city" formControlName="city" name="city"
-                      placeholder="City">
-                    <label for="city">City</label>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <div class="form-floating">
-                    <input type="text" class="form-control input-section" id="country" formControlName="country"
-                      name="country" placeholder="Country">
-                    <label for="country">Country</label>
+                <div id="name-input-error" class="row">
+                  <div class="col">
+                    <div *ngIf="name?.invalid && f.submitted" class="alert alert-danger text-center">
+                      Please enter the name of the scheme
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="row mx-0 px-0">
-                <div class="col px-0">
-                  <div *ngIf="(city?.invalid && (city?.dirty || city?.touched)) || (f.submitted && city?.invalid)"
-                    class="alert alert-danger text-center">
-                    Please confirm the city
+
+              <div id="address">
+                <app-required></app-required>
+                <div id="address-section" class="row mx-0">
+                  <div id="address-title" class="col-auto px-0 form-section-title">
+                    <span class="px-2">Address</span>
+                  </div>
+                  <div id="address-details" class="col px-0">
+                    <div class="form-group">
+                      <div class="form-floating">
+                        <input type="text" class="form-control input-section" id="street-name"
+                          formControlName="streetName" name="streetName" placeholder="Street">
+                        <label for="street-name">Street</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-floating">
+                        <input type="text" class="form-control input-section" id="postcode"
+                          formControlName="postcode" name="postcode" placeholder="Postcode">
+                        <label for="postcode">Postcode</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-floating">
+                        <input type="text" class="form-control input-section" id="city" formControlName="city"
+                          name="city" placeholder="City">
+                        <label for="city">City</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="form-floating">
+                        <input type="text" class="form-control input-section" id="country" formControlName="country"
+                          name="country" placeholder="Country">
+                        <label for="country">Country</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="address-error" class="row">
+                  <div class="col">
+                    <div *ngIf="city?.invalid && f.submitted" class="alert alert-danger text-center">
+                      Please confirm the city
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <app-required></app-required>
-            <div class="row mb-3 mx-0">
-              <div class="col-auto py-2 px-0 form-section-title">
-                <span class="px-2">System</span>
-              </div>
-
-              <div class="col input-section border py-2">
-                <div class="form-check form-check-inline" *ngFor="let choice of systemTypes; let i = index">
-                  <input class="form-check-input" type="radio" name="system" [id]="'system-'+i" formControlName="system"
-                    [value]="choice.value">
-                  <label class="form-check-label" [for]="'system-'+i">
-                    {{choice.display}}
-                  </label>
+              <div id="system">
+                <app-required></app-required>
+                <div class="row mb-3 mx-0">
+                  <div class="col-auto py-2 px-0 form-section-title">
+                    <span class="px-2">System</span>
+                  </div>
+  
+                  <div class="col input-section border py-2">
+                    <div class="form-check form-check-inline" *ngFor="let choice of systemTypes; let i = index">
+                      <input class="form-check-input" type="radio" name="system" [id]="'system-'+i"
+                        formControlName="system" [value]="choice.value">
+                      <label class="form-check-label" [for]="'system-'+i">
+                        {{choice.display}}
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <app-required></app-required>
-            <div class="row mb-3 mx-0">
-              <div class="col-auto py-2 px-0 form-section-title">
-                <span class="px-2">Built</span>
+              
+              <div id="built">
+                <app-required></app-required>
+                <div class="row mb-3 mx-0">
+                  <div class="col-auto py-2 px-0 form-section-title">
+                    <span class="px-2">Built</span>
+                  </div>
+  
+                  <div class="col input-section border py-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isBuilt" id="option-true" [value]="true"
+                        formControlName="isBuilt" [attr.disabled]="true">
+                      <label class="form-check-label" for="option-true" [attr.disabled]="true">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="isBuilt" id="option-false" [value]="false"
+                        formControlName="isBuilt">
+                      <label class="form-check-label" for="option-false">No</label>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div class="col input-section border py-2">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="isBuilt" id="option-true" [value]="true"
-                    formControlName="isBuilt" [attr.disabled]="true">
-                  <label class="form-check-label" for="option-true" [attr.disabled]="true">Yes</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="isBuilt" id="option-false" [value]="false"
-                    formControlName="isBuilt">
-                  <label class="form-check-label" for="option-false">No</label>
+              <div id="form-errors">
+                <div *ngFor="let error of errors " class="alert alert-danger text-center">
+                  {{error}}
                 </div>
               </div>
+              
             </div>
-
-            <div *ngFor="let error of errors " class="alert alert-danger text-center">
-              {{error}}
-            </div>
-
           </form>
         </div>
 
         <div class="modal-footer">
+          <button 
+                *ngIf="mode === 'edit'"
+                type="button" 
+                class="btn btn-danger" 
+                (click)="mode ='delete'">Delete</button>
           <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
           <button form="form" type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
         </div>
       </ng-container>
 
-      <ng-container *ngIf="mode === 'edit'">
+      <!-- <ng-container *ngIf="mode === 'edit'">
 
         <div class="modal-body d-flex align-items-center">
-          <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form">
+          <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form" [ngClass]="{'is-submitted': f.submitted}">
 
             <div class="form-group mb-3">
               <app-required></app-required>
@@ -135,8 +157,7 @@
                 <input type="text" class="form-control" id="name" formControlName="name" name="name" placeholder="Name">
                 <label for="name">Name</label>
               </div>
-              <div *ngIf="(name?.invalid && (name?.dirty || name?.touched)) || (f.submitted && name?.invalid)"
-                class="alert alert-danger text-center">
+              <div *ngIf="name?.invalid && f.submitted" class="alert alert-danger text-center">
                 Please enter the name of the scheme
               </div>
             </div>
@@ -182,8 +203,7 @@
               </div>
               <div class="row mx-0 px-0">
                 <div class="col px-0">
-                  <div *ngIf="(city?.invalid && (city?.dirty || city?.touched)) || (f.submitted && city?.invalid)"
-                    class="alert alert-danger text-center">
+                  <div *ngIf="city?.invalid && f.submitted" class="alert alert-danger text-center">
                     Please confirm the city
                   </div>
                 </div>
@@ -240,7 +260,7 @@
           <button type="button" class="btn btn-secondary m-2 ms-auto" (click)="onCancel()">Cancel</button>
           <button form="form" type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
         </div>
-      </ng-container>
+      </ng-container> -->
 
       <ng-container *ngIf="mode === 'delete'">
         <div class="modal-body">
