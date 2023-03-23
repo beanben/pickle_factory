@@ -23,8 +23,14 @@ export class SchemeService {
   setAvailableAssetClassUsesSub(availableAssetClassUse: string[]){
     return this.availableAssetClassUsesSub.next(availableAssetClassUse);
   }
+  getAvailableAssetClassUsesSub():Observable<string[]>{
+    return this.availableAssetClassUsesSub.asObservable()
+  }
   setAssetClassUsesSub(assetClassUsesSub: string[]){
-    return this.availableAssetClassUsesSub.next(assetClassUsesSub);
+    return this.assetClassUsesSub.next(assetClassUsesSub);
+  }
+  getAssetClassUsesSub():Observable<string[]>{
+    return this.assetClassUsesSub.asObservable()
   }
 
   getScheme(schemeId: number): Observable<Scheme> {

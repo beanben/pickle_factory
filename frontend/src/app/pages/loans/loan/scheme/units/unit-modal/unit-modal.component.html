@@ -36,7 +36,7 @@
                         id="asset-class" 
                         formControlName="assetClassTypeString">
                   <option [ngValue]="''"> -- Select Asset Class --</option>
-                  <option *ngFor='let choice of availableAssetClassUses' [ngValue]="choice">{{choice}}
+                  <option *ngFor='let choice of availableAssetClassUses' [ngValue]="choice">{{choice | titlecase}}
                   </option>
                 </select>
                 <label for="asset-class">Asset class</label>

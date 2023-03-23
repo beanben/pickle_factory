@@ -1,30 +1,32 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../scheme';
 import { AssetClassType} from '../scheme.model';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-units',
   templateUrl: './units.component.html',
   styleUrls: ['./units.component.css']
 })
-export class UnitsComponent implements OnInit {
+export class UnitsComponent implements OnInit, OnDestroy {
   openUnitModal = false;
   modalMode = "";
   availableAssetClassUses: string[] = [];
   assetClassUses: string[] = [];
+  subs: Subscription[] = []
 
   @Input() scheme = {} as Scheme;
 
   constructor(
     private _schemeService: SchemeService,
-    private route: ActivatedRoute
   ) { }
 
-  ngOnInit(): void { 
+  async ngOnInit(): Promise<void> {
+    const assetClassUses = await lastValueFrom(this._schemeService.getAssetClassUses());
+    this.assetClassUses = assetClassUses.map(assetClassName => addSpaceBetweenCapitalLetters(assetClassName));
+
     this.getAvailableAssetClassesUseChoices();
   }
 
@@ -38,35 +40,20 @@ export class UnitsComponent implements OnInit {
 
     if(assetClass){
       this.scheme.assetClasses.push(assetClass);
+      this.getAvailableAssetClassesUseChoices();
     }
 
   }
 
-  async getAvailableAssetClassesUseChoices(){
-
-    this.assetClassUses = await this.getAssetClassUses()
-    this._schemeService.setAssetClassUsesSub(this.assetClassUses); 
-
-    const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
-    const availableSchemeUses: string[] = this.assetClassUses.filter(
+  getAvailableAssetClassesUseChoices(){
+    const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use.toLowerCase());
+    this.availableAssetClassUses = this.assetClassUses.filter(
             assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
     );
 
-    this.availableAssetClassUses = availableSchemeUses;
-  } 
-
-  async getAssetClassUses(): Promise<string[]>{
-    const assetClassUsesSub: string[] = this._schemeService.assetClassUsesSub.getValue();
-    
-    if(assetClassUsesSub.length !== 0){
-      return assetClassUsesSub;
-    }
-
-    const assetClassNames: string[] = await lastValueFrom(this._schemeService.getAssetClassUses());
-    const assetClassUses = assetClassNames.map(assetClassName => addSpaceBetweenCapitalLetters(assetClassName))
-
-    return assetClassUses
+    this._schemeService.setAvailableAssetClassUsesSub(this.availableAssetClassUses);
   }
+
 
   onDeleteAssetClass(index: number){
     this.openUnitModal = false;
@@ -76,5 +63,9 @@ export class UnitsComponent implements OnInit {
     );
     
     this.scheme.assetClasses.splice(index, 1);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
   }
 }

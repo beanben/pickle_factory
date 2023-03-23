@@ -86,6 +86,11 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.subs.push(
+      this._schemeService.getAvailableAssetClassUsesSub()
+        .subscribe((availableAssetClassUses:string[]) => this.availableAssetClassUses = availableAssetClassUses)
+    )
+
     if(this.mode==='edit' && !!this.assetClass.id){
       this.populateForm();
     }

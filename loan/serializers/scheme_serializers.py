@@ -32,7 +32,7 @@ class UnitSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=False, allow_blank= True, default="")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
-    # quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
+    value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
 
     class Meta:
         model = scheme_models.Unit
@@ -44,7 +44,8 @@ class UnitSerializer(serializers.ModelSerializer):
             'description',
             'beds',
             'area_size',
-            'area_type']
+            'area_type',
+            'value']
         depth = 1
         list_serializer_class = UnitListSerializer
 
@@ -54,9 +55,10 @@ class UnitSerializer(serializers.ModelSerializer):
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
 
-        if "identifier" not in validated_data:
+        if validated_data["identifier"] == "":
+            # pdb.set_trace()
             units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
-            validated_data["identifier"] = f"{units_per_asset_class + 1}"
+            validated_data["identifier"] = f"{units_per_asset_class + 1}"   
         
         return scheme_models.Unit.objects.create(**validated_data)
     
@@ -67,7 +69,6 @@ class UnitSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 class UnitListSerializer(serializers.ListSerializer):
-    # child = UnitSerializer()
 
     def update(self, instances, validated_data):  
         instance_hash = {index: instance for index, instance in enumerate(instances)}
@@ -108,21 +109,6 @@ class AssetClassSerializer(serializers.ModelSerializer):
     def get_units(self, obj):
         units = scheme_models.Unit.objects.filter(asset_class=obj)
         return UnitSerializer(units, many=True).data
-    
-
-    # def to_internal_value(self, data):
-    #     print("to_internal_value - before:", data["investment_strategy"])
-
-    #     investment_strategy = slugify(camel_case_to_spaces(data["investment_strategy"])).replace('-', '_')
-    #     print("to_internal_value - after:", data["investment_strategy"])
-
-    #     # ensure the value of investment_stratgey is written  in snake case
-    #     data["investment_strategy"] = investment_strategy
-    #     return super().to_internal_value(data)
-    
-    # def to_representation(self, instance):
-    #     print("to_representation:", instance.investment_strategy)
-    #     return super().to_representation(instance)
     
 
 class SchemeSerializer(serializers.ModelSerializer):
@@ -263,13 +249,11 @@ class OfficeSerializer(AssetClassSerializer):
         return value
 
 class ShoppingCentreSerializer(AssetClassSerializer):
-
     class Meta:
         model = scheme_models.ShoppingCentre
         fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
-        # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
