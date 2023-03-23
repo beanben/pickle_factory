@@ -32,6 +32,8 @@ class UnitListSerializer(serializers.ListSerializer):
         asset_class_id = unit_data.pop("asset_class")["id"]
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         unit_data.update({"asset_class": asset_class})
+        # pdb.set_trace()
+        unit_data["description"] = self.set_description(unit_data)
         return unit_data
     
     def get_max_identifier(self, asset_class_id):
@@ -54,12 +56,21 @@ class UnitListSerializer(serializers.ListSerializer):
                 ret.append(self.child.update(unit, data))
 
         return ret
+    
+    def set_description(self, unit_data):
+        description = unit_data["description"]
+        unit_beds = unit_data.get("beds", 0) if unit_data.get("beds") is not None else 0
+        
+        if unit_beds > 0 and description == "-":
+            description = f"{unit_data['beds']}-bed"
+        
+        return description
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     asset_class = AssetClassUnitSerializer(required=False)
     identifier = serializers.CharField(required=False, allow_blank=True, default="")
-    description = serializers.CharField(required=False, allow_blank= True, default="")
+    description = serializers.CharField(required=False, allow_blank= True, default="-")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
@@ -90,6 +101,8 @@ class UnitSerializer(serializers.ModelSerializer):
             units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
             validated_data["identifier"] = f"{units_per_asset_class + 1}"   
         
+        description = self.set_description(validated_data)
+        validated_data["description"] = description
         return scheme_models.Unit.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
@@ -97,6 +110,15 @@ class UnitSerializer(serializers.ModelSerializer):
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
         return super().update(instance, validated_data)
+    
+    def set_description(self, unit_data):
+        description = unit_data["description"]
+        unit_beds = unit_data.get("beds", 0) if unit_data.get("beds") is not None else 0
+        
+        if unit_beds > 0 and description == "-":
+            description = f"{unit_data['beds']}-bed"
+        
+        return description
 
 class UnitListSerializer(serializers.ListSerializer):
 

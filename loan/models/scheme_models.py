@@ -87,19 +87,20 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         return self.identifier
 
 
-    def save(self, *args, **kwargs):
-        # define description field as number of beds , if beds is not null
-        if self.beds:
-            self.description = f"{self.beds}-bed"
+    # def save(self, *args, **kwargs):
+    #     # pdb.set_trace()
+    #     # define description field as number of beds , if beds is not null
+    #     if self.beds:
+    #         self.description = f"{self.beds}-bed"
 
-        elif (self.asset_class.use == 'commercial' or self.asset_class.use == 'office') and not self.description:
-            self.description = self.asset_class.use
+    #     elif (self.asset_class.use == 'commercial' or self.asset_class.use == 'office') and not self.description:
+    #         self.description = self.asset_class.use
 
-        # define identifier field as the unit number, for a given asset class
-        if not self.identifier:
-            self.identifier = self.asset_class.units.count() + 1
+    #     # define identifier field as the unit number, for a given asset class
+    #     if not self.identifier:
+    #         self.identifier = self.asset_class.units.count() + 1
 
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
 
 # class Category(TimestampedModel, AuthorTrackerModel):
 #     description = models.CharField(max_length=100, blank=True , default="")

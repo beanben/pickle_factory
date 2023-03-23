@@ -114,7 +114,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
 
     this.unitGroups.push(this.newUnitGroup());
 
-    // allow description to be emtpy if there is only one unitGroup
+    // allow description to be empty if there is only one unitGroup
     if (this.unitGroups.length === 1 && this.assetClass.use !== 'commercial') {
       this.unitGroups.at(0).get("description")!.patchValue("-");
     }
