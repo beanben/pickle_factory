@@ -13,6 +13,36 @@ class AssetClassUnitSerializer(serializers.Serializer):
         fields = ['id', 'scheme_id', 'investment_strategy', 'use']
 
 class UnitListSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        units_data = [self.set_unit_data(unit_data) for unit_data in validated_data]
+        units = [scheme_models.Unit(**unit_data) for unit_data in units_data]
+
+        # Retrieve the highest identifier value for the asset class
+        asset_class_ids = [unit.asset_class.id for unit in units]
+        for asset_class_id in asset_class_ids:
+            max_identifier = self.get_max_identifier(asset_class_id)
+            for unit in units:
+                if unit.asset_class_id == asset_class_id:
+                    max_identifier += 1
+                    unit.identifier = max_identifier
+
+        return scheme_models.Unit.objects.bulk_create(units)
+    
+    def set_unit_data(self, unit_data):
+        asset_class_id = unit_data.pop("asset_class")["id"]
+        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
+        unit_data.update({"asset_class": asset_class})
+        return unit_data
+    
+    def get_max_identifier(self, asset_class_id):
+        max_identifier = 0
+        existing_units = scheme_models.Unit.objects.filter(asset_class_id=asset_class_id)
+        if existing_units.exists():
+            identifiers = [unit.identifier for unit in existing_units]
+            identifier_numbers = [int(identifier) for identifier in identifiers if identifier.isdigit()]
+            max_identifier = max(identifier_numbers)
+        return max_identifier
+
     def update(self, instances, validated_data):
         unit_mapping = {unit.id: unit for unit in instances}
         data_mapping = {item['id']: item for item in validated_data}
@@ -87,8 +117,6 @@ class UnitGroupSerializer(serializers.Serializer):
     beds_per_unit = serializers.IntegerField(required=False, allow_null= True)
     group_beds = serializers.IntegerField(required=False, allow_null= True)
     quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
-
-
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
@@ -279,7 +307,6 @@ class StudentAccommodationSerializer(AssetClassSerializer):
         fields = AssetClassSerializer.Meta.fields
 
     def create(self, validated_data):
-        # pdb.set_trace()
         scheme_id = validated_data.pop("scheme_id")
         scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
