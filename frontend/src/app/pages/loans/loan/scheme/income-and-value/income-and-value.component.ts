@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Scheme } from '../scheme';
 import { AssetClassType} from '../scheme.model';
 import { LoanService } from 'src/app/_services/loan/loan.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 
 
 @Component({
@@ -10,7 +12,7 @@ import { Router } from '@angular/router';
   templateUrl: './income-and-value.component.html',
   styleUrls: ['./income-and-value.component.css']
 })
-export class IncomeAndValueComponent implements OnInit {
+export class IncomeAndValueComponent implements OnInit, OnDestroy {
   openStrategyModal = false;
   tabActive = "";
   isShow = true;
@@ -23,17 +25,35 @@ export class IncomeAndValueComponent implements OnInit {
   expandLettingAssumptions = false;
 
   @Input() scheme = {} as Scheme;
+  // scheme = {} as Scheme;
   assetClassSelected = {} as AssetClassType;
   @Output() onClickUnits = new EventEmitter<void>();
+  subs: Subscription[] = []
 
   constructor(
     private _loanService: LoanService,
-    private router: Router
+    private router: Router,
+    private _schemeService: SchemeService,
   ) { }
 
   ngOnInit(): void {
-    this.setSelectedAssetClass(0)
-    this.setDefaultTabActive()
+    this.setSelectedAssetClass(0);
+    this.setDefaultTabActive();
+    this._schemeService.setSchemeSub(this.scheme);
+
+    this.subs.push(
+      this._schemeService.getSchemeSub()
+      .subscribe(scheme => {
+        this.scheme = scheme;
+        this.refreshAssetClassSelected();
+        })
+    )
+  }
+
+  refreshAssetClassSelected(){
+
+    const index: number = this.scheme.assetClasses.findIndex(assetClass => assetClass.id === this.assetClassSelected.id);
+    this.assetClassSelected = this.scheme.assetClasses[index];
   }
 
   setSelectedAssetClass(index: number){
@@ -92,5 +112,8 @@ export class IncomeAndValueComponent implements OnInit {
     this.setDefaultTabActive()
   }
   
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
 
 }

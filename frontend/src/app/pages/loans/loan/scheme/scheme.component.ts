@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from './scheme';
 import { AssetClassType } from './scheme.model';
 
@@ -7,7 +9,7 @@ import { AssetClassType } from './scheme.model';
   templateUrl: './scheme.component.html',
   styleUrls: ['./scheme.component.css']
 })
-export class SchemeComponent implements OnInit{
+export class SchemeComponent implements OnInit, OnDestroy{
   openSchemeModal = false;
   modalMode = "";
   tabActive = "incomeAndValue";
@@ -15,11 +17,21 @@ export class SchemeComponent implements OnInit{
   @Input() scheme = {} as Scheme;
   @Input() index = -1;
   @Output() deleteConfirmed = new EventEmitter<number>();
+  subs: Subscription[] = []
 
   constructor( 
+    private _schemeService: SchemeService,
   ) { }
 
-  ngOnInit(): void {  }
+  ngOnInit(): void {
+    this._schemeService.setSchemeSub(this.scheme);
+
+    this.subs.push(
+      this._schemeService.getSchemeSub().subscribe(scheme => {  
+        this.scheme = scheme;
+      }
+    ));
+  }
 
   onOpenModal(modalMode: string){
     this.openSchemeModal = true;
@@ -43,5 +55,9 @@ export class SchemeComponent implements OnInit{
   //     this.scheme.assetClasses[assetClassIndex] = assetClass;
   //   }
   // }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe())
+  }
 
 }

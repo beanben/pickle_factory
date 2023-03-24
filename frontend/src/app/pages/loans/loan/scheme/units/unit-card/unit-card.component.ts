@@ -41,11 +41,23 @@ export class UnitCardComponent implements OnInit {
 
   onSave(assetClass: AssetClassType | null){
     this.openUnitModal = false;
-
+    
     if(assetClass){
       this.assetClass = assetClass;
       this.calculateTotals();
-    }
+      this.updateScheme();
+    };
+  }
+
+  updateScheme(){
+    const assetClassIndex = this.scheme.assetClasses.findIndex(
+      assetClass => assetClass.id === this.assetClass.id
+    );
+    if(assetClassIndex !== -1){
+      this.scheme.assetClasses[assetClassIndex] = this.assetClass;
+    };
+
+    this._schemeService.setSchemeSub(this.scheme);
   }
 
   onDeleteAssetClass(){

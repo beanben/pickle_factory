@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from '../../scheme';
 import { AssetClassType, Unit } from '../../scheme.model';
 
@@ -7,19 +9,37 @@ import { AssetClassType, Unit } from '../../scheme.model';
   templateUrl: './sales-schedule.component.html',
   styleUrls: ['./sales-schedule.component.css']
 })
-export class SalesScheduleComponent implements OnInit {
-  @Input() scheme = {} as Scheme;
-  @Input() assetClass = {} as AssetClassType;
-  unitStructure = {} as Unit;
+export class SalesScheduleComponent implements OnInit, OnDestroy {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
 
+  @Input() scheme = {} as Scheme;
+  @Input() assetClass = {} as AssetClassType;
+  unitStructure = {} as Unit;
+  subs: Subscription[] = []
 
-  constructor() { }
+
+  constructor(
+    private _schemeService: SchemeService,
+  ) { }
 
   ngOnInit(): void {
     this.unitStructure = new Unit(this.assetClass);
+    this.calculateUnitTotals();
+
+    this.subs.push(
+      this._schemeService.getSchemeSub().subscribe(scheme => {
+        this.scheme = scheme;
+
+        // update assetClass, pas Scheme !
+        this.updateAssetClass();
+      })
+    )
+  }
+
+  updateAssetClass(){
+    this.assetClass = this.scheme.assetClasses.find(ac => ac.id === this.assetClass.id)!;
     this.calculateUnitTotals();
   }
 
@@ -31,6 +51,10 @@ export class SalesScheduleComponent implements OnInit {
 
     const totalBedsCalc = this.assetClass.units?.reduce((acc, units) => acc + (units.beds ?? 0), 0);
     this.totalBeds = totalBedsCalc ?? 0;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
 }

@@ -38,7 +38,7 @@ export class ResetComponent implements OnInit {
     this.formIsSubmitted = true;
     
     if (this.form.valid) {
-      console.log("submit reset")
+
       
       let password = this.password?.value;
       let password_confirm = this.passwordConfirm?.value;

@@ -50,13 +50,15 @@
                         <div class="col p-3">
                             <ng-container *ngIf="tabActive === 'units'">
                                 <app-units [scheme]="scheme"></app-units>
+                                <!-- <app-units></app-units> -->
                             </ng-container>
 
                             <ng-container *ngIf="tabActive === 'incomeAndValue'">
                                 <app-income-and-value 
                                     [scheme]="scheme" 
-                                    (onClickUnits)="selectUnitsTab()"
-                                    ></app-income-and-value>
+                                    (onClickUnits)="selectUnitsTab()">
+                                </app-income-and-value>
+                                <!-- <app-income-and-value (onClickUnits)="selectUnitsTab()"></app-income-and-value> -->
                             </ng-container>
 
                         </div>

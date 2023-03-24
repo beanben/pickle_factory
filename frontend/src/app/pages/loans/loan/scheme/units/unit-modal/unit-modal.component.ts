@@ -8,11 +8,7 @@ import { APIResult } from 'src/app/_services/api-result';
 import { AssetClassType, Hotel, Office, Residential, Commercial, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
 import { tap } from 'rxjs/operators';
 
-interface RequestObject {
-  unitsUpdated?: any;
-  unitsCreated?: any;
-  unitsDeleted?: any;
-}
+
 
 @Component({
   selector: 'app-unit-modal',
@@ -37,6 +33,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
   @Input() scheme = {} as Scheme;
   @Output() modalSaveAssetClass = new EventEmitter<AssetClassType | null>();
   @Output() deleteIsConfirmed = new EventEmitter<void>()
+  @Output() closeModal = new EventEmitter<void>();
 
   @Input() availableAssetClassUses: string[] = [];
   @Input() assetClass = {} as AssetClassType;
@@ -219,6 +216,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
     this.assetClass = await this.getOrCreateAssetClass();
 
     const observables: Observable<any>[] = [];
+    const unitsResponse: Unit[] = [];
 
     this.unitGroups.controls.forEach((unitGroup, index) => {
 
@@ -234,7 +232,7 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       if(!!updateUnitsReq){ requestObj.unitsUpdated = updateUnitsReq }
       if(!!createUnitsReq){ requestObj.unitsCreated = createUnitsReq }
       if(!!deleteUnitsReq){ requestObj.unitsDeleted = deleteUnitsReq }
-
+      
       observables.push(forkJoin(requestObj).pipe(
         tap((results: any) => {
           const unitGrouped: UnitGroup = this.assetClass.unitsGrouped[index] || {};
@@ -255,14 +253,56 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       ));
     });
 
+    // to delete units which were in a unitGroup that was deleted
     if(this.unitsToDelete.length > 0 ){
       observables.push(this._schemeService.deleteUnits(this.unitsToDelete));
     }
-    forkJoin(observables).subscribe(() => {
+    forkJoin(observables).subscribe((res) => {
+
+      const unitsCreated: Unit[] = this.getUnitsResponse(res);
+      unitsResponse.push(...unitsCreated);
+
+      // const hasUnitsCreated = res.some(obj => obj?.unitsCreated !== undefined);
+      // if(!!hasUnitsCreated){
+      //   const unitsCreatedResponse: APIResult = res.find(obj => obj.hasOwnProperty('unitsCreated')).unitsCreated;
+      //   const unitsCreated = unitsCreatedResponse.response as Unit[];
+      //   unitsResponse.push(...unitsCreated);
+      // };
+
+      // const hasUnitsUpdated = res.some(obj => obj?.unitsUpdated !== undefined);
+      // if(!!hasUnitsUpdated){
+      //   const unitsUpdatedResponse: APIResult = res.find(obj => obj.hasOwnProperty('unitsUpdated')).unitsUpdated;
+      //   const unitsUpdated = unitsUpdatedResponse.response as Unit[];
+      //   unitsResponse.push(...unitsUpdated);
+      // };
+      // this.assetClass.units = unitsResponse;
+
       this.modalSaveAssetClass.emit(this.assetClass);
     });
 
   }
+
+  getUnitsResponse(res:any): Unit[]{
+    const units: Unit[] = [];
+
+    const hasUnitsCreated = res.some((obj: any) => obj?.unitsCreated !== undefined);
+      if(!!hasUnitsCreated){
+        const unitsCreatedResponse: APIResult = res.find((obj: any) => obj.hasOwnProperty('unitsCreated')).unitsCreated;
+        const unitsCreated = unitsCreatedResponse.response as Unit[];
+        units.push(...unitsCreated);
+      };
+
+      const hasUnitsUpdated = res.some((obj: any) => obj?.unitsUpdated !== undefined);
+      if(!!hasUnitsUpdated){
+        const unitsUpdatedResponse: APIResult = res.find((obj: any) => obj.hasOwnProperty('unitsUpdated')).unitsUpdated;
+        const unitsUpdated = unitsUpdatedResponse.response as Unit[];
+        units.push(...unitsUpdated);
+      };
+
+    return units;
+  }
+
+
 
   defineUnitsToUpdate(unitGroup: AbstractControl): Unit[] | undefined {
       const existingIds: number = unitGroup.value.ids?.length || 0;

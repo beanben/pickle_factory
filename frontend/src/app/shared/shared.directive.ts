@@ -30,7 +30,6 @@ export class DotDirective {
 
   @HostBinding('innerHTML')
   get innerHTML(): string {
-    // console.log("this.status: ", this.status)
     return this.status === "complete" ? '&#10003;' : '';
   }
 

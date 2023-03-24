@@ -32,10 +32,6 @@ export class BorrowersComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // console.log("inside borrowers component")
-    // this.modalAction = this.route.snapshot.params['action'];
-    // this.onOpenModal(this.modalAction);
-
     this.subs.push(
       this._borrowerService.getBorrowerSub()
         .subscribe(borrower => this.borrowerSelected = borrower)

@@ -14,6 +14,7 @@ export class SchemeService {
   relativeUrl = "/api/scheme";
   availableAssetClassUsesSub = new BehaviorSubject<string[]>([]);
   assetClassUsesSub = new BehaviorSubject<string[]>([]);
+  schemeSub = new BehaviorSubject<Scheme>({} as Scheme);
 
   constructor(
     private http: HttpClient,
@@ -31,6 +32,12 @@ export class SchemeService {
   }
   getAssetClassUsesSub():Observable<string[]>{
     return this.assetClassUsesSub.asObservable()
+  }
+  setSchemeSub(scheme: Scheme){
+    return this.schemeSub.next(scheme);
+  }
+  getSchemeSub():Observable<Scheme>{
+    return this.schemeSub.asObservable()
   }
 
   getScheme(schemeId: number): Observable<Scheme> {
