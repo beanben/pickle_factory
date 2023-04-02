@@ -19,23 +19,26 @@ export class SalesScheduleComponent implements OnInit, OnDestroy {
   unitStructure = {} as Unit;
   subs: Subscription[] = []
 
-
   constructor(
     private _schemeService: SchemeService,
   ) { }
 
   ngOnInit(): void {
     this.unitStructure = new Unit(this.assetClass);
-    this.calculateUnitTotals();
+    // this.calculateUnitTotals();
+    this.getScheme();
+  }
+
+  getScheme(){
+    this.scheme = this._schemeService.schemeSub.getValue();
 
     this.subs.push(
       this._schemeService.getSchemeSub().subscribe(scheme => {
         this.scheme = scheme;
-
-        // update assetClass, pas Scheme !
         this.updateAssetClass();
       })
     )
+
   }
 
   updateAssetClass(){

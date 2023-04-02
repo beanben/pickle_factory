@@ -51,9 +51,11 @@ export class IncomeAndValueComponent implements OnInit, OnDestroy {
   }
 
   refreshAssetClassSelected(){
-
+    console.log("refreshAssetClassSelected");
     const index: number = this.scheme.assetClasses.findIndex(assetClass => assetClass.id === this.assetClassSelected.id);
     this.assetClassSelected = this.scheme.assetClasses[index];
+
+    console.log("index:", index);
   }
 
   setSelectedAssetClass(index: number){

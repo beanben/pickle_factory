@@ -8,7 +8,17 @@ import { APIResult } from 'src/app/_services/api-result';
 import { AssetClassType, Hotel, Office, Residential, Commercial, ShoppingCentre, StudentAccommodation, Unit } from '../../scheme.model';
 import { tap } from 'rxjs/operators';
 
+interface RequestObj {
+  unitsUpdated?: APIResult;
+  unitsCreated?: APIResult;
+  unitsDeleted?: null;
+}
 
+interface ResponseObj {
+  unitsUpdated?: APIResult;
+  unitsCreated?: APIResult;
+  unitsDeleted?: null;
+}
 
 @Component({
   selector: 'app-unit-modal',
@@ -235,6 +245,9 @@ export class UnitModalComponent implements OnInit, OnDestroy {
       
       observables.push(forkJoin(requestObj).pipe(
         tap((results: any) => {
+
+          console.log("results: ", results)
+
           const unitGrouped: UnitGroup = this.assetClass.unitsGrouped[index] || {};
 
           if(unitGroup.value.quantity === 0){

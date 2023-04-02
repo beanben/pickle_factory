@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
 from rest_framework import serializers
 from loan.models import scheme_models, loan_models
 from rest_framework.serializers import ValidationError
@@ -146,10 +147,29 @@ class AssetClassSerializer(serializers.ModelSerializer):
     units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
     investment_strategy = serializers.CharField(required=False, allow_blank= True)
+    # total_units = serializers.SerializerMethodField(required=False) 
+    # total_units_area_size = serializers.SerializerMethodField(required=False)
+    # total_beds = serializers.SerializerMethodField(required=False)
     
     class Meta:
         model = scheme_models.AssetClass
-        fields = ['id', 'scheme_id', 'use', 'units_grouped', 'units', 'investment_strategy']
+        fields = [
+            'id', 
+            'scheme_id', 
+            'use', 
+            'units_grouped', 
+            'units', 
+            'investment_strategy']
+        # fields = [
+        #     'id', 
+        #     'scheme_id', 
+        #     'use', 
+        #     'units_grouped', 
+        #     'units', 
+        #     'investment_strategy',
+        #     'total_units',
+        #     'total_units_area_size',
+        #     'total_beds']
         depth = 1
 
     def get_units_grouped(self, obj):
@@ -160,6 +180,15 @@ class AssetClassSerializer(serializers.ModelSerializer):
         units = scheme_models.Unit.objects.filter(asset_class=obj)
         return UnitSerializer(units, many=True).data
     
+    # def get_total_units(self, obj):
+    #     return scheme_models.Unit.objects.filter(asset_class=obj).count()
+    #     # return len(scheme_models.Unit.objects.filter(asset_class=obj))
+    
+    # def get_total_units_area_size(self, obj):
+    #     return scheme_models.Unit.objects.filter(asset_class=obj).aggregate(Sum('area_size'))["area_size__sum"]
+    
+    # def get_total_beds(self, obj):
+    #     return scheme_models.Unit.objects.filter(asset_class=obj).aggregate(Sum('beds'))["beds__sum"]
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
