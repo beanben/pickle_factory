@@ -133,18 +133,18 @@ class UnitListSerializer(serializers.ListSerializer):
 
         return result
 
-class UnitGroupSerializer(serializers.Serializer):
-    asset_class = AssetClassUnitSerializer(required=False)
-    description = serializers.CharField(required=False, allow_blank= True, default="")
-    group_area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    beds_per_unit = serializers.IntegerField(required=False, allow_null= True)
-    group_beds = serializers.IntegerField(required=False, allow_null= True)
-    quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
+# class UnitGroupSerializer(serializers.Serializer):
+#     asset_class = AssetClassUnitSerializer(required=False)
+#     description = serializers.CharField(required=False, allow_blank= True, default="")
+#     group_area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+#     beds_per_unit = serializers.IntegerField(required=False, allow_null= True)
+#     group_beds = serializers.IntegerField(required=False, allow_null= True)
+#     quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
     scheme_id = serializers.IntegerField()
-    units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
+    # units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
     investment_strategy = serializers.CharField(required=False, allow_blank= True)
     # total_units = serializers.SerializerMethodField(required=False) 
@@ -157,7 +157,7 @@ class AssetClassSerializer(serializers.ModelSerializer):
             'id', 
             'scheme_id', 
             'use', 
-            'units_grouped', 
+            # 'units_grouped', 
             'units', 
             'investment_strategy']
         # fields = [
@@ -172,9 +172,9 @@ class AssetClassSerializer(serializers.ModelSerializer):
         #     'total_beds']
         depth = 1
 
-    def get_units_grouped(self, obj):
-        qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
-        return UnitGroupSerializer(qs, many=True).data
+    # def get_units_grouped(self, obj):
+    #     qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
+    #     return UnitGroupSerializer(qs, many=True).data
     
     def get_units(self, obj):
         units = scheme_models.Unit.objects.filter(asset_class=obj)

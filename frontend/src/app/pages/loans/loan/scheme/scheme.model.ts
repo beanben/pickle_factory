@@ -1,4 +1,4 @@
-import { UnitGroup } from "./scheme";
+// import { UnitGroup } from "./scheme";
 
 
 export type AssetClassType = Hotel | 
@@ -12,11 +12,11 @@ export abstract class AssetClassAbstract {
     abstract readonly use: string;
     
     constructor(
+        public units: Unit[] = [],
         public id?: number,
         public schemeId?: number, 
-        public units?: Unit[],
         public investmentStrategy?: string,
-        public unitsGrouped: UnitGroup[] =[],
+        // public unitsGrouped: UnitGroup[] =[],
     ) {}  
 }
 

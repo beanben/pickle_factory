@@ -43,22 +43,22 @@
 
                     <ul class="nav nav-tabs bg-light px-2">
                         <li class="nav-item p-2" (click)="tabActive = 'units'" [ngClass]="tabActive === 'units' ? 'activeTab' : 'tab'">Units</li>
-                        <li class="nav-item p-2" (click)="tabActive = 'incomeAndValue'" [ngClass]="tabActive === 'incomeAndValue' ? 'activeTab' : 'tab'">Income and value</li>
+                        <li class="nav-item p-2" (click)="tabActive = 'income'" [ngClass]="tabActive === 'income' ? 'activeTab' : 'tab'">Income</li>
+                        <li class="nav-item p-2" (click)="tabActive = 'value'" [ngClass]="tabActive === 'value' ? 'activeTab' : 'tab'">Value</li>
                         <li class="nav-item p-2" (click)="tabActive = 'development'" [ngClass]="tabActive === 'development' ? 'activeTab' : 'tab'">Development</li>
                     </ul>
-                    <div class="row p-2">
-                        <div class="col p-3">
+                    <div class="row">
+                        <div class="col">
+
                             <ng-container *ngIf="tabActive === 'units'">
                                 <app-units [scheme]="scheme"></app-units>
-                                <!-- <app-units></app-units> -->
                             </ng-container>
 
-                            <ng-container *ngIf="tabActive === 'incomeAndValue'">
-                                <app-income-and-value 
+                            <ng-container *ngIf="tabActive === 'income'">
+                                <!-- <app-income-and-value 
                                     [scheme]="scheme" 
                                     (onClickUnits)="selectUnitsTab()">
-                                </app-income-and-value>
-                                <!-- <app-income-and-value (onClickUnits)="selectUnitsTab()"></app-income-and-value> -->
+                                </app-income-and-value> -->
                             </ng-container>
 
                         </div>

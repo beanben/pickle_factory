@@ -23,13 +23,3 @@ export interface Area {
     system : "SQFT" | "SQM"
 }
 
-
-export interface UnitGroup{
-    ids?: number[],
-    description: string,
-    quantity: number,
-    groupBeds?: number,
-    bedsPerUnit: number,
-    groupAreaSize: number,
-}
-

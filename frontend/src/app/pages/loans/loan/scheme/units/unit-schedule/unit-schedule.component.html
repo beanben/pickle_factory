@@ -1,0 +1,56 @@
+
+<ng-container *ngIf="!!assetClass.id">
+  <div class="table">
+    <div class="total-row text-center">
+      <div class="table-cell">Total</div>
+      <div class="table-cell">{{totalUnits | number: '1.0-0' : 'en-GB'}}</div>
+      <div class="table-cell">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
+      <div class="table-cell" *ngIf="unitStructure.hasBeds()">{{totalBeds | number: '1.0-0' : 'en-GB'}}</div>
+      <div class="table-cell"></div>
+      <div class="table-cell"></div>
+      <div class="table-cell"></div>
+      <div class="table-cell"></div>
+    </div>
+  
+    <div class="table-row header text-center">
+      <div class="table-cell-header pt-2">{{unitStructure.label | titlecase}}</div>
+      <div class="table-cell-header pt-2">Description</div>
+      <div class="table-cell-header pt-2v">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+      <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">Beds</div>
+  
+      <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+        <div class="table-cell-header pt-2">Status</div>
+        <div class="table-cell-header pt-2">Date status changed</div>
+        <div class="table-cell-header pt-2">Price achieved</div>
+        <div class="table-cell-header pt-2">Buyer</div>
+      </ng-container>
+  
+      <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
+          <div class="table-cell-header pt-2">Lease start</div>
+          <div class="table-cell-header pt-2">Lease end</div>
+          <div class="table-cell-header pt-2">Rent</div>
+          <div class="table-cell-header pt-2">Tenant</div>
+        </ng-container>
+    </div>
+  
+    <div class="table-row text-center" *ngFor="let unit of assetClass.units">
+      <div class="table-cell">{{unit.identifier}}</div>
+      <div class="table-cell">{{unit.description}}</div>
+      <div class="table-cell">{{unit.areaSize | number: '1.2-2' : 'en-GB'}}</div>
+      <div class="table-cell" *ngIf="unitStructure.hasBeds()">{{unit.beds}}</div>
+  
+      <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+        <div class="table-cell">{{unit.salesStatus}}</div>
+        <div class="table-cell">{{unit.salesStatusDate}}</div>
+        <div class="table-cell">{{unit.salesPrice | number: '1.0-0' : 'en-GB'}}</div>
+      </ng-container>
+  
+      <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
+          <div class="table-cell-header pt-2"></div>
+          <div class="table-cell-header pt-2"></div>
+          <div class="table-cell-header pt-2"></div>
+        </ng-container>
+    </div>
+  </div>
+</ng-container>
+

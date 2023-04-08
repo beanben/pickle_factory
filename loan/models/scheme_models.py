@@ -2,7 +2,7 @@ import pdb
 from django.db import models
 from core.models import TimestampedModel, AuthorTrackerModel, TimestampedModelReverse
 from loan.models import loan_models
-from loan.managers import SchemeManager, AssetClassManager
+from loan.managers import SchemeManager
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
     SYSTEM_CHOICES =[
@@ -41,7 +41,7 @@ class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
     def __str__(self):
         return self.use
     
-    objects = AssetClassManager()
+    # objects = AssetClassManager()
 
    
 class Hotel(AssetClass):

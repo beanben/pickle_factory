@@ -23,11 +23,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     ForgotComponent,
   ],
   exports: [
-    AuthComponent,  
-    ResetComponent,
-    RegisterComponent,
-    LoginComponent,
-    ForgotComponent,
+    // AuthComponent,  
+    // ResetComponent,
+    // RegisterComponent,
+    // LoginComponent,
+    // ForgotComponent,
   ]
 })
 export class AuthModule { }

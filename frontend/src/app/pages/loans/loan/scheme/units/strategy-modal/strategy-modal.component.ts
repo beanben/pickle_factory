@@ -6,8 +6,7 @@ import { APIResult } from 'src/app/_services/api-result';
 
 @Component({
   selector: 'app-strategy-modal',
-  templateUrl: './strategy-modal.component.html',
-  styleUrls: ['./strategy-modal.component.css']
+  templateUrl: './strategy-modal.component.html'
 })
 export class StrategyModalComponent implements OnInit {
   displayStyle = "block";

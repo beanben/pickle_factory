@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { Subscription } from 'rxjs';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Scheme } from './scheme';
-import { AssetClassType } from './scheme.model';
 
 @Component({
   selector: 'app-scheme',
@@ -12,7 +11,7 @@ import { AssetClassType } from './scheme.model';
 export class SchemeComponent implements OnInit, OnDestroy{
   openSchemeModal = false;
   modalMode = "";
-  tabActive = "incomeAndValue";
+  tabActive = "units";
 
   @Input() scheme = {} as Scheme;
   @Input() index = -1;

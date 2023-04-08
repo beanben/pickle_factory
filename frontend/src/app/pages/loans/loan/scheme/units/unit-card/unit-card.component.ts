@@ -1,76 +1,60 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Scheme } from '../../scheme';
+import { Component, Input, OnInit } from '@angular/core';
 import { AssetClassType, Unit } from '../../scheme.model';
+import { Scheme } from '../../scheme';
+
+interface UnitGroup {
+  description: string,
+  quantity: number,
+  beds: number,
+  areaSize: number,
+}
+
 @Component({
   selector: 'app-unit-card',
-  templateUrl: './unit-card.component.html',
-  styleUrls: ['./unit-card.component.css']
+  templateUrl: './unit-card.component.html'
 })
 export class UnitCardComponent implements OnInit {
-  openUnitModal = false;
-  modalMode = "";
+  @Input() assetClass = {} as AssetClassType;
+  @Input() scheme = {} as Scheme;
+  unitStructure = {} as Unit;
+  unitsGrouped: UnitGroup[] = [];
   totalQuantity = 0;
   totalAreaSize = 0;
+  totalBeds = 0;
 
-  @Input() scheme = {} as Scheme;
-  @Input() assetClass = {} as AssetClassType;
-  @Output() deleteIsConfirmed = new EventEmitter<void>()
-  unitStructure = {} as Unit | null;
-
-  constructor(
-    private _schemeService: SchemeService
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.unitStructure = new Unit(this.assetClass);
-    this.getAssetClass();
-    this.calculateTotals();
+    this.unitsGrouped = this.groupByDescription(this.assetClass.units);
   }
 
-  getAssetClass() {
-    this._schemeService.getAssetClass(this.assetClass)
-      .subscribe(assetClass => this.assetClass = assetClass)
+  groupByDescription(units: Unit[]): UnitGroup[] {
+    let unitsGrouped: UnitGroup[] = [];
+
+    units.forEach(unit => {
+      const descriptionExists = unitsGrouped.some(unitGroup => unitGroup.description === unit.description);
+
+      if (!descriptionExists) {
+        const unitGroup = {} as UnitGroup;
+        unitGroup.description = unit.description;
+        unitGroup.quantity = 0;
+        unitGroup.beds = 0;
+        unitGroup.areaSize = 0;
+        unitsGrouped.push(unitGroup);
+      };
+
+      const unitGroup = unitsGrouped.find(unitGroup => unitGroup.description === unit.description);
+      unitGroup!.quantity += 1;
+      unitGroup!.beds += unit.beds || 0;
+      unitGroup!.areaSize += +(unit.areaSize || 0);
+    })
+
+    this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
+    this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
+    this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
+
+    return unitsGrouped;
   }
-
-  onOpenUnitModal(modalMode: string){
-    this.openUnitModal = true;
-    this.modalMode = modalMode;
-  }
-
-  onSave(assetClass: AssetClassType | null){
-    this.openUnitModal = false;
-    
-    if(assetClass){
-      this.assetClass = assetClass;
-      this.calculateTotals();
-      this.updateScheme();
-    };
-  }
-
-  updateScheme(){
-    const assetClassIndex = this.scheme.assetClasses.findIndex(
-      assetClass => assetClass.id === this.assetClass.id
-    );
-    if(assetClassIndex !== -1){
-      this.scheme.assetClasses[assetClassIndex] = this.assetClass;
-    };
-
-    this._schemeService.setSchemeSub(this.scheme);
-  }
-
-  onDeleteAssetClass(){
-    this.openUnitModal = false;
-    this.deleteIsConfirmed.emit()
-  }
-
-  calculateTotals(){
-    this.totalQuantity = this.assetClass.unitsGrouped.reduce((acc, unitsGroup) => acc + (+unitsGroup.quantity), 0)
-    
-    const totalAreaSizeCalc = this.assetClass.unitsGrouped.reduce((acc, unitsGroup) => acc + (+(unitsGroup.groupAreaSize ?? 0)), 0)
-    this.totalAreaSize = +totalAreaSizeCalc.toFixed(2)
-  }
-
 
 }

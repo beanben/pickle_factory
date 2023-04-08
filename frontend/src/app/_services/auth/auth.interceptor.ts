@@ -18,56 +18,51 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private _tokenService: TokenStorageService,
     private _authService: AuthService,
-    ) {}
+  ) { }
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let authReq = req;
     const token = this._tokenService.getAccessToken();
-    
-    if (!!token) {
-      authReq = this.addTokenHeader(req, token);
+
+    if (token) {
+      req = this.addTokenHeader(req, token);
     };
 
-    return next.handle(authReq)
-      .pipe(
-        catchError(err => {
-          if (err instanceof HttpErrorResponse && err.status === 401 && !authReq.url.includes('refresh')) {
-            return this.handleError(authReq, next);
-          
-          } else if(err instanceof HttpErrorResponse && err.status !== 401){
-            return next.handle(authReq);
-
-          } else {
-            this._authService.logout();
-            return throwError(() => err);
-
-          }
-        })
-
-      )
+    return next.handle(req).pipe(
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 401 && !req.url.includes('refresh')) {
+          return this.handleError(req, next);
+        }
+        this._authService.logout();
+        return throwError(() => err);
+      })
+    )
   }
 
   private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
     return request.clone({
-      setHeaders: {'Authorization': `Bearer ${token}`}
+      setHeaders: { 'Authorization': `Bearer ${token}` }
     });
   }
 
-  private handleError(req: HttpRequest<any>, next: HttpHandler) {
-    const token = this._tokenService.getRefreshToken();
-    if(token) {
-      return this._authService.refreshToken(token)
-        .pipe(
-          switchMap((token:any) => {
-            this._tokenService.saveAccessToken(token.access);
-            const authReq = this.addTokenHeader(req, token.access);
-            return next.handle(authReq)
-          })
-        )
+  private handleError(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const refreshToken = this._tokenService.getRefreshToken();
 
-    } else {
-      return next.handle(req)
+    if (!refreshToken) {
+      this._authService.logout();
+      return throwError(() => new HttpErrorResponse({ error: 'Refresh token not found', status: 401 }));
     }
+
+    return this._authService.refreshToken(refreshToken).pipe(
+      switchMap((token: any) => {
+        this._tokenService.saveAccessToken(token.access);
+        const authReq = this.addTokenHeader(req, token.access);
+        return next.handle(authReq)
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this._authService.logout();
+        return throwError(() => err);
+      }),
+    )
   }
 
 }

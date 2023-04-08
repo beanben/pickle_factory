@@ -30,9 +30,9 @@ export class SchemeService {
   setAssetClassUsesSub(assetClassUsesSub: string[]){
     return this.assetClassUsesSub.next(assetClassUsesSub);
   }
-  getAssetClassUsesSub():Observable<string[]>{
-    return this.assetClassUsesSub.asObservable()
-  }
+  // getAssetClassUsesSub():Observable<string[]>{
+  //   return this.assetClassUsesSub.asObservable()
+  // }
   setSchemeSub(scheme: Scheme){
     return this.schemeSub.next(scheme);
   }

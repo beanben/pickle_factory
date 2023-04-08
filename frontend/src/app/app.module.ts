@@ -33,4 +33,3 @@ import { LoansModule } from './pages/loans/loans.module';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-``
