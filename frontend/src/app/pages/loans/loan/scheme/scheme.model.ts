@@ -1,23 +1,47 @@
-// import { UnitGroup } from "./scheme";
+import { Scheme } from "./scheme";
 
 
-export type AssetClassType = Hotel | 
-                            Residential | 
-                            Commercial | 
-                            StudentAccommodation | 
-                            Office | 
-                            ShoppingCentre
+export type AssetClassType = Hotel |
+    Residential |
+    Commercial |
+    StudentAccommodation |
+    Office |
+    ShoppingCentre
+
+// export abstract class AssetClassAbstract {
+//     abstract readonly use: string;
+//     readonly areaSystem: "sqft" | "sqm";
+
+//     constructor(
+//         public units: Unit[] = [],
+//         public id?: number,
+//         public schemeId?: number,
+//         public investmentStrategy?: string
+//     ) { 
+//         this.areaSystem = this.getAreaSystem();
+//     }
+
+//     getAreaSystem(): "sqft" | "sqm" {
+//        return this._schemeService.getScheme(this.schemeId).areaSystem; 
+//     }
+// }
 
 export abstract class AssetClassAbstract {
     abstract readonly use: string;
-    
+    readonly areaSystem: "sqft" | "sqm";
+
     constructor(
         public units: Unit[] = [],
+        public scheme: Scheme,
         public id?: number,
-        public schemeId?: number, 
-        public investmentStrategy?: string,
-        // public unitsGrouped: UnitGroup[] =[],
-    ) {}  
+        public investmentStrategy?: string
+    ) { 
+        this.areaSystem = this.getAreaSystem();
+    }
+
+    getAreaSystem(): "sqft" | "sqm" {
+        return this.scheme.system.toLowerCase() as "sqft" | "sqm";
+    }
 }
 
 export class Hotel extends AssetClassAbstract {
@@ -25,28 +49,28 @@ export class Hotel extends AssetClassAbstract {
 }
 
 export class Residential extends AssetClassAbstract {
-     readonly use = "residential";
+    readonly use = "residential";
 }
 
 export class Commercial extends AssetClassAbstract {
-     readonly use = "commercial";
+    readonly use = "commercial";
 }
 
 export class StudentAccommodation extends AssetClassAbstract {
-     readonly use = "student accommodation";
+    readonly use = "student accommodation";
 }
 
 export class Office extends AssetClassAbstract {
-     readonly use = "office";
+    readonly use = "office";
 }
 
 export class ShoppingCentre extends AssetClassAbstract {
-     readonly use = "shopping centre";
+    readonly use = "shopping centre";
 }
 
 export class Unit {
-     label: "unit" | "room" = "unit";
-     areaType: "NIA" | "GIA" = "NIA";
+    readonly label: "unit" | "room";
+    readonly areaType: "NIA" | "GIA";
 
     constructor(
         public assetClass: AssetClassType,
@@ -54,12 +78,12 @@ export class Unit {
         public identifier?: string,
         public description: string = "",
         public areaSize?: number,
+        public areaSystem?: "sqft" | "sqm",
         public beds?: number,
         public value?: number,
         public salesStatus?: string,
         public salesStatusDate?: Date,
         public salesPrice?: number,
-        // public quantity?: number,
     ) {
         this.label = this.defineLabel();
         this.areaType = this.defineAreaType();
@@ -71,9 +95,9 @@ export class Unit {
         return hasRooms.includes(this.assetClass.use.toLowerCase()) ? "room" : "unit";
     }
 
-    defineAreaType(): "NIA" | "GIA"{
+    defineAreaType(): "NIA" | "GIA" {
         const isNIA = ["hotel", "student accommodation", "residential"];
-        const isGIA = ["commercial", "office", "shopping centre", ];
+        const isGIA = ["commercial", "office", "shopping centre",];
         return isNIA.includes(this.assetClass.use.toLowerCase()) ? "NIA" : "GIA";
     }
 
@@ -81,5 +105,5 @@ export class Unit {
         const hasBeds = ["student accommodation", "hotel", "residential"];
         return hasBeds.includes(this.assetClass.use.toLowerCase());
     }
-    
+
 }

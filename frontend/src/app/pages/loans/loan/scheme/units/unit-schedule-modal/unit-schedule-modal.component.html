@@ -1,1 +1,19 @@
-<p>unit-schedule-modal works!</p>
+<div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+  <div class="modal-dialog modal-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Unit Schedule</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="onCancel()"></button>
+      </div>
+
+      <div class="modal-body">
+        
+      </div>
+
+
+
+    </div>
+  </div>
+</div>

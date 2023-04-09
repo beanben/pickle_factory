@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Scheme } from '../scheme';
-import { AssetClassType } from '../scheme.model';
+import { AssetClassType, Unit } from '../scheme.model';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { lastValueFrom } from 'rxjs';
 import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
@@ -117,6 +117,10 @@ export class UnitsComponent implements OnInit {
     this.scheme.assetClasses.splice(index, 1);
     this.availableAssetClassUses.push(this.assetClassSelected.use);
     this.onSelectAssetClass(0);
+  }
+
+  onEditUnitSchedule(units:Unit[] | null) {
+    this.openUnitScheduleModal = false;
   }
 
 

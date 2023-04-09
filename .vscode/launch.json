@@ -10,18 +10,6 @@
             "reAttach": true,
             "name": "Launch localhost",
             "url": "http://localhost:8000",
-            "webRoot": "${workspaceFolder}",
-            "pathMappings": [{
-                "url": "webpack:///",
-                "path": "${workspaceFolder}/"
-            }]
-        },
-        {
-            "type": "firefox",
-            "request": "launch",
-            "reAttach": true,
-            "name": "Launch localhost (v2)",
-            "url": "http://localhost:8000",
             "webRoot": "${workspaceFolder}/frontend",
             "pathMappings": [{
                 "url": "webpack:///",
