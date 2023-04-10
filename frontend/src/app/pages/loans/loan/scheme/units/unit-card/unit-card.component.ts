@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AssetClassType, Unit } from '../../scheme.model';
 import { Scheme } from '../../scheme';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 
 interface UnitGroup {
   description: string,
@@ -22,7 +23,9 @@ export class UnitCardComponent implements OnInit {
   totalAreaSize = 0;
   totalBeds = 0;
 
-  constructor() { }
+  constructor(
+    private _schemeService: SchemeService
+  ) { }
 
   ngOnInit(): void {
     this.unitStructure = new Unit(this.assetClass);

@@ -33,11 +33,9 @@ import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-sc
     SchemeComponent,
     SchemeModalComponent,
     UnitsComponent,
-    UnitsComponent,
     AssetClassModalComponent,
     UnitCardComponent,
     StrategyModalComponent,
-    // SalesScheduleComponent,
     UnitScheduleModalComponent,
     UnitScheduleComponent
   ],
@@ -49,9 +47,11 @@ import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-sc
     // SchemeComponent,
     // SchemeModalComponent,
     // UnitsComponent,
+    // AssetClassModalComponent,
+    // UnitCardComponent,
     // StrategyModalComponent,
-    // SalesScheduleComponent
-    
+    // UnitScheduleModalComponent,
+    // UnitScheduleComponent
   ]
 })
 export class LoansModule { }

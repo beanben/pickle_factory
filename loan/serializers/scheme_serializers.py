@@ -75,7 +75,7 @@ class UnitSerializer(serializers.ModelSerializer):
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    area_system = serializers.CharField(required=False, allow_blank=True, default="")
+    area_system = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Unit
@@ -122,6 +122,10 @@ class UnitSerializer(serializers.ModelSerializer):
             description = f"{unit_data['beds']}-bed"
         
         return description
+    
+    def get_area_system(self, obj):
+        scheme = obj.asset_class.scheme
+        return scheme.system.lower()
 
 class UnitListSerializer(serializers.ListSerializer):
 
@@ -217,7 +221,6 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 
 class HotelSerializer(AssetClassSerializer):
-
     class Meta:
         model = scheme_models.Hotel
         fields = AssetClassSerializer.Meta.fields 

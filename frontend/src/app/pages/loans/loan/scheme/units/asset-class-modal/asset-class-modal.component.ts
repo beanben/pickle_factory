@@ -70,7 +70,7 @@ export class AssetClassModalComponent implements OnInit {
 
   createAssetClass(){
     const assetClass:AssetClassType = this.newAssetClass(this.form.value.assetClass);
-    assetClass.scheme = this.scheme;
+    assetClass.schemeId = this.scheme.id;
 
     this._schemeService.createAssetClass(assetClass)
       .then((res:APIResult) => {
@@ -97,20 +97,20 @@ export class AssetClassModalComponent implements OnInit {
   newAssetClass(type:string): AssetClassType{
     switch(type){
       case "Hotel":
-        return new Hotel(this.scheme);
+        return new Hotel(this.scheme.id);
       case "Residential":
-        return new Residential(this.scheme);
+        return new Residential(this.scheme.id);
       case "Commercial":
-        return new Commercial(this.scheme);
+        return new Commercial(this.scheme.id);
       case "Student Accommodation":
-        return new StudentAccommodation(this.scheme);
+        return new StudentAccommodation(this.scheme.id);
       case "Office":
-        return new Office(this.scheme);
+        return new Office(this.scheme.id);
       case "Shopping Centre":
-        return new ShoppingCentre(this.scheme);
+        return new ShoppingCentre(this.scheme.id);
 
       default:
-        return new Residential(this.scheme);
+        return new Residential(this.scheme.id);
     }
   }
 
