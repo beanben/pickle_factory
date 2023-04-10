@@ -15,7 +15,7 @@
     <div class="table-row header text-center">
       <div class="table-cell-header pt-2">{{unitStructure.label | titlecase}}</div>
       <div class="table-cell-header pt-2">Description</div>
-      <div class="table-cell-header pt-2v">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+      <div class="table-cell-header pt-2v">{{unitStructure.areaType}} ({{unitStructure.areaSystem}})</div>
       <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">Beds</div>
   
       <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">

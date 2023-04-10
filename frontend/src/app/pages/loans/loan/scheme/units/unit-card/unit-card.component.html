@@ -6,12 +6,11 @@
 
   <div class="row pt-3">
     <div class="col">
-
       <div class="table">
         <div class="table-row header">
           <div class="table-cell text-center">Description</div>
           <div class="table-cell text-center">{{unitStructure.label | titlecase}}s</div>
-          <div class="table-cell text-center">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
+          <div class="table-cell text-center">{{unitStructure.areaType}} ({{unitStructure.areaSystem}})</div>
           <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">Beds</div>
         </div>
         <div class="table-row" *ngFor="let unitGroup of unitsGrouped">

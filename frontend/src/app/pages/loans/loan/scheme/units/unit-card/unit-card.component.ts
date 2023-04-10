@@ -15,7 +15,7 @@ interface UnitGroup {
 })
 export class UnitCardComponent implements OnInit {
   @Input() assetClass = {} as AssetClassType;
-  @Input() scheme = {} as Scheme;
+  // @Input() scheme = {} as Scheme;
   unitStructure = {} as Unit;
   unitsGrouped: UnitGroup[] = [];
   totalQuantity = 0;

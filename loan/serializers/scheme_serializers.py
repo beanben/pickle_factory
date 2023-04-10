@@ -75,7 +75,7 @@ class UnitSerializer(serializers.ModelSerializer):
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    area_system = serializers.ReadOnlyField(source='area_system')
+    area_system = serializers.CharField(required=False, allow_blank=True, default="")
 
     class Meta:
         model = scheme_models.Unit
@@ -145,35 +145,24 @@ class UnitListSerializer(serializers.ListSerializer):
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
-    scheme_id = serializers.IntegerField()
-    # units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
+    scheme = serializers.SerializerMethodField(required=False, allow_null=True)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
     investment_strategy = serializers.CharField(required=False, allow_blank= True)
-    # total_units = serializers.SerializerMethodField(required=False) 
-    # total_units_area_size = serializers.SerializerMethodField(required=False)
-    # total_beds = serializers.SerializerMethodField(required=False)
-    
+
     class Meta:
         model = scheme_models.AssetClass
         fields = [
             'id', 
-            'scheme_id', 
+            'scheme', 
             'use', 
-            # 'units_grouped', 
             'units', 
             'investment_strategy']
-        # fields = [
-        #     'id', 
-        #     'scheme_id', 
-        #     'use', 
-        #     'units_grouped', 
-        #     'units', 
-        #     'investment_strategy',
-        #     'total_units',
-        #     'total_units_area_size',
-        #     'total_beds']
         depth = 1
 
+    def get_scheme(self, obj):
+        qs = scheme_models.Scheme.objects.filter(id=obj.scheme.id)
+        return SchemeSerializer(qs, many=True).data
+    
     # def get_units_grouped(self, obj):
     #     qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
     #     return UnitGroupSerializer(qs, many=True).data
@@ -211,6 +200,7 @@ class SchemeSerializer(serializers.ModelSerializer):
             'asset_classes',
             'system',
             'is_built']
+        depth = 1
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")

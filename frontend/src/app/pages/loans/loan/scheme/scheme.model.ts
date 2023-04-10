@@ -28,19 +28,13 @@ export type AssetClassType = Hotel |
 
 export abstract class AssetClassAbstract {
     abstract readonly use: string;
-    readonly areaSystem: "sqft" | "sqm";
 
     constructor(
-        public units: Unit[] = [],
         public scheme: Scheme,
+        public units: Unit[] = [],
         public id?: number,
         public investmentStrategy?: string
     ) { 
-        this.areaSystem = this.getAreaSystem();
-    }
-
-    getAreaSystem(): "sqft" | "sqm" {
-        return this.scheme.system.toLowerCase() as "sqft" | "sqm";
     }
 }
 
@@ -71,6 +65,7 @@ export class ShoppingCentre extends AssetClassAbstract {
 export class Unit {
     readonly label: "unit" | "room";
     readonly areaType: "NIA" | "GIA";
+    readonly areaSystem: "sqft" | "sqm";
 
     constructor(
         public assetClass: AssetClassType,
@@ -78,7 +73,6 @@ export class Unit {
         public identifier?: string,
         public description: string = "",
         public areaSize?: number,
-        public areaSystem?: "sqft" | "sqm",
         public beds?: number,
         public value?: number,
         public salesStatus?: string,
@@ -87,6 +81,7 @@ export class Unit {
     ) {
         this.label = this.defineLabel();
         this.areaType = this.defineAreaType();
+        this.areaSystem = this.getAreaSystem();
     }
 
     defineLabel(): "unit" | "room" {
@@ -104,6 +99,10 @@ export class Unit {
     hasBeds(): boolean {
         const hasBeds = ["student accommodation", "hotel", "residential"];
         return hasBeds.includes(this.assetClass.use.toLowerCase());
+    }
+
+    getAreaSystem(): "sqft" | "sqm" {
+        return this.assetClass.scheme.system as "sqft" | "sqm";
     }
 
 }

@@ -85,7 +85,7 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         (GIA, "Gross Internal Area"),
     ]
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units", related_query_name="unit") 
-    # label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
+    label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True)
     identifier = models.CharField(verbose_name="unit number", default="1", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
     beds = models.IntegerField(blank=True, null=True)
