@@ -145,7 +145,7 @@ class UnitListSerializer(serializers.ListSerializer):
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
-    scheme = serializers.SerializerMethodField(required=False, allow_null=True)
+    scheme_id = serializers.IntegerField(required=False)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
     investment_strategy = serializers.CharField(required=False, allow_blank= True)
 
@@ -153,7 +153,7 @@ class AssetClassSerializer(serializers.ModelSerializer):
         model = scheme_models.AssetClass
         fields = [
             'id', 
-            'scheme', 
+            'scheme_id', 
             'use', 
             'units', 
             'investment_strategy']
