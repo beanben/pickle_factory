@@ -6,7 +6,8 @@
   (modalAssetClassUpdate)="onUpdateInvestmentStrategy()">
 </app-strategy-modal>
 
-<app-unit-schedule-modal *ngIf="openUnitScheduleModal" [assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal>
+<app-unit-schedule-modal *ngIf="openUnitScheduleModal" [mode]="modalMode"
+[assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal>
 
 <ng-container *ngIf="scheme.assetClasses.length > 0; else noAssetClass">
   <div class="p-4">
