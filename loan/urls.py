@@ -13,19 +13,21 @@ from .views import (
     system_types,
     AssetClassList,
     AssetClassDetail,
+    SaleStatusChoicesView
 )
 
 unit_patterns = ([
     path('', UnitList.as_view()),
     path('bulk_update_delete/', UnitsBulkUpdateDestroy.as_view()),
     path('<int:pk>/', UnitDetail.as_view()),
+    path('sale_status_choices/', SaleStatusChoicesView.as_view()),
 ], 'unit')
 
 scheme_patterns = ([
     path('', SchemeList.as_view()),
     path('<int:pk>/', SchemeDetail.as_view()),
     path('asset_class_uses/', asset_class_uses),
-    path('system_types/', system_types)
+    path('system_types/', system_types),
 ], 'scheme')
 
 borrower_patterns = ([

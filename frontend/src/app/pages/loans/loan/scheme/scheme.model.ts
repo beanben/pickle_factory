@@ -1,4 +1,4 @@
-import { Scheme } from "./scheme";
+import { Lease, Sale, Scheme } from "./scheme";
 
 
 export type AssetClassType = Hotel |
@@ -56,10 +56,8 @@ export class Unit {
         public areaSize: number = 0,
         public beds: number = 0,
         public id?: number,
-        public value?: number,
-        public salesStatus?: string,
-        public salesStatusDate?: Date,
-        public salesPrice?: number,
+        public sale?: Sale,
+        public lease?: Lease,
     ) {
         this.label = this.defineLabel();
         this.areaType = this.defineAreaType();
@@ -82,9 +80,5 @@ export class Unit {
         const hasBeds = ["student accommodation", "hotel", "residential"];
         return hasBeds.includes(this.assetClass.use.toLowerCase());
     }
-
-    // getAreaSystem(): "sqft" | "sqm" {
-    //     // return this.assetClass.scheme.system as "sqft" | "sqm";
-    // }
 
 }

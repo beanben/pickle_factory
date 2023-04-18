@@ -138,7 +138,6 @@ WHITENOISE_INDEX_FILE = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # custom user
 AUTH_USER_MODEL = 'authentication.User' #this setting must be defined before doing the first migrations
 

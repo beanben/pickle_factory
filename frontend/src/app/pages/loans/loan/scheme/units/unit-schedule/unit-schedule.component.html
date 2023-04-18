@@ -19,15 +19,13 @@
       <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">Beds</div>
   
       <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
-        <div class="table-cell-header pt-2">Status</div>
-        <div class="table-cell-header pt-2">Date status changed</div>
-        <div class="table-cell-header pt-2">Price achieved</div>
+        <div class="table-cell-header pt-2">Sale price</div>
         <div class="table-cell-header pt-2">Buyer</div>
       </ng-container>
   
       <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
           <div class="table-cell-header pt-2">Lease start</div>
-          <div class="table-cell-header pt-2">Lease end</div>
+          <div class="table-cell-header pt-2">Duration</div>
           <div class="table-cell-header pt-2">Rent</div>
           <div class="table-cell-header pt-2">Tenant</div>
         </ng-container>
@@ -40,15 +38,15 @@
       <div class="table-cell" *ngIf="unitStructure.hasBeds()">{{unit.beds}}</div>
   
       <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
-        <div class="table-cell">{{unit.salesStatus}}</div>
-        <div class="table-cell">{{unit.salesStatusDate}}</div>
-        <div class="table-cell">{{unit.salesPrice | number: '1.0-0' : 'en-GB'}}</div>
+        <div class="table-cell">{{(unit.sale?.price === null) || (unit.sale?.price === 0) ? 'available':( unit.sale!.price| number: '1.0-0' : 'en-GB')}}</div>
+        <div class="table-cell">{{unit.sale?.buyer === null ? '-' : unit.sale!.buyer}}</div>
       </ng-container>
   
       <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
-          <div class="table-cell-header pt-2"></div>
-          <div class="table-cell-header pt-2"></div>
-          <div class="table-cell-header pt-2"></div>
+          <div class="table-cell-header pt-2">{{unit.lease?.startDate}}</div>
+          <div class="table-cell-header pt-2">{{unit.lease?.duration}}</div>
+          <div class="table-cell-header pt-2">{{unit.lease?.rent}}</div>
+          <div class="table-cell-header pt-2">{{unit.lease?.tenant}}</div>
         </ng-container>
     </div>
   </div>

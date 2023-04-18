@@ -16,3 +16,11 @@ export function addSpaceBetweenCapitalLetters(str: string): string {
     const world: string = str.replace(/([A-Z])/g, (match) => ` ${match}`);
     return world.trim();
 }
+
+export function snakeToCamelCase(str: string): string {
+    return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+  }
+
+  export function toCamelCase(str: string): string {
+    return str.replace(/\s(.)/g, (match, char) => char.toUpperCase());
+  }

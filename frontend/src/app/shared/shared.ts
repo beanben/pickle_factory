@@ -12,5 +12,5 @@ export interface StringUnitsDictionary {
 
 export interface Choice {
   value: string;
-  display: string;
+  label: string;
 }

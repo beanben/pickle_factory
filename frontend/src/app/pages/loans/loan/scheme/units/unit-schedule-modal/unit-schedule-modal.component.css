@@ -1,0 +1,18 @@
+.deleteHover:hover{
+    background: red; 
+}
+.text-red {
+    color: red
+}
+
+.text-red:hover {
+    color: white
+}
+.text-invisible {
+    color: transparent
+}
+
+#form.is-submitted input.ng-invalid,
+#f.is-submitted input.ng-invalid {
+    border: 1px solid red;
+}

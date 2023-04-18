@@ -19,6 +19,7 @@ djangorestframework-simplejwt = "*"
 sendgrid = "*"
 django-sendgrid-v5 = "*"
 djangorestframework-camel-case = "*"
+python-dateutil = "*"
 
 [dev-packages]
 
