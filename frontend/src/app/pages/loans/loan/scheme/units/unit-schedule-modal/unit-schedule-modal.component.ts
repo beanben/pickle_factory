@@ -143,12 +143,15 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
         areaSize: [unit.areaSize, Validators.required],
         beds: [unit.beds, Validators.required],
 
-        salePrice: [unit.sale?.price],
+        salePriceTarget: [unit.sale?.priceTarget],
+        salePriceAchieved: [unit.sale?.priceAchieved],
+        saleStatus: [unit.sale?.status],
+        saleStatusDate: [unit.sale?.statusDate],
         saleBuyer: [unit.sale?.buyer],
 
+        leaseRentAmount: [unit.lease?.rent.amount],
         leaseStartDate: [unit.lease?.startDate],
-        leaseEndDate: [unit.lease?.endDate],
-        leaseRent: [unit.lease?.rent],
+        leaseDuration: [unit.lease?.duration],
         leaseTenant: [unit.lease?.tenant],
       });
 
@@ -201,14 +204,19 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
         beds: unit?.beds,
 
         sale: {
-          price: unit.sale?.price,
+          status: unit.sale?.status,
+          statusDate: unit.sale?.statusDate,
+          priceTarget: unit.sale?.priceTarget,
           buyer: unit.sale?.buyer
         },
 
         lease: {
           startDate: unit.lease?.startDate,
           endDate: unit.lease?.endDate,
-          rent: unit.lease?.rent,
+          rent: {
+            amount: unit.lease?.rent.amount,
+            frequency: this.leaseFrequency
+          },
           tenant: unit.lease?.tenant
         }
       }

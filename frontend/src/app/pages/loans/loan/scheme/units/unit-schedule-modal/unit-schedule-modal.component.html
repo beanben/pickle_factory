@@ -35,6 +35,7 @@
                   <div class="table-cell-header pt-2">Target price</div>
                   <div class="table-cell-header pt-2">Price achieved</div>
                   <div class="table-cell-header pt-2">Sale status</div>
+                  <div class="table-cell-header pt-2">Status update</div>
                   <div class="table-cell-header pt-2">Buyer</div>
                 </ng-container>
 
@@ -72,9 +73,32 @@
                         placeholder="available">
                     </div>
                     <div class="table-cell">
-                      <input class="form-control text-center" formControlName="saleStatus"
-                        placeholder="available">
-                        <input class="form-control text-center" formControlName="saleStatusDate">
+                      <input class="form-control text-center" formControlName="saleStatus" placeholder="available">
+                    </div>
+                    <div class="table-cell">
+
+                      <input class="form-control text-center" formControlName="saleStatusDate" placeholder="MM/DD/YY" bsDatepicker>
+
+                      <!-- <mat-form-field appearance="fill" class="text-center">
+                        <mat-label>Select Date</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="saleStatusDate" placeholder="MM/DD/YY" (click)="picker.open()">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field> -->
+
+                      <!-- <mat-form-field appearance="outline" class="custom-form-control">
+                        <input formControlName="saleStatusDate" matInput  [matDatepicker]="picker" >
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field> -->
+
+                      <!-- <mat-form-field>
+                        <mat-label>Both mat-label</mat-label>
+                        <input matInput [matDatepicker]="picker1" autocomplete="off"  placeholder="and placeholder">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1 color="primary"></mat-datepicker>
+                      </mat-form-field> -->
+
                     </div>
                     <div class="table-cell">
                       <input class="form-control text-center" formControlName="saleBuyer" placeholder="available">
@@ -84,7 +108,7 @@
                   <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
                     <div class="table-cell">
                       <input class="form-control text-center"
-                        formControlName="leaseRent">{{unit.get('leaseRent') ? rentFrequency: ""}}
+                        formControlName="leaseRentAmount">{{unit.get('leaseRentAmount') ? rentFrequency: ""}}
                     </div>
                     <div class="table-cell">
                       <input class="form-control text-center" formControlName="leaseStartDate">

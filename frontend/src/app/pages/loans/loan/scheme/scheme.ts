@@ -17,17 +17,16 @@ export interface Scheme {
 export interface Sale {
     id?: number;
     unitId?: number;
-    value: number;
     status: 'available' | 'underOffer' | 'exchanged' | 'completed';
-    price: number;
     statusDate: Date;
-    // buyer: Buyer;
+    priceTarget: number;
+    priceAchieved: number;
     buyer: string;
 }
 
 type Duration = {
-    duration: number;
-    durationUnit: 'weeks' | 'months';
+    value: number;
+    unit: 'weeks' | 'months';
 };
 
 type Rent = {
@@ -38,7 +37,6 @@ type Rent = {
 export interface Lease {
     id?: number;
     unitId?: number;
-    // tenant: Tenant;
     tenant: string;
     leaseType: 'openMarket' | 'discountedMarket';
     rent: Rent;
@@ -46,31 +44,4 @@ export interface Lease {
     endDate: Date,
     duration: Duration;
 }
-
-// export interface Tenant {
-//     id?: number,
-//     unitId?: number,
-//     type: 'individual' | 'corporate',
-//     individual?: Individual,
-//     corporate?: Corporate,
-// }
-
-// export interface Buyer {
-//     id?: number,
-//     unitId?: number,
-//     type: 'individual' | 'corporate',
-//     individual?: Individual,
-//     corporate?: Corporate,
-// }
-
-// export interface Individual {
-//     id?: number,
-//     firstName: string,
-//     lastName: string,
-// }
-
-// export interface Corporate {
-//     id?: number,
-//     name: string,
-// }
 

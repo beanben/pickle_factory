@@ -6,7 +6,7 @@ import { SchemeComponent } from './loan/scheme/scheme.component';
 import { SchemeModalComponent } from './loan/scheme/scheme-modal/scheme-modal.component';
 import { FundersComponent } from './loan/funders/funders.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoanModalComponent } from './loan/loan-modal/loan-modal.component';
 import { PartsModule } from 'src/app/parts/parts.module';
 import { UnitsComponent } from './loan/scheme/units/units.component';
@@ -17,13 +17,18 @@ import { StrategyModalComponent } from './loan/scheme/units/strategy-modal/strat
 import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule-modal/unit-schedule-modal.component';
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+
+
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    PartsModule
+    PartsModule,
+
+    BsDatepickerModule.forRoot(),
   ],
   declarations: [
     LoansComponent,
