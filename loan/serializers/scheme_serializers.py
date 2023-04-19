@@ -13,59 +13,6 @@ class AssetClassUnitSerializer(serializers.Serializer):
     class Meta:
         fields = ['id', 'scheme_id', 'investment_strategy', 'use']
 
-class UnitListSerializer(serializers.ListSerializer):
-    def create(self, validated_data):
-        units_data = [self.set_unit_data(unit_data) for unit_data in validated_data]
-        units = [scheme_models.Unit(**unit_data) for unit_data in units_data]
-
-        # Retrieve the highest identifier value for the asset class
-        asset_class_ids = [unit.asset_class.id for unit in units]
-        for asset_class_id in asset_class_ids:
-            max_identifier = self.get_max_identifier(asset_class_id)
-            for unit in units:
-                if unit.asset_class_id == asset_class_id:
-                    max_identifier += 1
-                    unit.identifier = max_identifier
-
-        return scheme_models.Unit.objects.bulk_create(units)
-    
-    def set_unit_data(self, unit_data):
-        asset_class_id = unit_data.pop("asset_class")["id"]
-        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
-        unit_data.update({"asset_class": asset_class})
-        # pdb.set_trace()
-        unit_data["description"] = self.set_description(unit_data)
-        return unit_data
-    
-    def get_max_identifier(self, asset_class_id):
-        max_identifier = 0
-        existing_units = scheme_models.Unit.objects.filter(asset_class_id=asset_class_id)
-        if existing_units.exists():
-            identifiers = [unit.identifier for unit in existing_units]
-            identifier_numbers = [int(identifier) for identifier in identifiers if identifier.isdigit()]
-            max_identifier = max(identifier_numbers)
-        return max_identifier
-
-    def update(self, instances, validated_data):
-        unit_mapping = {unit.id: unit for unit in instances}
-        data_mapping = {item['id']: item for item in validated_data}
-        
-        ret = []
-        for unit_id, data in data_mapping.items():
-            unit = unit_mapping.get(unit_id, None)
-            if unit is not None:
-                ret.append(self.child.update(unit, data))
-
-        return ret
-    
-    def set_description(self, unit_data):
-        description = unit_data["description"]
-        unit_beds = unit_data.get("beds", 0) if unit_data.get("beds") is not None else 0
-        
-        if unit_beds > 0 and description == "-":
-            description = f"{unit_data['beds']}-bed"
-        
-        return description
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -75,6 +22,7 @@ class UnitSerializer(serializers.ModelSerializer):
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    area_system = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Unit
@@ -87,16 +35,21 @@ class UnitSerializer(serializers.ModelSerializer):
             'beds',
             'area_size',
             'area_type',
+            'area_system',
             'value']
         depth = 1
-        list_serializer_class = UnitListSerializer
 
 
     def create(self, validated_data):
         asset_class_id = validated_data.pop("asset_class")["id"]
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
-
+        
+        # Check if an identical identifier already exists for this AssetClass
+        identifier = validated_data.get("identifier")
+        if identifier and scheme_models.Unit.objects.filter(asset_class=asset_class, identifier=identifier).exists():
+            raise serializers.ValidationError("This identifier is already in use for this AssetClass.")
+        
         if validated_data["identifier"] == "":
             # pdb.set_trace()
             units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
@@ -120,6 +73,10 @@ class UnitSerializer(serializers.ModelSerializer):
             description = f"{unit_data['beds']}-bed"
         
         return description
+    
+    def get_area_system(self, obj):
+        scheme = obj.asset_class.scheme
+        return scheme.system.lower()
 
 class UnitListSerializer(serializers.ListSerializer):
 
@@ -133,62 +90,31 @@ class UnitListSerializer(serializers.ListSerializer):
 
         return result
 
-class UnitGroupSerializer(serializers.Serializer):
-    asset_class = AssetClassUnitSerializer(required=False)
-    description = serializers.CharField(required=False, allow_blank= True, default="")
-    group_area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    beds_per_unit = serializers.IntegerField(required=False, allow_null= True)
-    group_beds = serializers.IntegerField(required=False, allow_null= True)
-    quantity = serializers.IntegerField(required=False, allow_null= True) #only for reporting results of the qs
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
-    scheme_id = serializers.IntegerField()
-    units_grouped = serializers.SerializerMethodField(required=False, allow_null=True)
+    scheme_id = serializers.IntegerField(required=False)
     units = serializers.SerializerMethodField(required=False, allow_null=True)
     investment_strategy = serializers.CharField(required=False, allow_blank= True)
-    # total_units = serializers.SerializerMethodField(required=False) 
-    # total_units_area_size = serializers.SerializerMethodField(required=False)
-    # total_beds = serializers.SerializerMethodField(required=False)
-    
+
     class Meta:
         model = scheme_models.AssetClass
         fields = [
             'id', 
             'scheme_id', 
             'use', 
-            'units_grouped', 
             'units', 
             'investment_strategy']
-        # fields = [
-        #     'id', 
-        #     'scheme_id', 
-        #     'use', 
-        #     'units_grouped', 
-        #     'units', 
-        #     'investment_strategy',
-        #     'total_units',
-        #     'total_units_area_size',
-        #     'total_beds']
         depth = 1
 
-    def get_units_grouped(self, obj):
-        qs = scheme_models.AssetClass.objects.group_units_by_description(obj)
-        return UnitGroupSerializer(qs, many=True).data
+    def get_scheme(self, obj):
+        qs = scheme_models.Scheme.objects.filter(id=obj.scheme.id)
+        return SchemeSerializer(qs, many=True).data
     
     def get_units(self, obj):
         units = scheme_models.Unit.objects.filter(asset_class=obj)
         return UnitSerializer(units, many=True).data
-    
-    # def get_total_units(self, obj):
-    #     return scheme_models.Unit.objects.filter(asset_class=obj).count()
-    #     # return len(scheme_models.Unit.objects.filter(asset_class=obj))
-    
-    # def get_total_units_area_size(self, obj):
-    #     return scheme_models.Unit.objects.filter(asset_class=obj).aggregate(Sum('area_size'))["area_size__sum"]
-    
-    # def get_total_beds(self, obj):
-    #     return scheme_models.Unit.objects.filter(asset_class=obj).aggregate(Sum('beds'))["beds__sum"]
+
 
 class SchemeSerializer(serializers.ModelSerializer):
     loan_id = serializers.IntegerField()
@@ -209,6 +135,7 @@ class SchemeSerializer(serializers.ModelSerializer):
             'asset_classes',
             'system',
             'is_built']
+        depth = 1
 
     def create(self, validated_data):
         loan_id = validated_data.pop("loan_id")
@@ -225,7 +152,6 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 
 class HotelSerializer(AssetClassSerializer):
-
     class Meta:
         model = scheme_models.Hotel
         fields = AssetClassSerializer.Meta.fields 
@@ -375,3 +301,17 @@ class StudentAccommodationSerializer(AssetClassSerializer):
                 }
             raise ValidationError(data, code=400)
         return value
+
+
+# class SaleSerializer(serializers.ModelSerializer):
+#     buyer_type = serializers.ChoiceField(choices=scheme_models.Sale.BUYER_TYPE_CHOICES)
+
+#     class Meta:
+#         model = scheme_models.Sale
+#         fields = ('id', 'buyer_type')
+
+    # def create(self, validated_data):
+    #     buyer_type = validated_data["buyer_type"]
+    #     if buyer_type == scheme_models.Sale.INDIVIDUAL:
+    #         serializer = IndividualSaleSerializer(data=self.context["request"].data)
+            

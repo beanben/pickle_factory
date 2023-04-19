@@ -1,0 +1,59 @@
+.deleteHover:hover{
+    background: red; 
+}
+.text-red {
+    color: red
+}
+
+.text-red:hover {
+    color: white
+}
+.text-invisible {
+    color: transparent
+}
+
+#form.is-submitted input.ng-invalid,
+#f.is-submitted input.ng-invalid {
+    border: 1px solid red;
+}
+
+/* .custom-form-control {
+    width: 100%;
+  }
+  
+  .custom-form-control .mat-form-field-wrapper {
+    padding: 0;
+  }
+  
+  .custom-form-control .mat-form-field-flex {
+    padding: 0;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+  }
+  
+  .custom-form-control .mat-form-field-appearance-outline .mat-form-field-outline {
+    display: none;
+  }
+  
+  .custom-form-control .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    display: none;
+  }
+  
+  .custom-form-control input.mat-input-element {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: none;
+    border-radius: 0.25rem;
+    outline: none;
+  }
+  
+  .custom-form-control input.mat-input-element:focus {
+    box-shadow: none;
+  }
+  
+  .custom-form-control .mat-form-field-suffix {
+    padding-right: 0.5rem;
+  } */
+

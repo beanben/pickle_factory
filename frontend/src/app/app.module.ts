@@ -12,6 +12,7 @@ import { PartsModule } from './parts/parts.module';
 import { HomeModule } from './pages/home/home.module';
 import { BorrowersModule } from './pages/borrowers/borrowers.module';
 import { LoansModule } from './pages/loans/loans.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -27,10 +28,10 @@ import { LoansModule } from './pages/loans/loans.module';
     HomeModule,
     BorrowersModule,
     LoansModule,
+    BrowserAnimationsModule,
     // HttpClientXsrfModule.withOptions({ cookieName: 'csrftoken', headerName: 'X-CSRFToken' }),
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-``

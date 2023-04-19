@@ -14,22 +14,34 @@ export interface Scheme {
     assetClasses: AssetClassType[],
 }
 
-
-export interface Area {
-    id?: number,
-    unitId?: number,
-    size: number,
-    type: string,
-    system : "SQFT" | "SQM"
+export interface Sale {
+    id?: number;
+    unitId?: number;
+    status: 'available' | 'underOffer' | 'exchanged' | 'completed';
+    statusDate: Date;
+    priceTarget: number;
+    priceAchieved: number;
+    buyer: string;
 }
 
+type Duration = {
+    value: number;
+    unit: 'weeks' | 'months';
+};
 
-export interface UnitGroup{
-    ids?: number[],
-    description: string,
-    quantity: number,
-    groupBeds?: number,
-    bedsPerUnit: number,
-    groupAreaSize: number,
+type Rent = {
+    amount: number;
+    frequency: 'weekly' | 'monthly';
+};
+
+export interface Lease {
+    id?: number;
+    unitId?: number;
+    tenant: string;
+    leaseType: 'openMarket' | 'discountedMarket';
+    rent: Rent;
+    startDate: Date,
+    endDate: Date,
+    duration: Duration;
 }
 

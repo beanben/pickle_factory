@@ -1,93 +1,127 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { lastValueFrom, Subscription } from 'rxjs';
-import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
-import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { Scheme } from '../scheme';
-import { AssetClassType} from '../scheme.model';
+import { AssetClassType, Unit } from '../scheme.model';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { lastValueFrom } from 'rxjs';
+import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
 
 @Component({
   selector: 'app-units',
   templateUrl: './units.component.html',
   styleUrls: ['./units.component.css']
 })
-export class UnitsComponent implements OnInit, OnDestroy {
-  openUnitModal = false;
+export class UnitsComponent implements OnInit {
+  openAssetClassModal = false;
   modalMode = "";
-  availableAssetClassUses: string[] = [];
+  isShow = true;
   assetClassUses: string[] = [];
-  subs: Subscription[] = []
+  availableAssetClassUses: string[] = [];
+  assetClassSelected = {} as AssetClassType;
+  tabActive = "";
+  openStrategyModal = false;
+  expandSalesSchedule = true;
+  expandSalesVelocity = false;
+  expandTenancySchedule = false;
+  expandLettingAssumptions = false;
+  investmentStrategyValueDisplay: { [key: string]: string } = {
+    "buildToRent": "build to rent",
+    "buildToSell": "build to sell",
+  }
+  openUnitScheduleModal = false;
 
   @Input() scheme = {} as Scheme;
-  // scheme = {} as Scheme;
 
   constructor(
-    private _schemeService: SchemeService,
+    private _schemeService: SchemeService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const assetClassUses = await lastValueFrom(this._schemeService.getAssetClassUses());
-    this.assetClassUses = assetClassUses.map(assetClassName => addSpaceBetweenCapitalLetters(assetClassName));
-
-    this.getAvailableAssetClassesUseChoices();
-
-    // this.subs.push(
-    //   this._schemeService.getSchemeSub().subscribe(scheme => {  
-    //     this.scheme = scheme;
-    //     this.getAvailableAssetClassesUseChoices();
-    //   }
-    // ));
+    this.onSelectAssetClass(0);
+    this.assetClassUses = await this.getAssetClassUses();
+    this.availableAssetClassUses = this.getAvailableAssetClassUses();
+    
   }
 
-  onOpenModal(modalMode: string){
-    this.openUnitModal = true;
+  onOpenAssetClassModal(modalMode: string) {
+    this.openAssetClassModal = true;
     this.modalMode = modalMode;
   }
 
-  onSave(assetClass: AssetClassType | null){
-    this.openUnitModal = false;
+  onOpenStrategyModal(modalMode: string) {
+    this.openStrategyModal = true;
+    this.modalMode = modalMode;
+  }
 
-    if(assetClass){
-      // if assetClass is already in the scheme, update it
-      const assetClassIndex = this.scheme.assetClasses.findIndex(
-        schemeAssetClass => schemeAssetClass.use.toLowerCase() === assetClass.use.toLowerCase()
-      );
-      if(assetClassIndex !== -1){
-        this.scheme.assetClasses[assetClassIndex] = assetClass;
-      }
-      // else add it to the scheme
+  onOpenUnitScheduleModal(modalMode: string) {
+    this.openUnitScheduleModal = true;
+    this.modalMode = modalMode;
+  }
+
+  onSave(assetClass: AssetClassType | null) {
+    this.openAssetClassModal = false;
+
+    if (!!assetClass) {
+      this.updateSchemeAssetClass(assetClass);
+      this.updateAvailableAssetClassUses(assetClass);
+    }
+  }
+
+  updateAvailableAssetClassUses(assetClass: AssetClassType) {
+    let index = this.availableAssetClassUses.findIndex(assetClassUse => assetClassUse.toLowerCase() === assetClass.use);
+    this.availableAssetClassUses.splice(index, 1);
+  }
+
+  updateSchemeAssetClass(assetClass: AssetClassType) {
+    let index = this.scheme.assetClasses.findIndex(assetClass => assetClass.id === this.assetClassSelected.id);
+    if(index !== -1){
+      this.scheme.assetClasses[index] = assetClass;
+    } else {
       this.scheme.assetClasses.push(assetClass);
-      this.getAvailableAssetClassesUseChoices();
-      
-      this._schemeService.setSchemeSub(this.scheme);
+    }
+  }
+
+  async getAssetClassUses(): Promise<string[]> {
+    let assetClassUsesFormatted: string[] = [];
+    const assetClassUsesSub: string[] = this._schemeService.assetClassUsesSub.getValue();
+
+    if (assetClassUsesSub.length > 0) {
+      return assetClassUsesSub
     }
 
+    const assetClassUses: string[] = await lastValueFrom(this._schemeService.getAssetClassUses());
+    assetClassUsesFormatted = assetClassUses.map(assetClassName => addSpaceBetweenCapitalLetters(assetClassName));
+    this._schemeService.setAssetClassUsesSub(assetClassUsesFormatted);
+    return assetClassUsesFormatted;
   }
 
-  getAvailableAssetClassesUseChoices(){
-    const existingSchemeUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use.toLowerCase());
-    this.availableAssetClassUses = this.assetClassUses.filter(
-            assetClassUse => !existingSchemeUses.includes(assetClassUse.toLowerCase())
-    );
+  getAvailableAssetClassUses(): string[] {
+    const existingAssetClassUses: string[] = this.scheme.assetClasses.map(assetClass => assetClass.use);
 
-    this._schemeService.setAvailableAssetClassUsesSub(this.availableAssetClassUses);
+    return this.assetClassUses.filter(
+      assetClassUse => !existingAssetClassUses.includes(assetClassUse.toLowerCase())
+    );
   }
 
+  onSelectAssetClass(index: number) {
+    this.assetClassSelected = this.scheme.assetClasses[index];
+    this.tabActive = this.assetClassSelected.use.toLowerCase();
+  }
 
-  onDeleteAssetClass(index: number){
-    this.openUnitModal = false;
+  onUpdateInvestmentStrategy() {
+    this.openStrategyModal = false;
+  }
 
-    this.availableAssetClassUses.push(
-      this.scheme.assetClasses[index].use
-    );
-    
+  onDeleteAssetClass() {
+    this.openAssetClassModal = false;
+    let index = this.scheme.assetClasses.findIndex(assetClass => assetClass.id === this.assetClassSelected.id);
     this.scheme.assetClasses.splice(index, 1);
+    this.availableAssetClassUses.push(this.assetClassSelected.use);
+    this.onSelectAssetClass(0);
   }
 
-  onCloseModal(){
-    this.openUnitModal = false;
+  onEditUnitSchedule(units:Unit[] | null) {
+    this.openUnitScheduleModal = false;
   }
 
-  ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe())
-  }
+
 }

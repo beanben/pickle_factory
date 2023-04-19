@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
@@ -30,9 +30,7 @@ export class SchemeService {
   setAssetClassUsesSub(assetClassUsesSub: string[]){
     return this.assetClassUsesSub.next(assetClassUsesSub);
   }
-  getAssetClassUsesSub():Observable<string[]>{
-    return this.assetClassUsesSub.asObservable()
-  }
+
   setSchemeSub(scheme: Scheme){
     return this.schemeSub.next(scheme);
   }
@@ -208,5 +206,12 @@ export class SchemeService {
       })
     })
   };
+
+  getSaleStatusChoices(): Observable<Choice[]> {
+    const url = "/api/unit/sale_status_choices/";
+    return this.http.get<Choice[]>(url).pipe(
+      tap(() => console.log('getSaleStatusChoices()', Math.random()))
+    )
+  }
 
 }

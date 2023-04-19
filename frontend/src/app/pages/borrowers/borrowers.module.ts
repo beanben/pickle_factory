@@ -18,8 +18,8 @@ import { PartsModule } from 'src/app/parts/parts.module';
     BorrowerComponent,
   ],
   exports: [
-    BorrowersComponent,
-    BorrowerComponent,
+    // BorrowersComponent,
+    // BorrowerComponent,
   ]
 })
 export class BorrowersModule { }

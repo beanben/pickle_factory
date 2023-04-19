@@ -142,12 +142,12 @@ input[type="radio"]:disabled {
 
 .table-cell {
     display: table-cell;
-    padding: 5px 10px;
+    padding: 5px 2px;
 }
 
 .table-cell-header {
     display: table-cell;
-    padding: 20px 10px 5px 10px;
+    padding: 20px 2px 5px 2px;
 }
 
 .footer {
@@ -176,3 +176,19 @@ input[type="radio"]:disabled {
     color: rgba(0, 123, 255, 1);
     font-weight: 6700;
 }
+
+hr {
+    display: block;
+    content: "";
+    border-top: 2px solid rgba(119, 119, 119, 0.8);
+    margin: 5px 0;
+  }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ /* .cdk-overlay-container .cdk-global-overlay-wrapper {
+    position: fixed;
+  } */
+/* .cdk-overlay-container {
+    z-index: 1100;
+  } */

@@ -1,53 +1,35 @@
-<app-unit-modal 
-    *ngIf="openUnitModal" 
-    [mode]="modalMode"
-    [scheme]="scheme"
-    [assetClass]="assetClass"
-    (modalSaveAssetClass)="onSave($event)"
-    (deleteIsConfirmed)="onDeleteAssetClass()">
-</app-unit-modal>
-
 <div class="border border-primary p-2 rounded highlight">
 
   <div class="d-flex align-items-center">
     <div class="fw-bolder pe-2">{{assetClass.use | titlecase}}</div>
-    <app-edit (onOpenModalEdit)="onOpenUnitModal('edit')"></app-edit>
   </div>
 
-  <ng-container *ngIf="!!unitStructure">
-
-    <div class="row pt-3">
-      <div class="col">
-
-        <div class="table">
-          <div class="table-row header">
-            <div class="table-cell text-center">Description</div>
-            <div class="table-cell text-center">{{unitStructure.label | titlecase}}s</div>
-            <div class="table-cell text-center">{{unitStructure.areaType}} ({{scheme.system | lowercase}})</div>
-            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">Beds per {{unitStructure.label}}</div>
-          </div>
-          <div class="table-row" *ngFor="let unitGroup of assetClass.unitsGrouped">
-            <div class="table-cell text-center">
-              {{(unitGroup.description === "-" && assetClass.unitsGrouped.length === 1)? "Total" : unitGroup.description}}
-            </div>
-            <div class="table-cell text-center">{{unitGroup.quantity}}</div>
-            <div class="table-cell text-center">{{unitGroup.groupAreaSize | number: '1.2-2' : 'en-GB'}}</div>
-            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.bedsPerUnit}}</div>
-          </div>
-          <div class="table-row footer" *ngIf="assetClass.unitsGrouped.length > 1">
-            <div class="table-cell">Total</div>
-            <div class="table-cell text-center">{{totalQuantity }}</div>
-            <div class="table-cell text-center">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
-            <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()"></div>
-          </div>
+  <div class="row pt-3">
+    <div class="col">
+      <div class="table">
+        <div class="table-row header">
+          <div class="table-cell text-center">Description</div>
+          <div class="table-cell text-center">{{unitStructure.label | titlecase}}s</div>
+          <div class="table-cell text-center">{{unitStructure.areaType}} ({{unitStructure.areaSystem}})</div>
+          <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">Beds</div>
         </div>
-
+        <div class="table-row" *ngFor="let unitGroup of unitsGrouped">
+          <div class="table-cell text-center">
+            {{(unitGroup.description === "" && unitsGrouped.length === 1) ? "Total" : unitGroup.description}}
+          </div>
+          <div class="table-cell text-center">{{unitGroup.quantity}}</div>
+          <div class="table-cell text-center">{{unitGroup.areaSize | number: '1.2-2' : 'en-GB'}}</div>
+          <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{unitGroup.beds}}</div>
+        </div>
+        <div class="table-row footer" *ngIf="unitsGrouped.length > 1">
+          <div class="table-cell">Total</div>
+          <div class="table-cell text-center">{{totalQuantity | number: '1.0-0' : 'en-GB'}}</div>
+          <div class="table-cell text-center">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
+          <div class="table-cell text-center" *ngIf="unitStructure.hasBeds()">{{totalBeds | number: '1.0-0' : 'en-GB'}}</div>
+        </div>
       </div>
+
     </div>
-    
-  </ng-container>
+  </div>
 
 </div>
-
-
-

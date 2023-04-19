@@ -1,8 +1,8 @@
-<app-scheme-modal
+<!-- <app-scheme-modal
     *ngIf="openSchemeModal"
     [mode] = "'new'"
     (modalSaveScheme)="openSchemeModal = false">
-</app-scheme-modal>
+</app-scheme-modal> -->
 
 <app-loan-modal 
     *ngIf="openLoanModal"
@@ -44,12 +44,15 @@
             <ng-container *ngIf="loan.schemes.length !=0 ; else noScheme">
 
                 <button class="btn btn-primary px-auto" (click)="openSchemeModal = true"> Add scheme</button>
-
+                <!-- loan - loan compo: {{loan.name}} <br>
+                loan.schemes - loan compo: {{loan.schemes | json}} <br> -->
                     <div class="row">
                         <div class="col">
 
                             <div class="row py-2" *ngFor="let scheme of loan.schemes; let i = index">
                                 <div class="col px-0 bg-white" style="min-height: 600px">
+                                    
+                                    <!-- scheme - loan compo: {{scheme.name}} <br> -->
                                     <app-scheme 
                                         [scheme]="scheme"
                                         [index]="i"

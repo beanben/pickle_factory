@@ -16,13 +16,13 @@ class SchemeManager(models.Manager):
         # print("querysets[0].values()", querysets[0].values())
         return chain(*querysets)
     
-class AssetClassManager(models.Manager):
+# class AssetClassManager(models.Manager):
 
-    def group_units_by_description(self, assetclass):
-        return assetclass.units.values('description').annotate(
-            quantity=Count('id'), 
-            group_beds=Sum('beds'),
-            beds_per_unit=Sum('beds') / Count('id'),
-            group_area_size = Sum('area_size'),
-            created_at=Min('created_at'),
-            ).order_by("created_at")
+#     def group_units_by_description(self, assetclass):
+#         return assetclass.units.values('description').annotate(
+#             quantity=Count('id'), 
+#             group_beds=Sum('beds'),
+#             beds_per_unit=Sum('beds') / Count('id'),
+#             group_area_size = Sum('area_size'),
+#             created_at=Min('created_at'),
+#             ).order_by("created_at")

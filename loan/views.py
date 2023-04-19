@@ -1,8 +1,14 @@
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from loan.models import borrower_models, loan_models, scheme_models
-from loan.serializers import borrower_serializers, loan_serializers, scheme_serializers
+from loan.models import (borrower_models, 
+                         loan_models, 
+                         scheme_models)
+from loan.serializers import (borrower_serializers, 
+                                loan_serializers, 
+                                scheme_serializers,
+                                shared_serializers)
 from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
 from django.http import JsonResponse
@@ -35,9 +41,6 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = loan_serializers.LoanSerializer
     lookup_field = 'slug'
 
-    # def get_queryset(self):
-    #     return self.queryset.prefetch_related('borrower')
-
     def update(self, request, *args, **kwargs):
         # pdb.set_trace()
         response = super().update(request, *args, **kwargs)
@@ -65,9 +68,6 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
     serializer_class = borrower_serializers.BorrowerSerializer
     lookup_field = 'slug'
 
-    # def get_queryset(self):
-    #     return self.queryset.prefetch_related('loans')
-
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
         return Response({
@@ -80,9 +80,6 @@ class SchemeList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = scheme_models.Scheme.objects.all()
     serializer_class = scheme_serializers.SchemeSerializer
 
-    # def get_queryset(self):
-    #     return self.queryset.prefetch_related('loan')
-
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return Response({
@@ -94,9 +91,6 @@ class SchemeList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = scheme_models.Scheme.objects.all()
     serializer_class = scheme_serializers.SchemeSerializer
-
-    # def get_queryset(self):
-    #     return self.queryset.prefetch_related('loan')
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -123,30 +117,10 @@ class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
             'message': "unit created",
             'response': response.data
         })
-    
 
-# class UnitDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Unit.objects.all()
-#     serializer_class = UnitSerializer
-
-#     # def get_queryset(self):
-#     #     return self.queryset.prefetch_related('asset_class')
-
-#     def get_serializer(self, *args, **kwargs):
-#         if isinstance(kwargs.get("data", {}), list):
-#             kwargs["many"] = True
-
-#     def update(self, request, *args, **kwargs):
-#         response = super().update(request, *args, **kwargs)
-#         return Response({
-#             'status': "success",
-#             'message': 'unit updated',
-#             'response': response.data
-#         })
 
 class UnitsBulkUpdateDestroy(AuthorQuerySetMixin, generics.GenericAPIView):
     model = scheme_models.Unit
-    # queryset = scheme_models.Unit.objects.all()
     serializer_class = scheme_serializers.UnitSerializer
 
     def get_serializer(self, *args, **kwargs):
@@ -276,7 +250,17 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
             'response': response.data
         })
     
-    
+class SaleStatusChoicesView(APIView):
+    # serializer_class = shared_serializers.ChoicesSerializer
+
+    # def get_queryset(self):
+    #     return [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
+
+    def get(self, request):
+         choices = [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
+         serializer = shared_serializers.ChoicesSerializer(choices, many=True)
+         return Response(serializer.data, status=status.HTTP_200_OK)
+  
 
 
     
