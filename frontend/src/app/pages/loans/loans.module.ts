@@ -17,7 +17,7 @@ import { StrategyModalComponent } from './loan/scheme/units/strategy-modal/strat
 import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule-modal/unit-schedule-modal.component';
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+// import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 
 
@@ -28,7 +28,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     ReactiveFormsModule,
     PartsModule,
 
-    BsDatepickerModule.forRoot(),
+    // BsDatepickerModule.forRoot(),
   ],
   declarations: [
     LoansComponent,
