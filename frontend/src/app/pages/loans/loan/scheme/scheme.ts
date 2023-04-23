@@ -38,10 +38,10 @@ export interface Lease {
     id?: number;
     unitId?: number;
     tenant: string;
-    leaseType: 'openMarket' | 'discountedMarket';
+    leaseType?: 'openMarket' | 'discountedMarket';
     rent: Rent;
     startDate: Date,
-    endDate: Date,
+    endDate?: Date,
     duration: Duration;
 }
 

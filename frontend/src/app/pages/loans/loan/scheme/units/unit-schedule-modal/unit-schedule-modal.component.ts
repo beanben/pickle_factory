@@ -6,6 +6,12 @@ import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
+interface ValidationMessages {
+  [controlName: string]: {
+    [errorType: string]: string;
+  };
+}
+
 @Component({
   selector: 'app-unit-schedule-modal',
   templateUrl: './unit-schedule-modal.component.html',
@@ -29,21 +35,49 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   unitSelected = {} as Unit;
   numbersOnly = /^\d+$/;
   decimalsOnly = /^\d*\.?\d*$/;
+  step = 1;
+  chevronRight = "assets/images/chevronRight.svg";
+  unitsStatus = "active";
+  salesStatus = "inactive";
+  lettingsStatus = "inactive";
 
   form: FormGroup = this.fb.group({
     units: this.fb.array([],
       {
-        validators: [
-          this.allRequiredValidator('identifier'),
-          this.allRequiredValidator('description'),
-          this.allRequiredValidator('areaSize'),
-          this.allPatternValidator('areaSize'),
-          this.allPatternValidator('beds'),
-          this.allPatternValidator('salePrice'),
-          this.allPatternValidator('leaseRent')
-        ]
+        // validators: [
+        //   this.allRequiredValidator('identifier'),
+        //   this.allRequiredValidator('description'),
+        //   this.allRequiredValidator('areaSize'),
+        //   this.allPatternValidator('areaSize'),
+        //   this.allPatternValidator('beds'),
+        //   this.allPatternValidator('salePrice'),
+        //   this.allPatternValidator('leaseRent')
+        // ]
       })
-  })
+  });
+
+  validationMessages: ValidationMessages = {
+    identifier: {
+      required: 'Identifier is required',
+    },
+    description: {
+      required: 'Description is required',
+    },
+    areaSize: {
+      required: 'Area size is required',
+      pattern: 'Area size must be a valid number',
+    },
+    beds: {
+      pattern: 'Number of beds must be a valid number',
+    },
+    salePrice: {
+      pattern: 'Sale price must be a valid number',
+    },
+    leaseRent: {
+      pattern: 'Rent must be a valid number',
+    },
+
+  };
 
   get units(): FormArray {
     return this.form.get('units') as FormArray;
@@ -92,7 +126,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.saleStatusChoices = choices.map((choice: Choice) => {
         return {
           value: choice.value,
-          label: toCamelCase(choice.label)
+          // label: toCamelCase(choice.label)
+          label: choice.label
         }
       });
 
@@ -109,53 +144,76 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
     this.totalBeds = totalBedsCalc ?? 0;
   }
 
-  newUnit() {
+  unitToFormGroup(unit: Unit): FormGroup {
     return this.fb.group({
-      identifier: ['', Validators.required],
-      description: ['', Validators.required],
-      areaSize: [0, [Validators.required, Validators.pattern(this.decimalsOnly)]],
-      beds: [0, [Validators.required, Validators.pattern(this.numbersOnly)]],
+      id: [unit.id],
 
-      salePriceTarget: [0, Validators.pattern(this.decimalsOnly)],
-      salePriceAchieved: [0, Validators.pattern(this.decimalsOnly)],
-      saleStatus: ['available'],
-      saleStatusDate: [null],
-      saleBuyer: [''],
+      identifier: [unit.identifier, Validators.required],
+      description: [unit.description, Validators.required],
+      areaSize: [unit.areaSize, Validators.required],
+      beds: [unit.beds, Validators.required],
 
-      leaseRent: [0, Validators.pattern(this.decimalsOnly)],
-      leaseStartDate: [''],
-      leaseDuration: [''],
-      leaseTenant: [''],
-    })
-  }
+      saleId: [unit.sale?.id],
+      salePriceTarget: [unit.sale?.priceTarget],
+      salePriceAchieved: [unit.sale?.priceAchieved],
+      saleStatus: [unit.sale?.status || 'available'],
+      saleStatusDate: [unit.sale?.statusDate],
+      saleBuyer: [unit.sale?.buyer],
+
+      leaseId: [unit.lease?.id],
+      leaseRentAmount: [unit.lease?.rent.amount],
+      leaseStartDate: [unit.lease?.startDate],
+      leaseDuration: [unit.lease?.duration],
+      leaseTenant: [unit.lease?.tenant],
+    });
+  };
+
+  newUnit(): FormGroup {
+    const newUnit = new Unit(this.assetClass);
+    return this.unitToFormGroup(newUnit);
+  };
 
   onAddUnit() {
     (this.form.get('units')! as FormArray).push(this.newUnit());
+  };
+
+  formGroupToUnit(unitForm: FormGroup): Unit {
+    const unit = new Unit(this.assetClass);
+
+    unit.id = unitForm.get('id')?.value;
+    unit.identifier = unitForm.get('identifier')?.value;
+    unit.description = unitForm.get('description')?.value;
+    unit.areaSize = unitForm.get('areaSize')?.value;
+    unit.beds = unitForm.get('beds')?.value;
+
+    unit.sale = {
+      id: unitForm.get('saleId')?.value,
+      unitId: unitForm.get('id')?.value,
+      status: unitForm.get('saleStatus')?.value,
+      statusDate: unitForm.get('saleStatusDate')?.value,
+      priceTarget: unitForm.get('salePriceTarget')?.value,
+      priceAchieved: unitForm.get('salePriceAchieved')?.value,
+      buyer: unitForm.get('saleBuyer')?.value
+    };
+
+    unit.lease = {
+      id: unitForm.get('leaseId')?.value,
+      startDate: unitForm.get('leaseStartDate')?.value,
+      duration: unitForm.get('leaseDuration')?.value,
+      rent: {
+        amount: unitForm.get('leaseRentAmount')?.value,
+        frequency: this.rentFrequency
+      },
+      tenant: unitForm.get('leaseTenant')?.value
+    };
+
+    return unit;
   }
 
   populateForm() {
     this.assetClass.units.forEach(unit => {
-      const unitForm: FormGroup = this.fb.group({
-        id: [unit.id],
-
-        identifier: [unit.identifier, Validators.required],
-        description: [unit.description, Validators.required],
-        areaSize: [unit.areaSize, Validators.required],
-        beds: [unit.beds, Validators.required],
-
-        salePriceTarget: [unit.sale?.priceTarget],
-        salePriceAchieved: [unit.sale?.priceAchieved],
-        saleStatus: [unit.sale?.status],
-        saleStatusDate: [unit.sale?.statusDate],
-        saleBuyer: [unit.sale?.buyer],
-
-        leaseRentAmount: [unit.lease?.rent.amount],
-        leaseStartDate: [unit.lease?.startDate],
-        leaseDuration: [unit.lease?.duration],
-        leaseTenant: [unit.lease?.tenant],
-      });
-
-      (this.form.get('units')! as FormArray).push(unitForm)
+      const unitForm: FormGroup = this.unitToFormGroup(unit);
+      this.units.push(unitForm)
     })
   }
 
@@ -195,69 +253,42 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       return;
     };
 
-    const units: Unit[] = this.form.value.units.map((unit: Unit) => {
-      return {
-        id: unit?.id,
-        identifier: unit?.identifier,
-        description: unit?.description,
-        areaSize: unit?.areaSize,
-        beds: unit?.beds,
+    const units: Unit[] = [];
 
-        sale: {
-          status: unit.sale?.status,
-          statusDate: unit.sale?.statusDate,
-          priceTarget: unit.sale?.priceTarget,
-          buyer: unit.sale?.buyer
-        },
-
-        lease: {
-          startDate: unit.lease?.startDate,
-          endDate: unit.lease?.endDate,
-          rent: {
-            amount: unit.lease?.rent.amount,
-            frequency: this.leaseFrequency
-          },
-          tenant: unit.lease?.tenant
-        }
-      }
+    this.units.controls.forEach((control: AbstractControl) => {
+      const unitForm = control as FormGroup;
+      const unit = this.formGroupToUnit(unitForm);
+      units.push(unit);
     });
 
     console.log("units", units);
     console.log("unitsToDelete", this.unitsToDelete);
   };
 
-  allRequiredValidator(controlName: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
 
-      if (!(control instanceof FormArray)) {
-        return null;
+getFormArrayErrorMessages(formArray: FormArray): string[] {
+  const errorMessages: string[] = [];
+
+  for (const control of formArray.controls) {
+    const formGroup = control as FormGroup;
+
+    for (const controlName in formGroup.controls) {
+      const controlInstance = formGroup.get(controlName);
+
+      const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
+      if(errorType){
+        const message = this.validationMessages[controlName][errorType];
+        if(!errorMessages.includes(message)){
+          errorMessages.push(message);
+        }
       }
+    }
+  }
+  return errorMessages;
+}
 
-      const hasEmptyControl: boolean = control.controls.some((abstractControl: AbstractControl) => {
-        const formGroup = abstractControl as FormGroup;
-        const controlInstance = formGroup.get(controlName);
-        return controlInstance?.value === undefined || controlInstance.value === null || controlInstance.value === "" || controlInstance.value === 0;
-      })
-
-      return hasEmptyControl ? { [`${controlName}Required`]: true } : null;
-    };
-  };
-
-  allPatternValidator(controlName: string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-
-      if (!(control instanceof FormArray)) {
-        return null;
-      }
-
-      const hasInvalidControl:boolean = control.controls.some((abstractControl: AbstractControl) => {
-        const formGroup = abstractControl as FormGroup;
-        const controlInstance = formGroup.get(controlName);
-        return controlInstance?.hasError('pattern');
-      })
-      
-      return hasInvalidControl ? { [`${controlName}Pattern`]: true } : null;
-    };
-  };
+compareFn(satus1: string, satus2: string): boolean {
+  return satus1 === satus2;
+}
 
 }

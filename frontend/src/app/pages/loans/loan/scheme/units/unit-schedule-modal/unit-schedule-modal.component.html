@@ -6,167 +6,140 @@
         <h5 class="modal-title w-100 text-center">
           {{mode | titlecase}} Unit {{mode === 'delete' ? '' : 'Schedule'}}
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          (click)="onCancel()"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onCancel()">
+        </button>
       </div>
 
       <ng-container *ngIf="mode !== 'delete'">
         <div class="modal-body">
           <form [formGroup]="form" #f="ngForm" [ngClass]="{'is-submitted': f.submitted}" id="form">
-            <div class="table">
-              <div class="total-row text-center">
-                <div class="table-cell">Total</div>
-                <div class="table-cell">{{totalUnits | number: '1.0-0' : 'en-GB'}} #</div>
-                <div class="table-cell">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
-                <div class="table-cell" *ngIf="unitStructure.hasBeds()">{{totalBeds | number: '1.0-0' : 'en-GB'}}</div>
-                <div class="table-cell"></div>
-                <div class="table-cell"></div>
-                <div class="table-cell"></div>
-                <div class="table-cell"></div>
-              </div>
 
-              <div class="table-row header text-center">
-                <div class="table-cell-header pt-2">{{unitStructure.label | titlecase}}</div>
-                <div class="table-cell-header pt-2">Description</div>
-                <div class="table-cell-header pt-2v">{{unitStructure.areaType}} ({{unitStructure.areaSystem}})</div>
-                <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">Beds</div>
-
-                <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
-                  <div class="table-cell-header pt-2">Target price</div>
-                  <div class="table-cell-header pt-2">Price achieved</div>
-                  <div class="table-cell-header pt-2">Sale status</div>
-                  <div class="table-cell-header pt-2">Status update</div>
-                  <div class="table-cell-header pt-2">Buyer</div>
-                </ng-container>
-
-                <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
-                  <div class="table-cell-header pt-2">Rent</div>
-                  <div class="table-cell-header pt-2">Lease start</div>
-                  <div class="table-cell-header pt-2">Duration</div>
-                  <div class="table-cell-header pt-2">Tenant</div>
-                </ng-container>
-
-                <div class="table-cell text-invisible" style="width: 20px"> &times;</div>
-              </div>
-
-              <ng-container formArrayName="units">
-                <div class="table-row" *ngFor='let unit of units.controls; let i = index' [formGroupName]="i">
-                  <div class="table-cell">
-                    <input class="form-control text-center" formControlName="identifier" placeholder="identifier">
-                  </div>
-                  <div class="table-cell">
-                    <input class="form-control text-center" formControlName="description" placeholder="description">
-                  </div>
-                  <div class="table-cell">
-                    <input class="form-control text-center" formControlName="areaSize">
-                  </div>
-                  <div class="table-cell" *ngIf="unitStructure.hasBeds()">
-                    <input class="form-control text-center" formControlName="beds">
-                  </div>
+            <table class="table table-hover text-center">
+              <thead>
+                <tr>
+                  <th>Total</th>
+                  <th>{{totalUnits | number: '1.0-0' : 'en-GB'}}</th>
+                  <th>{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</th>
+                  <th *ngIf="unitStructure.hasBeds()">{{totalBeds | number: '1.0-0' : 'en-GB'}}</th>
 
                   <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="salePriceTarget" placeholder="0">
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="salePriceAchieved"
-                        placeholder="available">
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="saleStatus" placeholder="available">
-                    </div>
-                    <div class="table-cell">
-
-                      <input class="form-control text-center" formControlName="saleStatusDate" placeholder="date">
-
-
-
-                      <!-- <input class="form-control text-center" formControlName="saleStatusDate" placeholder="MM/DD/YY" bsDatepicker> -->
-
-                      <!-- <mat-form-field appearance="fill" class="text-center">
-                        <mat-label>Select Date</mat-label>
-                        <input matInput [matDatepicker]="picker" formControlName="saleStatusDate" placeholder="MM/DD/YY" (click)="picker.open()">
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                      </mat-form-field> -->
-
-                      <!-- <mat-form-field appearance="outline" class="custom-form-control">
-                        <input formControlName="saleStatusDate" matInput  [matDatepicker]="picker" >
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-datepicker #picker></mat-datepicker>
-                      </mat-form-field> -->
-
-                      <!-- <mat-form-field>
-                        <mat-label>Both mat-label</mat-label>
-                        <input matInput [matDatepicker]="picker1" autocomplete="off"  placeholder="and placeholder">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker #picker1 color="primary"></mat-datepicker>
-                      </mat-form-field> -->
-
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="saleBuyer" placeholder="available">
-                    </div>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                   </ng-container>
 
                   <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
-                    <div class="table-cell">
-                      <input class="form-control text-center"
-                        formControlName="leaseRentAmount">{{unit.get('leaseRentAmount') ? rentFrequency: ""}}
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="leaseStartDate">
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center"
-                        formControlName="leaseDuration">{{unit.get('leaseDuration') ? leaseFrequency: ""}}
-                    </div>
-                    <div class="table-cell">
-                      <input class="form-control text-center" formControlName="leaseTenant">
-                    </div>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </ng-container>
+                </tr>
+
+                <tr>
+                  <th>{{unitStructure.label | titlecase}}</th>
+                  <th class="column-description">Description</th>
+                  <th>{{unitStructure.areaType}} ({{unitStructure.areaSystem}})</th>
+                  <th *ngIf="unitStructure.hasBeds()">Beds</th>
+
+                  <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+                    <th>Target price</th>
+                    <th>Price achieved</th>
+                    <th class="column-status">Sale status</th>
+                    <th>Status update</th>
+                    <th>Buyer</th>
                   </ng-container>
 
-                  <div class="table-cell align-middle" style="width: 20px">
+                  <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
+                    <th>Rent</th>
+                    <th>Lease start</th>
+                    <th>Duration</th>
+                    <th>Tenant</th>
+                  </ng-container>
+
+                  <th class="text-invisible" style="width: 20px"> &times;</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="units">
+                <tr *ngFor='let unit of units.controls; let i = index' [formGroupName]="i">
+                  <td>
+                    <input class="form-control text-center" formControlName="identifier" placeholder="identifier">
+                  </td>
+                  <td>
+                    <input class="form-control text-center" formControlName="description" placeholder="description">
+                  </td>
+                  <td>
+                    <input class="form-control text-center" formControlName="areaSize" placeholder="1">
+                  </td>
+                  <td *ngIf="unitStructure.hasBeds()">
+                    <input class="form-control text-center" formControlName="beds" placeholder="1">
+                  </td>
+
+                  <ng-container *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+                    <td>
+                      <input class="form-control text-center" formControlName="salePriceTarget" placeholder="0">
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="salePriceAchieved"
+                        placeholder="available">
+                    </td>
+                    <td class="px-2">
+                      <select class="form-select px-2" id="saleStatus" formControlName="saleStatus"
+                        [compareWith]="compareFn">
+                        <option *ngFor='let status of saleStatusChoices' [ngValue]="status.value">{{status.label}}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="saleStatusDate" placeholder="DD/MM/YY"
+                        bsDatepicker>
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="saleBuyer" placeholder="available">
+                    </td>
+                  </ng-container>
+
+                  <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
+                    <td>
+                      <input class="form-control text-center" formControlName="leaseRentAmount" placeholder="0">
+                      {{unit.get('leaseRentAmount') ? rentFrequency: ""}}
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="leaseStartDate" placeholder="DD/MM/YY"
+                        bsDatepicker>
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="leaseDuration" placeholder="1">
+                      {{unit.get('leaseDuration') ? leaseFrequency: ""}}
+                    </td>
+                    <td>
+                      <input class="form-control text-center" formControlName="leaseTenant" placeholder="available">
+                    </td>
+                  </ng-container>
+
+                  <td style="width: 20px">
                     <span class="deleteHover cursorPointer text-red rounded" (click)="onConfirmDelete(i)">&times;</span>
-                  </div>
-                </div>
-              </ng-container>
-            </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
             <div class="mt-3">
               <button type="button" class="btn btn-primary" (click)="onAddUnit()">Add Unit</button>
 
-              <p class="mt-1 alert alert-danger text-center"
-                *ngIf="f.submitted && units.getError('identifierRequired')">
-                {{unitStructure.label}} identifiers are required
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center"
-                *ngIf="f.submitted && units.getError('descriptionRequired')">
-                Descriptions are required
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center" *ngIf="f.submitted && units.getError('areaSizeRequired')">
-                {{unitStructure.areaType}} are required
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center" *ngIf="f.submitted && units.getError('areaSizePattern')">
-                {{unitStructure.areaType}} must be numbers
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center" *ngIf="f.submitted && units.getError('bedsPattern')">
-                Beds must be numbers
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center" *ngIf="f.submitted && units.getError('salePricePattern')">
-                Sale prices must be numbers
-              </p>
-
-              <p class="mt-1 alert alert-danger text-center" *ngIf="f.submitted && units.getError('leaseRentPattern')">
-                Rent must be numbers
-              </p>
-
+              <div *ngIf="f.submitted && f.invalid" class="mt-1 border border-danger rounded">
+                <div class="d-flex justify-content-center">
+                  <ul class="m-1">
+                    <li *ngFor="let errorMessage of getFormArrayErrorMessages(units)" class="text-danger">
+                      {{ errorMessage }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
+
           </form>
         </div>
 
@@ -238,7 +211,7 @@
                 <ng-template #leaseNotDefined>not defined</ng-template>
               </div>
               <div class="table-cell text-center">
-                <ng-container *ngIf="units.at(index).get('leaseRent')?.value as rentValue; else rentNotDefined">
+                <ng-container *ngIf="units.at(index).get('leaseRentAmount')?.value as rentValue; else rentNotDefined">
                   {{rentValue}} {{rentFrequency}}
                 </ng-container>
                 <ng-template #rentNotDefined>not defined</ng-template>
