@@ -4,7 +4,7 @@ import { AssetClassType, Unit } from '../../scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 interface ValidationMessages {
   [controlName: string]: {
@@ -40,32 +40,23 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   unitsStatus = "active";
   salesStatus = "inactive";
   lettingsStatus = "inactive";
+  nextIsClicked = false;
 
   form: FormGroup = this.fb.group({
-    units: this.fb.array([],
-      {
-        // validators: [
-        //   this.allRequiredValidator('identifier'),
-        //   this.allRequiredValidator('description'),
-        //   this.allRequiredValidator('areaSize'),
-        //   this.allPatternValidator('areaSize'),
-        //   this.allPatternValidator('beds'),
-        //   this.allPatternValidator('salePrice'),
-        //   this.allPatternValidator('leaseRent')
-        // ]
-      })
+    units: this.fb.array([])
   });
 
   validationMessages: ValidationMessages = {
     identifier: {
       required: 'Identifier is required',
+      uniqueValue: 'Identifier must be unique',
     },
     description: {
       required: 'Description is required',
     },
     areaSize: {
-      required: 'Area size is required',
-      pattern: 'Area size must be a valid number',
+      // required: 'Area is required',
+      pattern: 'Area must be a valid number',
     },
     beds: {
       pattern: 'Number of beds must be a valid number',
@@ -126,7 +117,6 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.saleStatusChoices = choices.map((choice: Choice) => {
         return {
           value: choice.value,
-          // label: toCamelCase(choice.label)
           label: choice.label
         }
       });
@@ -148,22 +138,22 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
     return this.fb.group({
       id: [unit.id],
 
-      identifier: [unit.identifier, Validators.required],
+      identifier: [unit.identifier, [Validators.required, this.uniqueValueValidator('identifier')]],
       description: [unit.description, Validators.required],
-      areaSize: [unit.areaSize, Validators.required],
-      beds: [unit.beds, Validators.required],
+      areaSize: [unit.areaSize, Validators.pattern(this.decimalsOnly)],
+      beds: [unit.beds, Validators.pattern(this.numbersOnly)],
 
       saleId: [unit.sale?.id],
-      salePriceTarget: [unit.sale?.priceTarget],
-      salePriceAchieved: [unit.sale?.priceAchieved],
+      salePriceTarget: [unit.sale?.priceTarget, Validators.pattern(this.decimalsOnly)],
+      salePriceAchieved: [unit.sale?.priceAchieved, Validators.pattern(this.decimalsOnly)],
       saleStatus: [unit.sale?.status || 'available'],
       saleStatusDate: [unit.sale?.statusDate],
       saleBuyer: [unit.sale?.buyer],
 
       leaseId: [unit.lease?.id],
-      leaseRentAmount: [unit.lease?.rent.amount],
+      leaseRentAmount: [unit.lease?.rent.amount || 0, Validators.pattern(this.decimalsOnly)],
       leaseStartDate: [unit.lease?.startDate],
-      leaseDuration: [unit.lease?.duration],
+      leaseDuration: [unit.lease?.duration || 0, Validators.pattern(this.numbersOnly)],
       leaseTenant: [unit.lease?.tenant],
     });
   };
@@ -245,7 +235,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   };
 
   onCancelDelete() {
-    this.mode = 'edit'
+    this.mode = 'edit';
   }
 
   onSave() {
@@ -266,29 +256,80 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   };
 
 
-getFormArrayErrorMessages(formArray: FormArray): string[] {
-  const errorMessages: string[] = [];
+  getFormArrayErrorMessages(formArray: FormArray): string[] {
+    const errorMessages: string[] = [];
+    const controlsStep1 = ['identifier', 'description', 'areaSize', 'beds'];
+    const controlsStep2 = ['salePriceTarget', 'salePriceAchieved', 'saleStatus', 'saleStatusDate', 'saleBuyer', 'leaseRentAmount', 'leaseStartDate', 'leaseDuration', 'leaseTenant'];
 
-  for (const control of formArray.controls) {
-    const formGroup = control as FormGroup;
+    for (const control of formArray.controls) {
+      const formGroup = control as FormGroup;
 
-    for (const controlName in formGroup.controls) {
-      const controlInstance = formGroup.get(controlName);
+      for (const controlName in formGroup.controls) {
 
-      const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
-      if(errorType){
-        const message = this.validationMessages[controlName][errorType];
-        if(!errorMessages.includes(message)){
-          errorMessages.push(message);
+        if (this.step === 1 && !controlsStep1.includes(controlName) || this.step === 2 && !controlsStep2.includes(controlName)) {
+          continue;
+        };
+
+        const controlInstance = formGroup.get(controlName);
+        const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
+
+        // console.log("controlInstance?.errors", controlInstance?.errors);
+
+        if (errorType) {
+          const message = this.validationMessages[controlName][errorType];
+          if (!errorMessages.includes(message)) {
+            errorMessages.push(message);
+          }
         }
       }
     }
+    return errorMessages;
   }
-  return errorMessages;
-}
 
-compareFn(satus1: string, satus2: string): boolean {
-  return satus1 === satus2;
-}
+  compareFn(satus1: string, satus2: string): boolean {
+    return satus1 === satus2;
+  }
+
+  onNext() {
+    this.nextIsClicked = true;
+
+    if (this.form.valid) {
+      this.nextIsClicked = false;
+      this.step += 1;
+      this.updateStatus();
+    }
+  }
+
+  updateStatus() {
+    if (this.step === 1) {
+      this.unitsStatus = "active";
+      this.salesStatus = "inactive";
+      this.lettingsStatus = "inactive";
+    } else {
+      this.unitsStatus = "completed";
+      this.salesStatus = "active";
+      this.lettingsStatus = "active";
+    }
+  }
+
+  uniqueValueValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!(control instanceof FormControl)) {
+        return null;
+      }
+
+      const currentControl = control;
+
+      const duplicateControl = this.units.controls.find((control: AbstractControl) => {
+        const formGroup = control as FormGroup;
+        const formControl = formGroup.get(controlName) as FormControl;
+
+        return currentControl !== formControl && currentControl?.value === formControl.value;
+      });
+
+      return duplicateControl ? { uniqueValue: true } : null;
+    };
+  }
+
 
 }

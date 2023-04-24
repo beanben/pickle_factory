@@ -28,9 +28,11 @@ th, td {
   padding-right: 2px;
 }
 
-/* td {
-  width: auto;
-} */
+td {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  /* width: auto; */
+}
 
 th {
   white-space: nowrap;
