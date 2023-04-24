@@ -14,7 +14,6 @@ export class DotDirective {
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
-    // this.el.nativeElement.style.backgroundColor = this.color;
     this.el.nativeElement.style.borderRadius = '50%';
     this.el.nativeElement.style.width = '1.2em';
     this.el.nativeElement.style.height = '1.2em';

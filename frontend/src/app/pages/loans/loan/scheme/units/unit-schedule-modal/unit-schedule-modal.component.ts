@@ -28,6 +28,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
+  totalSalePriceTarget = 0;
+  totalSalePriceAchieved = 0;
+  averageLeaseRentTarget = 0;
+  averageLeaseRentAchieved = 0;
   unitsToDelete: Unit[] = [];
   rentFrequency: 'weekly' | 'monthly' = 'weekly';
   leaseFrequency: 'weeks' | 'months' = 'weeks';
@@ -151,7 +155,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       saleBuyer: [unit.sale?.buyer],
 
       leaseId: [unit.lease?.id],
-      leaseRentAmount: [unit.lease?.rent.amount || 0, Validators.pattern(this.decimalsOnly)],
+      leaseRentTargetAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
+      leaseRentAchievedAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
       leaseStartDate: [unit.lease?.startDate],
       leaseDuration: [unit.lease?.duration || 0, Validators.pattern(this.numbersOnly)],
       leaseTenant: [unit.lease?.tenant],
@@ -190,8 +195,12 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       id: unitForm.get('leaseId')?.value,
       startDate: unitForm.get('leaseStartDate')?.value,
       duration: unitForm.get('leaseDuration')?.value,
-      rent: {
-        amount: unitForm.get('leaseRentAmount')?.value,
+      rentTarget: {
+        amount: unitForm.get('leaseRentTargetAmount')?.value,
+        frequency: this.rentFrequency
+      },
+      rentAchieved: {
+        amount: unitForm.get('leaseRentAchievedAmount')?.value,
         frequency: this.rentFrequency
       },
       tenant: unitForm.get('leaseTenant')?.value
@@ -295,9 +304,15 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
 
     if (this.form.valid) {
       this.nextIsClicked = false;
-      this.step += 1;
+      this.step++;
       this.updateStatus();
     }
+  }
+
+  onPrevious() {
+    this.nextIsClicked = false;
+    this.step--;
+    this.updateStatus();
   }
 
   updateStatus() {
@@ -306,7 +321,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.salesStatus = "inactive";
       this.lettingsStatus = "inactive";
     } else {
-      this.unitsStatus = "completed";
+      this.unitsStatus = "complete";
       this.salesStatus = "active";
       this.lettingsStatus = "active";
     }

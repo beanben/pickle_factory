@@ -11,6 +11,10 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
+  totalSalePriceTarget = 0;
+  totalSalePriceAchieved = 0;
+  averageLeaseRentTarget = 0;
+  averageLeaseRentAchieved = 0;
 
   @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;

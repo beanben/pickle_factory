@@ -39,7 +39,8 @@ export interface Lease {
     unitId?: number;
     tenant: string;
     leaseType?: 'openMarket' | 'discountedMarket';
-    rent: Rent;
+    rentTarget: Rent;
+    rentAchieved: Rent;
     startDate: Date,
     endDate?: Date,
     duration: Duration;
