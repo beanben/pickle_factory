@@ -19,7 +19,7 @@ class UnitSerializer(serializers.ModelSerializer):
     asset_class = AssetClassUnitSerializer(required=False)
     identifier = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="-")
-    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=4)
+    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     area_system = serializers.SerializerMethodField(required=False, allow_null=True)

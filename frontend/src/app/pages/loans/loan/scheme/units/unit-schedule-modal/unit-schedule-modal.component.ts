@@ -1,10 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Scheme } from '../../scheme';
 import { AssetClassType, Unit } from '../../scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface ValidationMessages {
   [controlName: string]: {
@@ -17,7 +19,7 @@ interface ValidationMessages {
   templateUrl: './unit-schedule-modal.component.html',
   styleUrls: ['./unit-schedule-modal.component.css']
 })
-export class UnitScheduleModalComponent implements OnInit, OnChanges {
+export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy {
   displayStyle = "block";
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
@@ -28,6 +30,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
+  totalSalePriceTarget = 0;
+  totalSalePriceAchieved = 0;
+  averageLeaseRentTarget = 0;
+  averageLeaseRentAchieved = 0;
   unitsToDelete: Unit[] = [];
   rentFrequency: 'weekly' | 'monthly' = 'weekly';
   leaseFrequency: 'weeks' | 'months' = 'weeks';
@@ -40,32 +46,24 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   unitsStatus = "active";
   salesStatus = "inactive";
   lettingsStatus = "inactive";
+  nextIsClicked = false;
+  subs: Subscription[] = [];
 
   form: FormGroup = this.fb.group({
-    units: this.fb.array([],
-      {
-        // validators: [
-        //   this.allRequiredValidator('identifier'),
-        //   this.allRequiredValidator('description'),
-        //   this.allRequiredValidator('areaSize'),
-        //   this.allPatternValidator('areaSize'),
-        //   this.allPatternValidator('beds'),
-        //   this.allPatternValidator('salePrice'),
-        //   this.allPatternValidator('leaseRent')
-        // ]
-      })
+    units: this.fb.array([])
   });
 
   validationMessages: ValidationMessages = {
     identifier: {
       required: 'Identifier is required',
+      uniqueValue: 'Identifier must be unique',
     },
     description: {
       required: 'Description is required',
     },
     areaSize: {
-      required: 'Area size is required',
-      pattern: 'Area size must be a valid number',
+      // required: 'Area is required',
+      pattern: 'Area must be a valid number',
     },
     beds: {
       pattern: 'Number of beds must be a valid number',
@@ -97,8 +95,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.populateForm();
     };
 
-    this.rentFrequency = this.defineRentFrequency()
-    this.leaseFrequency = this.defineLeaseFrequency()
+    this.rentFrequency = this.defineRentFrequency();
+    this.leaseFrequency = this.defineLeaseFrequency();
   };
 
   ngOnChanges(changes: SimpleChanges) {
@@ -126,7 +124,6 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.saleStatusChoices = choices.map((choice: Choice) => {
         return {
           value: choice.value,
-          // label: toCamelCase(choice.label)
           label: choice.label
         }
       });
@@ -137,44 +134,66 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   calculateUnitTotals() {
     this.totalUnits = this.assetClass.units?.length ?? 0;
 
-    const totalAreaSizeCalc = this.assetClass.units?.reduce((acc, units) => acc + (+(units.areaSize ?? 0)), 0)
-    this.totalAreaSize = +(totalAreaSizeCalc ?? 0).toFixed(2);
+    this.totalAreaSize = this.calculateTotalForFormControl('areaSize', 2);
+    console.log("totalAreaSize: ", this.totalAreaSize);
+    this.totalBeds = this.calculateTotalForFormControl('beds');
+    this.totalSalePriceTarget = this.calculateTotalForFormControl('salePriceTarget', 2);
+    this.totalSalePriceAchieved = this.calculateTotalForFormControl('salePriceAchieved', 2);
 
-    const totalBedsCalc = this.assetClass.units?.reduce((acc, units) => acc + (units.beds ?? 0), 0);
-    this.totalBeds = totalBedsCalc ?? 0;
+    this.averageLeaseRentTarget = this.calculateAverageFromFormControls('leaseRentTargetAmount', 2);
+    this.averageLeaseRentAchieved = this.calculateAverageFromFormControls('leaseRentAchievedAmount', 2);
+}
+
+  calculateTotalForFormControl(controlName: string, decimalPrecision = 0): number {
+    return this.units.controls
+      .map(control => control.get(controlName)?.value || 0)
+      .reduce((sum, currentValue) => sum + Number(currentValue), 0)
+      .toFixed(decimalPrecision);
   }
+
+  calculateAverageFromFormControls(controlName: string, decimalPrecision = 0): number {
+    const total = this.calculateTotalForFormControl(controlName, decimalPrecision);
+    return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
+  }
+
 
   unitToFormGroup(unit: Unit): FormGroup {
     return this.fb.group({
       id: [unit.id],
 
-      identifier: [unit.identifier, Validators.required],
+      identifier: [unit.identifier, [Validators.required, this.uniqueValueValidator('identifier')]],
       description: [unit.description, Validators.required],
-      areaSize: [unit.areaSize, Validators.required],
-      beds: [unit.beds, Validators.required],
+      areaSize: [unit.areaSize, Validators.pattern(this.decimalsOnly)],
+      beds: [unit.beds, Validators.pattern(this.numbersOnly)],
 
       saleId: [unit.sale?.id],
-      salePriceTarget: [unit.sale?.priceTarget],
-      salePriceAchieved: [unit.sale?.priceAchieved],
+      salePriceTarget: [unit.sale?.priceTarget, Validators.pattern(this.decimalsOnly)],
+      salePriceAchieved: [unit.sale?.priceAchieved, Validators.pattern(this.decimalsOnly)],
       saleStatus: [unit.sale?.status || 'available'],
       saleStatusDate: [unit.sale?.statusDate],
       saleBuyer: [unit.sale?.buyer],
 
       leaseId: [unit.lease?.id],
-      leaseRentAmount: [unit.lease?.rent.amount],
+      leaseRentTargetAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
+      leaseRentAchievedAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
       leaseStartDate: [unit.lease?.startDate],
-      leaseDuration: [unit.lease?.duration],
+      leaseDuration: [unit.lease?.duration || 0, Validators.pattern(this.numbersOnly)],
       leaseTenant: [unit.lease?.tenant],
     });
   };
 
-  newUnit(): FormGroup {
-    const newUnit = new Unit(this.assetClass);
-    return this.unitToFormGroup(newUnit);
-  };
+  onAddUnit(unit?: Unit) {
+    const unitToAdd = unit ?? new Unit(this.assetClass);
+    const unitForm = this.unitToFormGroup(unitToAdd);
 
-  onAddUnit() {
-    (this.form.get('units')! as FormArray).push(this.newUnit());
+    this.subs.push(
+      unitForm.valueChanges
+        .pipe(debounceTime(500))
+        .subscribe(value => this.calculateUnitTotals())
+    );
+
+    
+    this.units.push(unitForm);
   };
 
   formGroupToUnit(unitForm: FormGroup): Unit {
@@ -200,8 +219,12 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       id: unitForm.get('leaseId')?.value,
       startDate: unitForm.get('leaseStartDate')?.value,
       duration: unitForm.get('leaseDuration')?.value,
-      rent: {
-        amount: unitForm.get('leaseRentAmount')?.value,
+      rentTarget: {
+        amount: unitForm.get('leaseRentTargetAmount')?.value,
+        frequency: this.rentFrequency
+      },
+      rentAchieved: {
+        amount: unitForm.get('leaseRentAchievedAmount')?.value,
         frequency: this.rentFrequency
       },
       tenant: unitForm.get('leaseTenant')?.value
@@ -212,9 +235,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
 
   populateForm() {
     this.assetClass.units.forEach(unit => {
-      const unitForm: FormGroup = this.unitToFormGroup(unit);
-      this.units.push(unitForm)
-    })
+      this.onAddUnit(unit);
+    });
+
+    this.calculateUnitTotals()
   }
 
   onRemoveUnit() {
@@ -245,7 +269,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   };
 
   onCancelDelete() {
-    this.mode = 'edit'
+    this.mode = 'edit';
   }
 
   onSave() {
@@ -266,29 +290,89 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   };
 
 
-getFormArrayErrorMessages(formArray: FormArray): string[] {
-  const errorMessages: string[] = [];
+  getFormArrayErrorMessages(formArray: FormArray): string[] {
+    const errorMessages: string[] = [];
+    const controlsStep1 = ['identifier', 'description', 'areaSize', 'beds'];
+    const controlsStep2 = ['salePriceTarget', 'salePriceAchieved', 'saleStatus', 'saleStatusDate', 'saleBuyer', 'leaseRentAmount', 'leaseStartDate', 'leaseDuration', 'leaseTenant'];
 
-  for (const control of formArray.controls) {
-    const formGroup = control as FormGroup;
+    for (const control of formArray.controls) {
+      const formGroup = control as FormGroup;
 
-    for (const controlName in formGroup.controls) {
-      const controlInstance = formGroup.get(controlName);
+      for (const controlName in formGroup.controls) {
 
-      const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
-      if(errorType){
-        const message = this.validationMessages[controlName][errorType];
-        if(!errorMessages.includes(message)){
-          errorMessages.push(message);
+        if (this.step === 1 && !controlsStep1.includes(controlName) || this.step === 2 && !controlsStep2.includes(controlName)) {
+          continue;
+        };
+
+        const controlInstance = formGroup.get(controlName);
+        const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
+
+        // console.log("controlInstance?.errors", controlInstance?.errors);
+
+        if (errorType) {
+          const message = this.validationMessages[controlName][errorType];
+          if (!errorMessages.includes(message)) {
+            errorMessages.push(message);
+          }
         }
       }
     }
+    return errorMessages;
   }
-  return errorMessages;
-}
 
-compareFn(satus1: string, satus2: string): boolean {
-  return satus1 === satus2;
-}
+  compareFn(satus1: string, satus2: string): boolean {
+    return satus1 === satus2;
+  }
+
+  onNext() {
+    this.nextIsClicked = true;
+
+    if (this.form.valid) {
+      this.nextIsClicked = false;
+      this.step++;
+      this.updateStatus();
+    }
+  }
+
+  onPrevious() {
+    this.nextIsClicked = false;
+    this.step--;
+    this.updateStatus();
+  }
+
+  updateStatus() {
+    if (this.step === 1) {
+      this.unitsStatus = "active";
+      this.salesStatus = "inactive";
+      this.lettingsStatus = "inactive";
+    } else {
+      this.unitsStatus = "complete";
+      this.salesStatus = "active";
+      this.lettingsStatus = "active";
+    }
+  }
+
+  uniqueValueValidator(controlName: string): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!(control instanceof FormControl)) {
+        return null;
+      }
+
+      const currentControl = control;
+
+      const duplicateControl = this.units.controls.find((control: AbstractControl) => {
+        const formGroup = control as FormGroup;
+        const formControl = formGroup.get(controlName) as FormControl;
+
+        return currentControl !== formControl && currentControl?.value === formControl.value;
+      });
+
+      return duplicateControl ? { uniqueValue: true } : null;
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
+  }
 
 }
