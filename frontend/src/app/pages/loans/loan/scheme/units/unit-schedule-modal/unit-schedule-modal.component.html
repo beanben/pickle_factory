@@ -47,7 +47,7 @@
               <thead>
                 <tr class="border border-1">
                   <th>Total</th>
-                  <th>{{totalUnits | number: '1.0-0' : 'en-GB'}}</th>
+                  <th>{{totalUnits | number: '1.0-0' : 'en-GB'}} {{unitStructure.label}}s</th>
                   <th>{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</th>
                   <th *ngIf="unitStructure.hasBeds()">{{totalBeds | number: '1.0-0' : 'en-GB'}}</th>
                   <th class="text-invisible" style="width: 20px"> &times;></th>
@@ -180,7 +180,7 @@
                     </select>
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="saleStatusDate" placeholder="DD/MM/YY" bsDatepicker>
+                    <input class="form-control text-center" formControlName="saleStatusDate" placeholder="DD-MMM-YY" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY'}" [attr.disabled]="unit.get('saleStatus')?.value === 'available' ? true : null">
                   </td>
                   <td>
                     <input class="form-control text-center" formControlName="saleBuyer" placeholder="buyer">
@@ -223,8 +223,7 @@
                     {{unit.get('leaseRentAchievedAmount') ? rentFrequency: ""}}
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="leaseStartDate" placeholder="DD/MM/YY"
-                      bsDatepicker>
+                    <input class="form-control text-center" formControlName="leaseStartDate" placeholder="DD-MMM-YY" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY' }">
                   </td>
                   <td>
                     <input class="form-control text-center" formControlName="leaseDuration" placeholder="1">

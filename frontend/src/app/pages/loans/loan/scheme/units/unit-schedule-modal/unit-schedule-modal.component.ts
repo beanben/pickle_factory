@@ -1,10 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Scheme } from '../../scheme';
 import { AssetClassType, Unit } from '../../scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface ValidationMessages {
   [controlName: string]: {
@@ -17,7 +19,7 @@ interface ValidationMessages {
   templateUrl: './unit-schedule-modal.component.html',
   styleUrls: ['./unit-schedule-modal.component.css']
 })
-export class UnitScheduleModalComponent implements OnInit, OnChanges {
+export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy {
   displayStyle = "block";
   @Input() mode = "";
   @Input() scheme = {} as Scheme;
@@ -45,6 +47,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   salesStatus = "inactive";
   lettingsStatus = "inactive";
   nextIsClicked = false;
+  subs: Subscription[] = [];
 
   form: FormGroup = this.fb.group({
     units: this.fb.array([])
@@ -92,8 +95,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
       this.populateForm();
     };
 
-    this.rentFrequency = this.defineRentFrequency()
-    this.leaseFrequency = this.defineLeaseFrequency()
+    this.rentFrequency = this.defineRentFrequency();
+    this.leaseFrequency = this.defineLeaseFrequency();
   };
 
   ngOnChanges(changes: SimpleChanges) {
@@ -131,12 +134,28 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
   calculateUnitTotals() {
     this.totalUnits = this.assetClass.units?.length ?? 0;
 
-    const totalAreaSizeCalc = this.assetClass.units?.reduce((acc, units) => acc + (+(units.areaSize ?? 0)), 0)
-    this.totalAreaSize = +(totalAreaSizeCalc ?? 0).toFixed(2);
+    this.totalAreaSize = this.calculateTotalForFormControl('areaSize', 2);
+    console.log("totalAreaSize: ", this.totalAreaSize);
+    this.totalBeds = this.calculateTotalForFormControl('beds');
+    this.totalSalePriceTarget = this.calculateTotalForFormControl('salePriceTarget', 2);
+    this.totalSalePriceAchieved = this.calculateTotalForFormControl('salePriceAchieved', 2);
 
-    const totalBedsCalc = this.assetClass.units?.reduce((acc, units) => acc + (units.beds ?? 0), 0);
-    this.totalBeds = totalBedsCalc ?? 0;
+    this.averageLeaseRentTarget = this.calculateAverageFromFormControls('leaseRentTargetAmount', 2);
+    this.averageLeaseRentAchieved = this.calculateAverageFromFormControls('leaseRentAchievedAmount', 2);
+}
+
+  calculateTotalForFormControl(controlName: string, decimalPrecision = 0): number {
+    return this.units.controls
+      .map(control => control.get(controlName)?.value || 0)
+      .reduce((sum, currentValue) => sum + Number(currentValue), 0)
+      .toFixed(decimalPrecision);
   }
+
+  calculateAverageFromFormControls(controlName: string, decimalPrecision = 0): number {
+    const total = this.calculateTotalForFormControl(controlName, decimalPrecision);
+    return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
+  }
+
 
   unitToFormGroup(unit: Unit): FormGroup {
     return this.fb.group({
@@ -163,13 +182,18 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
     });
   };
 
-  newUnit(): FormGroup {
-    const newUnit = new Unit(this.assetClass);
-    return this.unitToFormGroup(newUnit);
-  };
+  onAddUnit(unit?: Unit) {
+    const unitToAdd = unit ?? new Unit(this.assetClass);
+    const unitForm = this.unitToFormGroup(unitToAdd);
 
-  onAddUnit() {
-    (this.form.get('units')! as FormArray).push(this.newUnit());
+    this.subs.push(
+      unitForm.valueChanges
+        .pipe(debounceTime(500))
+        .subscribe(value => this.calculateUnitTotals())
+    );
+
+    
+    this.units.push(unitForm);
   };
 
   formGroupToUnit(unitForm: FormGroup): Unit {
@@ -211,9 +235,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
 
   populateForm() {
     this.assetClass.units.forEach(unit => {
-      const unitForm: FormGroup = this.unitToFormGroup(unit);
-      this.units.push(unitForm)
-    })
+      this.onAddUnit(unit);
+    });
+
+    this.calculateUnitTotals()
   }
 
   onRemoveUnit() {
@@ -346,5 +371,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges {
     };
   }
 
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
+  }
 
 }
