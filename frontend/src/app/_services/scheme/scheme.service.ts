@@ -118,6 +118,14 @@ export class SchemeService {
       tap(() => console.log('updateUnits()', Math.random()))
     );
   }
+
+  updateOrCreateUnits(units: Unit[]): Observable<Unit[]>{
+    const url = '/api/unit/bulk_update_create/';
+
+    return this.http.post<Unit[]>(url, units).pipe(
+      tap(() => console.log('updateOrCreateUnits()', Math.random()))
+    );
+  }
     
   deleteUnits(units: Unit[]): Observable<any>{
     const url = '/api/unit/bulk_update_delete/';

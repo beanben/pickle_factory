@@ -13,6 +13,66 @@ class AssetClassUnitSerializer(serializers.Serializer):
     class Meta:
         fields = ['id', 'scheme_id', 'investment_strategy', 'use']
 
+class SaleUnitSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    buyer = serializers.CharField(required=False, allow_blank= True)
+    status = serializers.CharField(required=False, allow_blank= True)
+    status_date = serializers.DateField(required=False, allow_null= True)
+    price_target = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    price_achieved = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+
+    class Meta:
+        fields = [
+            'id', 
+            'buyer', 
+            'status', 
+            'status_date',
+            'price_target',
+            'price_achieved'
+            ]
+        
+class LeaseUnitSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    tenant = serializers.CharField(required=False, allow_blank= True)
+    lease_type = serializers.CharField(required=False, allow_blank= True)
+    rent_target_amount = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    rent_target_frequency = serializers.CharField(required=False, allow_blank= True)
+    rent_achieved_amount = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    rent_achieved_frequency = serializers.CharField(required=False, allow_blank= True)
+    start_date = serializers.DateField(required=False, allow_null= True)
+    duration = serializers.IntegerField(required=False, allow_null= True)
+
+    class Meta:
+        fields = [
+            'id', 
+            'tenant', 
+            'lease_type', 
+            'rent_target_amount',
+            'rent_target_frequency',
+            'rent_achieved_amount',
+            'rent_achieved_frequency',
+            'start_date',
+            'duration'
+            ]
+
+class BulkUpdateOrCreateUnitSerializer(serializers.ListSerializer):
+    def update_or_create(self, instances, validated_data):
+        existing_units_mapping = {unit.id: unit for unit in instances}
+
+        updated_instances = []
+        created_instances = []
+
+        for unit in validated_data:
+            unit_id = unit.get('id', None)
+            if unit_id in existing_units_mapping:
+                instance = existing_units_mapping.get(unit_id)
+                updated_instance = self.child.update(instance, unit)
+                updated_instances.append(updated_instance)
+            else:
+                created_instance = self.child.create(unit)
+                created_instances.append(created_instance)
+
+        return updated_instances + created_instances
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -23,6 +83,8 @@ class UnitSerializer(serializers.ModelSerializer):
     beds = serializers.IntegerField(required=False, allow_null= True)
     value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
     area_system = serializers.SerializerMethodField(required=False, allow_null=True)
+    sale = SaleUnitSerializer(required=False, allow_null=True)
+    lease = LeaseUnitSerializer(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Unit
@@ -36,8 +98,11 @@ class UnitSerializer(serializers.ModelSerializer):
             'area_size',
             'area_type',
             'area_system',
-            'value']
+            'value',
+            'sale',
+            'lease']
         depth = 1
+        list_serializer_class = BulkUpdateOrCreateUnitSerializer
 
 
     def create(self, validated_data):
@@ -77,18 +142,6 @@ class UnitSerializer(serializers.ModelSerializer):
     def get_area_system(self, obj):
         scheme = obj.asset_class.scheme
         return scheme.system.lower()
-
-class UnitListSerializer(serializers.ListSerializer):
-
-    def update(self, instances, validated_data):  
-        instance_hash = {index: instance for index, instance in enumerate(instances)}
-
-        result = [
-            self.child.update(instance_hash[index], attrs)
-            for index, attrs in enumerate(validated_data)
-        ]
-
-        return result
 
 
 class AssetClassSerializer(serializers.ModelSerializer):

@@ -9,6 +9,7 @@ from .views import (
     UnitList,
     UnitDetail,
     UnitsBulkUpdateDestroy,
+    UnitsBulkUpdateCreate,
     asset_class_uses,
     system_types,
     AssetClassList,
@@ -19,6 +20,7 @@ from .views import (
 unit_patterns = ([
     path('', UnitList.as_view()),
     path('bulk_update_delete/', UnitsBulkUpdateDestroy.as_view()),
+    path('bulk_update_create/', UnitsBulkUpdateCreate.as_view()),
     path('<int:pk>/', UnitDetail.as_view()),
     path('sale_status_choices/', SaleStatusChoicesView.as_view()),
 ], 'unit')

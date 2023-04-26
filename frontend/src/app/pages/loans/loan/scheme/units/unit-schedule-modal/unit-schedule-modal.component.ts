@@ -7,6 +7,7 @@ import { toCamelCase } from 'src/app/shared/utils';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { APIResult } from 'src/app/_services/api-result';
 
 interface ValidationMessages {
   [controlName: string]: {
@@ -142,7 +143,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
     this.averageLeaseRentTarget = this.calculateAverageFromFormControls('leaseRentTargetAmount', 2);
     this.averageLeaseRentAchieved = this.calculateAverageFromFormControls('leaseRentAchievedAmount', 2);
-}
+  }
 
   calculateTotalForFormControl(controlName: string, decimalPrecision = 0): number {
     return this.units.controls
@@ -174,10 +175,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       saleBuyer: [unit.sale?.buyer],
 
       leaseId: [unit.lease?.id],
-      leaseRentTargetAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
-      leaseRentAchievedAmount: [unit.lease?.rentTarget.amount || 0, Validators.pattern(this.decimalsOnly)],
+      leaseRentTargetAmount: [unit.lease?.rentTargetAmount || 0, Validators.pattern(this.decimalsOnly)],
+      leaseRentAchievedAmount: [unit.lease?.rentTargetAmount || 0, Validators.pattern(this.decimalsOnly)],
       leaseStartDate: [unit.lease?.startDate],
-      leaseDuration: [unit.lease?.duration || 0, Validators.pattern(this.numbersOnly)],
+      leaseDuration: [unit.lease?.durationValue || 0, Validators.pattern(this.numbersOnly)],
       leaseTenant: [unit.lease?.tenant],
     });
   };
@@ -192,7 +193,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
         .subscribe(value => this.calculateUnitTotals())
     );
 
-    
+
     this.units.push(unitForm);
   };
 
@@ -217,16 +218,14 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
     unit.lease = {
       id: unitForm.get('leaseId')?.value,
+      unitId: unitForm.get('id')?.value,
       startDate: unitForm.get('leaseStartDate')?.value,
-      duration: unitForm.get('leaseDuration')?.value,
-      rentTarget: {
-        amount: unitForm.get('leaseRentTargetAmount')?.value,
-        frequency: this.rentFrequency
-      },
-      rentAchieved: {
-        amount: unitForm.get('leaseRentAchievedAmount')?.value,
-        frequency: this.rentFrequency
-      },
+      durationValue: unitForm.get('leaseDurationValue')?.value,
+      durationUnit: this.leaseFrequency,
+      rentTargetAmount: unitForm.get('leaseRentTargetAmount')?.value,
+      rentTargetFrequency: this.rentFrequency,
+      rentAchievedAmount: unitForm.get('leaseRentTargetAmount')?.value,
+      rentAchievedFrequency: this.rentFrequency,
       tenant: unitForm.get('leaseTenant')?.value
     };
 
@@ -245,7 +244,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     if (this.units.at(this.index).get('id')?.value) {
       const indexUnit = this.assetClass.units.findIndex(unit => unit.id === this.units.at(this.index).get('id')?.value);
       this.unitsToDelete.push(this.assetClass.units[indexUnit]);
-      this.assetClass.units.splice(indexUnit, 1);
+      // this.assetClass.units.splice(indexUnit, 1);
     }
 
     this.units.removeAt(this.index);
@@ -277,17 +276,27 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       return;
     };
 
-    const units: Unit[] = [];
-
-    this.units.controls.forEach((control: AbstractControl) => {
+    const units: Unit[] = this.units.controls.map((control: AbstractControl) => {
       const unitForm = control as FormGroup;
-      const unit = this.formGroupToUnit(unitForm);
-      units.push(unit);
+      return this.formGroupToUnit(unitForm);
     });
 
-    console.log("units", units);
-    console.log("unitsToDelete", this.unitsToDelete);
-  };
+    if(this.unitsToDelete.length > 0) {
+      this.deleteUnits(this.unitsToDelete);
+    };
+
+    this._schemeService.updateOrCreateUnits(units)
+      .subscribe((unitRes: Unit[]) => {
+        // this.assetClass.units = unitRes;
+        this.modalSaveUnitSchedule.emit(unitRes)
+        console.log("unitRes", unitRes);
+      });
+  }
+
+  deleteUnits(units: Unit[]) {
+    this._schemeService.deleteUnits(units).subscribe();
+  }
+
 
 
   getFormArrayErrorMessages(formArray: FormArray): string[] {

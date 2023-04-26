@@ -121,6 +121,10 @@ export class UnitsComponent implements OnInit {
 
   onEditUnitSchedule(units:Unit[] | null) {
     this.openUnitScheduleModal = false;
+
+    if(units){
+      this.assetClassSelected.units = units;
+    }
   }
 
 

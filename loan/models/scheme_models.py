@@ -139,12 +139,22 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         (OPEN_MARKET, "open market"),
         (DISCOUNTED_RENTAL, "discounted rental")
     ]
+
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    RENT_FREQUENCY_CHOICES =[
+        (WEEKLY, "weekly"),
+        (MONTHLY, "monthly")
+    ]
+
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="lease", related_query_name="lease")
     # tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="leases", related_query_name="lease")
     tenant = models.CharField(max_length=100, blank=True , default="")
     lease_type = models.CharField(max_length=100, blank=True , choices = LEASE_TYPE_CHOICES, default=OPEN_MARKET)
-    rent = models.DecimalField(max_digits=20, decimal_places=4, default=0.00)
-    rent_frequency = models.CharField(max_length=100, blank=True , default="")
+    rent_target_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    rent_target_frequency = models.CharField(max_length=100, blank=True , choices = RENT_FREQUENCY_CHOICES, default=WEEKLY)
+    rent_achieved_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    rent_achieved_frequency = models.CharField(max_length=100, blank=True , choices = RENT_FREQUENCY_CHOICES, default=WEEKLY)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 
@@ -155,7 +165,7 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         verbose_name_plural = "Leases" #for the admin panel
     
     @property
-    def lease_lenght_months(self):
+    def duration(self):
         return get_months_difference(self.start_date, self.end_date)
 
         
@@ -191,9 +201,10 @@ class Sale(TimestampedModel, AuthorTrackerModel):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="sales", related_query_name="sale")
     buyer = models.CharField(max_length=100, blank=True , default="")
     status = models.CharField(max_length=20, blank=True , choices= STATUS_CHOICES, default=AVAILABLE)
-    price = models.DecimalField(max_digits=20, decimal_places=4, default=0.00)
     status_date = models.DateField(blank=True, null=True)
-
+    price_target = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    price_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    
     def __str__(self):
         return f'sale of unit {self.unit}'
 

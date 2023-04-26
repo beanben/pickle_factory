@@ -65,13 +65,13 @@
       <div class="table-cell">{{unit.areaSize | number: '1.2-2' : 'en-GB'}}</div>
       <div class="table-cell" *ngIf="unitStructure.hasBeds()">{{unit.beds}}</div>
       <div class="table-cell">
-        {{(unit.lease?.rentTarget === null || unit.lease?.rentTarget === null || unit.lease?.rentTarget?.amount === 0) ? 'to be confirmed':(  unit.lease?.rentTarget?.amount| number: '1.0-0' : 'en-GB')}}
+        {{(unit.lease?.rentTargetAmount === null || unit.lease?.rentTargetAmount === 0) ? 'to be confirmed':(  unit.lease?.rentTargetAmount| number: '1.0-0' : 'en-GB')}}
       </div>
       <div class="table-cell">
-        {{(unit.lease?.rentAchieved === null || unit.lease?.rentAchieved === null || unit.lease?.rentAchieved?.amount === 0) ? 'vacant':(  unit.lease?.rentAchieved?.amount| number: '1.0-0' : 'en-GB')}}
+        {{(unit.lease?.rentAchievedAmount === null || unit.lease?.rentAchievedAmount === 0) ? 'vacant':(  unit.lease?.rentAchievedAmount | number: '1.0-0' : 'en-GB')}}
       </div>
       <div class="table-cell">{{unit.lease?.startDate}}</div>
-      <div class="table-cell">{{unit.lease?.duration}}</div>
+      <div class="table-cell">{{unit.lease?.durationUnit}}</div>
       <div class="table-cell">{{unit.lease?.tenant}}</div>
     </div>
   </div>

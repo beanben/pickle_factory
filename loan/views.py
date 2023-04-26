@@ -251,16 +251,56 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         })
     
 class SaleStatusChoicesView(APIView):
-    # serializer_class = shared_serializers.ChoicesSerializer
-
-    # def get_queryset(self):
-    #     return [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
 
     def get(self, request):
          choices = [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
          serializer = shared_serializers.ChoicesSerializer(choices, many=True)
          return Response(serializer.data, status=status.HTTP_200_OK)
-  
-
-
     
+
+class UnitsBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
+    serializer_class = scheme_serializers.UnitSerializer
+
+    def get_queryset(self, ids):
+        return scheme_models.Unit.objects.filter(id__in=ids)
+    
+    def post(self, request, *args, **kwargs):
+        return self.bulk_update_create(request, *args, **kwargs)
+    
+    def bulk_update_create(self, request, *args, **kwargs):
+        pdb.set_trace()
+        ids = [unit["id"] for unit in request.data]
+        instances = self.get_queryset(ids)
+
+        serializer = self.get_serializer(instances, data=request.data, partial=False, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({
+            'status': "success",
+            'message': 'units bulk updated or created',
+            'response': serializer.data
+        })
+    
+    # def bulk_update(self, request, *args, **kwargs):
+    #     ids = [unit["id"] for unit in request.data]
+    #     instances = scheme_models.Unit.objects.filter(id__in=ids)
+    #     serializer = self.get_serializer(
+    #         instances, data=request.data, partial=False, many=True
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #     return serializer.data
+    
+    # def perform_update(self, serializer):
+    #     serializer.save()
+
+    # def bulk_create(self, request, *args, **kwargs):
+    #     new_units = [unit for unit in request.data if unit.get('id') is None]
+    #     serializer = self.get_serializer(data=new_units, many=True)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     return serializer.data
+    
+    # def perform_create(self, serializer):
+    #     serializer.save()

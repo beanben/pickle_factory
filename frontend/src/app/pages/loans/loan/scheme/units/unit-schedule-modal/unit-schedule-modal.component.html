@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
-  <div class="modal-dialog modal-centered modal-lg">
+  <div class="modal-dialog modal-centered modal-xl">
     <div class="modal-content">
 
       <ng-container *ngIf="step ===1 && mode !== 'delete'">
@@ -72,7 +72,7 @@
                     <input class="form-control text-center" formControlName="areaSize" placeholder="0.00">
                   </td>
                   <td *ngIf="unitStructure.hasBeds()">
-                    <input class="form-control text-center" formControlName="beds" placeholder="0.00">
+                    <input class="form-control text-center" formControlName="beds" placeholder="0">
                   </td>
                   <td style="width: 20px" class="deleteHover cursorPointer text-red rounded align-middle"
                     (click)="onConfirmDelete(i)">&times;</td>
@@ -119,7 +119,8 @@
             aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
-                <span class="px-2 d-flex align-items-center justify-content-center" appDot [status]="unitsStatus"></span>
+                <span class="px-2 d-flex align-items-center justify-content-center" appDot
+                  [status]="unitsStatus"></span>
                 <span class="px-2">Units</span>
               </li>
               <img src="{{chevronRight}}" alt="">
@@ -143,7 +144,8 @@
 
           <form [formGroup]="form" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked || f.submitted}" id="form">
 
-            <table class="table table-hover text-center table-borderless" *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+            <table class="table table-hover text-center table-borderless"
+              *ngIf="assetClass.investmentStrategy === 'buildToSell'">
               <thead>
                 <tr class="border border-1">
                   <th>Total</th>
@@ -171,7 +173,7 @@
                     <input class="form-control text-center" formControlName="salePriceTarget" placeholder="0">
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="salePriceAchieved" placeholder="available">
+                    <input class="form-control text-center" formControlName="salePriceAchieved" placeholder="0">
                   </td>
                   <td>
                     <select class="form-select" id="saleStatus" formControlName="saleStatus" [compareWith]="compareFn">
@@ -180,7 +182,9 @@
                     </select>
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="saleStatusDate" placeholder="DD-MMM-YY" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY'}" [attr.disabled]="unit.get('saleStatus')?.value === 'available' ? true : null">
+                    <input class="form-control text-center" formControlName="saleStatusDate" placeholder="DD-MMM-YY"
+                      bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY'}"
+                      [attr.disabled]="unit.get('saleStatus')?.value === 'available' ? true : null">
                   </td>
                   <td>
                     <input class="form-control text-center" formControlName="saleBuyer" placeholder="buyer">
@@ -223,11 +227,12 @@
                     {{unit.get('leaseRentAchievedAmount') ? rentFrequency: ""}}
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="leaseStartDate" placeholder="DD-MMM-YY" bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY' }">
+                    <input class="form-control text-center" formControlName="leaseStartDate" placeholder="DD-MMM-YY"
+                      bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY' }">
                   </td>
                   <td>
-                    <input class="form-control text-center" formControlName="leaseDuration" placeholder="1">
-                    {{unit.get('leaseDuration') ? leaseFrequency: ""}}
+                    <input class="form-control text-center" formControlName="leaseDurationValue" placeholder="1">
+                    {{unit.get('leaseDurationValue') ? leaseFrequency: ""}}
                   </td>
                   <td>
                     <input class="form-control text-center" formControlName="leaseTenant" placeholder="available">
@@ -280,19 +285,19 @@
                 <th *ngIf="unitStructure.hasBeds()">Beds</th>
               </tr>
             </thead>
-            <tbody formArrayName="units">
-              <tr *ngFor='let unit of units.controls; let i = index' [formGroupName]="i">
+            <tbody>
+              <tr>
                 <td>
-                  <input class="form-control text-center" formControlName="identifier" placeholder="identifier">
+                  {{!!units.at(index).get('identifier')?.value ? units.at(index).get('identifier')?.value: 'not defined'}}
                 </td>
                 <td>
-                  <input class="form-control text-center" formControlName="description" placeholder="description">
+                  {{!!units.at(index).get('description')?.value ? units.at(index).get('description')?.value: 'not defined'}}
                 </td>
                 <td>
-                  <input class="form-control text-center" formControlName="areaSize" placeholder="0.00">
+                  {{!!units.at(index).get('areaSize')?.value ? units.at(index).get('areaSize')?.value: 'not defined'}}
                 </td>
                 <td *ngIf="unitStructure.hasBeds()">
-                  <input class="form-control text-center" formControlName="beds" placeholder="0.00">
+                  {{!!units.at(index).get('beds')?.value ? units.at(index).get('beds')?.value: 'not defined'}}
                 </td>
               </tr>
             </tbody>
