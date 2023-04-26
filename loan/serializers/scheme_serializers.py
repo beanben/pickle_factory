@@ -76,7 +76,7 @@ class BulkUpdateOrCreateUnitSerializer(serializers.ListSerializer):
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    asset_class = AssetClassUnitSerializer(required=False)
+    asset_class_id = serializers.IntegerField(required=False)
     identifier = serializers.CharField(required=False, allow_blank=True, default="")
     description = serializers.CharField(required=False, allow_blank= True, default="-")
     area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
@@ -90,7 +90,7 @@ class UnitSerializer(serializers.ModelSerializer):
         model = scheme_models.Unit
         fields = [
             'id',
-            'asset_class',
+            'asset_class_id',
             'label',
             'identifier',
             'description',
@@ -106,7 +106,7 @@ class UnitSerializer(serializers.ModelSerializer):
 
 
     def create(self, validated_data):
-        asset_class_id = validated_data.pop("asset_class")["id"]
+        asset_class_id = validated_data.pop("asset_class_id")
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
         
@@ -120,24 +120,13 @@ class UnitSerializer(serializers.ModelSerializer):
             units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
             validated_data["identifier"] = f"{units_per_asset_class + 1}"   
         
-        description = self.set_description(validated_data)
-        validated_data["description"] = description
         return scheme_models.Unit.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
-        asset_class_id = validated_data.pop("asset_class")["id"]
+        asset_class_id = validated_data.pop("asset_class_id")
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
         return super().update(instance, validated_data)
-    
-    def set_description(self, unit_data):
-        description = unit_data["description"]
-        unit_beds = unit_data.get("beds", 0) if unit_data.get("beds") is not None else 0
-        
-        if unit_beds > 0 and description == "-":
-            description = f"{unit_data['beds']}-bed"
-        
-        return description
     
     def get_area_system(self, obj):
         scheme = obj.asset_class.scheme

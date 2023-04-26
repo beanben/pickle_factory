@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Scheme } from '../../scheme';
-import { AssetClassType, Unit } from '../../scheme.model';
+import { AssetClassType } from '../../scheme.model';
 
 @Component({
   selector: 'app-unit-schedule',

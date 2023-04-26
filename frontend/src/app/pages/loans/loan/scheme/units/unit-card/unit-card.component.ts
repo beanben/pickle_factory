@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AssetClassType, Unit } from '../../scheme.model';
-import { Scheme } from '../../scheme';
+import { AssetClassType } from '../../scheme.model';
+import { Scheme, Unit } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 
 interface UnitGroup {
@@ -58,6 +58,13 @@ export class UnitCardComponent implements OnInit {
     this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
 
     return unitsGrouped;
+  }
+
+  defineUniStructure(assetCass: AssetClassType): Unit {
+    const unitStructure = {} as Unit;
+    unitStructure.assetClassId = assetCass.id!;
+    
+    return unitStructure; 
   }
 
 }

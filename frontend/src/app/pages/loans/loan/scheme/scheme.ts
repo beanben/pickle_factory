@@ -24,31 +24,32 @@ export interface Sale {
     buyer: string;
 }
 
-// type Duration = {
-//     value: number;
-//     unit: 'weeks' | 'months';
-// };
-
-// type Rent = {
-//     amount: number;
-//     frequency: 'weekly' | 'monthly';
-// };
-
 export interface Lease {
     id?: number;
     unitId?: number;
     tenant: string;
     leaseType?: 'openMarket' | 'discountedMarket';
-    // rentTarget: Rent;
-    // rentAchieved: Rent;
     rentTargetAmount: number;
     rentTargetFrequency: 'weekly' | 'monthly';
     rentAchievedAmount: number;
     rentAchievedFrequency: 'weekly' | 'monthly';
     startDate: Date,
     endDate?: Date,
-    // duration: Duration;
     durationValue: number;
     durationUnit: 'weeks' | 'months';
+}
+
+export interface Unit {
+    assetClassId: number,
+    label: "unit" | "room",
+    identifier: string,
+    description: string,
+    beds?: number,
+    areaType: "NIA" | "GIA",
+    areaSize?: number,
+    areaSystem: "sqft" | "sqm",
+    id?: number,
+    sale?: Sale,
+    lease?: Lease,
 }
 
