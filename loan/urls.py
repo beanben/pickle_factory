@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import (
     LoanList,
     LoanDetail,
+    LoanSchemes,
     BorrowerList,
     BorrowerDetail,
     SchemeList,
@@ -14,14 +15,17 @@ from .views import (
     system_types,
     AssetClassList,
     AssetClassDetail,
-    SaleStatusChoicesView
+    SaleStatusChoicesView,
+    ChoicesView
 )
 
 unit_patterns = ([
     path('', UnitList.as_view()),
+    path('<int:asset_class_id>/', UnitList.as_view()),
     path('bulk_update_delete/', UnitsBulkUpdateDestroy.as_view()),
     path('bulk_update_create/', UnitsBulkUpdateCreate.as_view()),
     path('<int:pk>/', UnitDetail.as_view()),
+    
     path('sale_status_choices/', SaleStatusChoicesView.as_view()),
 ], 'unit')
 
@@ -39,7 +43,8 @@ borrower_patterns = ([
 
 loan_patterns = ([
     path('', LoanList.as_view()),
-    path('<slug:slug>/', LoanDetail.as_view()),
+    path('<int:id>/', LoanDetail.as_view()),
+    path('<int:id>/schemes/', LoanSchemes.as_view()),
 ], 'loan')
 
 asset_class_patterns = ([
@@ -53,4 +58,5 @@ urlpatterns = [
     path('scheme/', include(scheme_patterns)),
     path('unit/', include(unit_patterns)),
     path('asset_class/', include(asset_class_patterns)),
+    path('choices/<str:choice_type>/', ChoicesView.as_view(), name='choices'),
 ]

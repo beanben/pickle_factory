@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AssetClassType } from '../../scheme.model';
-import { Scheme, Unit } from '../../scheme';
+import { AssetClassType, Unit } from '../../scheme.model';
+import { Scheme } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 
 interface UnitGroup {
@@ -15,56 +15,56 @@ interface UnitGroup {
   templateUrl: './unit-card.component.html'
 })
 export class UnitCardComponent implements OnInit {
-  @Input() assetClass = {} as AssetClassType;
-  // @Input() scheme = {} as Scheme;
-  unitStructure = {} as Unit;
-  unitsGrouped: UnitGroup[] = [];
-  totalQuantity = 0;
-  totalAreaSize = 0;
-  totalBeds = 0;
+  // @Input() assetClass = {} as AssetClassType;
+  // unitStructure = {} as Unit;
+  // unitsGrouped: UnitGroup[] = [];
+  // totalQuantity = 0;
+  // totalAreaSize = 0;
+  // totalBeds = 0;
 
-  constructor(
-    private _schemeService: SchemeService
-  ) { }
+  // constructor(
+  //   private _schemeService: SchemeService
+  // ) { }
 
   ngOnInit(): void {
-    this.unitStructure = new Unit(this.assetClass);
-    this.unitsGrouped = this.groupByDescription(this.assetClass.units);
+    // this.unitStructure = new Unit(this.assetClass);
+    // this.getUnitsGrouped(this.assetClass);
+    // // this.unitsGrouped = this.groupByDescription(this.assetClass.units);
   }
 
-  groupByDescription(units: Unit[]): UnitGroup[] {
-    let unitsGrouped: UnitGroup[] = [];
+  // groupByDescription(units: Unit[]): UnitGroup[] {
+  //   let unitsGrouped: UnitGroup[] = [];
 
-    units.forEach(unit => {
-      const descriptionExists = unitsGrouped.some(unitGroup => unitGroup.description === unit.description);
+  //   units.forEach(unit => {
+  //     const descriptionExists = unitsGrouped.some(unitGroup => unitGroup.description === unit.description);
 
-      if (!descriptionExists) {
-        const unitGroup = {} as UnitGroup;
-        unitGroup.description = unit.description;
-        unitGroup.quantity = 0;
-        unitGroup.beds = 0;
-        unitGroup.areaSize = 0;
-        unitsGrouped.push(unitGroup);
-      };
+  //     if (!descriptionExists) {
+  //       const unitGroup = {} as UnitGroup;
+  //       unitGroup.description = unit.description;
+  //       unitGroup.quantity = 0;
+  //       unitGroup.beds = 0;
+  //       unitGroup.areaSize = 0;
+  //       unitsGrouped.push(unitGroup);
+  //     };
 
-      const unitGroup = unitsGrouped.find(unitGroup => unitGroup.description === unit.description);
-      unitGroup!.quantity += 1;
-      unitGroup!.beds += unit.beds || 0;
-      unitGroup!.areaSize += +(unit.areaSize || 0);
-    })
+  //     const unitGroup = unitsGrouped.find(unitGroup => unitGroup.description === unit.description);
+  //     unitGroup!.quantity += 1;
+  //     unitGroup!.beds += unit.beds || 0;
+  //     unitGroup!.areaSize += +(unit.areaSize || 0);
+  //   })
 
-    this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
-    this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
-    this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
+  //   this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
+  //   this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
+  //   this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
 
-    return unitsGrouped;
-  }
+  //   return unitsGrouped;
+  // }
 
-  defineUniStructure(assetCass: AssetClassType): Unit {
-    const unitStructure = {} as Unit;
-    unitStructure.assetClassId = assetCass.id!;
-    
-    return unitStructure; 
-  }
-
+  // getUnitsGrouped(assetClass: AssetClassType) {
+  //   this._schemeService.getUnitsPerAssetClass(assetClass)
+  //     .subscribe((units:Unit[]) => {
+  //       this.groupByDescription(units)
+  //     })
+  // }
+  
 }

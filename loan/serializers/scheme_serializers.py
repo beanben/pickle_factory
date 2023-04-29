@@ -2,49 +2,160 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Sum
 from rest_framework import serializers
 from loan.models import scheme_models, loan_models
+from loan.serializers import loan_serializers
 from rest_framework.serializers import ValidationError
 import pdb
 from django.utils.text import camel_case_to_spaces, slugify
 
-class AssetClassUnitSerializer(serializers.Serializer):
-    id = serializers.IntegerField() #otherwise not displayed as it is a readonly field by default
-    investment_strategy = serializers.CharField(required=False, allow_blank= True)
-
-    class Meta:
-        fields = ['id', 'scheme_id', 'investment_strategy', 'use']
-
-class SaleUnitSerializer(serializers.Serializer):
+class SchemeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    buyer = serializers.CharField(required=False, allow_blank= True)
-    status = serializers.CharField(required=False, allow_blank= True)
-    status_date = serializers.DateField(required=False, allow_null= True)
-    price_target = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    price_achieved = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
+    loan = loan_serializers.LoanSerializer(required=False, allow_null=True)
 
     class Meta:
+        model = scheme_models.Scheme
+        fields = [
+            'id',
+            'loan',
+            'name', 
+            'street_name', 
+            'postcode', 
+            'city', 
+            'country', 
+            'opening_date',
+            'system',
+            'is_built']
+
+    def update_validated_data(self, validated_data):
+        loan_id = validated_data.pop("loan")["id"]
+        loan = loan_models.Loan.objects.get(id=loan_id)
+        validated_data.update({"loan": loan})
+
+    def create(self, validated_data):
+        self.update_validated_data(validated_data)
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        self.update_validated_data(validated_data)
+        return super().update(instance, validated_data)
+
+class AssetClassSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    scheme = SchemeSerializer(required=False, allow_null=True)
+
+    class Meta:
+        model = scheme_models.AssetClass
         fields = [
             'id', 
-            'buyer', 
-            'status', 
-            'status_date',
-            'price_target',
-            'price_achieved'
-            ]
-        
-class LeaseUnitSerializer(serializers.Serializer):
+            'use',
+            'scheme', 
+            'investment_strategy']
+
+    def update_validated_data(self, validated_data):
+        scheme_id = validated_data.pop("scheme")["id"]
+        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
+        validated_data.update({"scheme": scheme})
+    
+    def create(self, validated_data):
+        self.update_validated_data(validated_data)
+
+        # Create an instance of the appropriate model class
+        instance = self.Meta.model.objects.create(**validated_data)
+        return instance
+
+class HotelSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.Hotel
+        fields = AssetClassSerializer.Meta.fields 
+
+class ResidentialSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.Residential
+        fields = AssetClassSerializer.Meta.fields
+
+class CommercialSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.Commercial
+        fields = AssetClassSerializer.Meta.fields
+
+class StudentAccommodationSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.StudentAccommodation
+        fields = AssetClassSerializer.Meta.fields
+
+class OfficeSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.Office
+        fields = AssetClassSerializer.Meta.fields 
+
+class ShoppingCentreSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.ShoppingCentre
+        fields = AssetClassSerializer.Meta.fields
+
+class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
+    def update_or_create(self, instances, validated_data):
+        instances_mapping = {instance.id: instance for instance in instances}
+
+        updated_instances = []
+        created_instances = []
+
+        for el in validated_data:
+            el_id = el.get('id', None)
+            if el_id in instances_mapping:
+                instance = instances_mapping.get(el_id)
+                updated_instance = self.child.update(instance, el)
+                updated_instances.append(updated_instance)
+            else:
+                created_instance = self.child.create(el)
+                created_instances.append(created_instance)
+
+        return updated_instances + created_instances
+
+class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    tenant = serializers.CharField(required=False, allow_blank= True)
-    lease_type = serializers.CharField(required=False, allow_blank= True)
-    rent_target_amount = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    rent_target_frequency = serializers.CharField(required=False, allow_blank= True)
-    rent_achieved_amount = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    rent_achieved_frequency = serializers.CharField(required=False, allow_blank= True)
-    start_date = serializers.DateField(required=False, allow_null= True)
-    duration = serializers.IntegerField(required=False, allow_null= True)
+    asset_class = AssetClassSerializer(required=False, allow_null=True)
+    area_system = serializers.SerializerMethodField(required=False, allow_null=True)
+    
+    class Meta:
+        model = scheme_models.Unit
+        fields = [
+            'id',
+            'asset_class',
+            'label',
+            'identifier',
+            'description',
+            'beds',
+            'area_size',
+            'area_type',
+            'area_system']
+        list_serializer_class = BulkUpdateOrCreateSerializer
+    
+    def update_validated_data(self, validated_data):
+        asset_class_id = validated_data.pop("asset_class")["_id"]
+        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
+        validated_data.update({"asset_class": asset_class})
+
+    def create(self, validated_data):
+        self.update_validated_data(validated_data)
+        return super().create(validated_data)
+    
+    def update(self, instance, validated_data):
+        self.update_validated_data(validated_data)
+        return super().update(instance, validated_data)
+    
+    def get_area_system(self, obj):
+        scheme = obj.asset_class.scheme
+        return scheme.system.lower()
+    
+class LeaseSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    unit = UnitSerializer(required=False, allow_null=True)
 
     class Meta:
+        model = scheme_models.Lease
         fields = [
             'id', 
+            'unit',
             'tenant', 
             'lease_type', 
             'rent_target_amount',
@@ -52,308 +163,48 @@ class LeaseUnitSerializer(serializers.Serializer):
             'rent_achieved_amount',
             'rent_achieved_frequency',
             'start_date',
-            'duration'
-            ]
-
-class BulkUpdateOrCreateUnitSerializer(serializers.ListSerializer):
-    def update_or_create(self, instances, validated_data):
-        existing_units_mapping = {unit.id: unit for unit in instances}
-
-        updated_instances = []
-        created_instances = []
-
-        for unit in validated_data:
-            unit_id = unit.get('id', None)
-            if unit_id in existing_units_mapping:
-                instance = existing_units_mapping.get(unit_id)
-                updated_instance = self.child.update(instance, unit)
-                updated_instances.append(updated_instance)
-            else:
-                created_instance = self.child.create(unit)
-                created_instances.append(created_instance)
-
-        return updated_instances + created_instances
-
-class UnitSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-    asset_class_id = serializers.IntegerField(required=False)
-    identifier = serializers.CharField(required=False, allow_blank=True, default="")
-    description = serializers.CharField(required=False, allow_blank= True, default="-")
-    area_size = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    beds = serializers.IntegerField(required=False, allow_null= True)
-    value = serializers.DecimalField(required=False, allow_null= True, max_digits=20, decimal_places=2)
-    area_system = serializers.SerializerMethodField(required=False, allow_null=True)
-    sale = SaleUnitSerializer(required=False, allow_null=True)
-    lease = LeaseUnitSerializer(required=False, allow_null=True)
-
-    class Meta:
-        model = scheme_models.Unit
-        fields = [
-            'id',
-            'asset_class_id',
-            'label',
-            'identifier',
-            'description',
-            'beds',
-            'area_size',
-            'area_type',
-            'area_system',
-            'value',
-            'sale',
-            'lease']
-        depth = 1
-        list_serializer_class = BulkUpdateOrCreateUnitSerializer
-
-
+            'duration_value',
+            'duration_unit',
+            ] 
+    
+    def update_validated_data(self, validated_data):
+        unit_id = validated_data.pop("unit")["_id"]
+        unit = scheme_models.Unit.objects.get(id=unit_id)
+        validated_data.update({"unit": unit})
+    
     def create(self, validated_data):
-        asset_class_id = validated_data.pop("asset_class_id")
-        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
-        validated_data.update({"asset_class": asset_class})
-        
-        # Check if an identical identifier already exists for this AssetClass
-        identifier = validated_data.get("identifier")
-        if identifier and scheme_models.Unit.objects.filter(asset_class=asset_class, identifier=identifier).exists():
-            raise serializers.ValidationError("This identifier is already in use for this AssetClass.")
-        
-        if validated_data["identifier"] == "":
-            # pdb.set_trace()
-            units_per_asset_class = len(scheme_models.Unit.objects.filter(asset_class=asset_class))
-            validated_data["identifier"] = f"{units_per_asset_class + 1}"   
-        
-        return scheme_models.Unit.objects.create(**validated_data)
+        self.update_validated_data(validated_data)
+        return super().create(validated_data)
     
     def update(self, instance, validated_data):
-        asset_class_id = validated_data.pop("asset_class_id")
-        asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
-        validated_data.update({"asset_class": asset_class})
+        self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
     
-    def get_area_system(self, obj):
-        scheme = obj.asset_class.scheme
-        return scheme.system.lower()
-
-
-class AssetClassSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False) #otherwise not displayed as it is a readonly field by default
-    scheme_id = serializers.IntegerField(required=False)
-    units = serializers.SerializerMethodField(required=False, allow_null=True)
-    investment_strategy = serializers.CharField(required=False, allow_blank= True)
+class SaleUnitSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
+    unit = UnitSerializer(required=False, allow_null=True)
 
     class Meta:
-        model = scheme_models.AssetClass
         fields = [
             'id', 
-            'scheme_id', 
-            'use', 
-            'units', 
-            'investment_strategy']
-        depth = 1
-
-    def get_scheme(self, obj):
-        qs = scheme_models.Scheme.objects.filter(id=obj.scheme.id)
-        return SchemeSerializer(qs, many=True).data
+            'unit',
+            'buyer', 
+            'status', 
+            'status_date',
+            'price_target',
+            'price_achieved'
+            ]
     
-    def get_units(self, obj):
-        units = scheme_models.Unit.objects.filter(asset_class=obj)
-        return UnitSerializer(units, many=True).data
-
-
-class SchemeSerializer(serializers.ModelSerializer):
-    loan_id = serializers.IntegerField()
-    asset_classes = serializers.SerializerMethodField(required=False, allow_null=True)
-    opening_date = serializers.DateField(required=False, allow_null=True)
-
-    class Meta:
-        model = scheme_models.Scheme
-        fields = [
-            'id',
-            'loan_id',
-            'name', 
-            'street_name', 
-            'postcode', 
-            'city', 
-            'country', 
-            'opening_date',
-            'asset_classes',
-            'system',
-            'is_built']
-        depth = 1
-
+    def update_validated_data(self, validated_data):
+        unit_id = validated_data.pop("unit")["_id"]
+        unit = scheme_models.Unit.objects.get(id=unit_id)
+        validated_data.update({"unit": unit})
+    
     def create(self, validated_data):
-        loan_id = validated_data.pop("loan_id")
-        loan = loan_models.Loan.objects.get(id=loan_id)
-
-        validated_data.update({"loan": loan})
-        scheme = scheme_models.Scheme.objects.create(**validated_data)
-        return scheme
-
-
-    def get_asset_classes(self, obj):
-        qs = scheme_models.Scheme.objects.get_asset_classes(obj) #uses the custom manager
-        return AssetClassSerializer(qs, many=True).data
-
-
-class HotelSerializer(AssetClassSerializer):
-    class Meta:
-        model = scheme_models.Hotel
-        fields = AssetClassSerializer.Meta.fields 
-
-    def create(self, validated_data): 
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        hotel = scheme_models.Hotel.objects.create(**validated_data)
-        return hotel
+        self.update_validated_data(validated_data)
+        return super().create(validated_data)
     
-    def validate_use(self, value):
-        if value.lower() != "hotel":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-class ResidentialSerializer(AssetClassSerializer):
-
-    class Meta:
-        model = scheme_models.Residential
-        fields = AssetClassSerializer.Meta.fields
-
-    def create(self, validated_data):
-        # pdb.set_trace()
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        residential = scheme_models.Residential.objects.create(**validated_data)
-        return residential
-    
-    def validate_use(self, value):
-        if value.lower() != "residential":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-class CommercialSerializer(AssetClassSerializer):
-
-    class Meta:
-        model = scheme_models.Commercial
-        fields = AssetClassSerializer.Meta.fields
-
-    def create(self, validated_data):
-        # pdb.set_trace()
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        commercial = scheme_models.Commercial.objects.create(**validated_data)
-        return commercial
-    
-    def validate_use(self, value):
-        if value.lower() != "commercial":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-class OfficeSerializer(AssetClassSerializer):
-
-    class Meta:
-        model = scheme_models.Office
-        fields = AssetClassSerializer.Meta.fields 
-
-    def create(self, validated_data):
-        # pdb.set_trace()
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        office = scheme_models.Office.objects.create(**validated_data)
-        return office
-    
-    def validate_use(self, value):
-        if value.lower() != "office":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-class ShoppingCentreSerializer(AssetClassSerializer):
-    class Meta:
-        model = scheme_models.ShoppingCentre
-        fields = AssetClassSerializer.Meta.fields
-
-    def create(self, validated_data):
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        shopping_centre = scheme_models.ShoppingCentre.objects.create(**validated_data)
-        return shopping_centre
-    
-    def validate_use(self, value):
-        if value.lower() != "shopping centre":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-class StudentAccommodationSerializer(AssetClassSerializer):
-
-    class Meta:
-        model = scheme_models.StudentAccommodation
-        fields = AssetClassSerializer.Meta.fields
-
-    def create(self, validated_data):
-        scheme_id = validated_data.pop("scheme_id")
-        scheme = scheme_models.Scheme.objects.get(id=scheme_id)
-        validated_data.update({"scheme": scheme})
-
-        self.validate_use(validated_data["use"])
-
-        student_accommodation = scheme_models.StudentAccommodation.objects.create(**validated_data)
-        return student_accommodation
-    
-    def validate_use(self, value):
-        if value.lower() != "student accommodation":
-            data = {
-                'status': 'error',
-                'message': 'use type not valid'
-                }
-            raise ValidationError(data, code=400)
-        return value
-
-
-# class SaleSerializer(serializers.ModelSerializer):
-#     buyer_type = serializers.ChoiceField(choices=scheme_models.Sale.BUYER_TYPE_CHOICES)
-
-#     class Meta:
-#         model = scheme_models.Sale
-#         fields = ('id', 'buyer_type')
-
-    # def create(self, validated_data):
-    #     buyer_type = validated_data["buyer_type"]
-    #     if buyer_type == scheme_models.Sale.INDIVIDUAL:
-    #         serializer = IndividualSaleSerializer(data=self.context["request"].data)
-            
+    def update(self, instance, validated_data):
+        self.update_validated_data(validated_data)
+        return super().update(instance, validated_data)
+        

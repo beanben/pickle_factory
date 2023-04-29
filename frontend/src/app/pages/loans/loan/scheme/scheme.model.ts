@@ -12,9 +12,8 @@ export abstract class AssetClassAbstract {
     abstract readonly use: string;
 
     constructor(
-        public schemeId: number,
-        // public units: Unit[] = [],
-        public id?: number,
+        public id: number,
+        public scheme: Scheme,
         public investmentStrategy?: string
     ) { 
     }
@@ -44,42 +43,42 @@ export class ShoppingCentre extends AssetClassAbstract {
     readonly use = "shopping centre";
 }
 
-// export class Unit {
-//     // readonly label: "unit" | "room";
-//     readonly areaType: "NIA" | "GIA";
+export class Unit {
+    readonly label: "unit" | "room";
+    readonly areaType: "NIA" | "GIA";
 
-//     constructor(
-//         public assetClassId: number,
-//         public label: "unit" | "room",
-//         public identifier: string = "",
-//         public description: string = "",
-//         public beds?: number,
-//         public areaSize?: number,
-//         public areaSystem: "sqft" | "sqm" = "sqft",
-//         public id?: number,
-//         public sale?: Sale,
-//         public lease?: Lease,
-//     ) {
-//         this.label = this.defineLabel();
-//         this.areaType = this.defineAreaType();
-//         // this.areaSystem = this.getAreaSystem();
-//     }
+    constructor(
+        public assetClass: AssetClassType,
+        // public label: "unit" | "room",
+        public identifier: string = "",
+        public description: string = "",
+        public beds?: number,
+        public areaSize?: number,
+        public areaSystem: "sqft" | "sqm" = "sqft",
+        public id?: number,
+        // public sale?: Sale,
+        // public lease?: Lease,
+    ) {
+        this.label = this.defineLabel();
+        this.areaType = this.defineAreaType();
+        // this.areaSystem = this.getAreaSystem();
+    }
 
-//     defineLabel(): "unit" | "room" {
-//         const hasRooms = ["hotel", "student accommodation"];
-//         const hasUnits = ["commercial", "office", "shopping centre", "residential"];
-//         return hasRooms.includes(this.assetClass.use.toLowerCase()) ? "room" : "unit";
-//     }
+    defineLabel(): "unit" | "room" {
+        const hasRooms = ["hotel", "student accommodation"];
+        const hasUnits = ["commercial", "office", "shopping centre", "residential"];
+        return hasRooms.includes(this.assetClass.use.toLowerCase()) ? "room" : "unit";
+    }
 
-//     defineAreaType(): "NIA" | "GIA" {
-//         const isNIA = ["hotel", "student accommodation", "residential"];
-//         const isGIA = ["commercial", "office", "shopping centre",];
-//         return isNIA.includes(this.assetClass.use.toLowerCase()) ? "NIA" : "GIA";
-//     }
+    defineAreaType(): "NIA" | "GIA" {
+        const isNIA = ["hotel", "student accommodation", "residential"];
+        const isGIA = ["commercial", "office", "shopping centre",];
+        return isNIA.includes(this.assetClass.use.toLowerCase()) ? "NIA" : "GIA";
+    }
 
-//     hasBeds(): boolean {
-//         const hasBeds = ["student accommodation", "hotel", "residential"];
-//         return hasBeds.includes(this.assetClass.use.toLowerCase());
-//     }
+    hasBeds(): boolean {
+        const hasBeds = ["student accommodation", "hotel", "residential"];
+        return hasBeds.includes(this.assetClass.use.toLowerCase());
+    }
 
-// }
+}

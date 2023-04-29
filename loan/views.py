@@ -13,6 +13,7 @@ from core.mixins import AuthorQuerySetMixin
 from rest_framework import status
 from django.http import JsonResponse
 import pdb
+from django.shortcuts import get_object_or_404
 
 
 def asset_class_uses(request):
@@ -23,6 +24,22 @@ def asset_class_uses(request):
 def system_types(request):
     system_choices = [{"value":x, "display":y} for x, y in scheme_models.Scheme.SYSTEM_CHOICES]
     return JsonResponse(system_choices, safe=False)
+
+
+class ChoicesView(APIView):
+    def get(self, request, choice_type):
+        choices_dict = {
+            'system': scheme_models.Scheme.SYSTEM_CHOICES,
+            # 'sale_status': scheme_models.Sale.STATUS_CHOICES,
+            # Add more choices here if needed
+        }
+
+        if choice_type not in choices_dict:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        choices = [{'value': choice[0], 'label': choice[1]} for choice in choices_dict[choice_type]]
+        serializer = shared_serializers.ChoicesSerializer(choices, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = loan_models.Loan.objects.all()
@@ -39,7 +56,7 @@ class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     queryset = loan_models.Loan.objects.all()
     serializer_class = loan_serializers.LoanSerializer
-    lookup_field = 'slug'
+    lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
         # pdb.set_trace()
@@ -76,10 +93,19 @@ class BorrowerDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView)
             'response': response.data
         })
 
-class SchemeList(AuthorQuerySetMixin, generics.ListCreateAPIView):
+class LoanSchemes(AuthorQuerySetMixin, generics.ListAPIView):
     queryset = scheme_models.Scheme.objects.all()
     serializer_class = scheme_serializers.SchemeSerializer
 
+    def get_queryset(self):
+        loan_id = self.kwargs['id']
+        return scheme_models.Scheme.objects.filter(loan_id=loan_id)
+    
+    
+class SchemeList(AuthorQuerySetMixin, generics.CreateAPIView):
+    queryset = scheme_models.Scheme.objects.all()
+    serializer_class = scheme_serializers.SchemeSerializer
+    
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return Response({
@@ -104,6 +130,11 @@ class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     # queryset = Unit.objects.all()
     serializer_class = scheme_serializers.UnitSerializer
 
+    def get_queryset(self):
+        asset_class_id = self.kwargs.get("asset_class_id")
+        asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+        return scheme_models.Unit.objects.filter(asset_class=asset_class)
+    
     def get_serializer(self, *args, **kwargs):
         if isinstance(kwargs.get("data", {}), list):
             kwargs["many"] = True
@@ -251,7 +282,6 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         })
     
 class SaleStatusChoicesView(APIView):
-
     def get(self, request):
          choices = [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
          serializer = shared_serializers.ChoicesSerializer(choices, many=True)

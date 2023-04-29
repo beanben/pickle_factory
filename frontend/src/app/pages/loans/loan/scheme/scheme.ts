@@ -1,8 +1,9 @@
-import { AssetClassType } from "./scheme.model";
+import { Loan } from "../loan";
+import { AssetClassType, Unit } from "./scheme.model";
 
 export interface Scheme {
     id: number;
-    loanId: number;
+    loan: Loan;
     name: string;
     streetName?: string;
     postcode?: string;
@@ -11,12 +12,12 @@ export interface Scheme {
     openingDate?: Date;
     system: "SQFT" | "SQM";
     isBuilt: boolean;
-    assetClasses: AssetClassType[],
+    // assetClasses: AssetClassType[],
 }
 
 export interface Sale {
     id?: number;
-    unitId?: number;
+    unit: Unit;
     status: 'available' | 'underOffer' | 'exchanged' | 'completed';
     statusDate: Date;
     priceTarget: number;
@@ -26,7 +27,7 @@ export interface Sale {
 
 export interface Lease {
     id?: number;
-    unitId?: number;
+    unit: Unit;
     tenant: string;
     leaseType?: 'openMarket' | 'discountedMarket';
     rentTargetAmount: number;
@@ -34,22 +35,22 @@ export interface Lease {
     rentAchievedAmount: number;
     rentAchievedFrequency: 'weekly' | 'monthly';
     startDate: Date,
-    endDate?: Date,
     durationValue: number;
     durationUnit: 'weeks' | 'months';
+    endDate: Date,
 }
 
-export interface Unit {
-    assetClassId: number,
-    label: "unit" | "room",
-    identifier: string,
-    description: string,
-    beds?: number,
-    areaType: "NIA" | "GIA",
-    areaSize?: number,
-    areaSystem: "sqft" | "sqm",
-    id?: number,
-    sale?: Sale,
-    lease?: Lease,
-}
+// export interface Unit {
+//     assetClassId: number,
+//     label: "unit" | "room",
+//     identifier: string,
+//     description: string,
+//     beds?: number,
+//     areaType: "NIA" | "GIA",
+//     areaSize?: number,
+//     areaSystem: "sqft" | "sqm",
+//     id?: number,
+//     sale?: Sale,
+//     lease?: Lease,
+// }
 

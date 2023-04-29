@@ -4,6 +4,7 @@ from core.models import TimestampedModel, AuthorTrackerModel, TimestampedModelRe
 from loan.models import loan_models
 from loan.managers import SchemeManager
 from loan.utils import get_months_difference
+from dateutil import relativedelta
 
 
 class Scheme(TimestampedModel, AuthorTrackerModel):
@@ -48,40 +49,35 @@ class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
 
     def __str__(self):
         return self.use
-    
-    # objects = AssetClassManager()
-
-   
+ 
 class Hotel(AssetClass):
-    pass
-    
+    use = "hotel"
     
 class Residential(AssetClass): 
-    pass
+    use = "residential"
 
 class Commercial(AssetClass):
-    pass
-
+    use = "commercial"
 
 class StudentAccommodation(AssetClass): 
-    pass
+    use = "student accommodation"
 
 class Office(AssetClass): 
-    pass
+    use = "office"
 
 class ShoppingCentre(AssetClass): 
-    pass
+    use = "shopping centre"
 
 class Unit(TimestampedModelReverse, AuthorTrackerModel):
     UNIT = "unit"
     ROOM = "room"
-    NIA = "NIA"
-    GIA = "GIA"
-
     LABEL_CHOICES =[
         (UNIT, "unit"),
         (ROOM, "room")
     ]
+
+    NIA = "NIA"
+    GIA = "GIA"
     AREA_TYPE_CHOICES =[
         (NIA, "Net Internal Area"),
         (GIA, "Gross Internal Area"),
@@ -93,7 +89,7 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
     beds = models.IntegerField(blank=True, null=True)
     area_size = models.DecimalField(max_digits=20, decimal_places=4, default=0.00)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True, default=NIA)
-    value = models.DecimalField(max_digits=20, decimal_places=4, default=0.00)
+    # value = models.DecimalField(max_digits=20, decimal_places=4, default=0.00)
 
     def __str__(self):
         # display the unit identified for a given asset class
@@ -147,6 +143,13 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         (MONTHLY, "monthly")
     ]
 
+    MONTHS = "months"
+    WEEKS = "weeks"
+    DURATION_UNIT_CHOICES =[
+        (MONTHS, "month"),
+        (WEEKS, "weeks")
+    ]
+
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="lease", related_query_name="lease")
     # tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="leases", related_query_name="lease")
     tenant = models.CharField(max_length=100, blank=True , default="")
@@ -156,7 +159,8 @@ class Lease(TimestampedModel, AuthorTrackerModel):
     rent_achieved_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     rent_achieved_frequency = models.CharField(max_length=100, blank=True , choices = RENT_FREQUENCY_CHOICES, default=WEEKLY)
     start_date = models.DateField(blank=True, null=True)
-    end_date = models.DateField(blank=True, null=True)
+    duration_value = models.IntegerField(blank=True, null=True)
+    duration_unit = models.CharField(max_length=100, blank=True , choices = DURATION_UNIT_CHOICES, default=MONTHS)
 
     # def __str__(self):
     #     return f"{self.get_tenancy_type_display()} - {self.unit} - Tenant: {self.get_tenant()}"
@@ -165,8 +169,15 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         verbose_name_plural = "Leases" #for the admin panel
     
     @property
-    def duration(self):
-        return get_months_difference(self.start_date, self.end_date)
+    def end_date(self):
+        if self.start_date:
+            return None
+        
+        if self.duration_unit == self.MONTHS:
+            return self.start_date + relativedelta(months=self.duration_value)
+        return self.start_date + relativedelta(weeks=self.duration_value)
+
+         
 
         
 
@@ -199,12 +210,12 @@ class Sale(TimestampedModel, AuthorTrackerModel):
     ]
 
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="sales", related_query_name="sale")
-    buyer = models.CharField(max_length=100, blank=True , default="")
     status = models.CharField(max_length=20, blank=True , choices= STATUS_CHOICES, default=AVAILABLE)
     status_date = models.DateField(blank=True, null=True)
     price_target = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     price_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
-    
+    buyer = models.CharField(max_length=100, blank=True , default="")
+
     def __str__(self):
         return f'sale of unit {self.unit}'
 

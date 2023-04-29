@@ -49,7 +49,7 @@ export class SchemeService {
 
   createScheme(scheme: Scheme) {
     const url = `${this.relativeUrl}/`;
-
+    
     return new Promise<APIResult>((resolve, reject) => {
      
       this.http.post(url, scheme).subscribe({
@@ -145,8 +145,8 @@ export class SchemeService {
     );
   }
   
-  getSystemTypes(): Observable<Choice[]> {
-    const url = `${this.relativeUrl}/system_types/`;
+  getChoices(choiceType: string): Observable<Choice[]> {
+    const url = `/api/choices/${choiceType}/`;
     return this.http.get<Choice[]>(url).pipe(
       tap(() => console.log('getSystemTypes()', Math.random())),
     );
@@ -219,6 +219,14 @@ export class SchemeService {
     const url = "/api/unit/sale_status_choices/";
     return this.http.get<Choice[]>(url).pipe(
       tap(() => console.log('getSaleStatusChoices()', Math.random()))
+    )
+  }
+
+  // DOESNT Exist
+  getUnitsPerAssetClass(assetClass: AssetClassType): Observable<Unit[]> {
+    const url = `/api/unit/${assetClass.id}/`;
+    return this.http.get<Unit[]>(url).pipe(
+      tap(() => console.log('getUnitsPerAssetClass()', Math.random()))
     )
   }
 

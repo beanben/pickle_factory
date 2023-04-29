@@ -16,14 +16,15 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   errors: string[] = [];
   systemTypes: Choice[] = [];
 
-  @Output() modalSaveScheme = new EventEmitter<void>();
-  @Output() deleteIsConfirmed = new EventEmitter<void>()
+  @Output() modalSaveScheme = new EventEmitter<Scheme | null>();
+  @Output() deleteIsConfirmed = new EventEmitter<Scheme>()
   @Input() scheme = {} as Scheme;
   @Input() mode = "";
-  @Input() index = -1;
+  // @Input() index = -1;
+  @Input() loan = {} as Loan;
 
   sub = Subscription.EMPTY;
-  loan = {} as Loan;
+  // loan = {} as Loan;
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -31,13 +32,13 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     postcode: [''],
     city: ['', Validators.required],
     country: [''],
-    system: ['SQFT', Validators.required],
+    system: ['', Validators.required],
     isBuilt: [false]
   });
-  get name(){
+  get name() {
     return this.form.get('name')
   };
-  get city(){
+  get city() {
     return this.form.get('city')
   };
 
@@ -45,82 +46,98 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private _schemeService: SchemeService,
     private el: ElementRef,
-    private _loanService: LoanService,
+    //   private _loanService: LoanService,
   ) { }
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
+    this.getChoices("system");
     this.initForm();
-    this.getSystemTypes();
 
-    this.sub = this._loanService.getLoanSub()
-      .subscribe(loan => this.loan = loan)
+
+    // this.sub = this._loanService.getLoanSub()
+    //   .subscribe(loan => this.loan = loan)
   }
 
-  onCancel(){
+  onCancel() {
     this.modalSaveScheme.emit();
   };
 
-  onSave(){
-    if(this.form.valid){
-      let scheme: Scheme = this.form.value;
-      scheme.loanId = this.loan.id;
+  onSave() {
+    if (!this.form.valid) {
+      return;
+    };
 
-      if(this.scheme.id) {
-        scheme.id = this.scheme.id;
-        this._schemeService.updateScheme(scheme)
+    let scheme: Scheme = this.formToScheme(this.form);
+
+    if (this.scheme.id) {
+      scheme.id = this.scheme.id;
+      this._schemeService.updateScheme(scheme)
         .then((result) => {
           let scheme: Scheme = result.response;
-          this.loan.schemes[this.index]=scheme;
-          this.modalSaveScheme.emit();
+          this.modalSaveScheme.emit(scheme);
         })
         .catch(err => this.errors = err)
 
 
-      } else {
-        this._schemeService.createScheme(scheme)
+    } else {
+      this._schemeService.createScheme(scheme)
         .then((result) => {
           let scheme: Scheme = result.response;
-          this.loan.schemes.push(scheme);
-          this.modalSaveScheme.emit();
+          // this.loan.schemes.push(scheme);
+          this.modalSaveScheme.emit(scheme);
         })
         .catch(err => this.errors = err)
 
-      };
-    }
+    };
   };
 
-  initForm(){
-    if(this.scheme.id){
-      this.form.setValue({
-        'name': this.scheme.name,
-        'streetName': this.scheme.streetName,
-        'postcode': this.scheme.postcode,
-        'city': this.scheme.city,
-        'country': this.scheme.country,
-        'system': this.scheme.system,
-        'isBuilt': this.scheme.isBuilt
-      })
-    }
+  formToScheme(form: FormGroup): Scheme {
+    const scheme: Scheme = form.value;
+    scheme.loan = this.loan;
+    return scheme;
+  };
+
+
+  initForm() {
+    if (!this.scheme.id) {
+      return
+    };
+
+    this.form.setValue({
+      'name': this.scheme.name,
+      'streetName': this.scheme.streetName,
+      'postcode': this.scheme.postcode,
+      'city': this.scheme.city,
+      'country': this.scheme.country,
+      'system': this.scheme.system,
+      'isBuilt': this.scheme.isBuilt
+    })
+
   }
 
-  onConfirmDelete(){
+  onConfirmDelete() {
     this._schemeService.deleteScheme(this.scheme)
-      .subscribe(() =>  this.deleteIsConfirmed.emit())
+      .subscribe(() => this.deleteIsConfirmed.emit(this.scheme))
   }
 
-  addEventBackgroundClose(){
-    this.el.nativeElement.addEventListener('click', (el:any) => {
+  onCancelDelete(){
+    this.mode = "edit";
+  }
+
+  addEventBackgroundClose() {
+    this.el.nativeElement.addEventListener('click', (el: any) => {
       if (el.target.className === 'modal') {
         this.onCancel();
-    }
+      }
     });
   };
 
-  getSystemTypes(){
-    this._schemeService.getSystemTypes()
+  getChoices(choiceType: string) {
+    this._schemeService.getChoices(choiceType)
       .subscribe((systemTypes: Choice[]) => {
         this.systemTypes = systemTypes;
+        this.form.patchValue({ system: systemTypes[0].value })
       })
   }
 

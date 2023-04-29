@@ -15,7 +15,7 @@ export class LoansComponent implements OnInit, OnDestroy {
   openLoanModal = false;
   indexLoan = -1;
   modalMode = "";
-  loanSlug = "";
+  // loanSlug = "";
   isCreateNewLoan = false
 
   arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
@@ -29,7 +29,7 @@ export class LoansComponent implements OnInit, OnDestroy {
 
   constructor(
     private _loanService: LoanService,
-    private _authService: AuthService,
+  //   private _authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -40,10 +40,10 @@ export class LoansComponent implements OnInit, OnDestroy {
       this.onOpenModal('new');
     };
 
-    if(this._authService.isLoggedIn()){
+    // if(this._authService.isLoggedIn()){
       this.getLoan();
       this.getLoans();
-    }
+    // }
   }
 
   onOpenModal(modalMode: string){
@@ -52,6 +52,7 @@ export class LoansComponent implements OnInit, OnDestroy {
 
     if(modalMode == "new"){
       this.loanSelected = {} as Loan;
+      this.indexLoan = -1;
     }
   }
 

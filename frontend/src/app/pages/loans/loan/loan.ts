@@ -6,5 +6,5 @@ export interface Loan {
     slug: string;   
     name: string;
     borrower?: Borrower;
-    schemes: Scheme[]
+    // schemes: Scheme[]
 }

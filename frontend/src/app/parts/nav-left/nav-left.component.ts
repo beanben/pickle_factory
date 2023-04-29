@@ -10,65 +10,65 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
   styleUrls: ['./nav-left.component.css']
 })
 export class NavLeftComponent implements OnInit, OnDestroy {
-  logoWhite = "assets/images/logoWhite.svg";
-  home = "assets/images/home.svg";
-  lender = "assets/images/lender.svg";
-  person = "assets/images/person.svg";
-  arrowDown = "assets/images/arrowDown.svg";
-  arrowUp = "assets/images/arrowUp.svg";
+  // logoWhite = "assets/images/logoWhite.svg";
+  // home = "assets/images/home.svg";
+  // lender = "assets/images/lender.svg";
+  // person = "assets/images/person.svg";
+  // arrowDown = "assets/images/arrowDown.svg";
+  // arrowUp = "assets/images/arrowUp.svg";
   dollar = "assets/images/dollar.svg";
-  chart = "assets/images/chart.svg";
+  // chart = "assets/images/chart.svg";
   house = "assets/images/house.svg";
-  isExpanded = false;
+  // isExpanded = false;
   openPopup = false;
-  fundersIsActive = false;
+  // fundersIsActive = false;
 
   sub = Subscription.EMPTY;
   user = {} as User;
-  
+
   constructor(
     private _authService: AuthService,
-    private router: Router
+    // private router: Router
   ) { }
 
   ngOnInit(): void {
     this.getUser();
-    this.identifyUrl();
+    // this.identifyUrl();
   }
 
-  onOpenPopup(){
+  onOpenPopup() {
     this.openPopup = true;
   }
-  closePopup(){
+  closePopup() {
     this.openPopup = false;
   }
 
-  logout(){
-    this._authService.logout();
+  // logout() {
+  //   this._authService.logout();
+  // }
+
+  getUser() {
+    this.sub = this._authService.getUser()
+      .subscribe(user => {
+        this.user = user;
+        this._authService.setUserSub(user);
+      })
   }
 
-   getUser() {
-  this.sub = this._authService.getUser()
-    .subscribe(user => {
-      this.user = user;
-      this._authService.setUserSub(user);
-    })
-  }
+  // identifyUrl() {
+  //   this.router.events.subscribe((event) => {
+  //     if (event instanceof NavigationStart) {
+  //       let currentUrl = event.url;
 
-  identifyUrl(){
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-         let currentUrl = event.url;
+  //       if (currentUrl.includes('borrower')) {
+  //         this.isExpanded = true
+  //       } else {
+  //         this.isExpanded = false
+  //       }
+  //     };
 
-         if (currentUrl.includes('borrower')){
-          this.isExpanded = true
-         } else {
-          this.isExpanded = false
-         }
-      };
-
-    })
-  }
+  //   })
+  // }
 
   ngOnDestroy() {
     this.sub.unsubscribe();

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Loan } from 'src/app/pages/loans/loan/loan';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
+import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,6 @@ export class LoanService {
     return this.loansSub.next(loans);
   }
 
-
   createLoan(loan: Loan) {
     return new Promise<APIResult>((resolve, reject) => {
       const url = `${this.relativeUrl}/`;
@@ -54,7 +54,7 @@ export class LoanService {
   };
 
   updateLoan(loan: Loan){
-    const url = `${this.relativeUrl}/${loan.slug}/`;
+    const url = `${this.relativeUrl}/${loan.id}/`;
 
     return new Promise<APIResult>((resolve, reject) => {
 
@@ -85,18 +85,28 @@ export class LoanService {
       )
   };
 
+  getLoanSchemes(loan:Loan): Observable<Scheme[]> {
+    const url = `${this.relativeUrl}/${loan.id}/schemes/`;
 
-  getLoan(loanSlug: string): Observable<Loan> {
-    const url = `${this.relativeUrl}/${loanSlug}/`;
-    
-    return this.http.get<Loan>(url)
+    return this.http.get<Scheme[]>(url)
       .pipe(
-        tap(() => console.log('getLoan()', Math.random()))
+        tap(() => console.log('getLoanSchemes()', Math.random()))
       )
   };
 
+
+
+  // getLoan(loanSlug: string): Observable<Loan> {
+  //   const url = `${this.relativeUrl}/${loanSlug}/`;
+    
+  //   return this.http.get<Loan>(url)
+  //     .pipe(
+  //       tap(() => console.log('getLoan()', Math.random()))
+  //     )
+  // };
+
   deleteLoan(loan: Loan): Observable<any> {
-    const url = `${this.relativeUrl}/${loan.slug}/`;
+    const url = `${this.relativeUrl}/${loan.id}/`;
 
     const options = {
       body: loan

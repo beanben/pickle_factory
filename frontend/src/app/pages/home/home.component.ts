@@ -12,23 +12,22 @@ import { Loan } from '../loans/loan/loan';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  openLoanModal = false;
-  isLoggedIn = false;
-  modalMode = "";
+  // openLoanModal = false;
+  // isLoggedIn = false;
+  // modalMode = "";
 
   user = {} as User;
   subs: Subscription[] = []
   loans: Loan[] = [];
   dollar = "assets/images/dollar.svg";
-  // loanSelected = {} as Loan;
 
   constructor(
     public _authService: AuthService,
-    private el: ElementRef,
+  //   private el: ElementRef,
     private _loanService: LoanService,
     private router: Router
   ) { 
-    this.addEventBackgroundClose()
+  //   this.addEventBackgroundClose()
   }
 
   ngOnInit(): void {
@@ -45,26 +44,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     )
   }
 
-  closePopup(){
-    this.openLoanModal = false;
-  }
+  // closePopup(){
+  //   this.openLoanModal = false;
+  // }
 
-  addEventBackgroundClose(){
-    this.el.nativeElement.addEventListener('click', (el:any) => {
-      if (el.target.className === 'modal') {
-          this.closePopup();
-      }
-    });
-  };
+  // addEventBackgroundClose(){
+  //   this.el.nativeElement.addEventListener('click', (el:any) => {
+  //     if (el.target.className === 'modal') {
+  //         this.closePopup();
+  //     }
+  //   });
+  // };
 
-  onSave(loan:Loan | null){
-    this.openLoanModal = false;
+  // onSave(loan:Loan | null){
+  //   this.openLoanModal = false;
 
-    if(loan){
-      this._loanService.setLoanSub(loan);
-      this.router.navigate(["/loans"]);
-    }
-  }
+  //   if(loan){
+  //     this._loanService.setLoanSub(loan);
+  //     this.router.navigate(["/loans"]);
+  //   }
+  // }
 
   onLoanSelected(index: number ){ 
     this._loanService.setLoanSub(this.loans[index]);
@@ -113,14 +112,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe())
   }
 
-  // goToLoans(){
-  //   this.router.navigate(["loans", "new"]);
-  // }
 
-  onOpenLoanModal(modalMode: string){
-    this.openLoanModal = true;
-    this.modalMode = modalMode;
-    // this.loanSelected = {} as Loan;
-  }
+  // onOpenLoanModal(modalMode: string){
+  //   this.openLoanModal = true;
+  //   this.modalMode = modalMode;
+  // }
 
 }

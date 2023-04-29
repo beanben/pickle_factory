@@ -2,22 +2,16 @@ from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 from loan.models.loan_models import Loan
 from loan.models.borrower_models import Borrower
-from loan.serializers import scheme_serializers
+from loan.serializers import borrower_serializers
 
-class BorrowerNestedSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    id = serializers.IntegerField()
 
 class LoanSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=255, default='new loan')
-    borrower = BorrowerNestedSerializer(required=False, allow_null=True)
-    schemes = scheme_serializers.SchemeSerializer(required=False, allow_null=True, many=True)
-    
+    id = serializers.IntegerField(required=False)
+    borrower = borrower_serializers.BorrowerSerializer(required=False, allow_null=True) 
+
     class Meta:
         model = Loan
-        fields = ['id', 'name', 'borrower', 'schemes', 'slug']
-        depth = 1
-
+        fields = ['id', 'name', 'borrower']
 
     def create(self, validated_data):
         # loan name unique per author firm

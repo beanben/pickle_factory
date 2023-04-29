@@ -55,28 +55,28 @@ export class BorrowerService {
     })
   };
 
-  updateBorrower(borrower: Borrower){
-    const url = `${this.relativeUrl}/${borrower.slug}/`;
+  // updateBorrower(borrower: Borrower){
+  //   const url = `${this.relativeUrl}/${borrower.slug}/`;
 
-    return new Promise<APIResult>((resolve, reject) => {
+  //   return new Promise<APIResult>((resolve, reject) => {
 
-      this.http.put(url, borrower).subscribe({
-        next: (data) => {
-          const result = data as APIResult;
+  //     this.http.put(url, borrower).subscribe({
+  //       next: (data) => {
+  //         const result = data as APIResult;
           
-          if (result.status === "success"){
-            resolve(result);
-          } else {
-            reject(result.message)
-          }
-        },
+  //         if (result.status === "success"){
+  //           resolve(result);
+  //         } else {
+  //           reject(result.message)
+  //         }
+  //       },
 
-        error: (error) => {
-          reject(this._sharedService.handleError(error));
-        }
-      })
-    })
-  };
+  //       error: (error) => {
+  //         reject(this._sharedService.handleError(error));
+  //       }
+  //     })
+  //   })
+  // };
 
   getBorrowers(): Observable<Borrower[]> {
     const url = `${this.relativeUrl}/`;
@@ -87,34 +87,34 @@ export class BorrowerService {
       )
   };
 
-  deleteBorrower(borrower: Borrower): Observable<any> {
-    const url = `${this.relativeUrl}/${borrower.slug}/`;
+  // deleteBorrower(borrower: Borrower): Observable<any> {
+  //   const url = `${this.relativeUrl}/${borrower.slug}/`;
 
-    const options = {
-      body: borrower
-    }
+  //   const options = {
+  //     body: borrower
+  //   }
 
-    return this.http.delete(url, options).pipe(
-      tap(() => console.log('deleteBorrower()', Math.random()))
-    );
-  }
+  //   return this.http.delete(url, options).pipe(
+  //     tap(() => console.log('deleteBorrower()', Math.random()))
+  //   );
+  // }
 
-  getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
-    const url = `${this.relativeUrl}/${borrower.slug}`;
+  // getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
+  //   const url = `${this.relativeUrl}/${borrower.slug}`;
 
-    return this.http.get<Loan[]>(url)
-      .pipe(
-        tap(() => console.log('getBorrowerLoans()', Math.random()))
-      )
-  };
+  //   return this.http.get<Loan[]>(url)
+  //     .pipe(
+  //       tap(() => console.log('getBorrowerLoans()', Math.random()))
+  //     )
+  // };
 
-  getBorrower(borrowerSlug: string): Observable<Borrower> {
-    const url = `${this.relativeUrl}/${borrowerSlug}/`;
+  // getBorrower(borrowerSlug: string): Observable<Borrower> {
+  //   const url = `${this.relativeUrl}/${borrowerSlug}/`;
 
-    return this.http.get<Borrower>(url)
-      .pipe(
-        tap(() => console.log('getBorrower()', Math.random()))
-      )
-  };
+  //   return this.http.get<Borrower>(url)
+  //     .pipe(
+  //       tap(() => console.log('getBorrower()', Math.random()))
+  //     )
+  // };
 
 }

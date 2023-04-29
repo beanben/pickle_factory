@@ -1,10 +1,10 @@
 <app-scheme-modal
     *ngIf="openSchemeModal"
-    [scheme]="scheme"
     [mode] = "modalMode"
-    [index]="index"
+    [scheme]="scheme"
+    [loan]="loan"
     (modalSaveScheme)="openSchemeModal = false"
-    (deleteIsConfirmed)="onDeleteScheme()">
+    (deleteIsConfirmed)="onDeleteScheme($event)">
 </app-scheme-modal>
 
 <div class="row m-0">
@@ -51,7 +51,7 @@
                         <div class="col">
 
                             <ng-container *ngIf="tabActive === 'units'">
-                                <app-units [scheme]="scheme"></app-units>
+                                <!-- <app-units [scheme]="scheme"></app-units> -->
                             </ng-container>
 
                             <ng-container *ngIf="tabActive === 'income'">

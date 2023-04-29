@@ -1,4 +1,4 @@
-<app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme" [assetClass]="assetClassSelected"
+<!-- <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme" [assetClass]="assetClassSelected"
   [availableAssetClassUses]="availableAssetClassUses" (modalSaveAssetClass)="onSave($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
 </app-asset-class-modal>
 
@@ -7,10 +7,10 @@
 </app-strategy-modal>
 
 <app-unit-schedule-modal *ngIf="openUnitScheduleModal" [mode]="modalMode"
-[assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal>
+[assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal> -->
 
-<ng-container *ngIf="scheme.assetClasses.length > 0; else noAssetClass">
-  <div class="p-4">
+<!-- <ng-container *ngIf="scheme.assetClasses.length > 0; else noAssetClass"> -->
+  <!-- <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of scheme.assetClasses; let i = index ">
       <div class="col-6">
         <app-unit-card [assetClass]="assetClass"></app-unit-card>
@@ -23,9 +23,9 @@
         <span *ngSwitchDefault>{{isShow ? 'Hide schedules' : 'Show schedules'}}</span>
       </ng-container>
     </div>
-  </div>
+  </div> -->
 
-  <ng-container *ngIf="isShow">
+  <!-- <ng-container *ngIf="isShow">
     <hr>
 
     <h5 class="p-2"> Unit schedules</h5>
@@ -59,13 +59,14 @@
 
       </div>
     </div>
-  </ng-container>
+  </ng-container> -->
 
 
-</ng-container>
-<ng-template #noAssetClass>
+<!-- </ng-container> -->
+
+<!-- <ng-template #noAssetClass>
   <div class="d-flex flex-row justify-content-center pt-4" style="position: relative; top:20px">
     <div class="title p-2">Add an asset class</div>
     <button class="btn btn-primary" (click)="onOpenAssetClassModal('add')">Add asset class</button>
   </div>
-</ng-template>
+</ng-template> -->

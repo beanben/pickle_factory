@@ -21,12 +21,12 @@
                         <ng-container *ngIf="loans.length !== 0 ; else noLoans">
                             <div class="row py-2 tableTitle bg-light">
                                 <div class="col my-1">Loan</div>
-                                <div class="col my-1">Borrower</div>
+                                <!-- <div class="col my-1">Borrower</div> -->
                             </div>
         
                             <div class="row py-2 rowTable highlight" *ngFor="let loan of loans; let i = index" (click)="onLoanSelected(i)">
                                 <div class="col my-auto">{{loan.name}}</div>
-                                <div class="col my-auto">{{loan.borrower? loan.borrower.name: "no borrower"}}</div>
+                                <!-- <div class="col my-auto">{{loan.borrower? loan.borrower.name: "no borrower"}}</div> -->
                             </div>      
                         </ng-container>
         
