@@ -57,7 +57,7 @@ class AssetClassSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         self.update_validated_data(validated_data)
-
+        
         # Create an instance of the appropriate model class
         instance = self.Meta.model.objects.create(**validated_data)
         return instance

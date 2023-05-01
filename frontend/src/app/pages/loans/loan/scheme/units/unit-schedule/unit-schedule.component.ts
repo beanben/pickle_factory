@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Scheme } from '../../scheme';
-import { AssetClassType } from '../../scheme.model';
+import { AssetClassType, Unit } from '../../scheme.model';
 
 @Component({
   selector: 'app-unit-schedule',
@@ -8,17 +8,17 @@ import { AssetClassType } from '../../scheme.model';
   styleUrls: ['./unit-schedule.component.css']
 })
 export class UnitScheduleComponent implements OnInit, OnChanges {
-  // totalUnits = 0;
-  // totalAreaSize = 0;
-  // totalBeds = 0;
-  // totalSalePriceTarget = 0;
-  // totalSalePriceAchieved = 0;
-  // averageLeaseRentTarget = 0;
-  // averageLeaseRentAchieved = 0;
+  totalUnits = 0;
+  totalAreaSize = 0;
+  totalBeds = 0;
+  totalSalePriceTarget = 0;
+  totalSalePriceAchieved = 0;
+  averageLeaseRentTarget = 0;
+  averageLeaseRentAchieved = 0;
 
   // @Input() scheme = {} as Scheme;
-  // @Input() assetClass = {} as AssetClassType;
-  // unitStructure = {} as Unit;
+  @Input() assetClass = {} as AssetClassType;
+  unitStructure = {} as Unit;
 
   // constructor() { }
 
@@ -26,8 +26,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['assetClass']) {
-      // this.unitStructure = new Unit(this.assetClass);
+    if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      this.unitStructure = new Unit(this.assetClass);
       // this.calculateUnitTotals();
     }
   }

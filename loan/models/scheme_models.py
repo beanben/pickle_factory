@@ -34,13 +34,27 @@ class Scheme(TimestampedModel, AuthorTrackerModel):
 class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
     BUILD_TO_SELL = "build_to_sell"
     BUILD_TO_RENT = "build_to_rent"
-
     INVESTMENT_STRATEGY_CHOICES =[
         (BUILD_TO_SELL, "build to sell"),
         (BUILD_TO_RENT, "build to rent")
     ]
 
-    use = models.CharField(max_length=40)
+    HOTEL = "hotel"
+    RESIDENTIAL = "residential"
+    COMMERCIAL = "commercial"
+    STUDENT_ACCOMMODATION = "student_accommodation"
+    OFFICE = "office"
+    SHOPPING_CENTRE = "shopping_centre"
+    ASSET_CLASS_CHOICES =[
+        (HOTEL, "hotel"),
+        (RESIDENTIAL, "residential"),
+        (COMMERCIAL, "commercial"),
+        (STUDENT_ACCOMMODATION, "student accommodation"),
+        (OFFICE, "office"),
+        (SHOPPING_CENTRE, "shopping centre")
+    ]
+
+    use = models.CharField(max_length=40, choices = ASSET_CLASS_CHOICES, default=RESIDENTIAL)
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name='asset_classes', related_query_name="asset_class")
     investment_strategy = models.CharField(max_length=100, blank=True , choices = INVESTMENT_STRATEGY_CHOICES, default=BUILD_TO_SELL)
 
@@ -51,22 +65,22 @@ class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
         return self.use
  
 class Hotel(AssetClass):
-    use = "hotel"
+    pass
     
 class Residential(AssetClass): 
-    use = "residential"
+   pass
 
 class Commercial(AssetClass):
-    use = "commercial"
+    pass
 
 class StudentAccommodation(AssetClass): 
-    use = "student accommodation"
+    pass
 
 class Office(AssetClass): 
-    use = "office"
+   pass
 
 class ShoppingCentre(AssetClass): 
-    use = "shopping centre"
+    pass
 
 class Unit(TimestampedModelReverse, AuthorTrackerModel):
     UNIT = "unit"

@@ -15,7 +15,7 @@ export class SchemeComponent implements OnInit, OnDestroy {
   tabActive = "units";
   @Input() loan = {} as Loan;
   @Input() scheme = {} as Scheme;
-  @Input() index = -1;
+  // @Input() index = -1;
   @Output() deleteConfirmed = new EventEmitter<Scheme>();
   subs: Subscription[] = []
 

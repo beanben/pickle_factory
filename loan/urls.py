@@ -7,6 +7,7 @@ from .views import (
     BorrowerDetail,
     SchemeList,
     SchemeDetail,
+    SchemeAssetClasses,
     UnitList,
     UnitDetail,
     UnitsBulkUpdateDestroy,
@@ -15,6 +16,7 @@ from .views import (
     system_types,
     AssetClassList,
     AssetClassDetail,
+    AssetClassUnitsList,
     SaleStatusChoicesView,
     ChoicesView
 )
@@ -32,6 +34,7 @@ unit_patterns = ([
 scheme_patterns = ([
     path('', SchemeList.as_view()),
     path('<int:pk>/', SchemeDetail.as_view()),
+    path('<int:id>/asset_classes/', SchemeAssetClasses.as_view()),
     path('asset_class_uses/', asset_class_uses),
     path('system_types/', system_types),
 ], 'scheme')
@@ -50,6 +53,7 @@ loan_patterns = ([
 asset_class_patterns = ([
     path('', AssetClassList.as_view()),
     path('<int:pk>/', AssetClassDetail.as_view()),
+    path('<int:pk>/units/', AssetClassUnitsList.as_view()),
 ], 'asset_class')
 
 urlpatterns = [

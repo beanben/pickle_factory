@@ -30,6 +30,8 @@ class ChoicesView(APIView):
     def get(self, request, choice_type):
         choices_dict = {
             'system': scheme_models.Scheme.SYSTEM_CHOICES,
+            'asset_class': scheme_models.AssetClass.ASSET_CLASS_CHOICES,
+            'investment_strategy': scheme_models.AssetClass.INVESTMENT_STRATEGY_CHOICES,
             # 'sale_status': scheme_models.Sale.STATUS_CHOICES,
             # Add more choices here if needed
         }
@@ -59,7 +61,6 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'id'
 
     def update(self, request, *args, **kwargs):
-        # pdb.set_trace()
         response = super().update(request, *args, **kwargs)
         return Response({
             'status': "success",
@@ -70,7 +71,6 @@ class LoanDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
 class BorrowerList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = borrower_models.Borrower.objects.all()
     serializer_class = borrower_serializers.BorrowerSerializer
-
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -101,6 +101,38 @@ class LoanSchemes(AuthorQuerySetMixin, generics.ListAPIView):
         loan_id = self.kwargs['id']
         return scheme_models.Scheme.objects.filter(loan_id=loan_id)
     
+class SchemeAssetClasses(AuthorQuerySetMixin, generics.ListAPIView):
+    queryset = scheme_models.AssetClass.objects.all()
+    serializer_class = scheme_serializers.AssetClassSerializer
+
+    def get_serializer_class(self):
+        # This method is not used in this case, but it's required to avoid errors.
+        pass
+
+    def get_queryset(self):
+        scheme_id = self.kwargs['id']
+        return scheme_models.AssetClass.objects.filter(scheme_id=scheme_id)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serialized_data = []
+
+        use_serializer_map = {
+            'hotel': scheme_serializers.HotelSerializer,
+            'residential': scheme_serializers.ResidentialSerializer,
+            'commercial': scheme_serializers.CommercialSerializer,
+            'office': scheme_serializers.OfficeSerializer,
+            'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
+            'student_accommodation': scheme_serializers.StudentAccommodationSerializer
+        }
+
+        for asset_class in queryset:
+            serializer_class = use_serializer_map[asset_class.use]
+            serializer = serializer_class(asset_class)
+            serialized_data.append(serializer.data)
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
+    
     
 class SchemeList(AuthorQuerySetMixin, generics.CreateAPIView):
     queryset = scheme_models.Scheme.objects.all()
@@ -127,7 +159,6 @@ class SchemeDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIView):
         })
     
 class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
-    # queryset = Unit.objects.all()
     serializer_class = scheme_serializers.UnitSerializer
 
     def get_queryset(self):
@@ -141,7 +172,6 @@ class UnitList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         return super().get_serializer(*args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        # pdb.set_trace()
         response = super().create(request, *args, **kwargs)
         return Response({
             'status': "success",
@@ -223,12 +253,12 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         'residential': scheme_serializers.ResidentialSerializer,
         'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
-        'shopping centre': scheme_serializers.ShoppingCentreSerializer,
-        'student accommodation': scheme_serializers.StudentAccommodationSerializer
+        'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
+        'student_accommodation': scheme_serializers.StudentAccommodationSerializer
     }
 
     def get_serializer_class(self):
-        use = self.request.data.get('use').lower()
+        use = self.request.data.get('use')
         return self.use_serialiser_map[use]
     
     def create(self, request, *args, **kwargs):
@@ -247,8 +277,8 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         'residential': scheme_models.Residential,
         'commercial': scheme_models.Commercial,
         'office': scheme_models.Office,
-        'shopping centre': scheme_models.ShoppingCentre,
-        'student accommodation': scheme_models.StudentAccommodation
+        'shopping_centre': scheme_models.ShoppingCentre,
+        'student_accommodation': scheme_models.StudentAccommodation
     }
 
     use_serialiser_map = {
@@ -256,8 +286,8 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         'residential': scheme_serializers.ResidentialSerializer,
         'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
-        'shopping centre': scheme_serializers.ShoppingCentreSerializer,
-        'student accommodation': scheme_serializers.StudentAccommodationSerializer
+        'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
+        'student_accommodation': scheme_serializers.StudentAccommodationSerializer
     }
 
     def get_object(self):
@@ -298,7 +328,6 @@ class UnitsBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
         return self.bulk_update_create(request, *args, **kwargs)
     
     def bulk_update_create(self, request, *args, **kwargs):
-        pdb.set_trace()
         ids = [unit["id"] for unit in request.data]
         instances = self.get_queryset(ids)
 
@@ -334,3 +363,11 @@ class UnitsBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
     
     # def perform_create(self, serializer):
     #     serializer.save()
+
+
+class AssetClassUnitsList(AuthorQuerySetMixin, generics.ListAPIView):
+    serializer_class = scheme_serializers.UnitSerializer
+
+    def get_queryset(self):
+        asset_class_id = self.kwargs['pk']
+        return scheme_models.Unit.objects.filter(asset_class_id=asset_class_id)

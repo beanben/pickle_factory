@@ -54,3 +54,7 @@ export interface Lease {
 //     lease?: Lease,
 // }
 
+export interface AssetClassUnits {
+    assetClass: AssetClassType;
+    units: Unit[];
+}

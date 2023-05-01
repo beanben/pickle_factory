@@ -12,10 +12,10 @@ export abstract class AssetClassAbstract {
     abstract readonly use: string;
 
     constructor(
-        public id: number,
         public scheme: Scheme,
-        public investmentStrategy?: string
-    ) { 
+        public investmentStrategy: string = "",
+        public id?: number,
+    ) {
     }
 }
 
@@ -81,4 +81,27 @@ export class Unit {
         return hasBeds.includes(this.assetClass.use.toLowerCase());
     }
 
+}
+
+export class AssetClassFactory {
+    constructor(private scheme: Scheme) { }
+
+    defineAssetClass(use: string): AssetClassType {
+        switch (use) {
+            case 'hotel':
+                return new Hotel(this.scheme);
+            case 'residential':
+                return new Residential(this.scheme);
+            case 'commercial':
+                return new Commercial(this.scheme);
+            case 'student accommodation':
+                return new StudentAccommodation(this.scheme);
+            case 'office':
+                return new Office(this.scheme);
+            case 'shopping centre':
+                return new ShoppingCentre(this.scheme);
+            default:
+                return new Residential(this.scheme);
+        }
+    }
 }

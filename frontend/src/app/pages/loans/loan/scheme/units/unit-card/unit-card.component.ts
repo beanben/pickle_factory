@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AssetClassType, Unit } from '../../scheme.model';
-import { Scheme } from '../../scheme';
+import { AssetClassUnits, Scheme } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { Subscription } from 'rxjs';
 
 interface UnitGroup {
   description: string,
@@ -14,57 +15,74 @@ interface UnitGroup {
   selector: 'app-unit-card',
   templateUrl: './unit-card.component.html'
 })
-export class UnitCardComponent implements OnInit {
-  // @Input() assetClass = {} as AssetClassType;
-  // unitStructure = {} as Unit;
-  // unitsGrouped: UnitGroup[] = [];
-  // totalQuantity = 0;
-  // totalAreaSize = 0;
-  // totalBeds = 0;
+export class UnitCardComponent implements OnInit, OnChanges {
+  @Input() assetClass = {} as AssetClassType;
+  // assetClass = {} as AssetClassType;
+  @Input() assetClassUnits = {} as AssetClassUnits;
+  unitStructure = {} as Unit;
+  unitsGrouped: UnitGroup[] = [];
+  totalQuantity = 0;
+  totalAreaSize = 0;
+  totalBeds = 0;
+  subs: Subscription[] = [];
 
-  // constructor(
-  //   private _schemeService: SchemeService
-  // ) { }
+  constructor(
+    private _schemeService: SchemeService
+  ) { }
 
   ngOnInit(): void {
+    // this.assetClass = this.assetClassUnits.assetClass;
     // this.unitStructure = new Unit(this.assetClass);
-    // this.getUnitsGrouped(this.assetClass);
-    // // this.unitsGrouped = this.groupByDescription(this.assetClass.units);
+  };
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      const assetClass: AssetClassType = changes['assetClass'].currentValue;
+      this.unitStructure = new Unit(this.assetClass);
+      this.getAssetClassUnits(assetClass);
+    }
   }
 
-  // groupByDescription(units: Unit[]): UnitGroup[] {
-  //   let unitsGrouped: UnitGroup[] = [];
+  getAssetClassUnits(assetClass: AssetClassType) {
+    this._schemeService.getAssetClassUnits(assetClass)
+      .subscribe((units: Unit[]) => {
 
-  //   units.forEach(unit => {
-  //     const descriptionExists = unitsGrouped.some(unitGroup => unitGroup.description === unit.description);
+        this.unitsGrouped = this.groupByDescription(units);
+        this.calculateTotals(this.unitsGrouped);
+      });
+  };
 
-  //     if (!descriptionExists) {
-  //       const unitGroup = {} as UnitGroup;
-  //       unitGroup.description = unit.description;
-  //       unitGroup.quantity = 0;
-  //       unitGroup.beds = 0;
-  //       unitGroup.areaSize = 0;
-  //       unitsGrouped.push(unitGroup);
-  //     };
+  groupByDescription(units: Unit[]): UnitGroup[] {
+    return units.reduce((unitsGrouped: UnitGroup[], unit: Unit) => {
+      const unitGroup = this.findOrCreateUnitGroup(unitsGrouped, unit);
+      unitGroup.quantity += 1;
+      unitGroup.beds += unit.beds ?? 0;
+      unitGroup.areaSize += Number(unit.areaSize) ?? 0;
 
-  //     const unitGroup = unitsGrouped.find(unitGroup => unitGroup.description === unit.description);
-  //     unitGroup!.quantity += 1;
-  //     unitGroup!.beds += unit.beds || 0;
-  //     unitGroup!.areaSize += +(unit.areaSize || 0);
-  //   })
+      return unitsGrouped;
+    }, []);
+  }
 
-  //   this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
-  //   this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
-  //   this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
+  findOrCreateUnitGroup(unitsGrouped: UnitGroup[], unit: Unit): UnitGroup {
+    let unitGroup = unitsGrouped.find(unitGroup => unitGroup.description === unit.description);
 
-  //   return unitsGrouped;
-  // }
+    if (!unitGroup) {
+      unitGroup = {
+        description: unit.description,
+        quantity: 0,
+        beds: 0,
+        areaSize: 0,
+      };
+      unitsGrouped.push(unitGroup);
+    };
 
-  // getUnitsGrouped(assetClass: AssetClassType) {
-  //   this._schemeService.getUnitsPerAssetClass(assetClass)
-  //     .subscribe((units:Unit[]) => {
-  //       this.groupByDescription(units)
-  //     })
-  // }
-  
+    return unitGroup
+  }
+
+  calculateTotals(unitsGrouped: UnitGroup[]) {
+    this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
+    this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
+    this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
+  }
+
 }

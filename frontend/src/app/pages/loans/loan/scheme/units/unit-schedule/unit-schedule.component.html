@@ -1,4 +1,4 @@
-<!-- <ng-container *ngIf="!!assetClass.id">
+<!-- <ng-container *ngIf="!!assetClass.id"> -->
   <div class="table" *ngIf="assetClass.investmentStrategy === 'buildToSell'">
     <div class="total-row text-center">
       <div class="table-cell">Total</div>
@@ -20,7 +20,7 @@
       <div class="table-cell-header pt-2">Sale status</div>
       <div class="table-cell-header pt-2">Buyer</div>
     </div>
-    <div class="table-row text-center" *ngFor="let unit of assetClass.units">
+    <!-- <div class="table-row text-center" *ngFor="let unit of assetClass.units">
       <div class="table-cell">{{unit.identifier}}</div>
       <div class="table-cell">{{unit.description}}</div>
       <div class="table-cell">{{unit.areaSize | number: '1.2-2' : 'en-GB'}}</div>
@@ -33,7 +33,7 @@
       </div>
       <div class="table-cell">{{unit.sale?.status}}</div>
       <div class="table-cell">{{unit.sale?.buyer}}</div>
-    </div>
+    </div> -->
   </div>
 
   <div class="table" *ngIf="assetClass.investmentStrategy === 'buildToRent'">
@@ -59,7 +59,7 @@
       <div class="table-cell-header pt-2">Duration</div>
       <div class="table-cell-header pt-2">Tenant</div>
     </div>
-    <div class="table-row text-center" *ngFor="let unit of assetClass.units">
+    <!-- <div class="table-row text-center" *ngFor="let unit of assetClass.units">
       <div class="table-cell">{{unit.identifier}}</div>
       <div class="table-cell">{{unit.description}}</div>
       <div class="table-cell">{{unit.areaSize | number: '1.2-2' : 'en-GB'}}</div>
@@ -73,6 +73,6 @@
       <div class="table-cell">{{unit.lease?.startDate}}</div>
       <div class="table-cell">{{unit.lease?.durationUnit}}</div>
       <div class="table-cell">{{unit.lease?.tenant}}</div>
-    </div>
+    </div> -->
   </div>
-</ng-container> -->
+<!-- </ng-container> -->
