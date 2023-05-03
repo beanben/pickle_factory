@@ -113,6 +113,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
     if (!!assetClass) {
       this.getAvailableAssetClassUses();
       this.updateSchemeAssetClass(assetClass);
+      console.log("this asset class seelcted: ", this.assetClassSelected)
       // this.updateAvailableAssetClassUses(assetClass);
     }
   }

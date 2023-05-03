@@ -17,6 +17,7 @@ from .views import (
     AssetClassList,
     AssetClassDetail,
     AssetClassUnitsList,
+    AssetClassUnitsWithSaleAndLease,
     SaleStatusChoicesView,
     ChoicesView
 )
@@ -54,6 +55,7 @@ asset_class_patterns = ([
     path('', AssetClassList.as_view()),
     path('<int:pk>/', AssetClassDetail.as_view()),
     path('<int:pk>/units/', AssetClassUnitsList.as_view()),
+    path('<int:pk>/units_with_sale_and_lease/', AssetClassUnitsWithSaleAndLease.as_view()),
 ], 'asset_class')
 
 urlpatterns = [

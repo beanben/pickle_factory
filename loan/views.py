@@ -14,6 +14,7 @@ from rest_framework import status
 from django.http import JsonResponse
 import pdb
 from django.shortcuts import get_object_or_404
+from .utils import camel_to_snake
 
 
 def asset_class_uses(request):
@@ -261,6 +262,10 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         use = self.request.data.get('use')
         return self.use_serialiser_map[use]
     
+    def post(self, request, *args, **kwargs):
+        request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
+        return self.update(request, *args, **kwargs)
+    
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return Response({
@@ -302,6 +307,10 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         asset_class = scheme_models.AssetClass.objects.get(id=pk)
         use = asset_class.use.lower()
         return self.use_serialiser_map[use]
+    
+    def put(self, request, *args, **kwargs):
+        request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
+        return self.update(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
@@ -370,4 +379,34 @@ class AssetClassUnitsList(AuthorQuerySetMixin, generics.ListAPIView):
 
     def get_queryset(self):
         asset_class_id = self.kwargs['pk']
-        return scheme_models.Unit.objects.filter(asset_class_id=asset_class_id)
+        asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+        return scheme_models.Unit.objects.filter(asset_class=asset_class)
+    
+class AssetClassUnitsWithSaleAndLease(AuthorQuerySetMixin, generics.ListAPIView):
+    serializer_class = scheme_serializers.UnitSerializer
+
+    def get_queryset(self):
+        asset_class_id = self.kwargs['pk']
+        asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+        return scheme_models.Unit.objects.filter(asset_class=asset_class)
+    
+    def list(self, request, *args, **kwargs):
+        units = self.get_queryset()
+        sales = scheme_models.Sale.objects.filter(unit__in=units)
+        leases = scheme_models.Lease.objects.filter(unit__in=units)
+
+        units_serializer = self.get_serializer(units, many=True)
+        sales_serializer = scheme_serializers.SaleUnitSerializer(sales, many=True)
+        leases_serializer = scheme_serializers.LeaseUnitSerializer(leases, many=True)
+
+        unit_sale_lease_list = []
+
+        for unit in units_serializer.data:
+            unit_sale_lease_list.append({
+                'unit': unit,
+                'sale': [sale for sale in sales_serializer.data if sale['unit']['id'] == unit['id']],
+                'lease': [lease for lease in leases_serializer.data if lease['unit']['id'] == unit['id']]
+            })
+
+        return Response(unit_sale_lease_list, status=status.HTTP_200_OK)
+

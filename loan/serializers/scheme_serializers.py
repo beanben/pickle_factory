@@ -54,6 +54,8 @@ class AssetClassSerializer(serializers.ModelSerializer):
         scheme_id = validated_data.pop("scheme")["id"]
         scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
+        
+
     
     def create(self, validated_data):
         self.update_validated_data(validated_data)
@@ -61,6 +63,10 @@ class AssetClassSerializer(serializers.ModelSerializer):
         # Create an instance of the appropriate model class
         instance = self.Meta.model.objects.create(**validated_data)
         return instance
+    
+    def update(self, instance, validated_data):
+        self.update_validated_data(validated_data)
+        return super().update(instance, validated_data)
 
 class HotelSerializer(AssetClassSerializer):
     class Meta:
@@ -147,7 +153,7 @@ class UnitSerializer(serializers.ModelSerializer):
         scheme = obj.asset_class.scheme
         return scheme.system.lower()
     
-class LeaseSerializer(serializers.ModelSerializer):
+class LeaseUnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
     unit = UnitSerializer(required=False, allow_null=True)
 

@@ -1,5 +1,5 @@
 <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme" [assetClass]="assetClassSelected"
-  [availableUseChoices]="availableUseChoices" (modalSaveAssetClass)="onSaveAssetClass($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
+  [availableUseChoices]="availableUseChoices" (modalSaveAssetClass)="onSaveAssetClass($event)">
 </app-asset-class-modal>
 
 <!-- <app-strategy-modal *ngIf="openStrategyModal" [assetClass]="assetClassSelected" [mode]="modalMode"
@@ -13,7 +13,7 @@
   
   <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index ">
-      <div class="col-6">
+      <div class="col-6 offset-3">
         <app-unit-card [assetClass]="assetClass"></app-unit-card>
       </div>
     </div>
@@ -23,13 +23,20 @@
         <app-unit-card [assetClassUnits]="assetClassUnits"></app-unit-card>
       </div>
     </div> -->
+    <div class="my-2 d-flex justify-content-end">
+      <button class="btn btn-primary mx-2" (click)="isShow = !isShow">
+        <ng-container [ngSwitch]="schemeAssetClasses.length">
+          <span *ngSwitchCase="1">{{isShow ? 'Hide schedule' : 'Show schedule'}}</span>
+          <span *ngSwitchDefault>{{isShow ? 'Hide schedules' : 'Show schedules'}}</span>
+        </ng-container>
+      </button>
 
-    <div class="btn btn-primary" (click)="isShow = !isShow">
-      <ng-container [ngSwitch]="schemeAssetClasses.length">
-        <span *ngSwitchCase="1">{{isShow ? 'Hide schedule' : 'Show schedule'}}</span>
-        <span *ngSwitchDefault>{{isShow ? 'Hide schedules' : 'Show schedules'}}</span>
-      </ng-container>
+      <button class="btn btn-primary mx-2" (click)="onOpenAssetClassModal('new')"
+          [disabled]="availableUseChoices.length === 0">
+          Add asset class
+      </button>
     </div>
+    
   </div>
 
   <ng-container *ngIf="isShow">
@@ -42,12 +49,6 @@
         <p class="nav-link" (click)="onSelectAssetClass(i)"
           [ngClass]="{'active': tabActive === assetClass.use}">{{assetClass.use | titlecase}}</p>
       </li>
-      <li class="ms-auto px-2">
-        <button class="btn btn-primary" (click)="onOpenAssetClassModal('new')"
-          [disabled]="availableUseChoices.length === 0">
-          Add asset class
-        </button>
-      </li>
     </ul>
 
     <div class="row m-0">
@@ -58,9 +59,11 @@
             <app-unit-schedule [assetClass]="assetClassSelected"></app-unit-schedule>
           </div>
         </div>
-        <div class=" my-2 d-flex justify-content-end">
-          <button type="button" class="btn btn-primary mx-2" (click)="onOpenAssetClassModal('edit')">Edit {{assetClassSelected.use | titlecase}}</button>
-          <!-- <button type="button" class="btn btn-primary mx-2" (click)="onOpenUnitScheduleModal('edit')">Edit unit schedule</button> -->
+
+        <div class="row p-2 my-4">
+          <div class="col d-flex justify-content-end">
+            <button class="btn btn-primary" (click)="onOpenAssetClassModal('edit')">Edit {{assetClassSelected.use | titlecase}}</button>
+          </div>
         </div>
 
       </div>

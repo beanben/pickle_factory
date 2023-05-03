@@ -49,19 +49,15 @@ export class Unit {
 
     constructor(
         public assetClass: AssetClassType,
-        // public label: "unit" | "room",
         public identifier: string = "",
         public description: string = "",
         public beds?: number,
         public areaSize?: number,
         public areaSystem: "sqft" | "sqm" = "sqft",
         public id?: number,
-        // public sale?: Sale,
-        // public lease?: Lease,
     ) {
         this.label = this.defineLabel();
         this.areaType = this.defineAreaType();
-        // this.areaSystem = this.getAreaSystem();
     }
 
     defineLabel(): "unit" | "room" {

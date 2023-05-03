@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom, map as rxjsMap, tap } from 'rxjs';
-import { AssetClassUnits, Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
+import { AssetClassUnits, Lease, Sale, Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
 import { AssetClassType, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
@@ -174,8 +174,16 @@ export class SchemeService {
   getChoices(choiceType: string): Observable<Choice[]> {
     const url = `/api/choices/${choiceType}/`;
     return this.http.get<Choice[]>(url).pipe(
-      tap(() => console.log('getChoices()', Math.random()))
+      tap(() => console.log('getChoices()', Math.random())),
+      rxjsMap(this.convertChoiceValueToCamelCase)
     );
+  }
+
+  convertChoiceValueToCamelCase(choices: Choice[]): Choice[] {
+    return choices.map(choice => ({
+      value: snakeToCamelCase(choice.value),
+      label: choice.label,
+    }));
   }
 
   createAssetClass(assetClass: AssetClassType) {
@@ -246,15 +254,15 @@ export class SchemeService {
     return this.http.get<AssetClassType[]>(url)
       .pipe(
         tap(() => console.log('getSchemeAssetClasses()', Math.random())),
-        rxjsMap((assetClasses: AssetClassType[]) => {
-          return assetClasses.map(assetClass => {
-            return {
-              ...assetClass,
-              investmentStrategy: snakeToCamelCase(assetClass.investmentStrategy),
-            };
-          });
-        }),
+        rxjsMap(this.convertInvestmentStrategyToCamelCase)
       );
+  }
+
+  convertInvestmentStrategyToCamelCase(assetClasses: AssetClassType[]): AssetClassType[] {
+    return assetClasses.map(assetClass => ({
+      ...assetClass,
+      investmentStrategy: snakeToCamelCase(assetClass.investmentStrategy),
+    }));
   }
 
   getAssetClassUnits(assetClass: AssetClassType): Observable<Unit[]> {
@@ -279,5 +287,11 @@ export class SchemeService {
   //     tap(() => console.log('getUnitsPerAssetClass()', Math.random()))
   //   )
   // }
+  getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType): Observable<{ unit: Unit; sale: Sale; lease: Lease }[]> {
+    const url = `/api/asset_class/${assetClass.id}/units_with_sale_and_lease/`;
+    return this.http.get<{ unit: Unit; sale: Sale; lease: Lease }[]>(url).pipe(
+      tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random()))
+    )
+  }
 
 }

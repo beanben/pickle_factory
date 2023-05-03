@@ -13,6 +13,7 @@ import { Choice } from 'src/app/shared/shared';
   styleUrls: ['./asset-class-modal.component.css']
 })
 export class AssetClassModalComponent implements OnInit {
+  openAssetClassModal = false;
   displayStyle = "block";
   chevronRight = "assets/images/chevronRight.svg";
   assetClassStatus = "active";
@@ -61,7 +62,6 @@ export class AssetClassModalComponent implements OnInit {
   getInvestmentStrategyChoices() {
     this._schemeService.getChoices('investment_strategy').subscribe((choices: Choice[]) => {
       this.investmentStrategyChoices = choices;
-      this.form.patchValue({ 'investmentStrategy': choices[0].value });
     })
   }
 
@@ -195,6 +195,7 @@ export class AssetClassModalComponent implements OnInit {
       assetClassUse: toTitleCase(this.assetClass.use),
       investmentStrategy: this.assetClass.investmentStrategy
     });
+
   }
 
   onCancelDelete(){
