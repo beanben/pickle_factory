@@ -54,7 +54,11 @@ export interface Lease {
 //     lease?: Lease,
 // }
 
-export interface AssetClassUnits {
+export interface AssetClassUnit {
     assetClass: AssetClassType;
     units: Unit[];
+}
+
+export interface SchemeData {
+    assetClassUnits: AssetClassUnit[];
 }

@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AssetClassUnits, Scheme } from '../scheme';
+import { AssetClassUnit, Scheme } from '../scheme';
 import { AssetClassType, Unit } from '../scheme.model';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription, lastValueFrom } from 'rxjs';
@@ -111,9 +111,9 @@ export class UnitsComponent implements OnInit, OnDestroy {
     this.openAssetClassModal = false;
 
     if (!!assetClass) {
+      console.log("on save asset class:", assetClass)
       this.getAvailableAssetClassUses();
       this.updateSchemeAssetClass(assetClass);
-      console.log("this asset class seelcted: ", this.assetClassSelected)
       // this.updateAvailableAssetClassUses(assetClass);
     }
   }

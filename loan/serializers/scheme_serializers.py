@@ -54,8 +54,7 @@ class AssetClassSerializer(serializers.ModelSerializer):
         scheme_id = validated_data.pop("scheme")["id"]
         scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
-        
-
+    
     
     def create(self, validated_data):
         self.update_validated_data(validated_data)

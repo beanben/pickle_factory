@@ -89,7 +89,7 @@ export class AssetClassModalComponent implements OnInit {
     }
 
     this._schemeService.createAssetClass(assetClass)
-      .then((res:APIResult) => {
+      .then((res: APIResult) => {
         const assetClassRes:AssetClassType = res.response;
         this.modalSaveAssetClass.emit(assetClassRes);
       })

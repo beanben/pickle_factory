@@ -32,16 +32,16 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     private _schemeService: SchemeService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
       this.unitStructure = new Unit(this.assetClass);
       // this.getAssetClassUnits(this.assetClass);
-      
+      // console.log("this.assetClass", this.assetClass);
       this.getAssetClassUnitsWithSaleAndLease(this.assetClass);
-      console.log("assetClass changed : ", this.assetClass)
     }
   }
 

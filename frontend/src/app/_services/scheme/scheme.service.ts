@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom, map as rxjsMap, tap } from 'rxjs';
-import { AssetClassUnits, Lease, Sale, Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
+import { AssetClassUnit, Lease, Sale, Scheme, SchemeData } from 'src/app/pages/loans/loan/scheme/scheme';
 import { AssetClassType, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
@@ -18,7 +18,7 @@ export class SchemeService {
   // availableAssetClassUsesSub = new BehaviorSubject<string[]>([]);
   // assetClassUsesSub = new BehaviorSubject<string[]>([]);
   // schemeSub = new BehaviorSubject<Scheme>({} as Scheme);
-  // assetClassesUnitsSub = new BehaviorSubject<AssetClassUnits[]>([]);
+  // schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
 
   constructor(
     private http: HttpClient,
@@ -32,19 +32,19 @@ export class SchemeService {
   //   return this.assetClassesUnitsSub.next(assetClassesUnitsSub);
   // }
 
-  // async getSchemeAssetClassesUnits(scheme: Scheme): Promise<void> {
+  // async getSchemeData(scheme: Scheme): Promise<void> {
   //   const assetClassUnits: AssetClassUnits[] = [];
   //   const assetClasses = await lastValueFrom(this.getSchemeAssetClasses(scheme));
 
-  //   for (const assetClass of assetClasses) {
+  //   for (const assetClass of schemeAssetClasses) {
   //     const units = await lastValueFrom(this.getAssetClassUnits(assetClass));
-  //     assetClassUnits.push({
+  //     schemeAssetClassUnits.push({
   //       assetClass: assetClass,
   //       units: units,
   //     });
   //   }
 
-  //   this.setAssetClassesUnitsSub(assetClassUnits);
+  //   this.setSchemeAssetClassesUnitsSub(assetClassUnits);
   // }
 
   // setAvailableAssetClassUsesSub(availableAssetClassUse: string[]){
@@ -193,8 +193,11 @@ export class SchemeService {
 
       this.http.post(url, assetClass).subscribe({
         next: (data) => {
-          const result = data as APIResult;
+          let result = data as APIResult;
           if (result.status === "success") {
+            const assetClassRes = result.response as AssetClassType;
+            assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
+            result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message)
@@ -235,8 +238,11 @@ export class SchemeService {
 
       this.http.put(url, assetClass).subscribe({
         next: (data) => {
-          const result = data as APIResult;
+          let result = data as APIResult;
           if (result.status === "success") {
+            const assetClassRes = result.response as AssetClassType;
+            assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
+            result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message)
