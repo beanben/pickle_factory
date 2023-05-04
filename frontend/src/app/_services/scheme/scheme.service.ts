@@ -188,7 +188,7 @@ export class SchemeService {
 
   createAssetClass(assetClass: AssetClassType) {
     const url = "/api/asset_class/";
-
+    console.log("createAssetClass()")
     return new Promise<APIResult>((resolve, reject) => {
 
       this.http.post(url, assetClass).subscribe({
@@ -233,7 +233,7 @@ export class SchemeService {
 
   updateAssetClass(assetClass: AssetClassType) {
     const url = `/api/asset_class/${assetClass.id}/`;
-
+    console.log("updateAssetClass()")
     return new Promise<APIResult>((resolve, reject) => {
 
       this.http.put(url, assetClass).subscribe({

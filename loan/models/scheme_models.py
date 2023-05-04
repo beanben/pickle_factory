@@ -58,9 +58,6 @@ class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
     scheme =  models.ForeignKey(Scheme, on_delete=models.CASCADE, related_name='asset_classes', related_query_name="asset_class")
     investment_strategy = models.CharField(max_length=100, blank=True , choices = INVESTMENT_STRATEGY_CHOICES, default=BUILD_TO_SELL)
 
-    class Meta:
-        verbose_name_plural = "Asset Classes" #for the admin panel
-
     def __str__(self):
         return self.use
  
