@@ -135,6 +135,7 @@ class SchemeAssetClasses(AuthorQuerySetMixin, generics.ListAPIView):
             'student_accommodation': scheme_serializers.StudentAccommodationSerializer
         }
 
+
         for asset_class in queryset:
             serializer_class = use_serializer_map[asset_class.use]
             serializer = serializer_class(asset_class)
@@ -268,6 +269,7 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
 
     def get_serializer_class(self):
         use = self.request.data.get('use')
+        use = camel_to_snake(use)
         return self.use_serialiser_map[use]
     
     def post(self, request, *args, **kwargs):
@@ -317,7 +319,7 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         return self.use_serialiser_map[use]
     
     def put(self, request, *args, **kwargs):
-        request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
+        # request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
         return self.update(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -328,11 +330,11 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
             'response': response.data
         })
     
-class SaleStatusChoicesView(APIView):
-    def get(self, request):
-         choices = [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
-         serializer = shared_serializers.ChoicesSerializer(choices, many=True)
-         return Response(serializer.data, status=status.HTTP_200_OK)
+# class SaleStatusChoicesView(APIView):
+#     def get(self, request):
+#          choices = [{'value': choice[0], 'label': choice[1]} for choice in scheme_models.Sale.STATUS_CHOICES]
+#          serializer = shared_serializers.ChoicesSerializer(choices, many=True)
+#          return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class UnitsBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):

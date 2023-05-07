@@ -45,7 +45,7 @@ export class Commercial extends AssetClassAbstract {
 }
 
 export class StudentAccommodation extends AssetClassAbstract {
-    readonly use = "student accommodation";
+    readonly use = "studentAccommodation";
 }
 
 export class Office extends AssetClassAbstract {
@@ -53,7 +53,7 @@ export class Office extends AssetClassAbstract {
 }
 
 export class ShoppingCentre extends AssetClassAbstract {
-    readonly use = "shopping centre";
+    readonly use = "shoppingCentre";
 }
 
 export class Unit {
@@ -74,19 +74,19 @@ export class Unit {
     }
 
     defineLabel(): "unit" | "room" {
-        const hasRooms = ["hotel", "student accommodation"];
-        const hasUnits = ["commercial", "office", "shopping centre", "residential"];
+        const hasRooms = ["hotel", "studentAccommodation"];
+        const hasUnits = ["commercial", "office", "shoppingCentre", "residential"];
         return hasRooms.includes(this.assetClass.use.toLowerCase()) ? "room" : "unit";
     }
 
     defineAreaType(): "NIA" | "GIA" {
-        const isNIA = ["hotel", "student accommodation", "residential"];
-        const isGIA = ["commercial", "office", "shopping centre",];
+        const isNIA = ["hotel", "studentAccommodation", "residential"];
+        const isGIA = ["commercial", "office", "shoppingCentre",];
         return isNIA.includes(this.assetClass.use.toLowerCase()) ? "NIA" : "GIA";
     }
 
     hasBeds(): boolean {
-        const hasBeds = ["student accommodation", "hotel", "residential"];
+        const hasBeds = ["studentAccommodation", "hotel", "residential"];
         return hasBeds.includes(this.assetClass.use.toLowerCase());
     }
 
@@ -103,11 +103,11 @@ export class AssetClassFactory {
                 return new Residential(this.scheme);
             case 'commercial':
                 return new Commercial(this.scheme);
-            case 'student accommodation':
+            case 'studentAccommodation':
                 return new StudentAccommodation(this.scheme);
             case 'office':
                 return new Office(this.scheme);
-            case 'shopping centre':
+            case 'shoppingCentre':
                 return new ShoppingCentre(this.scheme);
             default:
                 return new Residential(this.scheme);
@@ -148,7 +148,7 @@ export class Lease {
 
     defineRentFrequency(): 'perWeek' | 'perMonth' {
         const use: string = this.unit.assetClass.use;
-        return use === 'student accommodation' ? 'perWeek' : 'perMonth';
+        return use === 'studentAcommodation' ? 'perWeek' : 'perMonth';
     };
 
     defineLeaseFrequency(): 'weeks' | 'months' {

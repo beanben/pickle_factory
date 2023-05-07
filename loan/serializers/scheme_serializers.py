@@ -43,6 +43,7 @@ class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     scheme = SchemeSerializer(required=False, allow_null=True)
     investment_strategy = CamelToSnakeCaseCharField()
+    use = CamelToSnakeCaseCharField()
 
     class Meta:
         model = scheme_models.AssetClass

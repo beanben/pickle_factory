@@ -18,7 +18,7 @@ from .views import (
     AssetClassDetail,
     AssetClassUnitsList,
     AssetClassUnitsWithSaleAndLease,
-    SaleStatusChoicesView,
+    # SaleStatusChoicesView,
     ChoicesView,
     UnitScheduleDataBulkUpdateCreate,
 )
@@ -30,7 +30,7 @@ unit_patterns = ([
     path('bulk_update_create/', UnitsBulkUpdateCreate.as_view()),
     path('<int:pk>/', UnitDetail.as_view()),
     
-    path('sale_status_choices/', SaleStatusChoicesView.as_view()),
+    # path('sale_status_choices/', SaleStatusChoicesView.as_view()),
 ], 'unit')
 
 scheme_patterns = ([

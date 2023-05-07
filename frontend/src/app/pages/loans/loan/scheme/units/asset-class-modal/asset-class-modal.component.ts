@@ -101,11 +101,11 @@ export class AssetClassModalComponent implements OnInit {
       investmentStrategy: this.form.value.investmentStrategy
     }
 
-    // this._schemeService.createAssetClass(assetClass)
-    //   .then((res: APIResult) => {
-    //     const assetClassRes:AssetClassType = res.response;
-    //     this.modalSaveAssetClass.emit(assetClassRes);
-    //   })
+    this._schemeService.createAssetClass(assetClass)
+      .then((res: APIResult) => {
+        const assetClassRes:AssetClassType = res.response;
+        this.modalSaveAssetClass.emit(assetClassRes);
+      })
   }
 
   updateAssetClass(assetClass: AssetClassType) {

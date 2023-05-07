@@ -34,6 +34,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   @Input() scheme = {} as Scheme;
   schemeAssetClasses: AssetClassType[] = [];
   subs: Subscription[] = [];
+  useChoices: Choice[] = [];
 
   constructor(
     private _schemeService: SchemeService
@@ -46,7 +47,8 @@ export class UnitsComponent implements OnInit, OnDestroy {
   // }
 
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.getChoices('assetClass', this.useChoices)
     // this.subs.push(
     //   this._schemeService.getAssetClassesUnitsSub()
     //     .subscribe((assetClassesUnits: AssetClassUnits[]) => {
@@ -70,6 +72,19 @@ export class UnitsComponent implements OnInit, OnDestroy {
     }
   }
 
+  async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
+    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices: Choice[] = await lastValueFrom(choices$);
+    targetArray.push(...choices);
+  }
+
+  getUseLabel(use: string): string {
+    const useChoice = this.useChoices.find(choice => choice.value === use);
+    return useChoice ? useChoice.label : "";
+  }
+
+
+
   getSchemeAssetClasses(scheme: Scheme) {
     this._schemeService.getSchemeAssetClasses(scheme)
       .subscribe((assetClasses: AssetClassType[]) => {
@@ -80,7 +95,6 @@ export class UnitsComponent implements OnInit, OnDestroy {
         // this.getAssetClassesUnits(assetClasses)
       });
   }
-
 
   onOpenAssetClassModal(modalMode: string) {
     this.openAssetClassModal = true;
