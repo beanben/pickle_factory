@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom, map as rxjsMap, tap } from 'rxjs';
-import { AssetClassUnit, Lease, Sale, Scheme, SchemeData } from 'src/app/pages/loans/loan/scheme/scheme';
-import { AssetClassType, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
+import { AssetClassUnit, Scheme, SchemeData, UnitScheduleData } from 'src/app/pages/loans/loan/scheme/scheme';
+import { AssetClassType, Lease, Sale, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
@@ -175,16 +175,16 @@ export class SchemeService {
     const url = `/api/choices/${choiceType}/`;
     return this.http.get<Choice[]>(url).pipe(
       tap(() => console.log('getChoices()', Math.random())),
-      rxjsMap(this.convertChoiceValueToCamelCase)
+      // rxjsMap(this.convertChoiceValueToCamelCase)
     );
   }
 
-  convertChoiceValueToCamelCase(choices: Choice[]): Choice[] {
-    return choices.map(choice => ({
-      value: snakeToCamelCase(choice.value),
-      label: choice.label,
-    }));
-  }
+  // convertChoiceValueToCamelCase(choices: Choice[]): Choice[] {
+  //   return choices.map(choice => ({
+  //     value: snakeToCamelCase(choice.value),
+  //     label: choice.label,
+  //   }));
+  // }
 
   createAssetClass(assetClass: AssetClassType) {
     const url = "/api/asset_class/";
@@ -195,9 +195,9 @@ export class SchemeService {
         next: (data) => {
           let result = data as APIResult;
           if (result.status === "success") {
-            const assetClassRes = result.response as AssetClassType;
-            assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
-            result = {  ...result, response: assetClassRes }
+            // const assetClassRes = result.response as AssetClassType;
+            // assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
+            // result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message)
@@ -240,9 +240,9 @@ export class SchemeService {
         next: (data) => {
           let result = data as APIResult;
           if (result.status === "success") {
-            const assetClassRes = result.response as AssetClassType;
-            assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
-            result = {  ...result, response: assetClassRes }
+            // const assetClassRes = result.response as AssetClassType;
+            // assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
+            // result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message)
@@ -260,16 +260,16 @@ export class SchemeService {
     return this.http.get<AssetClassType[]>(url)
       .pipe(
         tap(() => console.log('getSchemeAssetClasses()', Math.random())),
-        rxjsMap(this.convertInvestmentStrategyToCamelCase)
+        // rxjsMap(this.convertInvestmentStrategyToCamelCase)
       );
   }
 
-  convertInvestmentStrategyToCamelCase(assetClasses: AssetClassType[]): AssetClassType[] {
-    return assetClasses.map(assetClass => ({
-      ...assetClass,
-      investmentStrategy: snakeToCamelCase(assetClass.investmentStrategy),
-    }));
-  }
+  // convertInvestmentStrategyToCamelCase(assetClasses: AssetClassType[]): AssetClassType[] {
+  //   return assetClasses.map(assetClass => ({
+  //     ...assetClass,
+  //     investmentStrategy: snakeToCamelCase(assetClass.investmentStrategy),
+  //   }));
+  // }
 
   getAssetClassUnits(assetClass: AssetClassType): Observable<Unit[]> {
     const url = `/api/asset_class/${assetClass.id}/units/`;
@@ -279,25 +279,18 @@ export class SchemeService {
       )
   };
 
-  // getSaleStatusChoices(): Observable<Choice[]> {
-  //   const url = "/api/unit/sale_status_choices/";
-  //   return this.http.get<Choice[]>(url).pipe(
-  //     tap(() => console.log('getSaleStatusChoices()', Math.random()))
-  //   )
-  // }
-
-  // // DOESNT Exist
-  // getUnitsPerAssetClass(assetClass: AssetClassType): Observable<Unit[]> {
-  //   const url = `/api/unit/${assetClass.id}/`;
-  //   return this.http.get<Unit[]>(url).pipe(
-  //     tap(() => console.log('getUnitsPerAssetClass()', Math.random()))
-  //   )
-  // }
-  getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType): Observable<{ unit: Unit; sale: Sale; lease: Lease }[]> {
+  getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType): Observable<UnitScheduleData[]> {
     const url = `/api/asset_class/${assetClass.id}/units_with_sale_and_lease/`;
-    return this.http.get<{ unit: Unit; sale: Sale; lease: Lease }[]>(url).pipe(
+    return this.http.get<UnitScheduleData[]>(url).pipe(
       tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random()))
     )
+  }
+
+  updateOrCreateUnitsScheduleData(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
+    const url = `/api/asset_class/unit_schedule_data_bulk_update_create/`;
+    return this.http.post<UnitScheduleData[]>(url, unitsScheduleData).pipe(
+      tap(() => console.log('updateOrCreateUnitsScheduleData()', Math.random()))
+    );
   }
 
 }

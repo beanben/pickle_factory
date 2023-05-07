@@ -14,7 +14,7 @@ from rest_framework import status
 from django.http import JsonResponse
 import pdb
 from django.shortcuts import get_object_or_404
-from .utils import camel_to_snake
+from .utils import camel_to_snake, snake_to_camel
 
 
 def asset_class_uses(request):
@@ -29,19 +29,27 @@ def system_types(request):
 
 class ChoicesView(APIView):
     def get(self, request, choice_type):
+        choice_type = camel_to_snake(choice_type)
+
         choices_dict = {
             'system': scheme_models.Scheme.SYSTEM_CHOICES,
             'asset_class': scheme_models.AssetClass.ASSET_CLASS_CHOICES,
             'investment_strategy': scheme_models.AssetClass.INVESTMENT_STRATEGY_CHOICES,
-            # 'sale_status': scheme_models.Sale.STATUS_CHOICES,
+            'sale_status': scheme_models.Sale.STATUS_CHOICES,
+            'rent_frequency': scheme_models.Lease.RENT_FREQUENCY_CHOICES,
+            'lease_frequency': scheme_models.Lease.LEASE_FREQUENCY_CHOICES,
             # Add more choices here if needed
         }
+
+        # convert choice_dict keys from snake_caase to camelCase (for frontend)
+        # choices_dict = {snake_to_camel(k): v for k, v in choices_dict.items()}
 
         if choice_type not in choices_dict:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         choices = [{'value': choice[0], 'label': choice[1]} for choice in choices_dict[choice_type]]
         serializer = shared_serializers.ChoicesSerializer(choices, many=True)
+        # pdb.set_trace()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
@@ -263,8 +271,8 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         return self.use_serialiser_map[use]
     
     def post(self, request, *args, **kwargs):
-        request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
-        return self.update(request, *args, **kwargs)
+        # request.data["investment_strategy"] = camel_to_snake(request.data["investment_strategy"])
+        return self.create(request, *args, **kwargs)
     
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -409,4 +417,59 @@ class AssetClassUnitsWithSaleAndLease(AuthorQuerySetMixin, generics.ListAPIView)
             })
 
         return Response(unit_sale_lease_list, status=status.HTTP_200_OK)
+    
+
+class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
+        serializer_class = scheme_serializers.UnitScheduleDataSerializer
+        
+        unit_schedule_serializers_map = {
+            'unit': scheme_serializers.UnitSerializer,
+            'sale': scheme_serializers.SaleUnitSerializer,
+            'lease': scheme_serializers.LeaseUnitSerializer
+        }
+
+        unit_schedule_model_map = {
+            'unit': scheme_models.Unit,
+            'sale': scheme_models.Sale,
+            'lease': scheme_models.Lease
+        }
+
+        def post(self, request, *args, **kwargs):
+            return self.bulk_update_create(request, *args, **kwargs)
+
+        def create_or_update(self, data, object_type):
+            id = data["id"]
+            model = self.unit_schedule_model_map[object_type]
+            serializer_type = self.unit_schedule_serializers_map[object_type]
+            instance = get_object_or_404(model, id=id) if id else None
+            serializer = serializer_type(instance = instance, data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return serializer.data
+
+        def bulk_update_create(self, request, *args, **kwargs):
+            units_schedule_data = []
+
+            for data in request.data:
+                unit_serializer_data = self.create_or_update(data["unit"], 'unit')
+
+                data_sale = data["sale"]
+                data_sale["unit"] = unit_serializer_data
+                sale_serializer_data = self.create_or_update(data_sale, 'sale')
+
+                data_lease = data["lease"]
+                data_lease["unit"] = unit_serializer_data
+                lease_serializer_data = self.create_or_update(data_lease, 'lease')
+
+                unit_shedule_data = {
+                    "unit": unit_serializer_data,
+                    "sale": sale_serializer_data,
+                    "lease": lease_serializer_data
+                }
+                units_schedule_data.append(unit_shedule_data)
+
+            response_data = self.get_serializer(units_schedule_data, many=True).data
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        
 

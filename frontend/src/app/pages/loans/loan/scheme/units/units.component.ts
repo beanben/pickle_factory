@@ -150,7 +150,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   getAvailableAssetClassUses() {
     const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
 
-    this._schemeService.getChoices('asset_class').subscribe((choices: Choice[]) => {
+    this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
       this.availableUseChoices = choices
         .filter(choice => !existingAssetClassUses.includes(choice.label))
     });

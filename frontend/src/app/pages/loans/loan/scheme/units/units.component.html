@@ -1,5 +1,6 @@
-<app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme" [assetClass]="assetClassSelected"
-  [availableUseChoices]="availableUseChoices" (modalSaveAssetClass)="onSaveAssetClass($event)">
+<app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme"
+  [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices"
+  (modalSaveAssetClass)="onSaveAssetClass($event)">
 </app-asset-class-modal>
 
 <!-- <app-strategy-modal *ngIf="openStrategyModal" [assetClass]="assetClassSelected" [mode]="modalMode"
@@ -10,7 +11,7 @@
 [assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal> -->
 
 <ng-container *ngIf="schemeAssetClasses.length > 0; else noAssetClass">
-  
+
   <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index ">
       <div class="col-6 offset-3">
@@ -18,11 +19,6 @@
       </div>
     </div>
 
-    <!-- <div class="row py-2 justify-content-start" *ngFor="let assetClassUnits of schemeAssetClassesUnits; let i = index ">
-      <div class="col-6">
-        <app-unit-card [assetClassUnits]="assetClassUnits"></app-unit-card>
-      </div>
-    </div> -->
     <div class="my-2 d-flex justify-content-end">
       <button class="btn btn-primary mx-2" (click)="isShow = !isShow">
         <ng-container [ngSwitch]="schemeAssetClasses.length">
@@ -32,11 +28,11 @@
       </button>
 
       <button class="btn btn-primary mx-2" (click)="onOpenAssetClassModal('new')"
-          [disabled]="availableUseChoices.length === 0">
-          Add asset class
+        [disabled]="availableUseChoices.length === 0">
+        Add asset class
       </button>
     </div>
-    
+
   </div>
 
   <ng-container *ngIf="isShow">
@@ -46,23 +42,24 @@
 
     <ul class="nav nav-tabs pt-2">
       <li class="nav-item px-2" *ngFor="let assetClass of schemeAssetClasses; let i=index">
-        <p class="nav-link" (click)="onSelectAssetClass(i)"
-          [ngClass]="{'active': tabActive === assetClass.use}">{{assetClass.use | titlecase}}</p>
+        <p class="nav-link" (click)="onSelectAssetClass(i)" [ngClass]="{'active': tabActive === assetClass.use}">
+          {{assetClass.use | titlecase}}
+        </p>
       </li>
     </ul>
+
+    <div class="d-flex justify-content-end p-2">
+      <button class="btn btn-primary"  (click)="onOpenAssetClassModal('edit')">Edit
+        {{assetClassSelected.use | titlecase}}</button>
+    </div>
+    
 
     <div class="row m-0">
       <div class="col">
 
-        <div class="row p-2 my-4">
+        <div class="row p-2">
           <div class="col">
             <app-unit-schedule [assetClass]="assetClassSelected"></app-unit-schedule>
-          </div>
-        </div>
-
-        <div class="row p-2 my-4">
-          <div class="col d-flex justify-content-end">
-            <button class="btn btn-primary" (click)="onOpenAssetClassModal('edit')">Edit {{assetClassSelected.use | titlecase}}</button>
           </div>
         </div>
 

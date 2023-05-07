@@ -1,5 +1,5 @@
 import { Loan } from "../loan";
-import { AssetClassType, Unit } from "./scheme.model";
+import { AssetClassType, Lease, Sale, Unit } from "./scheme.model";
 
 export interface Scheme {
     id: number;
@@ -15,30 +15,30 @@ export interface Scheme {
     // assetClasses: AssetClassType[],
 }
 
-export interface Sale {
-    id?: number;
-    unit: Unit;
-    status: 'available' | 'underOffer' | 'exchanged' | 'completed';
-    statusDate: Date;
-    priceTarget: number;
-    priceAchieved: number;
-    buyer: string;
-}
+// export interface Sale {
+//     id?: number;
+//     unit: Unit;
+//     status: 'available' | 'underOffer' | 'exchanged' | 'completed';
+//     statusDate: Date;
+//     priceTarget: number;
+//     priceAchieved: number;
+//     buyer: string;
+// }
 
-export interface Lease {
-    id?: number;
-    unit: Unit;
-    tenant: string;
-    leaseType?: 'openMarket' | 'discountedMarket';
-    rentTargetAmount: number;
-    rentTargetFrequency: 'weekly' | 'monthly';
-    rentAchievedAmount: number;
-    rentAchievedFrequency: 'weekly' | 'monthly';
-    startDate: Date,
-    durationValue: number;
-    durationUnit: 'weeks' | 'months';
-    endDate: Date,
-}
+// export interface Lease {
+//     id?: number;
+//     unit: Unit;
+//     tenant: string;
+//     leaseType?: 'openMarket' | 'discountedMarket';
+//     rentTargetAmount: number;
+//     rentTargetFrequency: 'weekly' | 'monthly';
+//     rentAchievedAmount: number;
+//     rentAchievedFrequency: 'weekly' | 'monthly';
+//     startDate: Date,
+//     durationValue: number;
+//     durationUnit: 'weeks' | 'months';
+//     endDate: Date,
+// }
 
 // export interface Unit {
 //     assetClassId: number,
@@ -61,4 +61,10 @@ export interface AssetClassUnit {
 
 export interface SchemeData {
     assetClassUnits: AssetClassUnit[];
+}
+
+export interface UnitScheduleData {
+    unit: Unit;
+    sale: Sale;
+    lease: Lease;
 }

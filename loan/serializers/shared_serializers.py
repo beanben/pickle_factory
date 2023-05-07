@@ -1,5 +1,6 @@
 from rest_framework import serializers
+from loan.fields import CamelToSnakeCaseCharField
 
 class ChoicesSerializer(serializers.Serializer):
-    value = serializers.CharField()
+    value = CamelToSnakeCaseCharField()
     label = serializers.CharField()

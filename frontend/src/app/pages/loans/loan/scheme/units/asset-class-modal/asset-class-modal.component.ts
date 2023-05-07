@@ -40,7 +40,8 @@ export class AssetClassModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
-    this.getInvestmentStrategyChoices();
+    this.getChoices('investmentStrategy');
+    // this.getInvestmentStrategyChoices();
     if (this.mode === 'edit') {
       this.populateForm();
     }
@@ -59,11 +60,23 @@ export class AssetClassModalComponent implements OnInit {
     this.modalSaveAssetClass.emit();
   };
 
-  getInvestmentStrategyChoices() {
-    this._schemeService.getChoices('investment_strategy').subscribe((choices: Choice[]) => {
-      this.investmentStrategyChoices = choices;
-    })
+  getChoices(choiceType: string) {
+    this._schemeService.getChoices(choiceType)
+      .subscribe((choices: Choice[]) => {
+        this.investmentStrategyChoices = choices
+        this.form.patchValue({
+          investmentStrategy: this.investmentStrategyChoices[0].value
+        })
+        // console.log(saleStatusChoices)
+        // async and await and set the value of the form control
+      })
   }
+
+  // getInvestmentStrategyChoices() {
+  //   this._schemeService.getChoices('investment_strategy').subscribe((choices: Choice[]) => {
+  //     this.investmentStrategyChoices = choices;
+  //   })
+  // }
 
   onSubmit() {
     if (!this.form.valid) {
@@ -88,11 +101,11 @@ export class AssetClassModalComponent implements OnInit {
       investmentStrategy: this.form.value.investmentStrategy
     }
 
-    this._schemeService.createAssetClass(assetClass)
-      .then((res: APIResult) => {
-        const assetClassRes:AssetClassType = res.response;
-        this.modalSaveAssetClass.emit(assetClassRes);
-      })
+    // this._schemeService.createAssetClass(assetClass)
+    //   .then((res: APIResult) => {
+    //     const assetClassRes:AssetClassType = res.response;
+    //     this.modalSaveAssetClass.emit(assetClassRes);
+    //   })
   }
 
   updateAssetClass(assetClass: AssetClassType) {

@@ -6,6 +6,7 @@ from loan.serializers import loan_serializers
 from rest_framework.serializers import ValidationError
 import pdb
 from django.utils.text import camel_case_to_spaces, slugify
+from loan.fields import CamelToSnakeCaseCharField, AngularDateField
 
 class SchemeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -39,8 +40,9 @@ class SchemeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 class AssetClassSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(required=False, allow_null=True)
     scheme = SchemeSerializer(required=False, allow_null=True)
+    investment_strategy = CamelToSnakeCaseCharField()
 
     class Meta:
         model = scheme_models.AssetClass
@@ -117,7 +119,7 @@ class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
         return updated_instances + created_instances
 
 class UnitSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(required=False, allow_null=True)
     asset_class = AssetClassSerializer(required=False, allow_null=True)
     area_system = serializers.SerializerMethodField(required=False, allow_null=True)
     
@@ -136,7 +138,7 @@ class UnitSerializer(serializers.ModelSerializer):
         list_serializer_class = BulkUpdateOrCreateSerializer
     
     def update_validated_data(self, validated_data):
-        asset_class_id = validated_data.pop("asset_class")["_id"]
+        asset_class_id = validated_data.pop("asset_class")["id"]
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
 
@@ -153,8 +155,12 @@ class UnitSerializer(serializers.ModelSerializer):
         return scheme.system.lower()
     
 class LeaseUnitSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(required=False, allow_null=True)
     unit = UnitSerializer(required=False, allow_null=True)
+    start_date = AngularDateField(required=False, allow_null=True)
+    lease_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    rent_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    lease_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Lease
@@ -163,17 +169,16 @@ class LeaseUnitSerializer(serializers.ModelSerializer):
             'unit',
             'tenant', 
             'lease_type', 
-            'rent_target_amount',
-            'rent_target_frequency',
-            'rent_achieved_amount',
-            'rent_achieved_frequency',
+            'rent_target',
+            'rent_frequency',
+            'rent_achieved',
             'start_date',
-            'duration_value',
-            'duration_unit',
+            'term',
+            'lease_frequency',
             ] 
     
     def update_validated_data(self, validated_data):
-        unit_id = validated_data.pop("unit")["_id"]
+        unit_id = validated_data.pop("unit")["id"]
         unit = scheme_models.Unit.objects.get(id=unit_id)
         validated_data.update({"unit": unit})
     
@@ -185,23 +190,25 @@ class LeaseUnitSerializer(serializers.ModelSerializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
     
-class SaleUnitSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=False)
+class SaleUnitSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False, allow_null=True)
     unit = UnitSerializer(required=False, allow_null=True)
+    status_date = AngularDateField(required=False, allow_null=True)
 
     class Meta:
+        model = scheme_models.Sale
         fields = [
             'id', 
-            'unit',
-            'buyer', 
+            'unit', 
             'status', 
             'status_date',
             'price_target',
-            'price_achieved'
+            'price_achieved',
+            'buyer',
             ]
     
     def update_validated_data(self, validated_data):
-        unit_id = validated_data.pop("unit")["_id"]
+        unit_id = validated_data.pop("unit")["id"]
         unit = scheme_models.Unit.objects.get(id=unit_id)
         validated_data.update({"unit": unit})
     
@@ -213,3 +220,7 @@ class SaleUnitSerializer(serializers.Serializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
         
+class UnitScheduleDataSerializer(serializers.Serializer):
+    unit = UnitSerializer(required=False, allow_null=True)
+    sale = SaleUnitSerializer(required=False, allow_null=True)
+    lease = LeaseUnitSerializer(required=False, allow_null=True)
