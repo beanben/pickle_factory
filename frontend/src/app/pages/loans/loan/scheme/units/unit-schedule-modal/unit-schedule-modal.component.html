@@ -76,7 +76,7 @@
                       <input class="form-control text-center" formControlName="beds" placeholder="0">
                     </td>
                   </ng-container>
-                  <td style="width: 20px" class="deleteHover cursorPointer text-red rounded align-middle"
+                  <td style="width: 20px" class="delete-hover cursor-pointer text-red rounded align-middle"
                     (click)="onConfirmDelete(i)">&times;</td>
                 </tr>
               </tbody>
@@ -186,9 +186,15 @@
                       </select>
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="statusDate" placeholder="DD-MMM-YY"
-                        bsDatepicker [bsConfig]="{ dateInputFormat: 'DD-MMM-YY'}"
-                        [attr.disabled]="unitScheduleData.get('sale.status')?.value === 'available' ? true : null">
+
+                      <ng-container *ngIf="unitScheduleData.get('sale.status')?.value !== 'available' ; else noSale">
+                        <input class="form-control text-center cursor-pointer" formControlName="statusDate" placeholder="DD-MMM-YY"
+                        bsDatepicker [bsConfig]="{ dateInputFormat: 'DD MMM YY'}">
+                      </ng-container>
+                      <ng-template #noSale>
+                        <input class="form-control text-center" formControlName="statusDate" placeholder="-"  [attr.disabled]="true" [value]="null">
+                      </ng-template>
+
                     </td>
                     <td>
                       <input class="form-control text-center" formControlName="buyer" placeholder="-">

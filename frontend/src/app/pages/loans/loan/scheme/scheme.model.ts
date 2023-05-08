@@ -119,7 +119,7 @@ export class Sale {
     constructor(
         public unit: Unit,
         public status: 'available' | 'underOffer' | 'exchanged' | 'completed' = "available",
-        public statusDate: Date = new Date(),
+        public statusDate: Date | null = null,
         public priceTarget: number = 0,
         public priceAchieved: number = 0,
         public buyer: string = "",

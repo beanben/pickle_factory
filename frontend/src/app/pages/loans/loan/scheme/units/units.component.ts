@@ -166,7 +166,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
     this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
       this.availableUseChoices = choices
-        .filter(choice => !existingAssetClassUses.includes(choice.label))
+        .filter(choice => !existingAssetClassUses.includes(choice.value))
     });
 
   }

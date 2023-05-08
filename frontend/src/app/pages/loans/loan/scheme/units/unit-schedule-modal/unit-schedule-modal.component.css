@@ -1,4 +1,4 @@
-.deleteHover:hover{
+.delete-hover:hover{
     background: red; 
 }
 .text-red {
@@ -57,4 +57,8 @@ th {
   word-wrap: break-word;
 } */
 
-
+.form-select {
+  width: 100%; /* Match the width of the form-control */
+  box-sizing: border-box; /* Make sure padding and border are included in width calculation */
+  color: red
+}

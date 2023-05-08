@@ -132,9 +132,9 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     await this.getChoices('rentFrequency', this.rentFrequencyChoices);
     await this.getChoices('leaseFrequency', this.leaseFrequencyChoices);
 
-    if (this.mode === 'edit') {
-      this.populateForm();
-    };
+    // if (this.mode === 'edit') {
+    this.populateForm();
+    // };
     // this.leaseFrequency = this.rentFrequencyChoices[this.leaseStructure.leaseFrequency].label
 
   };
@@ -231,17 +231,18 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   unitToFormGroup(unit: Unit): FormGroup {
-    return this.fb.group({
+    const unitForm = this.fb.group({
       identifier: [unit.identifier, [Validators.required, this.uniqueValueValidator('unit', 'identifier')]],
       description: [unit.description, Validators.required],
       beds: [unit.beds, [Validators.pattern(this.numbersOnly), this.atLeastOneValditor()]],
       areaSize: [unit.areaSize, Validators.pattern(this.decimalsOnly)],
       id: [unit.id],
     });
+    return unitForm
   };
 
   saleToFormGroup(sale: Sale): FormGroup {
-    return this.fb.group({
+    const saleForm = this.fb.group({
       id: [sale.id],
       status: [sale.status || this.saleStatusChoices[0].value],
       statusDate: [sale.statusDate],
@@ -249,10 +250,20 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       priceAchieved: [sale.priceAchieved, Validators.pattern(this.decimalsOnly)],
       buyer: [sale?.buyer],
     });
+
+    this.subs.push(
+      saleForm.get('status')!.valueChanges.subscribe((value: string) => {
+        if(value === 'available'){
+          saleForm.get('statusDate')?.setValue(null);
+        }
+      })
+    )
+
+    return saleForm
   };
 
   leaseToFormGroup(lease: Lease): FormGroup {
-    return this.fb.group({
+    const leaseForm = this.fb.group({
       id: [lease.id],
       unitId: [lease.unit?.id],
       startDate: [lease.startDate],
@@ -261,6 +272,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       rentAchieved: [lease.rentAchieved, Validators.pattern(this.decimalsOnly)],
       tenant: [lease.tenant],
     });
+    return leaseForm
   };
 
   unitScheduleDataToFormGroup(unitScheduleData: UnitScheduleData): FormGroup {
@@ -285,7 +297,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     this.subs.push(
       unitScheduleDataForm.valueChanges
         .pipe(debounceTime(200))
-        .subscribe(value => this.calculateTotals())
+        .subscribe(() => this.calculateTotals())
     );
 
 
@@ -356,6 +368,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   populateForm() {
+    if (this.unitsScheduleData.length === 0) {
+      this.onAddUnitScheduleData();
+    };
+
     this.unitsScheduleData.forEach(unitScheduleData => {
       this.onAddUnitScheduleData(unitScheduleData);
     });

@@ -1,6 +1,6 @@
 <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme"
   [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices"
-  (modalSaveAssetClass)="onSaveAssetClass($event)">
+  (modalSaveAssetClass)="onSaveAssetClass($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
 </app-asset-class-modal>
 
 <!-- <app-strategy-modal *ngIf="openStrategyModal" [assetClass]="assetClassSelected" [mode]="modalMode"
