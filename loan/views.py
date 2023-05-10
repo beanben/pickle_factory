@@ -17,14 +17,14 @@ from django.shortcuts import get_object_or_404
 from .utils import camel_to_snake, snake_to_camel
 
 
-def asset_class_uses(request):
-    subclasses = scheme_models.AssetClass.__subclasses__()
-    asset_class_uses = [subclass.__name__ for subclass in subclasses]
-    return JsonResponse(asset_class_uses, safe=False)
+# def asset_class_uses(request):
+#     subclasses = scheme_models.AssetClass.__subclasses__()
+#     asset_class_uses = [subclass.__name__ for subclass in subclasses]
+#     return JsonResponse(asset_class_uses, safe=False)
 
-def system_types(request):
-    system_choices = [{"value":x, "display":y} for x, y in scheme_models.Scheme.SYSTEM_CHOICES]
-    return JsonResponse(system_choices, safe=False)
+# def system_types(request):
+#     system_choices = [{"value":x, "display":y} for x, y in scheme_models.Scheme.SYSTEM_CHOICES]
+#     return JsonResponse(system_choices, safe=False)
 
 
 class ChoicesView(APIView):
@@ -149,6 +149,7 @@ class SchemeList(AuthorQuerySetMixin, generics.CreateAPIView):
     serializer_class = scheme_serializers.SchemeSerializer
     
     def create(self, request, *args, **kwargs):
+        # pdb.set_trace()
         response = super().create(request, *args, **kwargs)
         return Response({
             'status': "success",
@@ -424,13 +425,13 @@ class AssetClassUnitsWithSaleAndLease(AuthorQuerySetMixin, generics.ListAPIView)
 class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
         serializer_class = scheme_serializers.UnitScheduleDataSerializer
         
-        unit_schedule_serializers_map = {
+        serializers_map = {
             'unit': scheme_serializers.UnitSerializer,
             'sale': scheme_serializers.SaleUnitSerializer,
             'lease': scheme_serializers.LeaseUnitSerializer
         }
 
-        unit_schedule_model_map = {
+        model_map = {
             'unit': scheme_models.Unit,
             'sale': scheme_models.Sale,
             'lease': scheme_models.Lease
@@ -441,8 +442,8 @@ class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIV
 
         def create_or_update(self, data, object_type):
             id = data["id"]
-            model = self.unit_schedule_model_map[object_type]
-            serializer_type = self.unit_schedule_serializers_map[object_type]
+            model = self.model_map[object_type]
+            serializer_type = self.serializers_map[object_type]
             instance = get_object_or_404(model, id=id) if id else None
             serializer = serializer_type(instance = instance, data=data)
             serializer.is_valid(raise_exception=True)
@@ -451,7 +452,7 @@ class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIV
 
         def bulk_update_create(self, request, *args, **kwargs):
             units_schedule_data = []
-
+            
             for data in request.data:
                 unit_serializer_data = self.create_or_update(data["unit"], 'unit')
 

@@ -1,10 +1,29 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Scheme, UnitScheduleData } from '../../scheme';
 import { AssetClassType, Lease, Sale, Unit } from '../../scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { Subscription, lastValueFrom } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { APIResult } from 'src/app/_services/api-result';
@@ -20,11 +39,11 @@ interface ValidationMessages {
 @Component({
   selector: 'app-unit-schedule-modal',
   templateUrl: './unit-schedule-modal.component.html',
-  styleUrls: ['./unit-schedule-modal.component.css']
+  styleUrls: ['./unit-schedule-modal.component.css'],
 })
 export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy {
-  displayStyle = "block";
-  @Input() mode = "";
+  displayStyle = 'block';
+  @Input() mode = '';
   @Input() unitsScheduleData: UnitScheduleData[] = [];
   // @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
@@ -42,22 +61,22 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   averageLeaseRentTarget = 0;
   averageLeaseRentAchieved = 0;
   unitsToDelete: Unit[] = [];
-  rentFrequencyLabel = "";
-  leaseFrequencyLabel = "";
+  rentFrequencyLabel = '';
+  leaseFrequencyLabel = '';
   index = -1;
   // unitSelected = {} as Unit;
   numbersOnly = /^\d+$/;
   decimalsOnly = /^\d*\.?\d*$/;
   step = 1;
-  chevronRight = "assets/images/chevronRight.svg";
-  unitsStatus = "active";
-  salesStatus = "inactive";
-  lettingsStatus = "inactive";
+  chevronRight = 'assets/images/chevronRight.svg';
+  unitsStatus = 'active';
+  salesStatus = 'inactive';
+  lettingsStatus = 'inactive';
   nextIsClicked = false;
   subs: Subscription[] = [];
 
   form: FormGroup = this.fb.group({
-    unitsScheduleData: this.fb.array([])
+    unitsScheduleData: this.fb.array([]),
   });
 
   validationMessages: ValidationMessages = {
@@ -120,11 +139,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     return this.form.get('unitsScheduleData') as FormArray;
   }
 
-  constructor(
-    private el: ElementRef,
-    private _schemeService: SchemeService,
-    private fb: FormBuilder
-  ) { }
+  constructor(private el: ElementRef, private _schemeService: SchemeService, private fb: FormBuilder) {}
 
   async ngOnInit(): Promise<void> {
     this.addEventBackgroundClose();
@@ -136,32 +151,37 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     this.populateForm();
     // };
     // this.leaseFrequency = this.rentFrequencyChoices[this.leaseStructure.leaseFrequency].label
-
-  };
+    this.onAssetClassChange();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
-      this.unitStructure = new Unit(this.assetClass);
-      this.leaseStructure = new Lease(this.unitStructure);
-      this.rentFrequencyLabel = this.defineRentFrequency();
-      this.leaseFrequencyLabel = this.defineLeaseFrequency();
-      this.calculateTotals();
+      this.onAssetClassChange();
+      // this.unitStructure = new Unit(this.assetClass);
+      // this.leaseStructure = new Lease(this.unitStructure);
+      // this.rentFrequencyLabel = this.defineRentFrequency();
+      // this.leaseFrequencyLabel = this.defineLeaseFrequency();
+      // this.calculateTotals();
     }
   }
 
+  onAssetClassChange(): void {
+    this.unitStructure = new Unit(this.assetClass);
+    this.leaseStructure = new Lease(this.unitStructure);
+    this.rentFrequencyLabel = this.defineRentFrequency();
+    this.leaseFrequencyLabel = this.defineLeaseFrequency();
+    this.calculateTotals();
+  }
+
   defineRentFrequency(): string {
-    const frequencyChoiceValue: string = this.leaseStructure.rentFrequency
-    const choice = this.rentFrequencyChoices.find(
-      (item: Choice) => item.value === frequencyChoiceValue
-    );
+    const frequencyChoiceValue: string = this.leaseStructure.rentFrequency;
+    const choice = this.rentFrequencyChoices.find((item: Choice) => item.value === frequencyChoiceValue);
     return choice ? choice.label : '';
-  };
+  }
 
   defineLeaseFrequency(): string {
-    const frequencyChoiceValue: string = this.leaseStructure.leaseFrequency
-    const choice = this.leaseFrequencyChoices.find(
-      (item: Choice) => item.value === frequencyChoiceValue
-    );
+    const frequencyChoiceValue: string = this.leaseStructure.leaseFrequency;
+    const choice = this.leaseFrequencyChoices.find((item: Choice) => item.value === frequencyChoiceValue);
     return choice ? choice.label : '';
   }
 
@@ -171,7 +191,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
         this.onCancel();
       }
     });
-  };
+  }
 
   onCancel() {
     this.modalSaveUnitsSchedule.emit(null);
@@ -220,7 +240,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
   calculateTotalForFormControl(formGroupName: string, controlName: string, decimalPrecision = 0): number {
     return this.unitsScheduleFormArray.controls
-      .map(control => control.get(formGroupName)?.get(controlName)?.value || 0)
+      .map((control) => control.get(formGroupName)?.get(controlName)?.value || 0)
       .reduce((sum, currentValue) => sum + Number(currentValue), 0)
       .toFixed(decimalPrecision);
   }
@@ -238,8 +258,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       areaSize: [unit.areaSize, Validators.pattern(this.decimalsOnly)],
       id: [unit.id],
     });
-    return unitForm
-  };
+    return unitForm;
+  }
 
   saleToFormGroup(sale: Sale): FormGroup {
     const saleForm = this.fb.group({
@@ -253,14 +273,14 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
     this.subs.push(
       saleForm.get('status')!.valueChanges.subscribe((value: string) => {
-        if(value === 'available'){
+        if (value === 'available') {
           saleForm.get('statusDate')?.setValue(null);
         }
       })
-    )
+    );
 
-    return saleForm
-  };
+    return saleForm;
+  }
 
   leaseToFormGroup(lease: Lease): FormGroup {
     const leaseForm = this.fb.group({
@@ -272,8 +292,8 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       rentAchieved: [lease.rentAchieved, Validators.pattern(this.decimalsOnly)],
       tenant: [lease.tenant],
     });
-    return leaseForm
-  };
+    return leaseForm;
+  }
 
   unitScheduleDataToFormGroup(unitScheduleData: UnitScheduleData): FormGroup {
     return this.fb.group({
@@ -281,7 +301,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       sale: this.saleToFormGroup(unitScheduleData.sale),
       lease: this.leaseToFormGroup(unitScheduleData.lease),
     });
-  };
+  }
 
   onAddUnitScheduleData(unitScheduleData?: UnitScheduleData) {
     const newUnit = new Unit(this.assetClass);
@@ -294,15 +314,10 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     const unitScheduleDataForm = this.unitScheduleDataToFormGroup(unitScheduleDataAdjusted);
     // const unitForm = this.unitToFormGroup(unitToAdd);
 
-    this.subs.push(
-      unitScheduleDataForm.valueChanges
-        .pipe(debounceTime(200))
-        .subscribe(() => this.calculateTotals())
-    );
-
+    this.subs.push(unitScheduleDataForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.calculateTotals()));
 
     this.unitsScheduleFormArray.push(unitScheduleDataForm);
-  };
+  }
 
   getUnitIdentifier(index: number): any {
     return this.unitsScheduleFormArray.at(index).get('unit')?.get('identifier')?.value;
@@ -343,9 +358,6 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     return lease;
   }
 
-
-
-
   formGroupToUnitScheduleData(unitScheduleDataFormGroup: FormGroup): UnitScheduleData {
     // Extract the unit, sale, and lease form groups
     const unitForm = unitScheduleDataFormGroup.get('unit') as FormGroup;
@@ -370,27 +382,28 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   populateForm() {
     if (this.unitsScheduleData.length === 0) {
       this.onAddUnitScheduleData();
-    };
+    }
 
-    this.unitsScheduleData.forEach(unitScheduleData => {
+    this.unitsScheduleData.forEach((unitScheduleData) => {
       this.onAddUnitScheduleData(unitScheduleData);
     });
 
-    this.calculateTotals()
+    this.calculateTotals();
   }
 
   onRemoveUnitScheduleData() {
-
     const unitId = this.unitsScheduleFormArray.at(this.index).get('unit.id')?.value;
     if (unitId) {
-      const indexInUnitsScheduleData = this.unitsScheduleData.findIndex(unitScheduleData => unitScheduleData.unit.id === unitId);
+      const indexInUnitsScheduleData = this.unitsScheduleData.findIndex(
+        (unitScheduleData) => unitScheduleData.unit.id === unitId
+      );
 
       this.unitsToDelete.push(this.unitsScheduleData[indexInUnitsScheduleData].unit);
     }
 
     this.unitsScheduleFormArray.removeAt(this.index);
     this.mode = 'edit';
-  };
+  }
 
   onConfirmDelete(index: number) {
     this.mode = 'delete';
@@ -404,30 +417,32 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   onSave() {
     if (!this.form.valid) {
       return;
-    };
+    }
 
-    const unitsScheduleData: UnitScheduleData[] = this.unitsScheduleFormArray.controls.map((control: AbstractControl) => {
-      const unitScheduleDataFormGroup = control as FormGroup;
-      return this.formGroupToUnitScheduleData(unitScheduleDataFormGroup);
-    });
+    const unitsScheduleData: UnitScheduleData[] = this.unitsScheduleFormArray.controls.map(
+      (control: AbstractControl) => {
+        const unitScheduleDataFormGroup = control as FormGroup;
+        return this.formGroupToUnitScheduleData(unitScheduleDataFormGroup);
+      }
+    );
 
     if (this.unitsToDelete.length > 0) {
       this.deleteUnits(this.unitsToDelete);
-    };
+    }
 
     // console.log("unitsScheduleData", unitsScheduleData);
 
-    // this._schemeService.updateOrCreateUnitsScheduleData(unitsScheduleData)
-    //   .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+    this._schemeService.updateOrCreateUnitsScheduleData(unitsScheduleData)
+      .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
 
-    //     console.log("unitScheduleDataRes", unitScheduleDataRes);
+        console.log("unitScheduleDataRes", unitScheduleDataRes);
     //   });
     //   this._schemeService.updateOrCreateUnits(units)
     //     .subscribe((unitRes: Unit[]) => {
     //       // this.assetClass.units = unitRes;
     //       this.modalSaveUnitSchedule.emit(unitRes)
     //       console.log("unitRes", unitRes);
-    //     });
+        });
   }
 
   deleteUnits(units: Unit[]) {
@@ -442,7 +457,6 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
       const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
 
       for (const controlName in nestedFormGroup.controls) {
-
         // if (this.step === 1 && !controlsUnit.includes(controlName) || this.step === 2 && !controlsSaleAndLease.includes(controlName)) {
         //   continue;
         // };
@@ -511,13 +525,13 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
   updateStatus() {
     if (this.step === 1) {
-      this.unitsStatus = "active";
-      this.salesStatus = "inactive";
-      this.lettingsStatus = "inactive";
+      this.unitsStatus = 'active';
+      this.salesStatus = 'inactive';
+      this.lettingsStatus = 'inactive';
     } else {
-      this.unitsStatus = "complete";
-      this.salesStatus = "active";
-      this.lettingsStatus = "active";
+      this.unitsStatus = 'complete';
+      this.salesStatus = 'active';
+      this.lettingsStatus = 'active';
     }
   }
 
@@ -544,27 +558,22 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   // if units has beds, then beds must be greater than 0
   atLeastOneValditor(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-
       const value = control.value;
 
       if (!this.unitStructure.hasBeds()) {
         return null;
-      };
+      }
 
-      return (!value || value === 0) ? { atLeastOne: true } : null;
+      return !value || value === 0 ? { atLeastOne: true } : null;
     };
   }
 
-
-
-
   ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe());
+    this.subs.forEach((sub) => sub.unsubscribe());
   }
 
   getFormValue(formArray: FormArray, index: number, ...path: string[]): string | number {
     const value = formArray.at(index).get(path.join('.'))?.value;
     return value || 'not defined';
   }
-
 }

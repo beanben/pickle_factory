@@ -3,7 +3,7 @@
     [mode] = "modalMode"
     [scheme]="scheme"
     [loan]="loan"
-    (modalSaveScheme)="openSchemeModal = false"
+    (modalSaveScheme)="onSaveScheme($event)"
     (deleteIsConfirmed)="onDeleteScheme($event)">
 </app-scheme-modal>
 

@@ -12,8 +12,8 @@ from .views import (
     UnitDetail,
     UnitsBulkUpdateDestroy,
     UnitsBulkUpdateCreate,
-    asset_class_uses,
-    system_types,
+    # asset_class_uses,
+    # system_types,
     AssetClassList,
     AssetClassDetail,
     AssetClassUnitsList,
@@ -37,8 +37,8 @@ scheme_patterns = ([
     path('', SchemeList.as_view()),
     path('<int:pk>/', SchemeDetail.as_view()),
     path('<int:id>/asset_classes/', SchemeAssetClasses.as_view()),
-    path('asset_class_uses/', asset_class_uses),
-    path('system_types/', system_types),
+    # path('asset_class_uses/', asset_class_uses),
+    # path('system_types/', system_types),
 ], 'scheme')
 
 borrower_patterns = ([

@@ -3,7 +3,7 @@ import { AssetClassType, Lease, Sale, Unit } from "./scheme.model";
 
 export interface Scheme {
     id: number;
-    loan: Loan;
+    loanId: number;
     name: string;
     streetName?: string;
     postcode?: string;

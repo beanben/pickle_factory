@@ -46,7 +46,7 @@ export class LoanModalComponent implements OnInit {
   }
 
   getMode(){
-    if(this.loan.id){
+    if(!!this.loan.id){
       this.mode = "edit";
     } else {
       this.mode = "new"
@@ -57,7 +57,7 @@ export class LoanModalComponent implements OnInit {
     if(this.form.valid){
       this.loan.name = this.name?.value;
       
-      if(this.loan.id) {
+      if(!!this.loan.id) {
         var req = this._loanService.updateLoan(this.loan)
       } else {
         var req = this._loanService.createLoan(this.loan)

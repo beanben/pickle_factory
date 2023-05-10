@@ -36,8 +36,8 @@ export class LoanComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteScheme(scsheme: Scheme) {
-    const indexScheme = this.loanSchemes.findIndex(s => s.id === scsheme.id);
+  deleteScheme(scheme: Scheme) {
+    const indexScheme = this.loanSchemes.findIndex(s => s.id === scheme.id);
     this.loanSchemes.splice(indexScheme, 1)
   }
 
@@ -81,10 +81,12 @@ export class LoanComponent implements OnInit, OnDestroy {
     this.openSchemeModal = false;
 
     if (!!scheme) {
-      const indexScheme = this.loanSchemes.findIndex(s => s.id === scheme?.id);
+      const indexScheme = this.loanSchemes.findIndex(s => s.id === scheme.id);
+      
 
       if (indexScheme === -1) {
-        this.loanSchemes.push(scheme)
+        this.loanSchemes.unshift(scheme);
+        // this.loanSchemes.push(scheme)
       } else {
         this.loanSchemes[indexScheme] = scheme;
       }

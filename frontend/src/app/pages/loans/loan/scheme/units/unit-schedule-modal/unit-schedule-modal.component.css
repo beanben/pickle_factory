@@ -17,7 +17,7 @@
     border: 1px solid red;
 }
 
-th {
+/* th {
   white-space: nowrap;
 }
 
@@ -32,33 +32,22 @@ th, td {
 td {
   padding-top: 2px;
   padding-bottom: 2px;
-}
-/* table {
-  border-collapse: collapse;
-  table-layout: auto;
-  width: auto;
 } */
-/* 
 
-
-
-
-th {
+table.uniform-width td {
+  width: 1%;
   white-space: nowrap;
 }
-
-.column-description {
-  max-width: 100px;
-  word-wrap: break-word;
+th, td {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+td {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
-.column-status {
-  min-width: 140px;
-  word-wrap: break-word;
+/* table.uniform-width .form-control,
+table.uniform-width .form-select {
+  width: 100%;
 } */
-
-.form-select {
-  width: 100%; /* Match the width of the form-control */
-  box-sizing: border-box; /* Make sure padding and border are included in width calculation */
-  color: red
-}

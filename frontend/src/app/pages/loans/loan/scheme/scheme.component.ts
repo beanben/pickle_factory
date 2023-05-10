@@ -56,6 +56,13 @@ export class SchemeComponent implements OnInit, OnDestroy {
   //     this.scheme.assetClasses[assetClassIndex] = assetClass;
   //   }
   // }
+  onSaveScheme(scheme: Scheme | null) {
+    this.openSchemeModal = false;
+
+    if (!!scheme) {
+      this.scheme = scheme;
+  }
+}
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())

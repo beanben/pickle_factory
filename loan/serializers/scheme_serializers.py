@@ -10,13 +10,13 @@ from loan.fields import CamelToSnakeCaseCharField, AngularDateField
 
 class SchemeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    loan = loan_serializers.LoanSerializer(required=False, allow_null=True)
+    loan_id = serializers.IntegerField()
 
     class Meta:
         model = scheme_models.Scheme
         fields = [
             'id',
-            'loan',
+            'loan_id',
             'name', 
             'street_name', 
             'postcode', 
@@ -27,7 +27,9 @@ class SchemeSerializer(serializers.ModelSerializer):
             'is_built']
 
     def update_validated_data(self, validated_data):
-        loan_id = validated_data.pop("loan")["id"]
+        # loan_id = validated_data.pop("loan")["id"]
+        
+        loan_id = validated_data.pop("loan_id")
         loan = loan_models.Loan.objects.get(id=loan_id)
         validated_data.update({"loan": loan})
 
