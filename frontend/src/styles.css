@@ -64,7 +64,7 @@ body {
 #f.is-submitted input.ng-invalid {
     border: 1px solid red;
 } */
-#form.is-submitted input.ng-invalid{
+#form.is-submitted input.ng-invalid {
     border: 1px solid red;
 }
 
@@ -175,7 +175,7 @@ input[type="radio"]:disabled {
     border-radius: 5px;
 }
 
-.text-instructions{
+.text-instructions {
     /* font-size: 0.8em; */
     color: rgba(0, 123, 255, 1);
     font-weight: 6700;
@@ -186,17 +186,41 @@ hr {
     content: "";
     border-top: 2px solid rgba(119, 119, 119, 0.8);
     margin: 5px 0;
-  }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+}
 
- /* .cdk-overlay-container .cdk-global-overlay-wrapper {
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* .cdk-overlay-container .cdk-global-overlay-wrapper {
     position: fixed;
   } */
 /* .cdk-overlay-container {
     z-index: 1100;
   } */
 
-  small {
+small {
     font-size: 0.8em;
-  }
+}
+
+table.uniform-width td {
+    width: 1%;
+    white-space: nowrap;
+}
+
+th,
+td {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}

@@ -43,7 +43,8 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    scheme = SchemeSerializer(required=False, allow_null=True)
+    # scheme = SchemeSerializer(required=False, allow_null=True)
+    scheme_id = serializers.IntegerField()
     investment_strategy = CamelToSnakeCaseCharField()
     use = CamelToSnakeCaseCharField()
 
@@ -52,11 +53,12 @@ class AssetClassSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'use',
-            'scheme', 
+            'scheme_id', 
             'investment_strategy']
 
     def update_validated_data(self, validated_data):
-        scheme_id = validated_data.pop("scheme")["id"]
+        # scheme_id = validated_data.pop("scheme")["id"]
+        scheme_id = validated_data.pop("scheme_id")
         scheme = scheme_models.Scheme.objects.get(id=scheme_id)
         validated_data.update({"scheme": scheme})
     

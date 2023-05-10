@@ -17,24 +17,7 @@
     border: 1px solid red;
 }
 
-/* th {
-  white-space: nowrap;
-}
-
-table {
-  table-layout: auto;
-  width: 100%;
-}
-th, td {
-  padding-left: 2px;
-  padding-right: 2px;
-}
-td {
-  padding-top: 2px;
-  padding-bottom: 2px;
-} */
-
-table.uniform-width td {
+/* table.uniform-width td {
   width: 1%;
   white-space: nowrap;
 }
@@ -45,9 +28,5 @@ th, td {
 td {
   padding-top: 2px;
   padding-bottom: 2px;
-}
-
-/* table.uniform-width .form-control,
-table.uniform-width .form-select {
-  width: 100%;
 } */
+

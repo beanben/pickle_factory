@@ -80,7 +80,7 @@
           <div class="mb-3 border d-flex justify-content-around py-2 rounded" [ngClass]="{'d-none': step !== 2}">
 
             <div class="form-check form-check-inline" *ngFor="let choice of investmentStrategyChoices; let i = index">
-              <input class="form-check-input" type="radio" name="investmentStrategy" [id]="'investmentStrategy-'+i" formControlName="investmentStrategy"
+              <input class="form-check-input cursor-pointer" type="radio" name="investmentStrategy" [id]="'investmentStrategy-'+i" formControlName="investmentStrategy"
                 [value]="choice.value">
               <label class="form-check-label" [for]="'investmentStrategy-'+i">
                 {{choice.label | titlecase}}

@@ -12,7 +12,8 @@ export abstract class AssetClassAbstract {
     abstract readonly use: string;
 
     constructor(
-        public scheme: Scheme,
+        // public scheme: Scheme,
+        public schemeId: number,
         public investmentStrategy: string = "",
         public id?: number,
     ) {
@@ -98,19 +99,19 @@ export class AssetClassFactory {
     defineAssetClass(use: string): AssetClassType {
         switch (use) {
             case 'hotel':
-                return new Hotel(this.scheme);
+                return new Hotel(this.scheme.id);
             case 'residential':
-                return new Residential(this.scheme);
+                return new Residential(this.scheme.id);
             case 'commercial':
-                return new Commercial(this.scheme);
+                return new Commercial(this.scheme.id);
             case 'studentAccommodation':
-                return new StudentAccommodation(this.scheme);
+                return new StudentAccommodation(this.scheme.id);
             case 'office':
-                return new Office(this.scheme);
+                return new Office(this.scheme.id);
             case 'shoppingCentre':
-                return new ShoppingCentre(this.scheme);
+                return new ShoppingCentre(this.scheme.id);
             default:
-                return new Residential(this.scheme);
+                return new Residential(this.scheme.id);
         }
     }
 }
