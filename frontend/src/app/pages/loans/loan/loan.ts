@@ -5,6 +5,6 @@ export interface Loan {
     id: number;
     slug: string;   
     name: string;
-    borrower?: Borrower;
+    borrower_id?: number;
     // schemes: Scheme[]
 }
