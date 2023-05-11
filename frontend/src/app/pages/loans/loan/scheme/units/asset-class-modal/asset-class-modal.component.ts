@@ -40,6 +40,7 @@ export class AssetClassModalComponent implements OnInit {
   investmentStrategyChoices: Choice[] = [];
   nextIsClicked = false;
   @Input() availableUseChoices: Choice[] = [];
+  @Input() useChoices: Choice[] = [];
   @Input() mode = '';
   @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
@@ -223,12 +224,17 @@ export class AssetClassModalComponent implements OnInit {
 
   populateForm() {
     this.form.setValue({
-      assetClassUse: toTitleCase(this.assetClass.use),
+      assetClassUse: this.assetClass.use,
       investmentStrategy: this.assetClass.investmentStrategy,
     });
   }
 
   onCancelDelete() {
     this.mode = 'edit';
+  }
+
+  getUseLabelTitleCase(use: string): string {
+    const useLabel = this._schemeService.getChoiceLabel(use, this.useChoices)
+    return toTitleCase(useLabel);
   }
 }

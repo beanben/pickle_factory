@@ -70,7 +70,7 @@
             <ng-container *ngIf="mode === 'edit'">
               <div class="form-floating">
                 <input type="text" class="form-control" formControlName="assetClassUse" id="asset-class"
-                  placeholder="Asset class" [value]="form.get('assetClassUse')!.value" [attr.disabled]="true">
+                  placeholder="Asset class" [value]="getUseLabelTitleCase(form.get('assetClassUse')!.value)" [attr.disabled]="true">
                 <label for="asset-class">Asset class</label>
               </div>
             </ng-container>

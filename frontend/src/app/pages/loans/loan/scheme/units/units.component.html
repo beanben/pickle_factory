@@ -1,5 +1,5 @@
 <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme"
-  [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices"
+  [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices" [useChoices]="useChoices"
   (modalSaveAssetClass)="onSaveAssetClass($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
 </app-asset-class-modal>
 
@@ -50,7 +50,7 @@
 
     <div class="d-flex justify-content-end p-2">
       <button class="btn btn-primary"  (click)="onOpenAssetClassModal('edit')">Edit
-        {{assetClassSelected.use | titlecase}}</button>
+        {{getUseLabel(assetClassSelected.use) | titlecase}}</button>
     </div>
     
 

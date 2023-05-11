@@ -125,14 +125,15 @@ class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    asset_class = AssetClassSerializer(required=False, allow_null=True)
+    # asset_class = AssetClassSerializer(required=False, allow_null=True)
+    asset_class_id = serializers.IntegerField()
     area_system = serializers.SerializerMethodField(required=False, allow_null=True)
     
     class Meta:
         model = scheme_models.Unit
         fields = [
             'id',
-            'asset_class',
+            'asset_class_id',
             'label',
             'identifier',
             'description',
@@ -143,7 +144,8 @@ class UnitSerializer(serializers.ModelSerializer):
         list_serializer_class = BulkUpdateOrCreateSerializer
     
     def update_validated_data(self, validated_data):
-        asset_class_id = validated_data.pop("asset_class")["id"]
+        # asset_class_id = validated_data.pop("asset_class")["id"]
+        asset_class_id = validated_data.pop("asset_class_id")
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
 

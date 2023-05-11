@@ -432,17 +432,17 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
     // console.log("unitsScheduleData", unitsScheduleData);
 
-    this._schemeService.updateOrCreateUnitsScheduleData(unitsScheduleData)
+    this._schemeService
+      .updateOrCreateUnitsScheduleData(unitsScheduleData)
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-
-        console.log("unitScheduleDataRes", unitScheduleDataRes);
-    //   });
-    //   this._schemeService.updateOrCreateUnits(units)
-    //     .subscribe((unitRes: Unit[]) => {
-    //       // this.assetClass.units = unitRes;
-    //       this.modalSaveUnitSchedule.emit(unitRes)
-    //       console.log("unitRes", unitRes);
-        });
+        console.log('unitScheduleDataRes', unitScheduleDataRes);
+        //   });
+        //   this._schemeService.updateOrCreateUnits(units)
+        //     .subscribe((unitRes: Unit[]) => {
+        //       // this.assetClass.units = unitRes;
+        //       this.modalSaveUnitSchedule.emit(unitRes)
+        //       console.log("unitRes", unitRes);
+      });
   }
 
   deleteUnits(units: Unit[]) {

@@ -293,4 +293,9 @@ export class SchemeService {
     );
   }
 
+  getChoiceLabel(choice_value: string, choices: Choice[]): string {
+    const choice = choices.find(choice => choice.value === choice_value);
+    return choice ? choice.label : "";
+  }
+
 }
