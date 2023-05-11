@@ -154,12 +154,12 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         (PER_MONTH, "per month")
     ]
 
-    MONTHS = "months"
-    WEEKS = "weeks"
-    LEASE_FREQUENCY_CHOICES =[
-        (MONTHS, "month"),
-        (WEEKS, "weeks")
-    ]
+    # MONTHS = "months"
+    # WEEKS = "weeks"
+    # LEASE_FREQUENCY_CHOICES =[
+    #     (MONTHS, "month"),
+    #     (WEEKS, "weeks")
+    # ]
 
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="lease", related_query_name="lease")
     # tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="leases", related_query_name="lease")
@@ -169,8 +169,8 @@ class Lease(TimestampedModel, AuthorTrackerModel):
     rent_frequency = models.CharField(max_length=100, blank=True , choices = RENT_FREQUENCY_CHOICES, default=PER_MONTH)
     rent_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     start_date = models.DateField(blank=True, null=True)
-    term = models.IntegerField(blank=True, null=True)
-    lease_frequency = models.CharField(max_length=100, blank=True , choices = LEASE_FREQUENCY_CHOICES, default=MONTHS)
+    end_date = models.DateField(blank=True, null=True)
+    # lease_frequency = models.CharField(max_length=100, blank=True , choices = LEASE_FREQUENCY_CHOICES, default=MONTHS)
 
     # def __str__(self):
     #     return f"{self.get_tenancy_type_display()} - {self.unit} - Tenant: {self.get_tenant()}"
@@ -178,14 +178,21 @@ class Lease(TimestampedModel, AuthorTrackerModel):
     class Meta:
         verbose_name_plural = "Leases" #for the admin panel
     
-    @property
-    def end_date(self):
-        if self.start_date:
-            return None
+    # @property
+    # def end_date(self):
+    #     if self.start_date:
+    #         return None
         
-        if self.duration_unit == self.MONTHS:
-            return self.start_date + relativedelta(months=self.duration_value)
-        return self.start_date + relativedelta(weeks=self.duration_value)
+    #     if self.duration_unit == self.MONTHS:
+    #         return self.start_date + relativedelta(months=self.duration_value)
+    #     return self.start_date + relativedelta(weeks=self.duration_value)
+
+
+    @property
+    def term(self):
+        if self.start_date and self.end_date:
+            return self.end_date - self.start_date
+        return None
 
          
 

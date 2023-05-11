@@ -1,11 +1,15 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AssetClassFactory, AssetClassType, Scheme } from '../../scheme';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { APIResult } from 'src/app/_services/api-result';
+
 import { toTitleCase } from 'src/app/shared/utils';
-import { Choice } from 'src/app/shared/shared';
+
 import { lastValueFrom } from 'rxjs';
+import { Choice } from 'src/app/_interfaces/shared.interface';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassType } from 'src/app/_types/custom.type';
+import { AssetClassFactory } from 'src/app/_factories/scheme.factories';
+import { APIResult } from 'src/app/_interfaces/api.interface';
 
 @Component({
   selector: 'app-asset-class-modal',

@@ -1,10 +1,10 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { User } from 'src/app/_interfaces/auth.interface';
+import { Loan } from 'src/app/_interfaces/loan.interface';
 import { AuthService } from 'src/app/_services/auth/auth.service';
 import { LoanService } from 'src/app/_services/loan/loan.service';
-import { User } from '../auth/user';
-import { Loan } from '../loans/loan/loan';
 
 @Component({
   selector: 'app-home',

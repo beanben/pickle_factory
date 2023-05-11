@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subscription} from 'rxjs';
-import { AuthService } from 'src/app/_services/auth/auth.service';
+import { Subscription} from 'rxjs';
+import { Loan } from 'src/app/_interfaces/loan.interface';
 import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from './loan/loan';
+
 
 @Component({
   selector: 'app-loans',

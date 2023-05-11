@@ -1,9 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
-import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from '../../pages/loans/loan/loan';
-import { Borrower } from '../../pages/borrowers/borrower/borrower';
+import { Component, OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-borrower-modal',

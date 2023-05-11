@@ -9,11 +9,8 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { AssetClassType, Scheme, UnitScheduleData } from '../../scheme';
-import { Lease, Sale, Unit } from '../../scheme.model';
-import { Choice } from 'src/app/shared/shared';
+
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { toCamelCase } from 'src/app/shared/utils';
 import {
   AbstractControl,
   FormArray,
@@ -26,7 +23,10 @@ import {
 } from '@angular/forms';
 import { Subscription, lastValueFrom } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { APIResult } from 'src/app/_services/api-result';
+import { UnitService } from 'src/app/_services/unit/unit.service';
+import { Lease, Unit, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassType } from 'src/app/_types/custom.type';
+import { Choice } from 'src/app/_interfaces/shared.interface';
 
 interface ValidationMessages {
   [formGroupName: string]: {
@@ -139,7 +139,11 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
     return this.form.get('unitsScheduleData') as FormArray;
   }
 
-  constructor(private el: ElementRef, private _schemeService: SchemeService, private fb: FormBuilder) {}
+  constructor(
+    private el: ElementRef, 
+    private _schemeService: SchemeService, 
+    private _unitService: UnitService,
+    private fb: FormBuilder) {}
 
   async ngOnInit(): Promise<void> {
     this.addEventBackgroundClose();
@@ -432,7 +436,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
 
     // console.log("unitsScheduleData", unitsScheduleData);
 
-    this._schemeService
+    this._unitService
       .updateOrCreateUnitsScheduleData(unitsScheduleData)
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         console.log('unitScheduleDataRes', unitScheduleDataRes);
@@ -446,7 +450,7 @@ export class UnitScheduleModalComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   deleteUnits(units: Unit[]) {
-    this._schemeService.deleteUnits(units).subscribe();
+    this._unitService.deleteUnits(units).subscribe();
   }
 
   getFormArrayErrorMessages(formArray: FormArray, formGroupName: string): string[] {

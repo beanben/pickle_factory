@@ -1,9 +1,11 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { AssetClassType, Scheme, UnitScheduleData } from '../../scheme';
-import { Lease, Sale, Unit } from '../../scheme.model';
+
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Choice } from 'src/app/shared/shared';
+
 import { lastValueFrom } from 'rxjs';
+import { Choice } from 'src/app/_interfaces/shared.interface';
+import { Lease, Unit, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassType } from 'src/app/_types/custom.type';
 
 @Component({
   selector: 'app-unit-schedule',

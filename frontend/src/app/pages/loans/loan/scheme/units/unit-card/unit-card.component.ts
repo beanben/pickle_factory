@@ -1,8 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Unit } from '../../scheme.model';
-import { AssetClassType, AssetClassUnit, Scheme } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription } from 'rxjs';
+import { AssetClassType } from 'src/app/_types/custom.type';
+import { Unit } from 'src/app/_interfaces/scheme.interface';
 
 interface UnitGroup {
   description: string,

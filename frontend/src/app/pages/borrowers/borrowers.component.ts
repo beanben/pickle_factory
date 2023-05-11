@@ -1,8 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
-import { Borrower } from './borrower/borrower';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-borrowers',

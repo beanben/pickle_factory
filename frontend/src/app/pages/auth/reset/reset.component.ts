@@ -6,7 +6,6 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 @Component({
   selector: 'app-reset',
   templateUrl: './reset.component.html',
-  // styleUrls: ['./reset.component.css']
   styleUrls: ['../auth.component.css']
 })
 export class ResetComponent implements OnInit {

@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Loan } from 'src/app/pages/loans/loan/loan';
-import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
-import { Scheme } from 'src/app/pages/loans/loan/scheme/scheme';
+import { Loan } from 'src/app/_interfaces/loan.interface';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { APIResult } from 'src/app/_interfaces/api.interface';
 
 @Injectable({
   providedIn: 'root'

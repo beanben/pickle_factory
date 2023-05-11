@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from './loan';
+
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Scheme } from './scheme/scheme';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { Loan } from 'src/app/_interfaces/loan.interface';
+
 
 @Component({
   selector: 'app-loan',

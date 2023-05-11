@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AssetClassType, AssetClassUnit, Scheme } from '../scheme';
-import { Unit } from '../scheme.model';
+
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription, lastValueFrom } from 'rxjs';
-import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';
-import { Choice } from 'src/app/shared/shared';
+import { Choice } from 'src/app/_interfaces/shared.interface';
+import { AssetClassType } from 'src/app/_types/custom.type';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+
 
 @Component({
   selector: 'app-units',

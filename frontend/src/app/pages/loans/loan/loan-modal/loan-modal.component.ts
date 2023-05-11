@@ -1,7 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Loan } from 'src/app/_interfaces/loan.interface';
 import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from '../loan';
+
 
 @Component({
   selector: 'app-loan-modal',

@@ -6,8 +6,8 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
 import { User } from 'src/app/pages/auth/user';
-import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
+import { APIResult } from 'src/app/_interfaces/api.interface';
 
 @Injectable({
   providedIn: 'root'

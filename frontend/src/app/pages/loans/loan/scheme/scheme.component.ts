@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Scheme } from './scheme';
-import { Loan } from '../loan';
+import { Loan } from 'src/app/_interfaces/loan.interface';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+
 
 @Component({
   selector: 'app-scheme',

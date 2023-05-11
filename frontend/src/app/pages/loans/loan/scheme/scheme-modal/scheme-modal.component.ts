@@ -1,10 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Choice } from 'src/app/shared/shared';
+import { Loan } from 'src/app/_interfaces/loan.interface';
+import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { Choice } from 'src/app/_interfaces/shared.interface';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Loan } from '../../loan';
-import { Scheme } from '../scheme';
+
 
 @Component({
   selector: 'app-scheme-modal',

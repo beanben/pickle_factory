@@ -407,8 +407,8 @@ class AssetClassUnitsWithSaleAndLease(AuthorQuerySetMixin, generics.ListAPIView)
         leases = scheme_models.Lease.objects.filter(unit__in=units)
 
         units_serializer = self.get_serializer(units, many=True)
-        sales_serializer = scheme_serializers.SaleUnitSerializer(sales, many=True)
-        leases_serializer = scheme_serializers.LeaseUnitSerializer(leases, many=True)
+        sales_serializer = scheme_serializers.SaleSerializer(sales, many=True)
+        leases_serializer = scheme_serializers.LeaseSerializer(leases, many=True)
 
         unit_sale_lease_list = []
 
@@ -427,8 +427,8 @@ class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIV
         
         serializers_map = {
             'unit': scheme_serializers.UnitSerializer,
-            'sale': scheme_serializers.SaleUnitSerializer,
-            'lease': scheme_serializers.LeaseUnitSerializer
+            'sale': scheme_serializers.SaleSerializer,
+            'lease': scheme_serializers.LeaseSerializer
         }
 
         model_map = {

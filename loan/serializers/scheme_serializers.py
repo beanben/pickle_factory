@@ -161,31 +161,34 @@ class UnitSerializer(serializers.ModelSerializer):
         scheme = obj.asset_class.scheme
         return scheme.system.lower()
     
-class LeaseUnitSerializer(serializers.ModelSerializer):
+class LeaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    unit = UnitSerializer(required=False, allow_null=True)
+    unit_id = serializers.IntegerField()
+    # unit = UnitSerializer(required=False, allow_null=True)
     start_date = AngularDateField(required=False, allow_null=True)
     lease_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
     rent_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
-    lease_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    # lease_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Lease
         fields = [
             'id', 
-            'unit',
+            'unit_id',
             'tenant', 
             'lease_type', 
             'rent_target',
             'rent_frequency',
             'rent_achieved',
             'start_date',
-            'term',
-            'lease_frequency',
+            'end_date'
+            # 'term',
+            # 'lease_frequency',
             ] 
     
     def update_validated_data(self, validated_data):
-        unit_id = validated_data.pop("unit")["id"]
+        # unit_id = validated_data.pop("unit")["id"]
+        unit_id = validated_data.pop("unit_id")
         unit = scheme_models.Unit.objects.get(id=unit_id)
         validated_data.update({"unit": unit})
     
@@ -197,16 +200,17 @@ class LeaseUnitSerializer(serializers.ModelSerializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
     
-class SaleUnitSerializer(serializers.ModelSerializer):
+class SaleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    unit = UnitSerializer(required=False, allow_null=True)
+    # unit = UnitSerializer(required=False, allow_null=True)
+    unit_id = serializers.IntegerField()
     status_date = AngularDateField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Sale
         fields = [
             'id', 
-            'unit', 
+            'unit_id', 
             'status', 
             'status_date',
             'price_target',
@@ -215,7 +219,8 @@ class SaleUnitSerializer(serializers.ModelSerializer):
             ]
     
     def update_validated_data(self, validated_data):
-        unit_id = validated_data.pop("unit")["id"]
+        # unit_id = validated_data.pop("unit")["id"]
+        unit_id = validated_data.pop("unit_id")
         unit = scheme_models.Unit.objects.get(id=unit_id)
         validated_data.update({"unit": unit})
     
@@ -229,5 +234,5 @@ class SaleUnitSerializer(serializers.ModelSerializer):
         
 class UnitScheduleDataSerializer(serializers.Serializer):
     unit = UnitSerializer(required=False, allow_null=True)
-    sale = SaleUnitSerializer(required=False, allow_null=True)
-    lease = LeaseUnitSerializer(required=False, allow_null=True)
+    sale = SaleSerializer(required=False, allow_null=True)
+    lease = LeaseSerializer(required=False, allow_null=True)

@@ -1,9 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { map, mergeMap, Subscription } from 'rxjs';
-import { Firm } from '../pages/auth/firm';
-import { User } from '../pages/auth/user';
 import { AuthService } from '../_services/auth/auth.service';
+import { Firm, User } from '../_interfaces/auth.interface';
 
 @Component({
   selector: 'app-profile',

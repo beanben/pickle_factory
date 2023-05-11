@@ -1,4 +1,7 @@
-import { Firm } from "./firm";
+export interface Firm {
+    id?: number,
+    name: string
+}
 
 export interface User {
     pk?: number,

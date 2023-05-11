@@ -1,9 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { BorrowerService } from 'src/app/_services/borrower/borrower.service';
-import { LoanService } from 'src/app/_services/loan/loan.service';
-import { Loan } from '../../loans/loan/loan';
-import { Borrower } from './borrower';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-borrower',
