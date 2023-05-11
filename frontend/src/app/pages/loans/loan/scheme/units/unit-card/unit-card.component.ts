@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { AssetClassType, Unit } from '../../scheme.model';
-import { AssetClassUnit, Scheme } from '../../scheme';
+import { Unit } from '../../scheme.model';
+import { AssetClassType, AssetClassUnit, Scheme } from '../../scheme';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription } from 'rxjs';
 

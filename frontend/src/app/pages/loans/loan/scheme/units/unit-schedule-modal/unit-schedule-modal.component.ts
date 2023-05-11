@@ -9,8 +9,8 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { Scheme, UnitScheduleData } from '../../scheme';
-import { AssetClassType, Lease, Sale, Unit } from '../../scheme.model';
+import { AssetClassType, Scheme, UnitScheduleData } from '../../scheme';
+import { Lease, Sale, Unit } from '../../scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { toCamelCase } from 'src/app/shared/utils';

@@ -2,7 +2,6 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output }
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Choice } from 'src/app/shared/shared';
-import { LoanService } from 'src/app/_services/loan/loan.service';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Loan } from '../../loan';
 import { Scheme } from '../scheme';

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { Scheme, UnitScheduleData } from '../../scheme';
-import { AssetClassType, Lease, Sale, Unit } from '../../scheme.model';
+import { AssetClassType, Scheme, UnitScheduleData } from '../../scheme';
+import { Lease, Sale, Unit } from '../../scheme.model';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Choice } from 'src/app/shared/shared';
 import { lastValueFrom } from 'rxjs';

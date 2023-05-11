@@ -1,24 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Scheme } from '../../scheme';
-import {
-  AssetClassFactory,
-  AssetClassType,
-  Commercial,
-  Hotel,
-  Office,
-  Residential,
-  ShoppingCentre,
-  StudentAccommodation,
-} from '../../scheme.model';
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AssetClassFactory, AssetClassType, Scheme } from '../../scheme';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { APIResult } from 'src/app/_services/api-result';
 import { toTitleCase } from 'src/app/shared/utils';
@@ -89,8 +71,8 @@ export class AssetClassModalComponent implements OnInit {
     //   this.form.patchValue({
     //     investmentStrategy: this.investmentStrategyChoices[0].value,
     //   });
-      // console.log(saleStatusChoices)
-      // async and await and set the value of the form control
+    // console.log(saleStatusChoices)
+    // async and await and set the value of the form control
     // });
   }
 
@@ -234,7 +216,7 @@ export class AssetClassModalComponent implements OnInit {
   }
 
   getUseLabelTitleCase(use: string): string {
-    const useLabel = this._schemeService.getChoiceLabel(use, this.useChoices)
+    const useLabel = this._schemeService.getChoiceLabel(use, this.useChoices);
     return toTitleCase(useLabel);
   }
 }

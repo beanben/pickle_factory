@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AssetClassUnit, Scheme } from '../scheme';
-import { AssetClassType, Unit } from '../scheme.model';
+import { AssetClassType, AssetClassUnit, Scheme } from '../scheme';
+import { Unit } from '../scheme.model';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription, lastValueFrom } from 'rxjs';
 import { addSpaceBetweenCapitalLetters } from 'src/app/shared/utils';

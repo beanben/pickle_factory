@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, lastValueFrom, map as rxjsMap, tap } from 'rxjs';
-import { AssetClassUnit, Scheme, SchemeData, UnitScheduleData } from 'src/app/pages/loans/loan/scheme/scheme';
-import { AssetClassType, Lease, Sale, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
+import { AssetClassType, AssetClassUnit, Scheme, SchemeData, UnitScheduleData } from 'src/app/pages/loans/loan/scheme/scheme';
+import { Lease, Sale, Unit } from 'src/app/pages/loans/loan/scheme/scheme.model';
 import { Choice } from 'src/app/shared/shared';
 import { APIResult } from '../api-result';
 import { SharedService } from '../shared/shared.service';
