@@ -1,3 +1,4 @@
+import { FormGroup } from "@angular/forms";
 
 export function pascalToTitle(pascalCase: string): string {
     const titleCase = pascalCase.replace(/([A-Z])/g, ' $1').toLowerCase().trim();
@@ -23,4 +24,8 @@ export function snakeToCamelCase(str: string): string {
 
   export function toCamelCase(str: string): string {
     return str.replace(/\s(.)/g, (match, char) => char.toUpperCase());
+  }
+
+  export function isFormEmpty(form: FormGroup): boolean {
+    return Object.values(form.value).every(value => value === null || value === '');
   }

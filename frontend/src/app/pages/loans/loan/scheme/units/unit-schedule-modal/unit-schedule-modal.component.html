@@ -1,5 +1,5 @@
-<div class="modal" tabindex="-1" [ngStyle]="{ display: displayStyle }" role="dialog">
-  <div class="modal-dialog modal-centered modal-xl">
+<div class="modal" tabindex="-1" [ngStyle]="{display: displayStyle}" role="dialog">
+  <div class="modal-dialog modal-centered" [ngClass]="step === 1 ? 'modal-lg' : 'modal-xl'">
     <div class="modal-content">
       <ng-container *ngIf="step === 1 && mode !== 'delete'">
         <div class="modal-header">
@@ -14,15 +14,7 @@
         </div>
 
         <div class="modal-body">
-          <nav
-            style="
-              --bs-breadcrumb-divider: url(
-                &#34;data:image/svg + xml,
-                %3Csvgxmlns='http://www.w3.org/2000/svg'width='8'height='8'%3E%3Cpathd='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z'fill='currentColor'/%3E%3C/svg%3E&#34;
-              );
-            "
-            aria-label="breadcrumb"
-          >
+          <nav>
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span
@@ -30,7 +22,7 @@
                   appDot
                   [status]="unitsStatus"
                 ></span>
-                <span class="px-2" [ngClass]="{ 'text-active': step === 1 }">Units</span>
+                <span class="px-2" [ngClass]="{'text-active': step === 1}">Units</span>
               </li>
               <img src="{{ chevronRight }}" alt="" />
               <li class="breadcrumb-item d-flex align-items-center">
@@ -55,15 +47,20 @@
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" [ngClass]="{ 'is-submitted': nextIsClicked || f.submitted }" id="form">
-            <table class="table uniform-width table-hover text-center table-borderless">
+          <form [formGroup]="form" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked || f.submitted}" id="form">
+            <table class="table table-hover text-center table-borderless custom-padding">
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
-                  <th>{{ totalUnits | number : "1.0-0" : "en-GB" }} {{ unitStructure.label }}s</th>
-                  <th>{{ totalAreaSize | number : "1.2-2" : "en-GB" }}</th>
-                  <th *ngIf="unitStructure.hasBeds()">{{ totalBeds | number : "1.0-0" : "en-GB" }}</th>
-                  <th class="text-invisible" style="width: 20px">&times;></th>
+                  <th>
+                    {{ totalUnits | number : '1.0-0' : 'en-GB' }}
+                    {{ unitStructure.label }}s
+                  </th>
+                  <th>{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
+                  <th *ngIf="unitStructure.hasBeds">
+                    {{ totalBeds | number : '1.0-0' : 'en-GB' }}
+                  </th>
+                  <th class="text-invisible">&times;></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
                   <th>{{ unitStructure.label | titlecase }}</th>
@@ -72,8 +69,8 @@
                     {{ unitStructure.areaType }}
                     <small>({{ unitStructure.areaSystem }})</small>
                   </th>
-                  <th *ngIf="unitStructure.hasBeds()">Beds</th>
-                  <th class="text-invisible" style="width: 20px">&times;></th>
+                  <th *ngIf="unitStructure.hasBeds">Beds</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody formArrayName="unitsScheduleData">
@@ -88,16 +85,12 @@
                     <td>
                       <input class="form-control text-center" formControlName="areaSize" placeholder="0.00" />
                     </td>
-                    <td *ngIf="unitStructure.hasBeds()">
+                    <td *ngIf="unitStructure.hasBeds">
                       <input class="form-control text-center" formControlName="beds" placeholder="0" />
                     </td>
                   </ng-container>
-                  <td
-                    style="width: 20px"
-                    class="delete-hover cursor-pointer text-red rounded align-middle"
-                    (click)="onConfirmDelete(i)"
-                  >
-                    &times;
+                  <td>
+                  <button type="button" class="btn btn-danger" (click)="onConfirmDelete(i)">Delete</button>
                   </td>
                 </tr>
               </tbody>
@@ -141,15 +134,7 @@
         </div>
 
         <div class="modal-body">
-          <nav
-            style="
-              --bs-breadcrumb-divider: url(
-                &#34;data:image/svg + xml,
-                %3Csvgxmlns='http://www.w3.org/2000/svg'width='8'height='8'%3E%3Cpathd='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z'fill='currentColor'/%3E%3C/svg%3E&#34;
-              );
-            "
-            aria-label="breadcrumb"
-          >
+          <nav>
             <ol class="breadcrumb justify-content-center">
               <li class="breadcrumb-item d-flex align-items-center">
                 <span
@@ -167,7 +152,7 @@
                     appDot
                     [status]="salesStatus"
                   ></span>
-                  <span class="px-2" [ngClass]="{ 'text-active': step === 2 }">Sales</span>
+                  <span class="px-2" [ngClass]="{'text-active': step === 2}">Sales</span>
                 </ng-container>
 
                 <ng-container *ngIf="assetClass.investmentStrategy === 'buildToRent'">
@@ -176,22 +161,26 @@
                     appDot
                     [status]="lettingsStatus"
                   ></span>
-                  <span class="px-2" [ngClass]="{ 'text-active': step === 2 }">Lettings</span>
+                  <span class="px-2" [ngClass]="{'text-active': step === 2}">Lettings</span>
                 </ng-container>
               </li>
             </ol>
           </nav>
 
-          <form [formGroup]="form" #f="ngForm" [ngClass]="{ 'is-submitted': nextIsClicked || f.submitted }" id="form">
+          <form [formGroup]="form" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked || f.submitted}" id="form">
             <table
-              class="table table-hover text-center table-borderless uniform-width"
+              class="table table-hover text-center table-borderless"
               *ngIf="assetClass.investmentStrategy === 'buildToSell'"
             >
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
-                  <th>{{ totalSalePriceTarget | number : "1.2-2" : "en-GB" }}</th>
-                  <th>{{ totalSalePriceAchieved | number : "1.2-2" : "en-GB" }}</th>
+                  <th>
+                    {{ totalSalePriceTarget | number : '1.2-2' : 'en-GB' }}
+                  </th>
+                  <th>
+                    {{ totalSalePriceAchieved | number : '1.2-2' : 'en-GB' }}
+                  </th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -203,6 +192,7 @@
                   <th>Sale status</th>
                   <th>Status update</th>
                   <th>Buyer</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody formArrayName="unitsScheduleData">
@@ -212,10 +202,10 @@
                       <input class="form-control text-center" value="{{ getUnitIdentifier(i) }}" disabled />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="priceTarget" placeholder="0" />
+                      <input class="form-control text-center" formControlName="priceTarget" placeholder="0.00" />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="priceAchieved" placeholder="0" />
+                      <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
                     </td>
                     <td>
                       <select class="form-select" id="status" formControlName="status" [compareWith]="compareFn">
@@ -231,7 +221,7 @@
                           formControlName="statusDate"
                           placeholder="DD-MMM-YY"
                           bsDatepicker
-                          [bsConfig]="{ dateInputFormat: 'DD MMM YY' }"
+                          [bsConfig]="{dateInputFormat: 'DD MMM YY'}"
                         />
                       </ng-container>
                       <ng-template #noSale>
@@ -247,65 +237,13 @@
                     <td>
                       <input class="form-control text-center" formControlName="buyer" placeholder="-" />
                     </td>
+                    <td>
+                      <button type="button" class="btn btn-danger" (click)="reset('sale', i)">Reset</button>
+                    </td>
                   </ng-container>
                 </tr>
               </tbody>
             </table>
-
-            <!-- <div class="container">
-              <div class="row header bg-grey">
-                <div class="col-2">Total</div>
-                <div class="col-2">{{totalSalePriceTarget | number: '1.2-2' : 'en-GB'}}</div>
-                <div class="col-2">{{totalSalePriceAchieved | number: '1.2-2' : 'en-GB'}}</div>
-                <div class="col-2"></div>
-                <div class="col-2"></div>
-                <div class="col-2"></div>
-              </div>
-
-              <div class="row">
-                <div class="col-2">{{unitStructure.label | titlecase}}</div>
-                <div class="col-2">Target price</div>
-                <div class="col-2">Price achieved</div>
-                <div class="col-2">Sale status</div>
-                <div class="col-2">Status update</div>
-                <div class="col-2">Buyer</div>
-              </div>
-
-              <ng-container formArrayName="unitsScheduleData">
-                 <div class="row" *ngFor='let unitScheduleData of unitsScheduleFormArray.controls; let i = index' [formGroupName]="i">
-                  <ng-container formGroupName="sale">
-                    <div class="col-2">
-                      <input class="form-control text-center" value="{{getUnitIdentifier(i)}}" disabled>
-                    </div>
-                    <div class="col-2">
-                      <input class="form-control text-center" formControlName="priceTarget" placeholder="0">
-                    </div>
-                    <div class="col-2">
-                      <input class="form-control text-center" formControlName="priceAchieved" placeholder="0">
-                    </div>
-                    <div class="col-2">
-                      <select class="form-select" id="status" formControlName="status" [compareWith]="compareFn">
-                        <option *ngFor='let status of saleStatusChoices' [ngValue]="status.value">{{status.label}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-2">
-                      <ng-container *ngIf="unitScheduleData.get('sale.status')?.value !== 'available' ; else noSale">
-                        <input class="form-control text-center cursor-pointer" formControlName="statusDate" placeholder="DD-MMM-YY"
-                        bsDatepicker [bsConfig]="{ dateInputFormat: 'DD MMM YY'}">
-                      </ng-container>
-                      <ng-template #noSale>
-                        <input class="form-control text-center" formControlName="statusDate" placeholder="-"  [attr.disabled]="true" [value]="null">
-                      </ng-template>
-                    </div>
-                    <div class="col-2">
-                      <input class="form-control text-center" formControlName="buyer" placeholder="-">
-                    </div>
-                  </ng-container>
-                 </div>
-              </ng-container>
-             
-            </div> -->
 
             <table
               class="table table-hover text-center table-borderless"
@@ -314,8 +252,12 @@
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
-                  <th>{{ averageLeaseRentTarget | number : "1.2-2" : "en-GB" }}</th>
-                  <th>{{ averageLeaseRentAchieved | number : "1.2-2" : "en-GB" }}</th>
+                  <th>
+                    {{ averageLeaseRentTarget | number : '1.2-2' : 'en-GB' }}
+                  </th>
+                  <th>
+                    {{ averageLeaseRentAchieved | number : '1.2-2' : 'en-GB' }}
+                  </th>
                   <th></th>
                   <th></th>
                   <th></th>
@@ -323,19 +265,17 @@
                 <tr class="border-bottom border-2 header">
                   <th>{{ unitStructure.label | titlecase }}</th>
                   <th>
-                    Rent target
-                    <small>({{ rentFrequencyLabel }})</small>
+                    Rent target <br>
+                    <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
                   </th>
                   <th>
-                    Rent achieved
-                    <small>({{ rentFrequencyLabel }})</small>
+                    Rent achieved <br>
+                    <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
                   </th>
                   <th>Start date</th>
-                  <th>
-                    Term
-                    <small>({{ leaseFrequencyLabel }})</small>
-                  </th>
+                  <th>End date</th>
                   <th>Tenant</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody formArrayName="unitsScheduleData">
@@ -345,10 +285,10 @@
                       <input class="form-control text-center" value="{{ getUnitIdentifier(i) }}" disabled />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="rentTarget" placeholder="0" />
+                      <input class="form-control text-center" formControlName="rentTarget" placeholder="0.00" />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="rentAchieved" placeholder="0" />
+                      <input class="form-control text-center" formControlName="rentAchieved" placeholder="0.00" />
                     </td>
                     <td>
                       <input
@@ -356,14 +296,24 @@
                         formControlName="startDate"
                         placeholder="DD-MMM-YY"
                         bsDatepicker
-                        [bsConfig]="{ dateInputFormat: 'DD MMM YYYY' }"
+                        [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
                       />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="term" placeholder="1" />
+                      <input
+                        class="form-control text-center"
+                        formControlName="endDate"
+                        placeholder="DD-MMM-YY"
+                        bsDatepicker
+                        [minDate]="getUnitLeaseStartDate(i)"
+                        [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
+                      />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="tenant" placeholder="available" />
+                      <input class="form-control text-center" formControlName="tenant" placeholder="-" />
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-danger" (click)="reset('lease', i)">Reset</button>
                     </td>
                   </ng-container>
                 </tr>
@@ -423,22 +373,23 @@
                 <th>{{ unitStructure.label | titlecase }}</th>
                 <th>Description</th>
                 <th>{{ unitStructure.areaType }} ({{ unitStructure.areaSystem }})</th>
-                <th *ngIf="unitStructure.hasBeds()">Beds</th>
+                <th *ngIf="unitStructure.hasBeds">Beds</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
-                  {{ getFormValue(unitsScheduleFormArray, index, "unit", "identifier") }}
+                  {{ getFormValue(unitsScheduleFormArray, index, 'unit', 'identifier') }}
                 </td>
                 <td>
-                  {{ getFormValue(unitsScheduleFormArray, index, "unit", "description") }}
+                  {{ getFormValue(unitsScheduleFormArray, index, 'unit', 'description') }}
                 </td>
                 <td>
-                  {{ getFormValue(unitsScheduleFormArray, index, "unit", "areaSize") }}
+                  {{ getFormValue(unitsScheduleFormArray, index, 'unit', 'areaSize') }}
                 </td>
-                <td *ngIf="unitStructure.hasBeds()">
-                  {{ getFormValue(unitsScheduleFormArray, index, "unit", "beds") }}</td>
+                <td *ngIf="unitStructure.hasBeds">
+                  {{ getFormValue(unitsScheduleFormArray, index, 'unit', 'beds') }}
+                </td>
               </tr>
             </tbody>
           </table>

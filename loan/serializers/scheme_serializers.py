@@ -125,7 +125,6 @@ class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
 
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    # asset_class = AssetClassSerializer(required=False, allow_null=True)
     asset_class_id = serializers.IntegerField()
     area_system = serializers.SerializerMethodField(required=False, allow_null=True)
     
@@ -144,7 +143,6 @@ class UnitSerializer(serializers.ModelSerializer):
         list_serializer_class = BulkUpdateOrCreateSerializer
     
     def update_validated_data(self, validated_data):
-        # asset_class_id = validated_data.pop("asset_class")["id"]
         asset_class_id = validated_data.pop("asset_class_id")
         asset_class = scheme_models.AssetClass.objects.get(id=asset_class_id)
         validated_data.update({"asset_class": asset_class})
@@ -158,17 +156,17 @@ class UnitSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
     
     def get_area_system(self, obj):
-        scheme = obj.asset_class.scheme
-        return scheme.system.lower()
+        return obj.asset_class.scheme.system.lower()
     
 class LeaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     unit_id = serializers.IntegerField()
-    # unit = UnitSerializer(required=False, allow_null=True)
-    start_date = AngularDateField(required=False, allow_null=True)
-    lease_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    tenant = serializers.CharField(required=False, allow_blank=True)
+    rent_target = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
     rent_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
-    # lease_frequency = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    rent_achieved = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
+    start_date = AngularDateField(required=False, allow_null=True)
+    end_date = AngularDateField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Lease
@@ -176,15 +174,12 @@ class LeaseSerializer(serializers.ModelSerializer):
             'id', 
             'unit_id',
             'tenant', 
-            'lease_type', 
             'rent_target',
             'rent_frequency',
             'rent_achieved',
             'start_date',
             'end_date'
-            # 'term',
-            # 'lease_frequency',
-            ] 
+            ]
     
     def update_validated_data(self, validated_data):
         # unit_id = validated_data.pop("unit")["id"]
@@ -202,9 +197,12 @@ class LeaseSerializer(serializers.ModelSerializer):
     
 class SaleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    # unit = UnitSerializer(required=False, allow_null=True)
     unit_id = serializers.IntegerField()
     status_date = AngularDateField(required=False, allow_null=True)
+    price_target = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
+    price_achieved = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
+    buyer = serializers.CharField(required=False, allow_blank=True)
+    
 
     class Meta:
         model = scheme_models.Sale
@@ -217,6 +215,12 @@ class SaleSerializer(serializers.ModelSerializer):
             'price_achieved',
             'buyer',
             ]
+    
+    def validate_buyer(self, value):
+        # If the value is None, return an empty string instead
+        if value is None:
+            return ""
+        return value
     
     def update_validated_data(self, validated_data):
         # unit_id = validated_data.pop("unit")["id"]
@@ -232,7 +236,10 @@ class SaleSerializer(serializers.ModelSerializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
         
-class UnitScheduleDataSerializer(serializers.Serializer):
+class UnitAndSaleSerializer(serializers.Serializer):
     unit = UnitSerializer(required=False, allow_null=True)
     sale = SaleSerializer(required=False, allow_null=True)
+
+class UnitAndLeaseSerializer(serializers.Serializer):
+    unit = UnitSerializer(required=False, allow_null=True)
     lease = LeaseSerializer(required=False, allow_null=True)

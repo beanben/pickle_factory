@@ -3,21 +3,28 @@
   [mode]="modalMode"
   [unitsScheduleData]="unitsScheduleData"
   [assetClass]="assetClass"
+  [scheme]="scheme"
+  [saleStatusChoices]="saleStatusChoices"
+  [rentFrequencyChoices]="rentFrequencyChoices"
+  [unitStructure]="unitStructure"
+  [leaseStructure]="leaseStructure"
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
 ></app-unit-schedule-modal>
 
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
-
-    <table class="table uniform-width table-hover text-center table-borderless" *ngIf="assetClass.investmentStrategy === 'buildToSell'">
+    <table
+      class="table table-hover text-center table-borderless uniform-width"
+      *ngIf="assetClass.investmentStrategy === 'buildToSell'"
+    >
       <thead>
         <tr class="border border-1 header bg-grey">
           <th scope="col">Total</th>
-          <th scope="col">{{ totalUnits | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col">{{ totalAreaSize | number : "1.2-2" : "en-GB" }}</th>
-          <th scope="col" *ngIf="unitStructure.hasBeds()">{{ totalBeds | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col">{{ totalSalePriceTarget | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col">{{ totalSalePriceAchieved | number : "1.0-0" : "en-GB" }}</th>
+          <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col">{{ totalSalePriceTarget | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col">{{ totalSalePriceAchieved | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
@@ -25,10 +32,10 @@
           <th scope="col">{{ unitStructure.label | titlecase }}</th>
           <th scope="col">Description</th>
           <th scope="col">
-            {{ unitStructure.areaType }}
+            {{ unitStructure.areaType }} <br>
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
-          <th scope="col" *ngIf="unitStructure.hasBeds()">Beds</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
           <th scope="col">Target price</th>
           <th scope="col">Price achieved</th>
           <th scope="col">Sale status</th>
@@ -39,31 +46,31 @@
         <tr class="border-bottom border-1" *ngFor="let unitScheduleData of unitsScheduleData">
           <td>{{ unitScheduleData.unit.identifier }}</td>
           <td>{{ unitScheduleData.unit.description }}</td>
-          <td>{{ unitScheduleData.unit.areaSize | number : "1.2-2" : "en-GB" }}</td>
-          <td *ngIf="unitStructure.hasBeds()">
-            {{ unitScheduleData.unit.beds | number : "1.0-0" : "en-GB"}}
+          <td>{{ unitScheduleData.unit.areaSize | number : '1.2-2' : 'en-GB' }}</td>
+          <td *ngIf="unitStructure.hasBeds">
+            {{ unitScheduleData.unit.beds | number : '1.0-0' : 'en-GB' }}
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.sale.priceTarget; else noPrice">
-              {{ unitScheduleData.sale.priceTarget | number : "1.2-2" : "en-GB" }}
+            <ng-container *ngIf="!!unitScheduleData.sale?.priceTarget; else noPrice">
+              {{ unitScheduleData.sale?.priceTarget | number : '1.2-2' : 'en-GB' }}
             </ng-container>
             <ng-template #noPrice>not defined</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.sale.priceAchieved; else noSale">
-              {{ unitScheduleData.sale.priceAchieved | number : "1.2-2" : "en-GB" }}
+            <ng-container *ngIf="!!unitScheduleData.sale?.priceAchieved; else noSale">
+              {{ unitScheduleData.sale?.priceAchieved | number : '1.2-2' : 'en-GB' }}
             </ng-container>
             <ng-template #noSale>available</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="unitScheduleData.sale.status; else noStatus">
-              {{ unitScheduleData.sale.status }}
+            <ng-container *ngIf="unitScheduleData.sale?.status; else noStatus">
+              {{ unitScheduleData.sale?.status }}
             </ng-container>
             <ng-template #noStatus>available</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="unitScheduleData.sale.buyer; else noBuyer">
-              {{ unitScheduleData.sale.buyer }}
+            <ng-container *ngIf="unitScheduleData.sale?.buyer; else noBuyer">
+              {{ unitScheduleData.sale?.buyer }}
             </ng-container>
             <ng-template #noBuyer>available</ng-template>
           </td>
@@ -71,15 +78,18 @@
       </tbody>
     </table>
 
-     <table class="table uniform-width table-hover text-center table-borderless" *ngIf="assetClass.investmentStrategy === 'buildToRent'">
+    <table
+      class="table table-hover text-center table-borderless uniform-width"
+      *ngIf="assetClass.investmentStrategy === 'buildToRent'"
+    >
       <thead>
         <tr class="border border-1 header bg-grey">
           <th scope="col">Total</th>
-          <th scope="col">{{ totalUnits | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col">{{ totalAreaSize | number : "1.2-2" : "en-GB" }}</th>
-          <th scope="col" *ngIf="unitStructure.hasBeds()">{{ totalBeds | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col" class="larger-column">{{ averageLeaseRentTarget | number : "1.0-0" : "en-GB" }}</th>
-          <th scope="col" class="larger-column">{{ averageLeaseRentAchieved | number : "1.0-0" : "en-GB" }}</th>
+          <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col" class="larger-column">{{ averageLeaseRentTarget | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col" class="larger-column">{{ averageLeaseRentAchieved | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col"></th>
           <th scope="col"></th>
           <th scope="col"></th>
@@ -91,19 +101,17 @@
             {{ unitStructure.areaType }}
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
-          <th scope="col" *ngIf="unitStructure.hasBeds()">Beds</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
           <th scope="col">
             Rent target <br>
-            <small class="px-0">({{ rentFrequencyLabel }})</small>
+            <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
           </th>
           <th scope="col">
             Rent achieved <br>
-            <small class="px-0">({{ rentFrequencyLabel }})</small>
+            <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
           </th>
           <th scope="col">Lease start</th>
-          <th scope="col">
-             Term <small class="px-0">({{ leaseFrequencyLabel }})</small>
-          </th>
+          <th scope="col">Lease end</th>
           <th scope="col">Tenant</th>
         </tr>
       </thead>
@@ -111,225 +119,43 @@
         <tr class="border-bottom border-1" *ngFor="let unitScheduleData of unitsScheduleData">
           <td>{{ unitScheduleData.unit.identifier }}</td>
           <td>{{ unitScheduleData.unit.description }}</td>
-          <td>{{ unitScheduleData.unit.areaSize | number : "1.2-2" : "en-GB" }}</td>
-          <td *ngIf="unitStructure.hasBeds()">
-            {{ unitScheduleData.unit.beds | number : "1.0-0" : "en-GB"}}
+          <td>{{ unitScheduleData.unit.areaSize | number : '1.2-2' : 'en-GB' }}</td>
+          <td *ngIf="unitStructure.hasBeds">
+            {{ unitScheduleData.unit.beds | number : '1.0-0' : 'en-GB' }}
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.lease.rentTarget; else noTarget">
-              {{ unitScheduleData.lease.rentTarget | number : "1.2-2" : "en-GB" }}
+            <ng-container *ngIf="!!unitScheduleData?.lease?.rentTarget; else noTarget">
+              {{ unitScheduleData.lease?.rentTarget | number : '1.2-2' : 'en-GB' }}
             </ng-container>
             <ng-template #noTarget>not defined</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.lease.rentAchieved; else noLettings">
-              {{ unitScheduleData.lease.rentAchieved | number : "1.2-2" : "en-GB" }}
+            <ng-container *ngIf="!!unitScheduleData.lease?.rentAchieved; else noLettings">
+              {{ unitScheduleData.lease?.rentAchieved | number : '1.2-2' : 'en-GB' }}
             </ng-container>
             <ng-template #noLettings>available</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.lease.startDate; else noStart">
-              {{ unitScheduleData.lease.startDate |  date : "MMM YYYY" }}
+            <ng-container *ngIf="!!unitScheduleData.lease?.startDate; else noStart">
+              {{ unitScheduleData.lease?.startDate | date : 'MMM YYYY' }}
             </ng-container>
             <ng-template #noStart>available</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.lease.term; else noTerm">
-              {{ unitScheduleData.lease.term }}
+            <ng-container *ngIf="!!unitScheduleData.lease?.endDate; else noEnd">
+              {{ unitScheduleData.lease?.endDate | date : 'MMM YYYY' }}
             </ng-container>
-            <ng-template #noTerm>available</ng-template>
+            <ng-template #noEnd>available</ng-template>
           </td>
           <td>
-            <ng-container *ngIf="!!unitScheduleData.lease.tenant; else noTenant">
-              {{ unitScheduleData.lease.tenant }}
+            <ng-container *ngIf="!!unitScheduleData.lease?.tenant; else noTenant">
+              {{ unitScheduleData.lease?.tenant }}
             </ng-container>
             <ng-template #noTenant>available</ng-template>
           </td>
         </tr>
       </tbody>
-     </table>
-
-
-    <!-- <div class="table uniform-width" *ngIf="assetClass.investmentStrategy === 'buildToSell'">
-      <div class="total-row text-center header bg-grey">
-        <div class="table-cell">Total</div>
-        <div class="table-cell">
-          {{ totalUnits | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ totalAreaSize | number : "1.2-2" : "en-GB" }}
-        </div>
-        <div class="table-cell" *ngIf="unitStructure.hasBeds()">
-          {{ totalBeds | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ totalSalePriceTarget | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ totalSalePriceAchieved | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell"></div>
-        <div class="table-cell"></div>
-      </div>
-      <div class="table-row text-center header">
-        <div class="table-cell-header pt-2">
-          {{ unitStructure.label | titlecase }}
-        </div>
-        <div class="table-cell-header pt-2">Description</div>
-        <div class="table-cell-header pt-2">
-          {{ unitStructure.areaType }} <small class="px-0">({{ unitStructure.areaSystem }})</small>
-        </div>
-        <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">
-          Beds
-        </div>
-        <div class="table-cell-header pt-2">Target price</div>
-        <div class="table-cell-header pt-2">Price achieved</div>
-        <div class="table-cell-header pt-2">Sale status</div>
-        <div class="table-cell-header pt-2">Buyer</div>
-      </div>
-      <div
-        class="table-row text-center"
-        *ngFor="let unitScheduleData of unitsScheduleData"
-      >
-        <div class="table-cell">{{ unitScheduleData.unit.identifier }}</div>
-        <div class="table-cell">{{ unitScheduleData.unit.description }}</div>
-        <div class="table-cell">
-          {{ unitScheduleData.unit.areaSize | number : "1.2-2" : "en-GB" }}
-        </div>
-        <div class="table-cell" *ngIf="unitStructure.hasBeds()">
-          {{ unitScheduleData.unit.beds }}
-        </div>
-        <div class="table-cell">
-          {{
-            unitScheduleData.sale.priceTarget
-              ? unitScheduleData.sale.priceTarget
-              : "not defined"
-          }}
-        </div>
-        <div class="table-cell">
-          {{
-            unitScheduleData.sale.priceAchieved
-              ? unitScheduleData.sale.priceAchieved
-              : "available"
-          }}
-        </div>
-        <div class="table-cell">
-          <ng-container *ngIf="unitScheduleData.sale.status; else noSale">
-            {{ unitScheduleData.sale.status }}
-            <small>{{
-              unitScheduleData.sale.statusDate | date : "dd MMM YYYY"
-            }}</small>
-          </ng-container>
-          <ng-template #noSale> available </ng-template>
-        </div>
-        <div class="table-cell">
-          {{
-            unitScheduleData.sale.buyer
-              ? unitScheduleData.sale.buyer
-              : "available"
-          }}
-        </div>
-      </div>
-    </div>
-
-    <div class="table uniform-width" *ngIf="assetClass.investmentStrategy === 'buildToRent'">
-      <div class="total-row text-center header bg-grey">
-        <div class="table-cell">Total</div>
-        <div class="table-cell">
-          {{ totalUnits | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ totalAreaSize | number : "1.2-2" : "en-GB" }}
-        </div>
-        <div class="table-cell" *ngIf="unitStructure.hasBeds()">
-          {{ totalBeds | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ averageLeaseRentTarget | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell">
-          {{ averageLeaseRentAchieved | number : "1.0-0" : "en-GB" }}
-        </div>
-        <div class="table-cell"></div>
-        <div class="table-cell"></div>
-        <div class="table-cell"></div>
-      </div>
-      <div class="table-row text-center header">
-        <div class="table-cell-header pt-2">
-          {{ unitStructure.label | titlecase }}
-        </div>
-        <div class="table-cell-header pt-2">Description</div>
-        <div class="table-cell-header pt-2">
-          {{ unitStructure.areaType }} <small class="px-0">({{ unitStructure.areaSystem }})</small>
-        </div>
-        <div class="table-cell-header pt-2" *ngIf="unitStructure.hasBeds()">
-          Beds
-        </div>
-        <div class="table-cell-header pt-2">
-          Rent target <small class="px-0">({{ rentFrequencyLabel }})</small>
-        </div>
-        <div class="table-cell-header pt-2">
-          Rent achieved <small class="px-0">({{ rentFrequencyLabel }})</small>
-        </div>
-        <div class="table-cell-header pt-2">Lease start</div>
-        <div class="table-cell-header pt-2">
-          Term <small class="px-0">({{ leaseFrequencyLabel }})</small>
-        </div>
-        <div class="table-cell-header pt-2">Tenant</div>
-      </div>
-      <div
-        class="table-row text-center"
-        *ngFor="let unitScheduleData of unitsScheduleData"
-      >
-        <div class="table-cell">{{ unitScheduleData.unit.identifier }}</div>
-        <div class="table-cell">{{ unitScheduleData.unit.description }}</div>
-        <div class="table-cell">
-          {{ unitScheduleData.unit.areaSize | number : "1.2-2" : "en-GB" }}
-        </div>
-        <div class="table-cell" *ngIf="unitStructure.hasBeds()">
-          {{ unitScheduleData.unit.beds }}
-        </div>
-        <div class="table-cell">
-          <ng-container
-            *ngIf="unitScheduleData.lease.rentTarget; else noRentTarget"
-          >
-            {{ unitScheduleData.lease.rentTarget }}
-            {{ unitScheduleData.lease.rentFrequency }}
-          </ng-container>
-          <ng-template #noRentTarget> available </ng-template>
-        </div>
-        <div class="table-cell">
-          <ng-container
-            *ngIf="unitScheduleData.lease.rentAchieved; else noRentAchieved"
-          >
-            {{ unitScheduleData.lease.rentAchieved }}
-            {{ unitScheduleData.lease.rentFrequency }}
-          </ng-container>
-          <ng-template #noRentAchieved> available </ng-template>
-        </div>
-        <div class="table-cell">
-          {{
-            unitScheduleData.lease.startDate
-              ? (unitScheduleData.lease.startDate | date : "dd MMM YYYY")
-              : "available"
-          }}
-        </div>
-        <div class="table-cell">
-          <ng-container *ngIf="unitScheduleData.lease.term; else available">
-            {{ unitScheduleData.lease.term }}
-            {{ unitScheduleData.lease.leaseFrequency }}
-          </ng-container>
-          <ng-template #available> available </ng-template>
-        </div>
-        <div class="table-cell">
-          {{
-            unitScheduleData.lease.tenant
-              ? unitScheduleData.lease.tenant
-              : "available"
-          }}
-        </div>
-      </div>
-    </div> -->
+    </table>
   </div>
 </div>
 

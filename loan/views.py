@@ -37,7 +37,7 @@ class ChoicesView(APIView):
             'investment_strategy': scheme_models.AssetClass.INVESTMENT_STRATEGY_CHOICES,
             'sale_status': scheme_models.Sale.STATUS_CHOICES,
             'rent_frequency': scheme_models.Lease.RENT_FREQUENCY_CHOICES,
-            'lease_frequency': scheme_models.Lease.LEASE_FREQUENCY_CHOICES,
+            # 'lease_frequency': scheme_models.Lease.LEASE_FREQUENCY_CHOICES,
             # Add more choices here if needed
         }
 
@@ -420,20 +420,90 @@ class AssetClassUnitsWithSaleAndLease(AuthorQuerySetMixin, generics.ListAPIView)
             })
 
         return Response(unit_sale_lease_list, status=status.HTTP_200_OK)
-    
 
-class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIView):
-        serializer_class = scheme_serializers.UnitScheduleDataSerializer
+
+class UnitsAndSales(AuthorQuerySetMixin, generics.GenericAPIView):
+        serializer_class = scheme_serializers.UnitAndSaleSerializer
         
         serializers_map = {
             'unit': scheme_serializers.UnitSerializer,
-            'sale': scheme_serializers.SaleSerializer,
+            'sale': scheme_serializers.SaleSerializer
+        }
+
+        model_map = {
+            'unit': scheme_models.Unit,
+            'sale': scheme_models.Sale
+        }
+
+        def post(self, request, *args, **kwargs):
+            return self.bulk_update_create(request, *args, **kwargs)
+
+        def create_or_update(self, data, object_type):
+            id = data["id"]
+            model = self.model_map[object_type]
+            serializer_type = self.serializers_map[object_type]
+            instance = get_object_or_404(model, id=id) if id else None
+            serializer = serializer_type(instance = instance, data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return serializer.data
+
+        def bulk_update_create(self, request, *args, **kwargs):
+            unit_sale_list = []
+            
+            for data in request.data:
+                unit_serializer_data = self.create_or_update(data["unit"], 'unit')
+
+                data_sale = data["sale"]
+                data_sale["unit_id"] = unit_serializer_data["id"]
+                sale_serializer_data = self.create_or_update(data_sale, 'sale')
+                
+                unit_instance = scheme_models.Unit.objects.get(id=unit_serializer_data["id"])
+                sale_instance = scheme_models.Sale.objects.get(id=sale_serializer_data["id"])
+
+                unit_shedule_data = {
+                "unit": unit_instance,
+                "sale": sale_instance
+                }
+                unit_sale_list.append(unit_shedule_data)
+
+            response_data = self.get_serializer(unit_sale_list, many=True).data
+            return Response(response_data, status=status.HTTP_200_OK)
+        
+        def get(self, request, *args, **kwargs):
+            return self.list(request, *args, **kwargs)
+
+        def get_queryset(self):
+            asset_class_id = self.kwargs['pk']
+            asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+            return scheme_models.Unit.objects.filter(asset_class=asset_class)
+
+        def list(self, request, *args, **kwargs):
+            units = self.get_queryset()
+            unit_sale_list = []
+
+            for unit in units:
+                sale = scheme_models.Sale.objects.filter(unit=unit).first()
+                unit_sale = {
+                    "unit": unit,
+                    "sale": sale if sale else None
+                }
+                unit_sale_list.append(unit_sale)
+
+            response_data = self.get_serializer(unit_sale_list, many=True).data
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        
+class UnitsAndLeases(AuthorQuerySetMixin, generics.GenericAPIView):
+        serializer_class = scheme_serializers.UnitAndLeaseSerializer
+        
+        serializers_map = {
+            'unit': scheme_serializers.UnitSerializer,
             'lease': scheme_serializers.LeaseSerializer
         }
 
         model_map = {
             'unit': scheme_models.Unit,
-            'sale': scheme_models.Sale,
             'lease': scheme_models.Lease
         }
 
@@ -451,28 +521,48 @@ class UnitScheduleDataBulkUpdateCreate(AuthorQuerySetMixin, generics.GenericAPIV
             return serializer.data
 
         def bulk_update_create(self, request, *args, **kwargs):
-            units_schedule_data = []
+            unit_lease_list = []
             
             for data in request.data:
                 unit_serializer_data = self.create_or_update(data["unit"], 'unit')
-
-                data_sale = data["sale"]
-                data_sale["unit"] = unit_serializer_data
-                sale_serializer_data = self.create_or_update(data_sale, 'sale')
-
+                
                 data_lease = data["lease"]
-                data_lease["unit"] = unit_serializer_data
+                data_lease["unit_id"] = unit_serializer_data["id"]
                 lease_serializer_data = self.create_or_update(data_lease, 'lease')
 
+                unit_instance = scheme_models.Unit.objects.get(id=unit_serializer_data["id"])
+                lease_instance = scheme_models.Lease.objects.get(id=lease_serializer_data["id"])
+
                 unit_shedule_data = {
-                    "unit": unit_serializer_data,
-                    "sale": sale_serializer_data,
-                    "lease": lease_serializer_data
+                "unit": unit_instance,
+                "lease": lease_instance
                 }
-                units_schedule_data.append(unit_shedule_data)
+                unit_lease_list.append(unit_shedule_data)
 
-            response_data = self.get_serializer(units_schedule_data, many=True).data
+            response_data = self.get_serializer(unit_lease_list, many=True).data
             return Response(response_data, status=status.HTTP_200_OK)
+        
+        def get(self, request, *args, **kwargs):
+            return self.list(request, *args, **kwargs)
 
+        def get_queryset(self):
+            asset_class_id = self.kwargs['pk']
+            asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+            return scheme_models.Unit.objects.filter(asset_class=asset_class)
+
+        def list(self, request, *args, **kwargs):
+            units = self.get_queryset()
+            unit_lease_list = []
+
+            for unit in units:
+                lease = scheme_models.Lease.objects.filter(unit=unit).first()
+                unit_lease = {
+                    "unit": unit,
+                    "lease": lease if lease else None
+                }
+                unit_lease_list.append(unit_lease)
+
+            response_data = self.get_serializer(unit_lease_list, many=True).data
+            return Response(response_data, status=status.HTTP_200_OK)
         
 

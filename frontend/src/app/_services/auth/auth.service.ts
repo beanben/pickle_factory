@@ -3,11 +3,10 @@ import { environment } from 'src/environments/environment';
 import { TokenStorageService } from './token-storage.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Firm } from 'src/app/pages/auth/firm';
 import { Router } from '@angular/router';
-import { User } from 'src/app/pages/auth/user';
 import { SharedService } from '../shared/shared.service';
 import { APIResult } from 'src/app/_interfaces/api.interface';
+import { Firm, User } from 'src/app/_interfaces/auth.interface';
 
 @Injectable({
   providedIn: 'root'

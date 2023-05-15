@@ -20,7 +20,8 @@ from .views import (
     AssetClassUnitsWithSaleAndLease,
     # SaleStatusChoicesView,
     ChoicesView,
-    UnitScheduleDataBulkUpdateCreate,
+    UnitsAndSales,
+    UnitsAndLeases
 )
 
 unit_patterns = ([
@@ -56,8 +57,11 @@ asset_class_patterns = ([
     path('', AssetClassList.as_view()),
     path('<int:pk>/', AssetClassDetail.as_view()),
     path('<int:pk>/units/', AssetClassUnitsList.as_view()),
-    path('<int:pk>/units_with_sale_and_lease/', AssetClassUnitsWithSaleAndLease.as_view()),
-    path('unit_schedule_data_bulk_update_create/', UnitScheduleDataBulkUpdateCreate.as_view())
+    # path('<int:pk>/units_with_sale_and_lease/', AssetClassUnitsWithSaleAndLease.as_view()),
+    path('<int:pk>/units_and_sales/', UnitsAndSales.as_view()),
+    path('<int:pk>/units_and_leases/', UnitsAndLeases.as_view()),
+    path('units_and_sales/', UnitsAndSales.as_view()),
+    path('units_and_leases/', UnitsAndLeases.as_view())
 ], 'asset_class')
 
 urlpatterns = [

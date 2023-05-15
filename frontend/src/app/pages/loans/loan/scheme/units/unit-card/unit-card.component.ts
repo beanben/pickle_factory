@@ -2,7 +2,8 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription } from 'rxjs';
 import { AssetClassType } from 'src/app/_types/custom.type';
-import { Unit } from 'src/app/_interfaces/scheme.interface';
+import { Scheme, Unit, UnitStructure } from 'src/app/_interfaces/scheme.interface';
+import { UnitService } from 'src/app/_services/unit/unit.service';
 
 interface UnitGroup {
   description: string,
@@ -17,9 +18,10 @@ interface UnitGroup {
 })
 export class UnitCardComponent implements OnInit, OnChanges {
   @Input() assetClass = {} as AssetClassType;
+  @Input() scheme = {} as Scheme;
   // assetClass = {} as AssetClassType;
   // @Input() assetClassUnits = {} as AssetClassUnits;
-  unitStructure = {} as Unit;
+  unitStructure = {} as UnitStructure;
   unitsGrouped: UnitGroup[] = [];
   totalQuantity = 0;
   totalAreaSize = 0;
@@ -27,10 +29,12 @@ export class UnitCardComponent implements OnInit, OnChanges {
   subs: Subscription[] = [];
 
   constructor(
-    private _schemeService: SchemeService
+    private _schemeService: SchemeService,
+    private _unitService: UnitService,
   ) { }
 
   ngOnInit(): void {
+    this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
     // this.assetClass = this.assetClassUnits.assetClass;
     // this.unitStructure = new Unit(this.assetClass);
   };
@@ -38,7 +42,7 @@ export class UnitCardComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
       const assetClass: AssetClassType = changes['assetClass'].currentValue;
-      this.unitStructure = new Unit(this.assetClass);
+      this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
       this.getAssetClassUnits(assetClass);
     }
   }

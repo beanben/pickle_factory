@@ -1,11 +1,22 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
-import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 
-import { lastValueFrom } from 'rxjs';
-import { Choice } from 'src/app/_interfaces/shared.interface';
-import { Lease, Unit, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
-import { AssetClassType } from 'src/app/_types/custom.type';
+import {lastValueFrom} from 'rxjs';
+import {Choice} from 'src/app/_interfaces/shared.interface';
+import {
+  Lease,
+  LeaseStructure,
+  Sale,
+  Scheme,
+  Unit,
+  UnitScheduleData,
+  // UnitScheduleBTR,
+  // UnitScheduleBTS,
+  UnitStructure
+} from 'src/app/_interfaces/scheme.interface';
+import {AssetClassType} from 'src/app/_types/custom.type';
+import {UnitService} from 'src/app/_services/unit/unit.service';
 
 @Component({
   selector: 'app-unit-schedule',
@@ -15,7 +26,7 @@ import { AssetClassType } from 'src/app/_types/custom.type';
 export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
   openAssetClassModal = false;
-  modalMode = "";
+  modalMode = '';
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
@@ -26,56 +37,42 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
   rentFrequencyLabel = '';
   rentFrequencyChoices: Choice[] = [];
-  leaseFrequencyLabel = '';
-  leaseFrequencyChoices: Choice[] = [];
+  saleStatusChoices: Choice[] = [];
 
   unitsScheduleData: UnitScheduleData[] = [];
-  unitStructure = {} as Unit;
-  leaseStructure = {} as Lease;
+  unitStructure = {} as UnitStructure;
+  leaseStructure = {} as LeaseStructure;
 
-  // @Input() scheme = {} as Scheme;
   @Input() assetClass = {} as AssetClassType;
-  // @Input() availableUseChoices: Choice[] = [];
-  // unitStructure = {} as Unit;
+  @Input() scheme = {} as Scheme;
   assetClassUnits: Unit[] = [];
 
-  constructor(
-    private _schemeService: SchemeService
-  ) { }
+  constructor(private _schemeService: SchemeService, private _unitService: UnitService) {}
 
   async ngOnInit() {
-    await this.getChoices('rentFrequency', this.rentFrequencyChoices);
-    await this.getChoices('leaseFrequency', this.leaseFrequencyChoices);
-    this.unitStructure = new Unit(this.assetClass);
-    this.defineLeaseParammetres(this.unitStructure);
+    await this.setUpUnitSchedule(this.assetClass);
+    
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    
+  async ngOnChanges(changes: SimpleChanges) {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
-      this.unitStructure = new Unit(this.assetClass);
-
-      this.defineLeaseParammetres(this.unitStructure);
-      this.getAssetClassUnitsWithSaleAndLease(this.assetClass);
+      await this.setUpUnitSchedule(this.assetClass);
     }
   }
 
-  defineLeaseParammetres(unit: Unit) {
-    this.leaseStructure = new Lease(unit);
-    // this.rentFrequencyLabel = this.defineRentFrequency(this.rentFrequencyChoices);
-    // this.leaseFrequencyLabel = this.defineLeaseFrequency();
+  async setUpUnitSchedule(assetClass: AssetClassType) {
+    this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
 
-    const rentFrequencyChoice = this.rentFrequencyChoices.find(
-      (choice: Choice) => choice.value === this.leaseStructure.rentFrequency
-    );
-    this.rentFrequencyLabel = rentFrequencyChoice ? rentFrequencyChoice.label : '';
+    if (assetClass.investmentStrategy === 'buildToSell') {
+      await this.getChoices('saleStatus', this.saleStatusChoices);
+      this.getUnitsAndSales(assetClass);
+    }
 
-
-    const leaseFrequencyChoice = this.leaseFrequencyChoices.find(
-      (choice: Choice) => choice.value === this.leaseStructure.leaseFrequency
-    );
-    this.leaseFrequencyLabel = leaseFrequencyChoice ? leaseFrequencyChoice.label : '';
-
+    if (assetClass.investmentStrategy === 'buildToRent') {
+      await this.getChoices('rentFrequency', this.rentFrequencyChoices);
+      this.leaseStructure = this._unitService.createLeaseStructure(this.assetClass);
+      this.getUnitsAndLeases(assetClass);
+    }
   }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
@@ -85,105 +82,110 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     targetArray.push(...choices);
   }
 
-  // defineRentFrequency(frequencyChoices: Choice[]): string {
-  //   const frequencyChoiceValue: string = this.leaseStructure.rentFrequency
-  //   const choice = frequencyChoices.find(
-  //     (item: Choice) => item.value === frequencyChoiceValue
-  //   );
+  getUnitsAndSales(assetClass: AssetClassType) {
+    this._unitService.getUnitsScheduleBTS(assetClass).subscribe((unitsScheduleData: UnitScheduleData[]) => {
+      this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
 
-  //   return choice ? choice.label : '';
-  // };
+      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
 
-  // defineLeaseFrequency(): string {
-  //   const frequencyChoiceValue: string = this.leaseStructure.leaseFrequency
-  //   const choice = this.leaseFrequencyChoices.find(
-  //     (item: Choice) => item.value === frequencyChoiceValue
-  //   );
-  //   return choice ? choice.label : '';
+      this.calculateTotalsSale(
+        unitsScheduleData
+          .map(unitScheduleData => unitScheduleData.sale)
+          .filter((sale): sale is Sale => sale !== undefined)
+      );
+   
+    });
+  }
+
+  getUnitsAndLeases(assetClass: AssetClassType) {
+    this._unitService.getUnitsScheduleBTR(assetClass).subscribe((unitsScheduleData: UnitScheduleData[]) => {
+      this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
+
+      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+
+      this.calculateAveragesLease(
+        unitsScheduleData
+          .map(unitScheduleData => unitScheduleData.lease)
+          .filter((lease): lease is Lease => lease !== undefined)
+      );
+    });
+  }
+
+  // getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType) {
+  //   this._schemeService
+  //     .getAssetClassUnitsWithSaleAndLease(assetClass)
+  //     .subscribe((unitsScheduleData: UnitScheduleBTS[] | UnitScheduleBTR[]) => {
+  //       this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
+
+  //       this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+  //       this.calculateTotalsSale(unitsScheduleData.map(unitScheduleData => unitScheduleData.sale));
+  //       this.calculateAveragesLease(unitsScheduleData.map(unitScheduleData => unitScheduleData.lease));
+  //     });
   // }
 
-  // getAssetClassUnits(assetClass: AssetClassType) {
-  //   this._schemeService.getAssetClassUnits(assetClass)
-  //     .subscribe((units: Unit[]) => {
-  //       this.assetClassUnits = units;
-  //       this.calculateTotals(units);
-  //     });
-  // };
-
-  getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType) {
-    this._schemeService.getAssetClassUnitsWithSaleAndLease(assetClass)
-      .subscribe((unitsScheduleData: UnitScheduleData[]) => {
-
-        this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData));
-
-        this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
-        this.calculateTotalsSale(unitsScheduleData.map(unitScheduleData => unitScheduleData.sale));
-        this.calculateAveragesLease(unitsScheduleData.map(unitScheduleData => unitScheduleData.lease));
-      });
-  };
-
-  buildUnitScheduleData(unitScheduleData: UnitScheduleData): UnitScheduleData {
+  buildUnitScheduleData(unitScheduleData: UnitScheduleData, assetClass: AssetClassType): UnitScheduleData {
     const unit = this.buildUnit(unitScheduleData.unit);
-    const sale = this.buildSale(unit, unitScheduleData.sale);
-    const lease = this.buildLease(unit, unitScheduleData.lease);
 
-    return { unit, sale, lease };
+    if (assetClass.investmentStrategy === 'buildToSell') {
+      const sale = this.buildSale(unitScheduleData.sale);
+      return {unit, sale};
+    } else {
+      const lease = this.buildLease(unitScheduleData.lease);
+      return {unit, lease};
+    }
   }
 
   buildUnit(unitData: Unit): Unit {
-    return new Unit(
-      this.assetClass,
-      unitData.identifier,
-      unitData.description,
-      unitData.beds,
-      unitData.areaSize,
-      unitData.areaSystem,
-      unitData.id
-    );
+    return {
+      id: unitData.id,
+      assetClassId: unitData.assetClassId,
+      label: unitData.label,
+      identifier: unitData.identifier,
+      description: unitData.description,
+      beds: unitData.beds,
+      areaSize: unitData.areaSize,
+      areaType: unitData.areaType,
+      areaSystem: unitData.areaSystem
+    };
   }
 
-  buildSale(unit: Unit, saleData: Sale): Sale {
-    return new Sale(
-      unit,
-      saleData.status,
-      saleData.statusDate,
-      saleData.priceTarget,
-      saleData.priceAchieved,
-      saleData.buyer,
-      saleData.id
-    );
+  buildSale(saleData?: Sale): Sale {
+    return {
+      id: saleData?.id,
+      unitId: saleData?.unitId,
+      status: saleData?.status || this.saleStatusChoices[0].value,
+      statusDate: saleData?.statusDate,
+      priceTarget: saleData?.priceTarget,
+      priceAchieved: saleData?.priceAchieved,
+      buyer: saleData?.buyer
+    };
   }
 
-  buildLease(unit: Unit, leaseData: Lease): Lease {
-    return new Lease(
-      unit,
-      leaseData.tenant,
-      leaseData.leaseType,
-      leaseData.rentTarget,
-      leaseData.rentAchieved,
-      leaseData.startDate,
-      leaseData.term,
-      leaseData.endDate,
-      leaseData.id
-    );
+  buildLease(leaseData?: Lease): Lease {
+    return {
+      id: leaseData?.id,
+      unitId: leaseData?.unitId,
+      tenant: leaseData?.tenant,
+      rentTarget: leaseData?.rentTarget,
+      rentAchieved: leaseData?.rentAchieved,
+      rentFrequency: leaseData?.rentFrequency,
+      startDate: leaseData?.startDate,
+      endDate: leaseData?.endDate
+    };
   }
-
 
   calculateTotals(units: Unit[]) {
     this.totalUnits = units.length;
-    this.totalAreaSize = units.reduce((acc, units) => acc + (Number(units.areaSize) ?? 0), 0)
+    this.totalAreaSize = units.reduce((acc, units) => acc + (Number(units.areaSize) ?? 0), 0);
     this.totalBeds = units?.reduce((acc, units) => acc + (units.beds ?? 0), 0);
   }
 
   calculateTotalsSale(sales: Sale[]) {
-    this.totalSalePriceTarget = sales.reduce((acc, sale) => acc + (Number(sale.priceTarget) ?? 0), 0)
-    this.totalSalePriceAchieved = sales.reduce((acc, sale) => acc + (Number(sale.priceAchieved) ?? 0), 0)
+    this.totalSalePriceTarget = sales.reduce((acc, sale) => acc + (Number(sale.priceTarget) ?? 0), 0);
+    this.totalSalePriceAchieved = sales.reduce((acc, sale) => acc + (Number(sale.priceAchieved) ?? 0), 0);
   }
 
-  calculateAveragesLease(leases: Lease[]) {
-    // this.averageLeaseRentTarget = leases.reduce((acc, lease) => acc + (Number(lease.rentTarget) ?? 0), 0) / leases.length;
-    // this.averageLeaseRentAchieved = leases.reduce((acc, lease) => acc + (Number(lease.rentAchieved) ?? 0), 0) / leases.length;
-  }
+  calculateAveragesLease(leases?: Lease[]) {}
 
   onOpenUnitScheduleModal(modalMode: string) {
     this.openUnitScheduleModal = true;
@@ -198,4 +200,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     }
   }
 
+  getRentFrequencyLabel(rentFrequencyValue: string): string {
+    const rentFrequencyChoice = this.rentFrequencyChoices.find(choice => choice.value === rentFrequencyValue);
+    return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
+  }
 }

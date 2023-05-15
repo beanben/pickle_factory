@@ -1,23 +1,23 @@
-import { AssetClassType } from "../_types/custom.type";
+import {AssetClassType} from '../_types/custom.type';
 
 export interface Scheme {
-    id: number;
-    loanId: number;
-    name: string;
-    streetName?: string;
-    postcode?: string;
-    city: string;
-    country?: string;
-    openingDate?: Date;
-    system: "SQFT" | "SQM";
-    isBuilt: boolean;
+  id: number;
+  loanId: number;
+  name: string;
+  streetName?: string;
+  postcode?: string;
+  city: string;
+  country?: string;
+  openingDate?: Date;
+  system: 'SQFT' | 'SQM';
+  isBuilt: boolean;
 }
 
 export interface AssetClass {
+  id?: number;
   use: string;
   schemeId: number;
   investmentStrategy: string;
-  id?: number;
 }
 
 export interface Hotel extends AssetClass {
@@ -45,52 +45,70 @@ export interface ShoppingCentre extends AssetClass {
 }
 
 export interface AssetClassUnit {
-    assetClass: AssetClassType;
-    units: Unit[];
+  assetClass: AssetClassType;
+  units: Unit[];
 }
 
 export interface SchemeData {
-    assetClassUnits: AssetClassUnit[];
+  assetClassUnits: AssetClassUnit[];
 }
 
 export interface UnitScheduleData {
-    unit: Unit;
-    sale: Sale;
-    lease: Lease;
+  unit: Unit;
+  sale?: Sale;
+  lease?: Lease;
 }
 
-export interface Unit {
-    id: number;
-    assetClassId: number;
-    label: "room" | "unit";
-    identifier: string;
-    description: string;
-    beds?: number;
-    areaSize: number ;
-    area_type: "NIA" | "GIA";
-    area_system: "sqft" | "sqm";
-  }
-  
-  
-  export interface Lease {
-    id: number;
-    unitId: number;
-    tenant: string;
-    leaseType: "openMarket" | "discountedMarket";
-    rentTarget: number;
-    rentAchieved: number;
-    rentFrequency: "perWeek" | "perMonth";
-    startDate: Date;
-    endDate: Date;
-  }
-  
-  export interface Sale {
-    id: number;
-    unitId: number;
-    status: "available" | "underOffer" | "exchanged" | "completed";
-    statusDate: Date;
-    priceTarget: number;
-    priceAchieved: number;
-    buyer: string;
-  }
+// export interface UnitScheduleBTS {
+//   unit: Unit;
+//   sale: Sale;
+// }
 
+// export interface UnitScheduleBTR {
+//   unit: Unit;
+//   lease: Lease;
+// }
+
+export interface Unit {
+  id?: number;
+  assetClassId?: number;
+  label: 'room' | 'unit';
+  identifier?: string;
+  description: string;
+  beds?: number;
+  areaSize: number;
+  areaType: 'NIA' | 'GIA';
+  areaSystem: 'sqft' | 'sqm';
+}
+
+export interface UnitStructure {
+  label: 'room' | 'unit';
+  areaType: 'NIA' | 'GIA';
+  areaSystem: 'sqft' | 'sqm';
+  hasBeds: boolean;
+}
+
+export interface Lease {
+  id?: number;
+  unitId?: number;
+  tenant?: string;
+  rentTarget?: number;
+  rentAchieved?: number;
+  rentFrequency?: 'perWeek' | 'perMonth';
+  startDate?: Date;
+  endDate?: Date;
+}
+
+export interface LeaseStructure {
+  rentFrequency: 'perWeek' | 'perMonth';
+}
+
+export interface Sale {
+  id?: number;
+  unitId?: number;
+  status: string;
+  statusDate?: Date;
+  priceTarget?: number;
+  priceAchieved?: number;
+  buyer?: string;
+}

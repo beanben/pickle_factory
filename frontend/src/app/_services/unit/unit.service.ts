@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { SharedService } from '../shared/shared.service';
-import { Unit, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
+import { LeaseStructure, Scheme, Unit, UnitStructure, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 
 @Injectable({
@@ -38,19 +38,59 @@ export class UnitService {
     return this.http.delete(url, httpOptions).pipe(tap(() => console.log('deleteUnits()', Math.random())));
   }
 
-  updateOrCreateUnitsScheduleData(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
-    const url = `/api/asset_class/unit_schedule_data_bulk_update_create/`;
+  // updateOrCreateUnitsScheduleData(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
+  //   const url = `/api/asset_class/unit_schedule_data_bulk_update_create/`;
+  //   return this.http
+  //     .post<UnitScheduleData[]>(url, unitsScheduleData)
+  //     .pipe(tap(() => console.log('updateOrCreateUnitsScheduleData()', Math.random())));
+  // }
+
+  updateOrCreateUnitsScheduleBTS(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
+    const url = `/api/asset_class/units_and_sales/`;
     return this.http
       .post<UnitScheduleData[]>(url, unitsScheduleData)
-      .pipe(tap(() => console.log('updateOrCreateUnitsScheduleData()', Math.random())));
+      .pipe(tap(() => console.log('updateOrCreateUnitsScheduleBTS()', Math.random())));
   }
 
-
-  // MAYBE MAKE THIS A PROPERTY OF MODELS
-  defineLeaseRentFrequency(assetClass: AssetClassType){
-    const isWeekly = ['studentAccommodation'];
-    return isWeekly.includes(assetClass.use) ? 'perWeek' : 'perMonth';
+  getUnitsScheduleBTS(assetClass: AssetClassType): Observable<UnitScheduleData[]> {
+    const url = `/api/asset_class/${assetClass.id}/units_and_sales/`;
+    return this.http
+      .get<UnitScheduleData[]>(url)
+      .pipe(tap(() => console.log('getUnitsScheduleBTS()', Math.random())));
   }
 
+  updateOrCreateUnitsScheduleBTR(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
+    const url = `/api/asset_class/units_and_leases/`;
+    return this.http
+      .post<UnitScheduleData[]>(url, unitsScheduleData)
+      .pipe(tap(() => console.log('units_and_leases()', Math.random())));
+  }
+
+  getUnitsScheduleBTR(assetClass: AssetClassType): Observable<UnitScheduleData[]> {
+    const url = `/api/asset_class/${assetClass.id}/units_and_leases/`;
+    return this.http
+      .get<UnitScheduleData[]>(url)
+      .pipe(tap(() => console.log('getUnitsScheduleBTR()', Math.random())));
+  }
+
+  createUnitStructure(assetClass: AssetClassType, scheme: Scheme): UnitStructure {
+    const hasRooms = ['hotel', 'studentAccommodation'];
+    const hasUnits = ['commercial', 'office', 'shoppingCentre', 'residential'];
+    const isNIA = ['hotel', 'studentAccommodation', 'residential'];
+    const isGIA = ['commercial', 'office', 'shoppingCentre'];
+    const useHasBeds = ['studentAccommodation', 'hotel', 'residential'];
+    
+    const label = hasRooms.includes(assetClass.use) ? 'room' : 'unit';
+    const areaType = isNIA.includes(assetClass.use) ? 'NIA' : 'GIA';
+    const hasBeds = useHasBeds.includes(assetClass.use);
+    const areaSystem = scheme.system.toLowerCase() as 'sqft' | 'sqm' 
+
+    return {label , areaType, areaSystem, hasBeds};
+  }
+
+  createLeaseStructure(assetClass: AssetClassType): LeaseStructure {
+    const rentFrequency = assetClass.use === 'studentAccommodation' ? 'perWeek' : 'perMonth';
+    return {rentFrequency};
+  }
 
 }

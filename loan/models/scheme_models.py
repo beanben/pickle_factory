@@ -95,7 +95,7 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
     ]
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units", related_query_name="unit") 
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True, default=UNIT)
-    identifier = models.CharField(verbose_name="unit number", default="1", max_length=10)
+    identifier = models.CharField(verbose_name="unit number", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
     beds = models.IntegerField(blank=True, null=True)
     area_size = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
@@ -154,17 +154,8 @@ class Lease(TimestampedModel, AuthorTrackerModel):
         (PER_MONTH, "per month")
     ]
 
-    # MONTHS = "months"
-    # WEEKS = "weeks"
-    # LEASE_FREQUENCY_CHOICES =[
-    #     (MONTHS, "month"),
-    #     (WEEKS, "weeks")
-    # ]
-
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="lease", related_query_name="lease")
-    # tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name="leases", related_query_name="lease")
     tenant = models.CharField(max_length=100, blank=True , default="")
-    lease_type = models.CharField(max_length=100, blank=True , choices = LEASE_TYPE_CHOICES, default=OPEN_MARKET)
     rent_target = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     rent_frequency = models.CharField(max_length=100, blank=True , choices = RENT_FREQUENCY_CHOICES, default=PER_MONTH)
     rent_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
@@ -174,9 +165,6 @@ class Lease(TimestampedModel, AuthorTrackerModel):
 
     # def __str__(self):
     #     return f"{self.get_tenancy_type_display()} - {self.unit} - Tenant: {self.get_tenant()}"
-    
-    class Meta:
-        verbose_name_plural = "Leases" #for the admin panel
     
     # @property
     # def end_date(self):

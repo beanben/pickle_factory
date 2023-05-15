@@ -1,11 +1,10 @@
-import { Component, Input, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 
-import { SchemeService } from 'src/app/_services/scheme/scheme.service';
-import { Subscription, lastValueFrom } from 'rxjs';
-import { Choice } from 'src/app/_interfaces/shared.interface';
-import { AssetClassType } from 'src/app/_types/custom.type';
-import { Scheme } from 'src/app/_interfaces/scheme.interface';
-
+import {SchemeService} from 'src/app/_services/scheme/scheme.service';
+import {Subscription, lastValueFrom} from 'rxjs';
+import {Choice} from 'src/app/_interfaces/shared.interface';
+import {AssetClassType} from 'src/app/_types/custom.type';
+import {AssetClassUnit, Scheme, SchemeData, Unit} from 'src/app/_interfaces/scheme.interface';
 
 @Component({
   selector: 'app-units',
@@ -14,12 +13,12 @@ import { Scheme } from 'src/app/_interfaces/scheme.interface';
 })
 export class UnitsComponent implements OnInit, OnDestroy {
   openAssetClassModal = false;
-  modalMode = "";
+  modalMode = '';
   isShow = true;
   // assetClassUses: string[] = [];
   availableUseChoices: Choice[] = [];
   assetClassSelected = {} as AssetClassType;
-  tabActive = "";
+  tabActive = '';
   // schemeAssetClassesUnits: AssetClassUnits[] = [];
   // openStrategyModal = false;
   // expandSalesSchedule = true;
@@ -37,9 +36,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   useChoices: Choice[] = [];
 
-  constructor(
-    private _schemeService: SchemeService
-  ) { }
+  constructor(private _schemeService: SchemeService) {}
 
   // async ngOnInit(): Promise<void> {
   // this.onSelectAssetClass(0);
@@ -47,19 +44,46 @@ export class UnitsComponent implements OnInit, OnDestroy {
   // this.availableAssetClassUses = this.getAvailableAssetClassUses();
   // }
 
-
   async ngOnInit() {
-    await this.getChoices('assetClass', this.useChoices)
-    // this.subs.push(
-    //   this._schemeService.getAssetClassesUnitsSub()
-    //     .subscribe((assetClassesUnits: AssetClassUnits[]) => {
-    //       this.schemeAssetClassesUnits = assetClassesUnits;
-    //       console.log("this.schemeAssetClassesUnits", this.schemeAssetClassesUnits)
-    //     })
-    // )
-    // this.schemeAssetClasses = this.getSchemeAssetClasses(this.scheme)
-    // this.getAvailableAssetClassUses();
-    // this.onSelectAssetClass(0);
+    await this.getChoices('assetClass', this.useChoices);
+    await this.setSchemeDataSub();
+
+    this.subs.push(
+      this._schemeService.schemeDataSub.subscribe((schemeData: SchemeData) => {
+        console.log('schemeData: ', schemeData);
+      })
+    );
+  }
+
+  setSchemeDataSub() {
+    this.getSchemeData(this.scheme)
+      .then(schemeData => {
+        this._schemeService.setSchemeDataSub(schemeData);
+      })
+      .catch(error => {
+        console.error('Error while fetching scheme data:', error);
+      });
+  }
+
+  async getSchemeData(scheme: Scheme) {
+    const schemeData: SchemeData = { assetClassUnits: [] };
+
+    try {
+      const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+      const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+
+      for (let i = 0; i < assetClasses.length; i++) {
+        const assetClass = assetClasses[i];
+        const units$ = this._schemeService.getAssetClassUnits(assetClass);
+        const units: Unit[] = await lastValueFrom(units$);
+        const assetClassUnit = {assetClass, units} as AssetClassUnit;
+        schemeData.assetClassUnits.push(assetClassUnit);
+      }
+    } catch (error) {
+      console.error('Error while fetching asset classes and units:', error);
+    }
+
+    return schemeData;
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -81,20 +105,17 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
   getUseLabel(use: string): string {
     const useChoice = this.useChoices.find(choice => choice.value === use);
-    return useChoice ? useChoice.label : "";
+    return useChoice ? useChoice.label : '';
   }
 
-
-
   getSchemeAssetClasses(scheme: Scheme) {
-    this._schemeService.getSchemeAssetClasses(scheme)
-      .subscribe((assetClasses: AssetClassType[]) => {
-        this.schemeAssetClasses = assetClasses;
-          
-        this.getAvailableAssetClassUses();
-        this.onSelectAssetClass(0);
-        // this.getAssetClassesUnits(assetClasses)
-      });
+    this._schemeService.getSchemeAssetClasses(scheme).subscribe((assetClasses: AssetClassType[]) => {
+      this.schemeAssetClasses = assetClasses;
+
+      this.getAvailableAssetClassUses();
+      this.onSelectAssetClass(0);
+      // this.getAssetClassesUnits(assetClasses)
+    });
   }
 
   onOpenAssetClassModal(modalMode: string) {
@@ -160,25 +181,19 @@ export class UnitsComponent implements OnInit, OnDestroy {
   //   return assetClassUsesFormatted;
   // }
 
-
-
   getAvailableAssetClassUses() {
     const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
 
     this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
-      this.availableUseChoices = choices
-        .filter(choice => !existingAssetClassUses.includes(choice.value))
+      this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
     });
-
   }
-
 
   onSelectAssetClass(index: number) {
     this.assetClassSelected = this.schemeAssetClasses[index];
-    if(this.schemeAssetClasses.length > 0){
+    if (this.schemeAssetClasses.length > 0) {
       this.tabActive = this.assetClassSelected.use;
     }
-    
   }
 
   // onUpdateInvestmentStrategy() {
@@ -204,8 +219,6 @@ export class UnitsComponent implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe())
+    this.subs.forEach(sub => sub.unsubscribe());
   }
-
-
 }

@@ -15,7 +15,7 @@
   <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index ">
       <div class="col-6 offset-3">
-        <app-unit-card [assetClass]="assetClass"></app-unit-card>
+        <app-unit-card [assetClass]="assetClass" [scheme]="scheme"></app-unit-card>
       </div>
     </div>
 
@@ -59,7 +59,7 @@
 
         <div class="row p-2">
           <div class="col">
-            <app-unit-schedule [assetClass]="assetClassSelected"></app-unit-schedule>
+            <app-unit-schedule [assetClass]="assetClassSelected" [scheme]="scheme"></app-unit-schedule>
           </div>
         </div>
 

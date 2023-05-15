@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SharedService } from '../shared/shared.service';
-import { Scheme, Unit, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
+import { Scheme, SchemeData, Unit } from 'src/app/_interfaces/scheme.interface';
 import { APIResult } from 'src/app/_interfaces/api.interface';
 import { Choice } from 'src/app/_interfaces/shared.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
@@ -12,56 +12,20 @@ import { AssetClassType } from 'src/app/_types/custom.type';
 })
 export class SchemeService {
   relativeUrl = '/api/scheme';
-  // availableAssetClassUsesSub = new BehaviorSubject<string[]>([]);
-  // assetClassUsesSub = new BehaviorSubject<string[]>([]);
-  // schemeSub = new BehaviorSubject<Scheme>({} as Scheme);
-  // schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
+  schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
 
   constructor(private http: HttpClient, private _sharedService: SharedService) {}
 
-  // getAssetClassesUnitsSub():Observable<AssetClassUnits[]>{
-  //   return this.assetClassesUnitsSub.asObservable()
-  // }
-  // setAssetClassesUnitsSub(assetClassesUnitsSub: AssetClassUnits[]){
-  //   return this.assetClassesUnitsSub.next(assetClassesUnitsSub);
-  // }
-
-  // async getSchemeData(scheme: Scheme): Promise<void> {
-  //   const assetClassUnits: AssetClassUnits[] = [];
-  //   const assetClasses = await lastValueFrom(this.getSchemeAssetClasses(scheme));
-
-  //   for (const assetClass of schemeAssetClasses) {
-  //     const units = await lastValueFrom(this.getAssetClassUnits(assetClass));
-  //     schemeAssetClassUnits.push({
-  //       assetClass: assetClass,
-  //       units: units,
-  //     });
-  //   }
-
-  //   this.setSchemeAssetClassesUnitsSub(assetClassUnits);
-  // }
-
-  // setAvailableAssetClassUsesSub(availableAssetClassUse: string[]){
-  //   return this.availableAssetClassUsesSub.next(availableAssetClassUse);
-  // }
-  // getAvailableAssetClassUsesSub():Observable<string[]>{
-  //   return this.availableAssetClassUsesSub.asObservable()
-  // }
-  // setAssetClassUsesSub(assetClassUsesSub: string[]){
-  //   return this.assetClassUsesSub.next(assetClassUsesSub);
-  // }
-
-  // setSchemeSub(scheme: Scheme){
-  //   return this.schemeSub.next(scheme);
-  // }
-  // getSchemeSub():Observable<Scheme>{
-  //   return this.schemeSub.asObservable()
-  // }
-
   getScheme(schemeId: number): Observable<Scheme> {
     const url = `${this.relativeUrl}/${schemeId}/`;
-
     return this.http.get<Scheme>(url).pipe(tap(() => console.log('getScheme()', Math.random())));
+  }
+
+  getSchemeDataSub():Observable<SchemeData>{
+    return this.schemeDataSub.asObservable() 
+  }
+  setSchemeDataSub(schemeData: SchemeData){
+    return this.schemeDataSub.next(schemeData);
   }
 
   createScheme(scheme: Scheme) {
@@ -116,40 +80,6 @@ export class SchemeService {
     return this.http.delete(url, options).pipe(tap(() => console.log('deleteScheme()', Math.random())));
   }
 
-  // createUnits(units: Unit[]): Observable<Unit[]> {
-  //   const url = '/api/unit/';
-
-  //   return this.http.post<Unit[]>(url, units).pipe(
-  //     tap(() => console.log('createUnits()', Math.random()))
-  //   );
-  // }
-
-  // updateUnits(units: Unit[]): Observable<Unit[]> {
-  //   const url = '/api/unit/bulk_update_delete/';
-
-  //   return this.http.put<Unit[]>(url, units).pipe(
-  //     tap(() => console.log('updateUnits()', Math.random()))
-  //   );
-  // }
-
-  // updateOrCreateUnits(units: Unit[]): Observable<Unit[]> {
-  //   const url = '/api/unit/bulk_update_create/';
-
-  //   return this.http.post<Unit[]>(url, units).pipe(
-  //     tap(() => console.log('updateOrCreateUnits()', Math.random()))
-  //   );
-  // }
-
-  // deleteUnits(units: Unit[]): Observable<any> {
-  //   const url = '/api/unit/bulk_update_delete/';
-  //   const httpOptions = {
-  //     body: units
-  //   };
-
-  //   return this.http.delete(url, httpOptions).pipe(
-  //     tap(() => console.log('deleteUnits()', Math.random()))
-  //   );
-  // }
 
   getAssetClassUses(): Observable<string[]> {
     const url = `${this.relativeUrl}/asset_class_uses/`;
@@ -160,16 +90,9 @@ export class SchemeService {
     const url = `/api/choices/${choiceType}/`;
     return this.http.get<Choice[]>(url).pipe(
       tap(() => console.log('getChoices()', Math.random()))
-      // rxjsMap(this.convertChoiceValueToCamelCase)
     );
   }
 
-  // convertChoiceValueToCamelCase(choices: Choice[]): Choice[] {
-  //   return choices.map(choice => ({
-  //     value: snakeToCamelCase(choice.value),
-  //     label: choice.label,
-  //   }));
-  // }
 
   createAssetClass(assetClass: AssetClassType) {
     const url = '/api/asset_class/';
@@ -179,9 +102,6 @@ export class SchemeService {
         next: (data) => {
           let result = data as APIResult;
           if (result.status === 'success') {
-            // const assetClassRes = result.response as AssetClassType;
-            // assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
-            // result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message);
@@ -218,9 +138,6 @@ export class SchemeService {
         next: (data) => {
           let result = data as APIResult;
           if (result.status === 'success') {
-            // const assetClassRes = result.response as AssetClassType;
-            // assetClassRes.investmentStrategy = snakeToCamelCase(assetClass.investmentStrategy)
-            // result = {  ...result, response: assetClassRes }
             resolve(result);
           } else {
             reject(result.message);
@@ -237,38 +154,28 @@ export class SchemeService {
     const url = `/api/scheme/${scheme.id}/asset_classes/`;
     return this.http.get<AssetClassType[]>(url).pipe(
       tap(() => console.log('getSchemeAssetClasses()', Math.random()))
-      // rxjsMap(this.convertInvestmentStrategyToCamelCase)
     );
   }
-
-  // convertInvestmentStrategyToCamelCase(assetClasses: AssetClassType[]): AssetClassType[] {
-  //   return assetClasses.map(assetClass => ({
-  //     ...assetClass,
-  //     investmentStrategy: snakeToCamelCase(assetClass.investmentStrategy),
-  //   }));
-  // }
 
   getAssetClassUnits(assetClass: AssetClassType): Observable<Unit[]> {
     const url = `/api/asset_class/${assetClass.id}/units/`;
     return this.http.get<Unit[]>(url).pipe(tap(() => console.log('getAssetClassUnits()', Math.random())));
   }
 
-  getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType): Observable<UnitScheduleData[]> {
-    const url = `/api/asset_class/${assetClass.id}/units_with_sale_and_lease/`;
-    return this.http
-      .get<UnitScheduleData[]>(url)
-      .pipe(tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random())));
-  }
-
-  // updateOrCreateUnitsScheduleData(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
-  //   const url = `/api/asset_class/unit_schedule_data_bulk_update_create/`;
-  //   return this.http.post<UnitScheduleData[]>(url, unitsScheduleData).pipe(
-  //     tap(() => console.log('updateOrCreateUnitsScheduleData()', Math.random()))
-  //   );
+  // getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType): Observable<UnitScheduleData[]> {
+  //   const url = `/api/asset_class/${assetClass.id}/units_with_sale_and_lease/`;
+  //   return this.http
+  //     .get<UnitScheduleData[]>(url)
+  //     .pipe(tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random())));
   // }
 
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
     const choice = choices.find((choice) => choice.value === choice_value);
     return choice ? choice.label : '';
+  }
+
+  getSchemeData(scheme: Scheme): Observable<SchemeData> {
+    const url = `/api/scheme/${scheme.id}/data/`;
+    return this.http.get<SchemeData>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
   }
 }
