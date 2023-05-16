@@ -344,7 +344,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       const sale = this.FormGroupToSale(saleForm, unit);
       unitScheduleData = {
         unit: unit,
-        lease: sale
+        sale: sale
       };
 
     }
@@ -408,14 +408,27 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         .updateOrCreateUnitsScheduleBTS(unitsScheduleData)
         .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
           this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes)
         });
     } else {
       this._unitService
         .updateOrCreateUnitsScheduleBTR(unitsScheduleData)
         .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
           this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes)
         });
     }
+  }
+
+  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]){
+    const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
+
+    const assetClassData = {
+      assetClass: assetClass,
+      units: units
+    };
+
+    this._schemeService.setAssetClassDataSub(assetClassData);
   }
 
   deleteUnits(units: Unit[]) {

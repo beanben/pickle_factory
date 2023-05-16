@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SharedService } from '../shared/shared.service';
-import { Scheme, SchemeData, Unit } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassData, Scheme, Unit } from 'src/app/_interfaces/scheme.interface';
 import { APIResult } from 'src/app/_interfaces/api.interface';
 import { Choice } from 'src/app/_interfaces/shared.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
@@ -12,7 +12,8 @@ import { AssetClassType } from 'src/app/_types/custom.type';
 })
 export class SchemeService {
   relativeUrl = '/api/scheme';
-  schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
+  // schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
+  assetClassDataSub = new BehaviorSubject<AssetClassData[]>([] as AssetClassData[]);
 
   constructor(private http: HttpClient, private _sharedService: SharedService) {}
 
@@ -21,11 +22,15 @@ export class SchemeService {
     return this.http.get<Scheme>(url).pipe(tap(() => console.log('getScheme()', Math.random())));
   }
 
-  getSchemeDataSub():Observable<SchemeData>{
-    return this.schemeDataSub.asObservable() 
+  getAssetClassDataSub():Observable<AssetClassData[]>{
+    return this.assetClassDataSub.asObservable() 
   }
-  setSchemeDataSub(schemeData: SchemeData){
-    return this.schemeDataSub.next(schemeData);
+  setAssetClassDataSub(assetClassData: AssetClassData){
+    const currentData = this.assetClassDataSub.getValue();
+    const updatedData = currentData.filter((data) => data.assetClass.use !== assetClassData.assetClass.use);
+    const index = currentData.findIndex((data) => data.assetClass.use === assetClassData.assetClass.use);
+    updatedData.push(assetClassData)
+    return this.assetClassDataSub.next(updatedData);
   }
 
   createScheme(scheme: Scheme) {
@@ -174,8 +179,8 @@ export class SchemeService {
     return choice ? choice.label : '';
   }
 
-  getSchemeData(scheme: Scheme): Observable<SchemeData> {
-    const url = `/api/scheme/${scheme.id}/data/`;
-    return this.http.get<SchemeData>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
-  }
+  // getSchemeData(scheme: Scheme): Observable<SchemeData> {
+  //   const url = `/api/scheme/${scheme.id}/data/`;
+  //   return this.http.get<SchemeData>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
+  // }
 }

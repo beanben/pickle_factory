@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import { Subscription } from 'rxjs';
 import { AssetClassType } from 'src/app/_types/custom.type';
-import { Scheme, Unit, UnitStructure } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassData, Scheme, Unit, UnitStructure } from 'src/app/_interfaces/scheme.interface';
 import { UnitService } from 'src/app/_services/unit/unit.service';
 
 interface UnitGroup {
@@ -35,6 +35,17 @@ export class UnitCardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
+
+    this.subs.push(
+      this._schemeService.getAssetClassDataSub().subscribe(
+        (assetClassDataArray: AssetClassData[]) => {
+          const assetClassData: AssetClassData | undefined = assetClassDataArray.find(assetClassData => assetClassData.assetClass === this.assetClass);
+          if (assetClassData) {
+            this.unitsGrouped = this.groupByDescription(assetClassData.units);
+            this.calculateTotals(this.unitsGrouped);
+        }
+      }
+      ))
     // this.assetClass = this.assetClassUnits.assetClass;
     // this.unitStructure = new Unit(this.assetClass);
   };
@@ -43,18 +54,21 @@ export class UnitCardComponent implements OnInit, OnChanges {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
       const assetClass: AssetClassType = changes['assetClass'].currentValue;
       this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
-      this.getAssetClassUnits(assetClass);
+      // this.getAssetClassUnits(assetClass);
     }
   }
 
-  getAssetClassUnits(assetClass: AssetClassType) {
-    this._schemeService.getAssetClassUnits(assetClass)
-      .subscribe((units: Unit[]) => {
+  // getAssetClassUnits(assetClass: AssetClassType) {
+  //   this._schemeService.getAssetClassUnits(assetClass)
+  //     .subscribe((units: Unit[]) => {
 
-        this.unitsGrouped = this.groupByDescription(units);
-        this.calculateTotals(this.unitsGrouped);
-      });
-  };
+  //       this.unitsGrouped = this.groupByDescription(units);
+  //       this.calculateTotals(this.unitsGrouped);
+        
+  //     });
+  // };
+
+  
 
   groupByDescription(units: Unit[]): UnitGroup[] {
     return units.reduce((unitsGrouped: UnitGroup[], unit: Unit) => {

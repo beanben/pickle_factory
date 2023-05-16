@@ -4,7 +4,7 @@ import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
-import {AssetClassUnit, Scheme, SchemeData, Unit} from 'src/app/_interfaces/scheme.interface';
+import {Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
 
 @Component({
   selector: 'app-units',
@@ -46,55 +46,61 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.getChoices('assetClass', this.useChoices);
-    await this.setSchemeDataSub();
+    // await this.setSchemeDataSub();
 
-    this.subs.push(
-      this._schemeService.schemeDataSub.subscribe((schemeData: SchemeData) => {
-        console.log('schemeData: ', schemeData);
-      })
-    );
+    // this.subs.push(
+    //   this._schemeService.schemeDataSub.subscribe((schemeData: SchemeData) => {
+    //     console.log('schemeData: ', schemeData);
+    //   })
+    // );
   }
 
-  setSchemeDataSub() {
-    this.getSchemeData(this.scheme)
-      .then(schemeData => {
-        this._schemeService.setSchemeDataSub(schemeData);
-      })
-      .catch(error => {
-        console.error('Error while fetching scheme data:', error);
-      });
-  }
+  // setSchemeDataSub() {
+  //   this.getSchemeData(this.scheme)
+  //     .then(schemeData => {
+  //       this._schemeService.setSchemeDataSub(schemeData);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error while fetching scheme data:', error);
+  //     });
+  // }
 
-  async getSchemeData(scheme: Scheme) {
-    const schemeData: SchemeData = { assetClassUnits: [] };
+  // async getSchemeData(scheme: Scheme) {
+  //   const schemeData: SchemeData = { assetClassUnits: [] };
 
-    try {
-      const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
-      const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+  //   try {
+  //     const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+  //     const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
 
-      for (let i = 0; i < assetClasses.length; i++) {
-        const assetClass = assetClasses[i];
-        const units$ = this._schemeService.getAssetClassUnits(assetClass);
-        const units: Unit[] = await lastValueFrom(units$);
-        const assetClassUnit = {assetClass, units} as AssetClassUnit;
-        schemeData.assetClassUnits.push(assetClassUnit);
-      }
-    } catch (error) {
-      console.error('Error while fetching asset classes and units:', error);
-    }
+  //     for (let i = 0; i < assetClasses.length; i++) {
+  //       const assetClass = assetClasses[i];
+  //       const units$ = this._schemeService.getAssetClassUnits(assetClass);
+  //       const units: Unit[] = await lastValueFrom(units$);
+  //       const assetClassUnit = {assetClass, units} as AssetClassUnit;
+  //       schemeData.assetClassUnits.push(assetClassUnit);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error while fetching asset classes and units:', error);
+  //   }
 
-    return schemeData;
-  }
+  //   return schemeData;
+  // }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['scheme'] && changes['scheme'].currentValue) {
       const scheme: Scheme = changes['scheme'].currentValue;
-      this.getSchemeAssetClasses(scheme);
+      this.getSchemeAssetClasses(scheme).then(() => {
+        this.getAvailableAssetClassUses();
+        this.onSelectAssetClass(0);
+      });
 
       // this._schemeService.getSchemeAssetClassesUnits(scheme);
-      this.getAvailableAssetClassUses();
-      this.onSelectAssetClass(0);
     }
+  }
+
+  onOpenAssetClassModal(modalMode: string) {
+    this.openAssetClassModal = true;
+    this.modalMode = modalMode;
   }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
@@ -108,31 +114,56 @@ export class UnitsComponent implements OnInit, OnDestroy {
     return useChoice ? useChoice.label : '';
   }
 
-  getSchemeAssetClasses(scheme: Scheme) {
-    this._schemeService.getSchemeAssetClasses(scheme).subscribe((assetClasses: AssetClassType[]) => {
-      this.schemeAssetClasses = assetClasses;
+  // getSchemeAssetClasses(scheme: Scheme) {
+  //   this._schemeService.getSchemeAssetClasses(scheme).subscribe((assetClasses: AssetClassType[]) => {
+  //     this.schemeAssetClasses = assetClasses;
 
-      this.getAvailableAssetClassUses();
-      this.onSelectAssetClass(0);
-      // this.getAssetClassesUnits(assetClasses)
-    });
-  }
+  //     this.getAvailableAssetClassUses();
+  //     this.onSelectAssetClass(0);
+  //     this.getAssetClassesUnits(assetClasses);
+  //   });
+  // }
 
-  onOpenAssetClassModal(modalMode: string) {
-    this.openAssetClassModal = true;
-    this.modalMode = modalMode;
+  async getSchemeAssetClasses(scheme: Scheme) {
+    const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+    const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+    this.schemeAssetClasses = assetClasses;
+
+    await this.fetchAssetClassData(assetClasses);
   }
 
   // getAssetClassesUnits(assetClasses: AssetClassType[]) {
   //   assetClasses.forEach((assetClass: AssetClassType) => {
-  //     this._schemeService.getAssetClassUnits(assetClass)
-  //       .subscribe((units: Unit[]) => {
-
-  //         this._schemeService
-  //         const assetClassUnits = {
-  //           assetClass: units
-  //       };
+  //     this._schemeService.getAssetClassUnits(assetClass).subscribe((units: Unit[]) => {
+  //       this.setAssetClassDataSub(assetClass, units);
+  //     });
   //   });
+  // }
+
+  async fetchAssetClassData(assetClasses: AssetClassType[]) {
+    for (let assetClass of assetClasses) {
+      await this.fetchAssetClassUnits(assetClass);
+    }
+  }
+
+  async fetchAssetClassUnits(assetClass: AssetClassType) {
+    const units$ = this._schemeService.getAssetClassUnits(assetClass);
+    const units: Unit[] = await lastValueFrom(units$);
+    this.storeAssetClassData(assetClass, units);
+  }
+
+  // setAssetClassDataSub(assetClass: AssetClassType, units: Unit[]) {
+  //   const assetClassData = {
+  //     assetClass: assetClass,
+  //     units: units
+  //   };
+  //   this._schemeService.setAssetClassDataSub(assetClassData);
+  // }
+
+  storeAssetClassData(assetClass: AssetClassType, units: Unit[]) {
+    const assetClassData = {assetClass, units};
+    this._schemeService.setAssetClassDataSub(assetClassData);
+  }
   // onOpenStrategyModal(modalMode: string) {
   //   this.openStrategyModal = true;
   //   this.modalMode = modalMode;
