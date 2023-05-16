@@ -1,18 +1,19 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { SharedService } from '../shared/shared.service';
-import { Scheme, SchemeData, Unit } from 'src/app/_interfaces/scheme.interface';
-import { APIResult } from 'src/app/_interfaces/api.interface';
-import { Choice } from 'src/app/_interfaces/shared.interface';
-import { AssetClassType } from 'src/app/_types/custom.type';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
+import {SharedService} from '../shared/shared.service';
+import {AssetClassUnits, Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+import {APIResult} from 'src/app/_interfaces/api.interface';
+import {Choice} from 'src/app/_interfaces/shared.interface';
+import {AssetClassType} from 'src/app/_types/custom.type';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SchemeService {
   relativeUrl = '/api/scheme';
-  schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
+  // schemeDataSub = new BehaviorSubject<SchemeData>({assetClassUnits: []} as SchemeData);
+  schemeDataSub = new BehaviorSubject<AssetClassUnits[]>([] as AssetClassUnits[]);
 
   constructor(private http: HttpClient, private _sharedService: SharedService) {}
 
@@ -21,10 +22,10 @@ export class SchemeService {
     return this.http.get<Scheme>(url).pipe(tap(() => console.log('getScheme()', Math.random())));
   }
 
-  getSchemeDataSub():Observable<SchemeData>{
-    return this.schemeDataSub.asObservable() 
+  getSchemeDataSub(): Observable<AssetClassUnits[]> {
+    return this.schemeDataSub.asObservable();
   }
-  setSchemeDataSub(schemeData: SchemeData){
+  setSchemeDataSub(schemeData: AssetClassUnits[]) {
     return this.schemeDataSub.next(schemeData);
   }
 
@@ -33,7 +34,7 @@ export class SchemeService {
 
     return new Promise<APIResult>((resolve, reject) => {
       this.http.post(url, scheme).subscribe({
-        next: (data) => {
+        next: data => {
           const result = data as APIResult;
           if (result.status === 'success') {
             resolve(result);
@@ -41,9 +42,9 @@ export class SchemeService {
             reject(result.message);
           }
         },
-        error: (error) => {
+        error: error => {
           reject(this._sharedService.handleError(error));
-        },
+        }
       });
     });
   }
@@ -53,7 +54,7 @@ export class SchemeService {
 
     return new Promise<APIResult>((resolve, reject) => {
       this.http.put(url, scheme).subscribe({
-        next: (data) => {
+        next: data => {
           const result = data as APIResult;
 
           if (result.status === 'success') {
@@ -63,9 +64,9 @@ export class SchemeService {
           }
         },
 
-        error: (error) => {
+        error: error => {
           reject(this._sharedService.handleError(error));
-        },
+        }
       });
     });
   }
@@ -74,12 +75,11 @@ export class SchemeService {
     const url = `${this.relativeUrl}/${scheme.id}/`;
 
     const options = {
-      body: scheme,
+      body: scheme
     };
 
     return this.http.delete(url, options).pipe(tap(() => console.log('deleteScheme()', Math.random())));
   }
-
 
   getAssetClassUses(): Observable<string[]> {
     const url = `${this.relativeUrl}/asset_class_uses/`;
@@ -88,18 +88,15 @@ export class SchemeService {
 
   getChoices(choiceType: string): Observable<Choice[]> {
     const url = `/api/choices/${choiceType}/`;
-    return this.http.get<Choice[]>(url).pipe(
-      tap(() => console.log('getChoices()', Math.random()))
-    );
+    return this.http.get<Choice[]>(url).pipe(tap(() => console.log('getChoices()', Math.random())));
   }
-
 
   createAssetClass(assetClass: AssetClassType) {
     const url = '/api/asset_class/';
     console.log('createAssetClass()');
     return new Promise<APIResult>((resolve, reject) => {
       this.http.post(url, assetClass).subscribe({
-        next: (data) => {
+        next: data => {
           let result = data as APIResult;
           if (result.status === 'success') {
             resolve(result);
@@ -107,9 +104,9 @@ export class SchemeService {
             reject(result.message);
           }
         },
-        error: (error) => {
+        error: error => {
           reject(this._sharedService.handleError(error));
-        },
+        }
       });
     });
   }
@@ -118,7 +115,7 @@ export class SchemeService {
     const url = `/api/asset_class/${assetClass.id}/`;
 
     const options = {
-      body: assetClass,
+      body: assetClass
     };
 
     return this.http.delete(url, options).pipe(tap(() => console.log('deleteAssetClass()', Math.random())));
@@ -135,7 +132,7 @@ export class SchemeService {
     console.log('updateAssetClass()');
     return new Promise<APIResult>((resolve, reject) => {
       this.http.put(url, assetClass).subscribe({
-        next: (data) => {
+        next: data => {
           let result = data as APIResult;
           if (result.status === 'success') {
             resolve(result);
@@ -143,18 +140,16 @@ export class SchemeService {
             reject(result.message);
           }
         },
-        error: (error) => {
+        error: error => {
           reject(this._sharedService.handleError(error));
-        },
+        }
       });
     });
   }
 
   getSchemeAssetClasses(scheme: Scheme): Observable<AssetClassType[]> {
     const url = `/api/scheme/${scheme.id}/asset_classes/`;
-    return this.http.get<AssetClassType[]>(url).pipe(
-      tap(() => console.log('getSchemeAssetClasses()', Math.random()))
-    );
+    return this.http.get<AssetClassType[]>(url).pipe(tap(() => console.log('getSchemeAssetClasses()', Math.random())));
   }
 
   getAssetClassUnits(assetClass: AssetClassType): Observable<Unit[]> {
@@ -170,12 +165,12 @@ export class SchemeService {
   // }
 
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
-    const choice = choices.find((choice) => choice.value === choice_value);
+    const choice = choices.find(choice => choice.value === choice_value);
     return choice ? choice.label : '';
   }
 
-  getSchemeData(scheme: Scheme): Observable<SchemeData> {
+  getSchemeData(scheme: Scheme): Observable<AssetClassUnits[]> {
     const url = `/api/scheme/${scheme.id}/data/`;
-    return this.http.get<SchemeData>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
+    return this.http.get<AssetClassUnits[]>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
   }
 }

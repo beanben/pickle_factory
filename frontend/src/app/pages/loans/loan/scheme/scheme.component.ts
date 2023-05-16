@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Subscription, lastValueFrom } from 'rxjs';
 import { Loan } from 'src/app/_interfaces/loan.interface';
-import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassUnits, Scheme, Unit } from 'src/app/_interfaces/scheme.interface';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { AssetClassType } from 'src/app/_types/custom.type';
 
 
 @Component({
@@ -9,7 +11,7 @@ import { Scheme } from 'src/app/_interfaces/scheme.interface';
   templateUrl: './scheme.component.html',
   styleUrls: ['./scheme.component.css']
 })
-export class SchemeComponent implements OnInit, OnDestroy {
+export class SchemeComponent implements OnInit, OnDestroy,  OnChanges{
   openSchemeModal = false;
   modalMode = "";
   tabActive = "units";
@@ -17,13 +19,26 @@ export class SchemeComponent implements OnInit, OnDestroy {
   @Input() scheme = {} as Scheme;
   // @Input() index = -1;
   @Output() deleteConfirmed = new EventEmitter<Scheme>();
-  subs: Subscription[] = []
+  subs: Subscription[] = [];
+  schemeData: AssetClassUnits[] = [];
 
-  // constructor( 
-  //   private _schemeService: SchemeService,
-  // ) { }
+  constructor( 
+    private _schemeService: SchemeService,
+  ) { }
 
   ngOnInit(): void {
+    if(this.scheme.id) {
+      this.setSchemeDataSub();
+    };
+
+    this.subs.push(
+      this._schemeService.getSchemeDataSub()
+      .subscribe((schemeData: AssetClassUnits[]) => {
+        this.schemeData = schemeData;
+        console.log("from scheme compo: ", schemeData)
+      })
+    );
+
     // this._schemeService.setSchemeSub(this.scheme);
 
     // this.subs.push(
@@ -31,6 +46,49 @@ export class SchemeComponent implements OnInit, OnDestroy {
     //     this.scheme = scheme;
     //   }
     // ));
+  }
+
+  setSchemeDataSub() {
+    this.getSchemeData(this.scheme)
+      .then(schemeData => {
+        this._schemeService.setSchemeDataSub(schemeData);
+      })
+      .catch(error => {
+        console.error('Error while fetching scheme data:', error);
+      });
+  }
+
+  async getSchemeData(scheme: Scheme) {
+    const schemeData: AssetClassUnits[] = [];
+
+    try {
+      const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+      const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+
+      for (let i = 0; i < assetClasses.length; i++) {
+        const assetClass = assetClasses[i];
+        const units$ = this._schemeService.getAssetClassUnits(assetClass);
+        const units: Unit[] = await lastValueFrom(units$);
+        const assetClassUnit = {assetClass, units} as AssetClassUnits;
+        schemeData.push(assetClassUnit);
+      }
+    } catch (error) {
+      console.error('Error while fetching asset classes and units:', error);
+    }
+
+    return schemeData;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['scheme'] && changes['scheme'].currentValue) {
+      const scheme: Scheme = changes['scheme'].currentValue;
+      // this.getSchemeAssetClasses(scheme);
+
+      // this._schemeService.getSchemeAssetClassesUnits(scheme);
+      // this.getAvailableAssetClassUses();
+      // this.onSelectAssetClass(0);
+      this.setSchemeDataSub();
+    }
   }
 
   onOpenModal(modalMode: string) {

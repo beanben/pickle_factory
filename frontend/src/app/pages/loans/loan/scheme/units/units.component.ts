@@ -1,10 +1,10 @@
-import {Component, Input, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 
 import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
-import {AssetClassUnit, Scheme, SchemeData, Unit} from 'src/app/_interfaces/scheme.interface';
+import {AssetClassUnits, Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
 
 @Component({
   selector: 'app-units',
@@ -35,6 +35,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   schemeAssetClasses: AssetClassType[] = [];
   subs: Subscription[] = [];
   useChoices: Choice[] = [];
+  schemeData: AssetClassUnits[] = [];
 
   constructor(private _schemeService: SchemeService) {}
 
@@ -46,56 +47,61 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     await this.getChoices('assetClass', this.useChoices);
-    await this.setSchemeDataSub();
+    // await this.setSchemeDataSub();
 
     this.subs.push(
-      this._schemeService.schemeDataSub.subscribe((schemeData: SchemeData) => {
-        console.log('schemeData: ', schemeData);
+      this._schemeService.getSchemeDataSub()
+      .subscribe((schemeData: AssetClassUnits[]) => {
+        this.schemeData = schemeData;
+        // console.log('schemeData:', schemeData);
+        this.getAvailableAssetClassUses();
+        this.onSelectAssetClass(0);
       })
     );
   }
 
-  setSchemeDataSub() {
-    this.getSchemeData(this.scheme)
-      .then(schemeData => {
-        this._schemeService.setSchemeDataSub(schemeData);
-      })
-      .catch(error => {
-        console.error('Error while fetching scheme data:', error);
-      });
-  }
+  // setSchemeDataSub() {
+  //   this.getSchemeData(this.scheme)
+  //     .then(schemeData => {
+  //       this._schemeService.setSchemeDataSub(schemeData);
+  //     })
+  //     .catch(error => {
+  //       console.error('Error while fetching scheme data:', error);
+  //     });
+  // }
 
-  async getSchemeData(scheme: Scheme) {
-    const schemeData: SchemeData = { assetClassUnits: [] };
+  // async getSchemeData(scheme: Scheme) {
+  //   const schemeData: AssetClassUnits[] = [];
 
-    try {
-      const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
-      const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+  //   try {
+  //     const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+  //     const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
 
-      for (let i = 0; i < assetClasses.length; i++) {
-        const assetClass = assetClasses[i];
-        const units$ = this._schemeService.getAssetClassUnits(assetClass);
-        const units: Unit[] = await lastValueFrom(units$);
-        const assetClassUnit = {assetClass, units} as AssetClassUnit;
-        schemeData.assetClassUnits.push(assetClassUnit);
-      }
-    } catch (error) {
-      console.error('Error while fetching asset classes and units:', error);
-    }
+  //     for (let i = 0; i < assetClasses.length; i++) {
+  //       const assetClass = assetClasses[i];
+  //       const units$ = this._schemeService.getAssetClassUnits(assetClass);
+  //       const units: Unit[] = await lastValueFrom(units$);
+  //       const assetClassUnit = {assetClass, units} as AssetClassUnits;
+  //       schemeData.push(assetClassUnit);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error while fetching asset classes and units:', error);
+  //   }
 
-    return schemeData;
-  }
+  //   return schemeData;
+  // }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['scheme'] && changes['scheme'].currentValue) {
-      const scheme: Scheme = changes['scheme'].currentValue;
-      this.getSchemeAssetClasses(scheme);
+  // async ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['scheme'] && changes['scheme'].currentValue) {
+  //     const scheme: Scheme = changes['scheme'].currentValue;
+  //     // this.getSchemeAssetClasses(scheme);
 
-      // this._schemeService.getSchemeAssetClassesUnits(scheme);
-      this.getAvailableAssetClassUses();
-      this.onSelectAssetClass(0);
-    }
-  }
+  //     // this._schemeService.getSchemeAssetClassesUnits(scheme);
+  //     // this.getAvailableAssetClassUses();
+  //     // this.onSelectAssetClass(0);
+  //     await this.setSchemeDataSub();
+  //   }
+  // }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
     const choices$ = this._schemeService.getChoices(choiceType);
@@ -108,15 +114,15 @@ export class UnitsComponent implements OnInit, OnDestroy {
     return useChoice ? useChoice.label : '';
   }
 
-  getSchemeAssetClasses(scheme: Scheme) {
-    this._schemeService.getSchemeAssetClasses(scheme).subscribe((assetClasses: AssetClassType[]) => {
-      this.schemeAssetClasses = assetClasses;
+  // getSchemeAssetClasses(scheme: Scheme) {
+  //   this._schemeService.getSchemeAssetClasses(scheme).subscribe((assetClasses: AssetClassType[]) => {
+  //     this.schemeAssetClasses = assetClasses;
 
-      this.getAvailableAssetClassUses();
-      this.onSelectAssetClass(0);
-      // this.getAssetClassesUnits(assetClasses)
-    });
-  }
+  //     this.getAvailableAssetClassUses();
+  //     this.onSelectAssetClass(0);
+  //     // this.getAssetClassesUnits(assetClasses)
+  //   });
+  // }
 
   onOpenAssetClassModal(modalMode: string) {
     this.openAssetClassModal = true;
@@ -182,11 +188,13 @@ export class UnitsComponent implements OnInit, OnDestroy {
   // }
 
   getAvailableAssetClassUses() {
-    const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
+    // const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
+    const existingAssetClassUses: string[] = this.schemeData.map(assetClassUnits => assetClassUnits.assetClass.use);
 
-    this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
-      this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
-    });
+    this.availableUseChoices = this.useChoices.filter(choice => !existingAssetClassUses.includes(choice.value));
+    // this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
+    //   this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
+    // });
   }
 
   onSelectAssetClass(index: number) {
