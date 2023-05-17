@@ -5,6 +5,7 @@ import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+import { SharedService } from 'src/app/_services/shared/shared.service';
 
 @Component({
   selector: 'app-units',
@@ -36,7 +37,10 @@ export class UnitsComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   useChoices: Choice[] = [];
 
-  constructor(private _schemeService: SchemeService) {}
+  constructor(
+    private _schemeService: SchemeService,
+    private _sharedService: SharedService
+    ) {}
 
   // async ngOnInit(): Promise<void> {
   // this.onSelectAssetClass(0);
@@ -104,14 +108,13 @@ export class UnitsComponent implements OnInit, OnDestroy {
   }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices$ = this._sharedService.getChoices(choiceType);
     const choices: Choice[] = await lastValueFrom(choices$);
     targetArray.push(...choices);
   }
 
   getUseLabel(use: string): string {
-    const useChoice = this.useChoices.find(choice => choice.value === use);
-    return useChoice ? useChoice.label : '';
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
   }
 
   // getSchemeAssetClasses(scheme: Scheme) {
@@ -215,7 +218,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   getAvailableAssetClassUses() {
     const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
 
-    this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
+    this._sharedService.getChoices('assetClass').subscribe((choices: Choice[]) => {
       this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
     });
   }

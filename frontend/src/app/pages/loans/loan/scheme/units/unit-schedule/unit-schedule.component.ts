@@ -17,6 +17,7 @@ import {
 } from 'src/app/_interfaces/scheme.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {UnitService} from 'src/app/_services/unit/unit.service';
+import { SharedService } from 'src/app/_services/shared/shared.service';
 
 @Component({
   selector: 'app-unit-schedule',
@@ -47,7 +48,11 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   @Input() scheme = {} as Scheme;
   assetClassUnits: Unit[] = [];
 
-  constructor(private _schemeService: SchemeService, private _unitService: UnitService) {}
+  constructor(
+    private _schemeService: SchemeService, 
+    private _unitService: UnitService,
+    private _sharedService: SharedService
+    ) {}
 
   async ngOnInit() {
     await this.setUpUnitSchedule(this.assetClass);
@@ -76,7 +81,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices$ = this._sharedService.getChoices(choiceType);
     const choices: Choice[] = await lastValueFrom(choices$);
 
     targetArray.push(...choices);
@@ -91,7 +96,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       this.calculateTotalsSale(
         unitsScheduleData
           .map(unitScheduleData => unitScheduleData.sale)
-          .filter((sale): sale is Sale => sale !== undefined)
+          .filter((sale): sale is Sale => sale !== undefined && sale !== null)
       );
    
     });

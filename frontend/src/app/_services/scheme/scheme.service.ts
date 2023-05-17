@@ -91,13 +91,6 @@ export class SchemeService {
     return this.http.get<string[]>(url).pipe(tap(() => console.log('getAssetClassUses()', Math.random())));
   }
 
-  getChoices(choiceType: string): Observable<Choice[]> {
-    const url = `/api/choices/${choiceType}/`;
-    return this.http.get<Choice[]>(url).pipe(
-      tap(() => console.log('getChoices()', Math.random()))
-    );
-  }
-
 
   createAssetClass(assetClass: AssetClassType) {
     const url = '/api/asset_class/';
@@ -174,10 +167,7 @@ export class SchemeService {
   //     .pipe(tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random())));
   // }
 
-  getChoiceLabel(choice_value: string, choices: Choice[]): string {
-    const choice = choices.find((choice) => choice.value === choice_value);
-    return choice ? choice.label : '';
-  }
+  
 
   // getSchemeData(scheme: Scheme): Observable<SchemeData> {
   //   const url = `/api/scheme/${scheme.id}/data/`;

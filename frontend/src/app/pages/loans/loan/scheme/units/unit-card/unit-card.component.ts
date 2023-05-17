@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { AssetClassType } from 'src/app/_types/custom.type';
 import { AssetClassData, Scheme, Unit, UnitStructure } from 'src/app/_interfaces/scheme.interface';
 import { UnitService } from 'src/app/_services/unit/unit.service';
+import { SharedService } from 'src/app/_services/shared/shared.service';
+import { Choice } from 'src/app/_interfaces/shared.interface';
 
 interface UnitGroup {
   description: string,
@@ -27,10 +29,12 @@ export class UnitCardComponent implements OnInit, OnChanges {
   totalAreaSize = 0;
   totalBeds = 0;
   subs: Subscription[] = [];
+  @Input() useChoices:Choice[] = [];
 
   constructor(
     private _schemeService: SchemeService,
     private _unitService: UnitService,
+    private _sharedService: SharedService
   ) { }
 
   ngOnInit(): void {
@@ -101,6 +105,10 @@ export class UnitCardComponent implements OnInit, OnChanges {
     this.totalQuantity = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.quantity, 0);
     this.totalAreaSize = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.areaSize, 0);
     this.totalBeds = unitsGrouped.reduce((total, unitGroup) => total + unitGroup.beds, 0);
+  }
+
+  getUseLabel(use: string): string {
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
   }
 
 }

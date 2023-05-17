@@ -208,14 +208,19 @@
                       <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
                     </td>
                     <td>
-                      <select class="form-select" id="status" formControlName="status" [compareWith]="compareFn">
+                      <select 
+                        class="form-select" 
+                        id="status" 
+                        formControlName="status" 
+                        [compareWith]="compareFn"
+                        [attr.disabled]="hasSale(unitScheduleData)">
                         <option *ngFor="let status of saleStatusChoices" [ngValue]="status.value">
                           {{ status.label }}
                         </option>
                       </select>
                     </td>
                     <td>
-                      <ng-container *ngIf="unitScheduleData.get('sale.status')?.value !== 'available'; else noSale">
+                      <ng-container *ngIf="!!unitScheduleData.get('sale.priceAchieved')?.value; else noSale">
                         <input
                           class="form-control text-center cursor-pointer"
                           formControlName="statusDate"
@@ -235,7 +240,11 @@
                       </ng-template>
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="buyer" placeholder="-" />
+                      <input 
+                      class="form-control text-center" 
+                      formControlName="buyer" 
+                      placeholder="-" 
+                      [attr.disabled]="hasSale(unitScheduleData)"/>
                     </td>
                     <td>
                       <button type="button" class="btn btn-danger" (click)="reset('sale', i)">Reset</button>

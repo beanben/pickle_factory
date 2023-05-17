@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 
 import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {
@@ -33,6 +25,7 @@ import {
 } from 'src/app/_interfaces/scheme.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {Choice} from 'src/app/_interfaces/shared.interface';
+import {SharedService} from 'src/app/_services/shared/shared.service';
 
 interface ValidationMessages {
   [formGroupName: string]: {
@@ -130,7 +123,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private _schemeService: SchemeService,
     private _unitService: UnitService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -138,7 +132,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateTotals();
     this.populateForm();
   }
-  
 
   addEventBackgroundClose() {
     this.el.nativeElement.addEventListener('click', (el: any) => {
@@ -153,7 +146,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices$ = this.sharedService.getChoices(choiceType);
     const choices: Choice[] = await lastValueFrom(choices$);
 
     targetArray.push(...choices);
@@ -199,7 +192,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   saleToFormGroup(sale?: Sale): FormGroup {
     const saleForm = this.fb.group({
       id: [sale?.id],
-      status: [sale?.status || this.saleStatusChoices[0].value],
+      status: [sale?.status || this.saleStatusChoices[0].value, this.saleStatusValidator()],
       statusDate: [sale?.statusDate],
       priceTarget: [sale?.priceTarget, Validators.pattern(this.decimalsOnly)],
       priceAchieved: [sale?.priceAchieved, Validators.pattern(this.decimalsOnly)],
@@ -245,18 +238,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   onAddUnitScheduleData(unitScheduleData?: UnitScheduleData) {
-    // const newUnit = new Unit(this.assetClass);
-    // let unitScheduleDataAdjusted = unitScheduleData ?? {
-    //   unit: Unit,
-    //   sale: new Sale(newUnit),
-    //   lease: new Lease(newUnit),
-    // };
-
     const unitScheduleDataForm = this.unitScheduleDataToFormGroup(this.assetClass, unitScheduleData);
-    // const unitForm = this.unitToFormGroup(unitToAdd);
-
     this.subs.push(unitScheduleDataForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.calculateTotals()));
-
     this.unitsScheduleFormArray.push(unitScheduleDataForm);
   }
 
@@ -269,21 +252,14 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   FormGroupToUnit(form: FormGroup): Unit {
-    // const unit = new Unit(this.assetClass);
-    // unit.id = form.get('id')?.value;
-    // unit.identifier = form.get('identifier')?.value;
-    // unit.description = form.get('description')?.value;
-    // unit.areaSize = form.get('areaSize')?.value;
-    // unit.beds = form.get('beds')?.value;
-
     const unit = {
       id: form.get('id')?.value,
       assetClassId: this.assetClass.id,
       label: this.unitStructure.label,
       identifier: form.get('identifier')?.value,
-      description: form.get('description')?.value || "",
+      description: form.get('description')?.value || '',
       beds: form.get('beds')?.value,
-      areaSize: form.get('areaSize')?.value || 0.00,
+      areaSize: form.get('areaSize')?.value || 0.0,
       areaType: this.unitStructure.areaType,
       areaSystem: this.unitStructure.areaSystem
     };
@@ -296,28 +272,21 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       unitId: unit.id,
       status: form.get('status')?.value,
       statusDate: form.get('statusDate')?.value,
-      priceTarget: form.get('priceTarget')?.value || 0.00,
-      priceAchieved: form.get('priceAchieved')?.value || 0.00,
-      buyer: form.get('buyer')?.value || ""
+      priceTarget: form.get('priceTarget')?.value || 0.0,
+      priceAchieved: form.get('priceAchieved')?.value || 0.0,
+      buyer: form.get('buyer')?.value || ''
     };
 
     return sale;
   }
 
   FormGroupToLease(form: FormGroup, unit: Unit): Lease {
-    // const lease = new Lease(unit);
-    // lease.id = form.get('id')?.value;
-    // lease.tenant = form.get('tenant')?.value;
-    // lease.rentTarget = form.get('rentTarget')?.value;
-    // lease.rentAchieved = form.get('rentAchieved')?.value;
-    // lease.startDate = form.get('startDate')?.value;
-    // lease.term = form.get('term')?.value;
     const lease = {
       id: form.get('id')?.value,
       unitId: unit.id,
-      tenant: form.get('tenant')?.value || "",
-      rentTarget: form.get('rentTarget')?.value || 0.00,
-      rentAchieved: form.get('rentAchieved')?.value || 0.00,
+      tenant: form.get('tenant')?.value || '',
+      rentTarget: form.get('rentTarget')?.value || 0.0,
+      rentAchieved: form.get('rentAchieved')?.value || 0.0,
       rentFrequency: this.leaseStructure.rentFrequency,
       startDate: form.get('startDate')?.value,
       endDate: form.get('endDate')?.value
@@ -338,7 +307,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         unit: unit,
         lease: lease
       };
-
     } else {
       const saleForm = unitScheduleDataFormGroup.get('sale') as FormGroup;
       const sale = this.FormGroupToSale(saleForm, unit);
@@ -346,7 +314,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         unit: unit,
         sale: sale
       };
-
     }
 
     return unitScheduleData;
@@ -408,19 +375,19 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         .updateOrCreateUnitsScheduleBTS(unitsScheduleData)
         .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
           this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes)
+          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
         });
     } else {
       this._unitService
         .updateOrCreateUnitsScheduleBTR(unitsScheduleData)
         .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
           this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes)
+          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
         });
     }
   }
 
-  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]){
+  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
     const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
 
     const assetClassData = {
@@ -463,6 +430,13 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   compareFn(satus1: string, satus2: string): boolean {
     return satus1 === satus2;
+  }
+
+  areAllUnitsFormsValid(): boolean {
+    return this.unitsScheduleFormArray.controls.every(control => {
+      const unitFormGroup = (control as FormGroup).get('unit') as FormGroup;
+      return unitFormGroup.valid;
+    });
   }
 
   onNext() {
@@ -513,6 +487,23 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     };
   }
 
+  saleStatusValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const status = control.value;
+
+      if (control.parent) {
+        const formGroupParent = control.parent as FormGroup;
+        const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
+
+        if (status === 'available' && priceAchieved === 0) {
+          return {statusPriceError: true}; // Returning custom error object
+        }
+      }
+
+      return null; // If validation passed, return null
+    };
+  }
+
   // if units has beds, then beds must be greater than 0
   atLeastOneValditor(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -540,8 +531,13 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
   }
 
-  reset(FormGroupName: string, index: number){
+  reset(FormGroupName: string, index: number) {
     const formGroup = this.unitsScheduleFormArray.at(index).get(FormGroupName) as FormGroup;
     formGroup.reset();
+  }
+
+  hasSale(control: AbstractControl): true | null {
+    const unitScheduleData = control as FormGroup;
+    return unitScheduleData.get('sale.priceAchieved')?.value ? null : true;
   }
 }

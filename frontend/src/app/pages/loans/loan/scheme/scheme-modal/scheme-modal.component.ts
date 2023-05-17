@@ -5,6 +5,7 @@ import { Loan } from 'src/app/_interfaces/loan.interface';
 import { Scheme } from 'src/app/_interfaces/scheme.interface';
 import { Choice } from 'src/app/_interfaces/shared.interface';
 import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { SharedService } from 'src/app/_services/shared/shared.service';
 
 
 @Component({
@@ -45,6 +46,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private _schemeService: SchemeService,
+    private _sharedService: SharedService,
     private el: ElementRef,
     //   private _loanService: LoanService,
   ) { }
@@ -134,7 +136,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   };
 
   getChoices(choiceType: string) {
-    this._schemeService.getChoices(choiceType)
+    this._sharedService.getChoices(choiceType)
       .subscribe((systemTypes: Choice[]) => {
         this.systemTypes = systemTypes;
         this.form.patchValue({ system: systemTypes[0].value })
