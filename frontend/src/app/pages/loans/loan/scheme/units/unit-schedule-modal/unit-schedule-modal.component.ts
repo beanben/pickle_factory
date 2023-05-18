@@ -3,6 +3,7 @@ import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} f
 import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {
   AbstractControl,
+  Form,
   FormArray,
   FormBuilder,
   FormControl,
@@ -28,12 +29,17 @@ import {Choice} from 'src/app/_interfaces/shared.interface';
 import {SharedService} from 'src/app/_services/shared/shared.service';
 
 interface ValidationMessages {
-  [formGroupName: string]: {
+  [category: string]: {
     [controlName: string]: {
       [errorType: string]: string;
     };
   };
 }
+// interface ValidationFormMessages {
+//   [controlName: string]: {
+//     [errorType: string]: string;
+//   };
+// }
 
 @Component({
   selector: 'app-unit-schedule-modal',
@@ -76,9 +82,64 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   subs: Subscription[] = [];
   showResetIcon = false;
 
-  form: FormGroup = this.fb.group({
-    unitsScheduleData: this.fb.array([])
+  // form: FormGroup = this.fb.group({
+  //   unitsScheduleData: this.fb.array([])
+  // });
+
+  unitsFormGroup: FormGroup = this.fb.group({
+    unitsData: this.fb.array([])
   });
+  salesFormGroup: FormGroup = this.fb.group({
+    salesData: this.fb.array([])
+  });
+  leasesFormGroup: FormGroup = this.fb.group({
+    leasesData: this.fb.array([])
+  });
+
+  get unitsFormArray(): FormArray {
+    return this.unitsFormGroup.get('unitsData') as FormArray;
+  }
+  get salesFormArray(): FormArray {
+    return this.salesFormGroup.get('salesData') as FormArray;
+  }
+  get leasesFormArray(): FormArray {
+    return this.leasesFormGroup.get('leasesData') as FormArray;
+  }
+
+  // unitsValidationMessages: ValidationFormMessages = {
+  //   identifier: {
+  //     required: 'Identifier is required',
+  //     uniqueValue: 'Identifier must be unique'
+  //   },
+  //   description: {
+  //     required: 'Description is required'
+  //   },
+  //   areaSize: {
+  //     pattern: 'Area must be a valid number'
+  //   },
+  //   beds: {
+  //     pattern: 'Number of beds must be a valid number',
+  //     atLeastOne: 'At least one bed is required'
+  //   }
+  // };
+
+  // salesValidationMessages: ValidationFormMessages = {
+  //   priceTarget: {
+  //     pattern: 'Sale price target must be a valid number'
+  //   },
+  //   priceAchieved: {
+  //     pattern: 'Sale price achieved must be a valid number'
+  //   }
+  // };
+
+  // leasesValidationMessages: ValidationFormMessages = {
+  //   rentTarget: {
+  //     pattern: 'Rent target must be a valid number'
+  //   },
+  //   rentAchieved: {
+  //     pattern: 'Rent achieved must be a valid number'
+  //   }
+  // };
 
   validationMessages: ValidationMessages = {
     unit: {
@@ -115,9 +176,9 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     }
   };
 
-  get unitsScheduleFormArray(): FormArray {
-    return this.form.get('unitsScheduleData') as FormArray;
-  }
+  // get unitsScheduleFormArray(): FormArray {
+  //   return this.form.get('unitsScheduleData') as FormArray;
+  // }
 
   constructor(
     private el: ElementRef,
@@ -129,8 +190,11 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.addEventBackgroundClose();
-    this.calculateTotals();
-    this.populateForm();
+    this.calculateUnitsTotals();
+    this.calculateSalesTotals();
+    this.calculateLeasesTotals();
+    // this.populateForm();
+    this.populateUnitsFormGroup();
   }
 
   addEventBackgroundClose() {
@@ -152,35 +216,76 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     targetArray.push(...choices);
   }
 
-  calculateTotals() {
-    this.totalUnits = this.unitsScheduleFormArray.length;
-    this.totalAreaSize = this.calculateTotalForFormControl('unit', 'areaSize', 2);
-    this.totalBeds = this.calculateTotalForFormControl('unit', 'beds');
-
-    if (this.assetClass.investmentStrategy === 'buildToRent') {
-      this.averageLeaseRentTarget = this.calculateAverageFromFormControls('lease', 'rentTargetAmount', 2);
-      this.averageLeaseRentAchieved = this.calculateAverageFromFormControls('lease', 'rentAchievedAmount', 2);
-    } else {
-      this.totalSalePriceTarget = this.calculateTotalForFormControl('sale', 'priceTarget', 2);
-      this.totalSalePriceAchieved = this.calculateTotalForFormControl('sale', 'priceAchieved', 2);
-    }
+  calculateUnitsTotals() {
+    this.totalUnits = this.unitsFormArray.length;
+    this.totalAreaSize = this.calculateTotalForFormArray(this.unitsFormArray, 'areaSize', 2);
+    this.totalBeds = this.calculateTotalForFormArray(this.unitsFormArray, 'beds');
+  }
+  calculateSalesTotals() {
+    this.totalSalePriceTarget = this.calculateTotalForFormArray(this.salesFormArray, 'priceTarget', 2);
+    this.totalSalePriceAchieved = this.calculateTotalForFormArray(this.salesFormArray, 'priceAchieved', 2);
+  }
+  calculateLeasesTotals() {
+    this.averageLeaseRentTarget = this.calculateAverageFromFormArray(this.leasesFormArray, 'rentTargetAmount', 2);
+    this.averageLeaseRentAchieved = this.calculateAverageFromFormArray(this.leasesFormArray, 'rentAchievedAmount', 2);
   }
 
-  calculateTotalForFormControl(formGroupName: string, controlName: string, decimalPrecision = 0): number {
-    return this.unitsScheduleFormArray.controls
-      .map(control => control.get(formGroupName)?.get(controlName)?.value || 0)
+  // calculateTotals() {
+  //   this.totalUnits = this.unitsScheduleFormArray.length;
+  //   this.totalAreaSize = this.calculateTotalForFormControl('unit', 'areaSize', 2);
+  //   this.totalBeds = this.calculateTotalForFormControl('unit', 'beds');
+
+  //   if (this.assetClass.investmentStrategy === 'buildToRent') {
+  //     this.averageLeaseRentTarget = this.calculateAverageFromFormControls('lease', 'rentTargetAmount', 2);
+  //     this.averageLeaseRentAchieved = this.calculateAverageFromFormControls('lease', 'rentAchievedAmount', 2);
+  //   } else {
+  //     this.totalSalePriceTarget = this.calculateTotalForFormControl('sale', 'priceTarget', 2);
+  //     this.totalSalePriceAchieved = this.calculateTotalForFormControl('sale', 'priceAchieved', 2);
+  //   }
+  // }
+
+  calculateTotalForFormArray(formArray: FormArray, controlName: string, decimalPrecision = 0): number {
+    return formArray.controls
+      .map(control => control.get(controlName)?.value || 0)
       .reduce((sum, currentValue) => sum + Number(currentValue), 0)
       .toFixed(decimalPrecision);
   }
 
-  calculateAverageFromFormControls(formGroupName: string, controlName: string, decimalPrecision = 0): number {
-    const total = this.calculateTotalForFormControl(formGroupName, controlName, decimalPrecision);
+  // calculateTotalForFormControl(formGroupName: string, controlName: string, decimalPrecision = 0): number {
+  //   return this.unitsScheduleFormArray.controls
+  //     .map(control => control.get(formGroupName)?.get(controlName)?.value || 0)
+  //     .reduce((sum, currentValue) => sum + Number(currentValue), 0)
+  //     .toFixed(decimalPrecision);
+  // }
+
+  calculateAverageFromFormArray(formArray: FormArray, controlName: string, decimalPrecision = 0): number {
+    const total = this.calculateTotalForFormArray(formArray, controlName, decimalPrecision);
     return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
+  }
+
+  // calculateAverageFromFormControls(formGroupName: string, controlName: string, decimalPrecision = 0): number {
+  //   const total = this.calculateTotalForFormControl(formGroupName, controlName, decimalPrecision);
+  //   return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
+  // }
+
+  populateUnitsFormGroup() {
+    const units: Unit[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.unit);
+    units.forEach(unit => {
+      this.onAddUnit(unit);
+    });
+  }
+
+  onAddUnit(unit?: Unit) {
+    const unitForm = this.unitToFormGroup(unit);
+    this.unitsFormArray.push(unitForm);
   }
 
   unitToFormGroup(unit?: Unit): FormGroup {
     const unitForm = this.fb.group({
-      identifier: [unit?.identifier, [Validators.required, this.uniqueValueValidator('unit', 'identifier')]],
+      identifier: [
+        unit?.identifier,
+        [Validators.required, this.uniqueValueValidator(this.unitsFormArray, 'identifier')]
+      ],
       description: [unit?.description, Validators.required],
       beds: [unit?.beds, [Validators.pattern(this.numbersOnly), this.atLeastOneValditor()]],
       areaSize: [unit?.areaSize, Validators.pattern(this.decimalsOnly)],
@@ -189,13 +294,53 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return unitForm;
   }
 
-  saleToFormGroup(sale?: Sale): FormGroup {
+  populateSalesFormGroup() {
+    const sales: (Sale | undefined)[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.sale).flat();
+
+    this.unitsFormArray.controls.forEach((unitForm, index) => {
+      const unit: Unit = this.FormGroupToUnit(unitForm as FormGroup);
+      const sale = sales.find(sale => sale?.unitId === unit.id);
+
+      if (sale) {
+        this.onAddSale(index, sale);
+      } else {
+        this.onAddSale(index);
+      }
+    });
+
+    // this.reorderFormArray(this.salesFormArray);
+  }
+
+  onAddSale(index: number, sale?: Sale) {
+    const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
+    // CHECK HERE
+    if(this.salesFormArray.length >= index + 1){
+      const saleForm = this.salesFormArray.at(index) as FormGroup;
+      this.salesFormArray.setControl(index, saleForm);
+    } else {
+      const saleForm: FormGroup = this.saleToFormGroup(unitIdentifier, sale);
+      this.salesFormArray.push(saleForm);
+    }
+    // const matchingIndex = this.salesFormArray.controls.findIndex(
+    //   saleForm => saleForm.get('unitIdentifier')?.value === unit.identifier
+    // );
+    
+    //  if (matchingIndex > -1) {
+    //   return;
+    // } else {
+    //   const saleForm = this.saleToFormGroup(unit, sale);
+    //   this.c.push(saleForm);
+    // }
+  }
+
+  saleToFormGroup(unitIdentifier: string, sale?: Sale): FormGroup {
     const saleForm = this.fb.group({
       id: [sale?.id],
+      unitIdentifier: [unitIdentifier],
       status: [sale?.status || this.saleStatusChoices[0].value, this.saleStatusValidator()],
       statusDate: [sale?.statusDate],
-      priceTarget: [sale?.priceTarget, Validators.pattern(this.decimalsOnly)],
-      priceAchieved: [sale?.priceAchieved, Validators.pattern(this.decimalsOnly)],
+      priceTarget: [sale?.priceTarget || 0.0, Validators.pattern(this.decimalsOnly)],
+      priceAchieved: [sale?.priceAchieved || 0.0, Validators.pattern(this.decimalsOnly)],
       buyer: [sale?.buyer]
     });
 
@@ -210,10 +355,53 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return saleForm;
   }
 
-  leaseToFormGroup(lease?: Lease): FormGroup {
+  populateLeasesFormGroup() {
+    const leases: (Lease | undefined)[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.lease).flat();
+
+    this.unitsFormArray.controls.forEach((unitForm, index)  => {
+      const unit: Unit = this.FormGroupToUnit(unitForm as FormGroup);
+      const lease = leases.find(lease => lease?.unitId === unit.id);
+
+      if (lease) {
+        this.onAddLease(index, lease);
+      } else {
+        this.onAddLease(index);
+      }
+    });
+
+    // this.reorderFormArray(this.leasesFormArray);
+  }
+
+  // reorderFormArray(formArray: FormArray): FormArray{
+  //   const unitsIdentifiers = this.unitsFormArray.controls.map(unitForm => unitForm.get('identifier')?.value);
+
+  //   const formArrayControls = formArray.controls.sort((a, b) => {
+  //     const aIndex = unitsIdentifiers.indexOf(a.get('unitIdentifier')?.value);
+  //     const bIndex = unitsIdentifiers.indexOf(b.get('unitIdentifier')?.value);
+  //     return aIndex - bIndex;
+  //   }
+  //   );
+
+  //   formArray.controls = formArrayControls;
+  //   return formArray;
+  // }
+
+  onAddLease(index: number, lease?: Lease) {
+    const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
+    
+    if(this.leasesFormArray.length >= index + 1){
+      const leaseForm = this.leasesFormArray.at(index) as FormGroup;
+      this.leasesFormArray.setControl(index, leaseForm);
+    } else {
+      const leaseForm = this.leaseToFormGroup(unitIdentifier, lease);
+      this.leasesFormArray.push(leaseForm);
+    }
+  }
+
+  leaseToFormGroup(unitIdentifier: string, lease?: Lease): FormGroup {
     const leaseForm = this.fb.group({
       id: [lease?.id],
-      unitId: [lease?.unitId],
+      unitIdentifier: [unitIdentifier],
       startDate: [lease?.startDate],
       endDate: [lease?.endDate],
       rentTarget: [lease?.rentTarget, Validators.pattern(this.decimalsOnly)],
@@ -223,32 +411,36 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return leaseForm;
   }
 
-  unitScheduleDataToFormGroup(assetClass: AssetClassType, unitScheduleData?: UnitScheduleData): FormGroup {
-    if (assetClass.investmentStrategy === 'buildToRent') {
-      return this.fb.group({
-        unit: this.unitToFormGroup(unitScheduleData?.unit),
-        lease: this.leaseToFormGroup(unitScheduleData?.lease)
-      });
-    } else {
-      return this.fb.group({
-        unit: this.unitToFormGroup(unitScheduleData?.unit),
-        sale: this.saleToFormGroup(unitScheduleData?.sale)
-      });
-    }
-  }
+  // unitScheduleDataToFormGroup(assetClass: AssetClassType, unitScheduleData?: UnitScheduleData): FormGroup {
+  //   if (assetClass.investmentStrategy === 'buildToRent') {
+  //     return this.fb.group({
+  //       unit: this.unitToFormGroup(unitScheduleData?.unit),
+  //       lease: this.leaseToFormGroup(unitScheduleData?.lease)
+  //     });
+  //   } else {
+  //     return this.fb.group({
+  //       unit: this.unitToFormGroup(unitScheduleData?.unit),
+  //       sale: this.saleToFormGroup(unitScheduleData?.sale)
+  //     });
+  //   }
+  // }
 
-  onAddUnitScheduleData(unitScheduleData?: UnitScheduleData) {
-    const unitScheduleDataForm = this.unitScheduleDataToFormGroup(this.assetClass, unitScheduleData);
-    this.subs.push(unitScheduleDataForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.calculateTotals()));
-    this.unitsScheduleFormArray.push(unitScheduleDataForm);
-  }
+  // onAddUnitScheduleData(unitScheduleData?: UnitScheduleData) {
+  //   const unitScheduleDataForm = this.unitScheduleDataToFormGroup(this.assetClass, unitScheduleData);
+  //   this.subs.push(unitScheduleDataForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.calculateTotals()));
+  //   this.unitsScheduleFormArray.push(unitScheduleDataForm);
+  // }
 
   getUnitIdentifier(index: number): any {
-    return this.unitsScheduleFormArray.at(index).get('unit')?.get('identifier')?.value;
+    return this.unitsFormArray.at(index).get('identifier')?.value;
   }
 
+  // getUnitIdentifier(index: number): any {
+  //   return this.unitsScheduleFormArray.at(index).get('unit')?.get('identifier')?.value;
+  // }
+
   getUnitLeaseStartDate(index: number): any {
-    return this.unitsScheduleFormArray.at(index).get('lease')?.get('startDate')?.value;
+    return this.leasesFormArray.at(index).get('startDate')?.value;
   }
 
   FormGroupToUnit(form: FormGroup): Unit {
@@ -295,44 +487,111 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return lease;
   }
 
-  formGroupToUnitScheduleData(unitScheduleDataFormGroup: FormGroup): UnitScheduleData {
-    const unitForm = unitScheduleDataFormGroup.get('unit') as FormGroup;
-    const unit = this.FormGroupToUnit(unitForm);
-    let unitScheduleData = {} as UnitScheduleData;
+  updateOrCreateUnitsScheduleBTS() {
+    const unitsScheduleDataBTS: UnitScheduleData[] = this.combineUnitAndSaleForms();
 
-    if (this.assetClass.investmentStrategy === 'buildToRent') {
-      const leaseForm = unitScheduleDataFormGroup.get('lease') as FormGroup;
-      const lease = this.FormGroupToLease(leaseForm, unit);
-      unitScheduleData = {
-        unit: unit,
-        lease: lease
-      };
-    } else {
-      const saleForm = unitScheduleDataFormGroup.get('sale') as FormGroup;
+    this._unitService
+      .updateOrCreateUnitsScheduleBTS(unitsScheduleDataBTS)
+      .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+        this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+      });
+  }
+
+  combineUnitAndSaleForms(): UnitScheduleData[] {
+    const unitsScheduleDataBTS: UnitScheduleData[] = [];
+
+    this.unitsFormArray.controls.forEach((unitForm, index) => {
+      const unit = this.FormGroupToUnit(unitForm as FormGroup);
+      const saleForm = this.salesFormArray.at(index) as FormGroup;
       const sale = this.FormGroupToSale(saleForm, unit);
-      unitScheduleData = {
+      const unitScheduleData = {
         unit: unit,
         sale: sale
       };
-    }
-
-    return unitScheduleData;
-  }
-
-  populateForm() {
-    if (this.unitsScheduleData.length === 0) {
-      this.onAddUnitScheduleData();
-    }
-
-    this.unitsScheduleData.forEach(unitScheduleData => {
-      this.onAddUnitScheduleData(unitScheduleData);
+      unitsScheduleDataBTS.push(unitScheduleData);
     });
-
-    this.calculateTotals();
+    return unitsScheduleDataBTS;
   }
 
-  onRemoveUnitScheduleData() {
-    const unitId = this.unitsScheduleFormArray.at(this.index).get('unit.id')?.value;
+  updateOrCreateUnitsScheduleBTR() {
+    const unitsScheduleDataBTR: UnitScheduleData[] = this.combineUnitAndLeaseForms();
+
+    this._unitService
+      .updateOrCreateUnitsScheduleBTR(unitsScheduleDataBTR)
+      .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+        this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+      });
+  }
+
+  combineUnitAndLeaseForms(): UnitScheduleData[] {
+    const unitsScheduleDataBTR: UnitScheduleData[] = [];
+    this.unitsFormArray.controls.forEach((unitForm, index) => {
+      const unit = this.FormGroupToUnit(unitForm as FormGroup);
+      const leaseForm = this.leasesFormArray.at(index) as FormGroup;
+      const lease = this.FormGroupToLease(leaseForm, unit);
+      const unitScheduleData = {
+        unit: unit,
+        lease: lease
+      };
+      unitsScheduleDataBTR.push(unitScheduleData);
+    });
+    return unitsScheduleDataBTR;
+  }
+
+  // formGroupToUnitScheduleData(unitScheduleDataFormGroup: FormGroup): UnitScheduleData {
+  //   const unitForm = unitScheduleDataFormGroup.get('unit') as FormGroup;
+  //   const unit = this.FormGroupToUnit(unitForm);
+  //   let unitScheduleData = {} as UnitScheduleData;
+
+  //   if (this.assetClass.investmentStrategy === 'buildToRent') {
+  //     const leaseForm = unitScheduleDataFormGroup.get('lease') as FormGroup;
+  //     const lease = this.FormGroupToLease(leaseForm, unit);
+  //     unitScheduleData = {
+  //       unit: unit,
+  //       lease: lease
+  //     };
+  //   } else {
+  //     const saleForm = unitScheduleDataFormGroup.get('sale') as FormGroup;
+  //     const sale = this.FormGroupToSale(saleForm, unit);
+  //     unitScheduleData = {
+  //       unit: unit,
+  //       sale: sale
+  //     };
+  //   }
+
+  //   return unitScheduleData;
+  // }
+
+  // populateForm() {
+  //   if (this.unitsScheduleData.length === 0) {
+  //     this.onAddUnitScheduleData();
+  //   }
+
+  //   this.unitsScheduleData.forEach(unitScheduleData => {
+  //     this.onAddUnitScheduleData(unitScheduleData);
+  //   });
+
+  //   this.calculateTotals();
+  // }
+
+  // onRemoveUnitScheduleData() {
+  //   const unitId = this.unitsScheduleFormArray.at(this.index).get('unit.id')?.value;
+  //   if (unitId) {
+  //     const indexInUnitsScheduleData = this.unitsScheduleData.findIndex(
+  //       unitScheduleData => unitScheduleData.unit.id === unitId
+  //     );
+
+  //     this.unitsToDelete.push(this.unitsScheduleData[indexInUnitsScheduleData].unit);
+  //   }
+
+  //   this.unitsScheduleFormArray.removeAt(this.index);
+  //   this.mode = 'edit';
+  // }
+
+  onRemoveUnit(index: number) {
+    const unitId = this.unitsFormArray.at(index).get('id')?.value;
     if (unitId) {
       const indexInUnitsScheduleData = this.unitsScheduleData.findIndex(
         unitScheduleData => unitScheduleData.unit.id === unitId
@@ -341,7 +600,16 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       this.unitsToDelete.push(this.unitsScheduleData[indexInUnitsScheduleData].unit);
     }
 
-    this.unitsScheduleFormArray.removeAt(this.index);
+    this.unitsFormArray.removeAt(index);
+
+     if(this.leasesFormArray.length >= index) {
+      this.leasesFormArray.removeAt(index);
+    }
+
+    if(this.salesFormArray.length >= index) {
+      this.salesFormArray.removeAt(index);
+    }
+
     this.mode = 'edit';
   }
 
@@ -355,36 +623,40 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    if (!this.form.valid) {
+    if (!this.salesFormGroup.valid || !this.unitsFormGroup.valid || !this.leasesFormGroup.valid) {
       return;
     }
 
-    const unitsScheduleData: UnitScheduleData[] = this.unitsScheduleFormArray.controls.map(
-      (control: AbstractControl) => {
-        const unitScheduleDataFormGroup = control as FormGroup;
-        return this.formGroupToUnitScheduleData(unitScheduleDataFormGroup);
-      }
-    );
+    // const unitsScheduleData: UnitScheduleData[] = this.unitsScheduleFormArray.controls.map(
+    //   (control: AbstractControl) => {
+    //     const unitScheduleDataFormGroup = control as FormGroup;
+    //     return this.formGroupToUnitScheduleData(unitScheduleDataFormGroup);
+    //   }
+    // );
 
     if (this.unitsToDelete.length > 0) {
       this.deleteUnits(this.unitsToDelete);
     }
 
     if (this.assetClass.investmentStrategy === 'buildToSell') {
-      this._unitService
-        .updateOrCreateUnitsScheduleBTS(unitsScheduleData)
-        .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-          this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
-        });
+      this.updateOrCreateUnitsScheduleBTS();
     } else {
-      this._unitService
-        .updateOrCreateUnitsScheduleBTR(unitsScheduleData)
-        .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-          this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-          this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
-        });
+      this.updateOrCreateUnitsScheduleBTR();
     }
+    //   this._unitService
+    //     .updateOrCreateUnitsScheduleBTS(unitsScheduleData)
+    //     .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+    //       this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+    //       this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+    //     });
+    // } else {
+    //   this._unitService
+    //     .updateOrCreateUnitsScheduleBTR(unitsScheduleData)
+    //     .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+    //       this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+    //       this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+    //     });
+    // }
   }
 
   setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
@@ -402,23 +674,49 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this._unitService.deleteUnits(units).subscribe();
   }
 
-  getFormArrayErrorMessages(formArray: FormArray, formGroupName: string): string[] {
+  // getFormArrayErrorMessages(formArray: FormArray, formGroupName: string): string[] {
+  //   const errorMessages: string[] = [];
+
+  //   for (const control of formArray.controls) {
+  //     const formGroup = control as FormGroup;
+  //     const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
+
+  //     for (const controlName in nestedFormGroup.controls) {
+  //       // if (this.step === 1 && !controlsUnit.includes(controlName) || this.step === 2 && !controlsSaleAndLease.includes(controlName)) {
+  //       //   continue;
+  //       // };
+
+  //       const controlInstance = nestedFormGroup.get(controlName);
+  //       const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
+
+  //       if (errorType) {
+  //         const message = this.validationMessages[formGroupName][controlName][errorType];
+  //         if (!errorMessages.includes(message)) {
+  //           errorMessages.push(message);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return errorMessages;
+  // }
+
+  getFormArrayErrorMessages(formArray: FormArray, category: string): string[] {
     const errorMessages: string[] = [];
 
     for (const control of formArray.controls) {
       const formGroup = control as FormGroup;
-      const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
+      // const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
 
-      for (const controlName in nestedFormGroup.controls) {
+      for (const controlName in formGroup.controls) {
         // if (this.step === 1 && !controlsUnit.includes(controlName) || this.step === 2 && !controlsSaleAndLease.includes(controlName)) {
         //   continue;
         // };
 
-        const controlInstance = nestedFormGroup.get(controlName);
+        const controlInstance = formGroup.get(controlName);
         const errorType = controlInstance?.errors ? Object.keys(controlInstance.errors)[0] : null;
 
         if (errorType) {
-          const message = this.validationMessages[formGroupName][controlName][errorType];
+          const message = this.validationMessages[category][controlName][errorType];
           if (!errorMessages.includes(message)) {
             errorMessages.push(message);
           }
@@ -432,17 +730,23 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return satus1 === satus2;
   }
 
-  areAllUnitsFormsValid(): boolean {
-    return this.unitsScheduleFormArray.controls.every(control => {
-      const unitFormGroup = (control as FormGroup).get('unit') as FormGroup;
-      return unitFormGroup.valid;
-    });
-  }
+  // areAllUnitsFormsValid(): boolean {
+  //   return this.unitsScheduleFormArray.controls.every(control => {
+  //     const unitFormGroup = (control as FormGroup).get('unit') as FormGroup;
+  //     return unitFormGroup.valid;
+  //   });
+  // }
 
   onNext() {
     this.nextIsClicked = true;
 
-    if (this.form.valid) {
+    if (this.unitsFormGroup.valid) {
+      if (this.assetClass.investmentStrategy === 'buildToSell') {
+        this.populateSalesFormGroup();
+      } else {
+        this.populateLeasesFormGroup();
+      }
+
       this.nextIsClicked = false;
       this.step++;
       this.updateStatus();
@@ -467,7 +771,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  uniqueValueValidator(formGroupName: string, controlName: string): ValidatorFn {
+  uniqueValueValidator(formArray: FormArray, controlName: string): ValidatorFn {
     return (control: AbstractControl) => {
       if (!(control instanceof FormControl)) {
         return null;
@@ -475,10 +779,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
       const currentControl = control;
 
-      const duplicateControl = this.unitsScheduleFormArray.controls.find((control: AbstractControl) => {
+      const duplicateControl = formArray.controls.find((control: AbstractControl) => {
         const formGroup = control as FormGroup;
-        const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
-        const formControl = nestedFormGroup.get(controlName) as FormControl;
+        // const nestedFormGroup = formGroup.get(formGroupName) as FormGroup;
+        const formControl = formGroup.get(controlName) as FormControl;
 
         return currentControl !== formControl && currentControl?.value === formControl.value;
       });
@@ -521,8 +825,13 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
-  getFormValue(formArray: FormArray, index: number, ...path: string[]): string | number {
-    const value = formArray.at(index).get(path.join('.'))?.value;
+  // getFormValue(formArray: FormArray, index: number, ...path: string[]): string | number {
+  //   const value = formArray.at(index).get(path.join('.'))?.value;
+  //   return value || 'not defined';
+  // }
+
+  getFormValue(formArray: FormArray, index: number, controlName: string) {
+    const value = formArray.at(index).get(controlName)?.value;
     return value || 'not defined';
   }
 
@@ -531,13 +840,17 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
   }
 
-  reset(FormGroupName: string, index: number) {
-    const formGroup = this.unitsScheduleFormArray.at(index).get(FormGroupName) as FormGroup;
+  // reset(FormGroupName: string, index: number) {
+  //   const formGroup = this.unitsScheduleFormArray.at(index).get(FormGroupName) as FormGroup;
+  //   formGroup.reset();
+  // }
+  reset(formArray: FormArray, index: number) {
+    const formGroup = formArray.at(index) as FormGroup;
     formGroup.reset();
   }
 
-  hasSale(control: AbstractControl): true | null {
-    const unitScheduleData = control as FormGroup;
-    return unitScheduleData.get('sale.priceAchieved')?.value ? null : true;
-  }
+  // hasSale(control: AbstractControl): true | null {
+  //   const unitScheduleData = control as FormGroup;
+  //   return unitScheduleData.get('sale.priceAchieved')?.value ? null : true;
+  // }
 }

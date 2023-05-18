@@ -66,67 +66,56 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   }
 
   async setUpUnitSchedule(assetClass: AssetClassType) {
-    this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
-
     if (assetClass.investmentStrategy === 'buildToSell') {
-      await this.getChoices('saleStatus', this.saleStatusChoices);
-      this.getUnitsAndSales(assetClass);
+      this.saleStatusChoices = await this.getChoices('saleStatus');
+      await this.getUnitsAndSales(assetClass);
     }
 
     if (assetClass.investmentStrategy === 'buildToRent') {
-      await this.getChoices('rentFrequency', this.rentFrequencyChoices);
+      this.rentFrequencyChoices = await this.getChoices('rentFrequency');
+      await this.getUnitsAndLeases(assetClass);
       this.leaseStructure = this._unitService.createLeaseStructure(this.assetClass);
-      this.getUnitsAndLeases(assetClass);
     }
+
+    this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
   }
 
-  async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
+  async getChoices(choiceType: string): Promise<Choice[]> {
     const choices$ = this._sharedService.getChoices(choiceType);
-    const choices: Choice[] = await lastValueFrom(choices$);
-
-    targetArray.push(...choices);
+    return await lastValueFrom(choices$);
   }
 
-  getUnitsAndSales(assetClass: AssetClassType) {
-    this._unitService.getUnitsScheduleBTS(assetClass).subscribe((unitsScheduleData: UnitScheduleData[]) => {
-      this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
 
-      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+  async getUnitsAndSales(assetClass: AssetClassType) {
+    const unitsScheduleData$ = this._unitService.getUnitsScheduleBTS(assetClass);
+    const unitsScheduleData: UnitScheduleData[] = await lastValueFrom(unitsScheduleData$);
 
-      this.calculateTotalsSale(
-        unitsScheduleData
-          .map(unitScheduleData => unitScheduleData.sale)
-          .filter((sale): sale is Sale => sale !== undefined && sale !== null)
-      );
-   
-    });
+    this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
+
+    this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+    this.calculateTotalsSale(
+      unitsScheduleData
+        .map(unitScheduleData => unitScheduleData.sale)
+        .filter((sale): sale is Sale => sale !== undefined && sale !== null)
+    );
+
   }
+  
 
-  getUnitsAndLeases(assetClass: AssetClassType) {
-    this._unitService.getUnitsScheduleBTR(assetClass).subscribe((unitsScheduleData: UnitScheduleData[]) => {
-      this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
+  async getUnitsAndLeases(assetClass: AssetClassType) {
+    const unitsScheduleData$ = this._unitService.getUnitsScheduleBTR(assetClass);
+    const unitsScheduleData: UnitScheduleData[] = await lastValueFrom(unitsScheduleData$);
 
-      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+    this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
+
+    this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
 
       this.calculateAveragesLease(
         unitsScheduleData
           .map(unitScheduleData => unitScheduleData.lease)
           .filter((lease): lease is Lease => lease !== undefined)
       );
-    });
   }
-
-  // getAssetClassUnitsWithSaleAndLease(assetClass: AssetClassType) {
-  //   this._schemeService
-  //     .getAssetClassUnitsWithSaleAndLease(assetClass)
-  //     .subscribe((unitsScheduleData: UnitScheduleBTS[] | UnitScheduleBTR[]) => {
-  //       this.unitsScheduleData = unitsScheduleData.map(unitData => this.buildUnitScheduleData(unitData, this.assetClass));
-
-  //       this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
-  //       this.calculateTotalsSale(unitsScheduleData.map(unitScheduleData => unitScheduleData.sale));
-  //       this.calculateAveragesLease(unitsScheduleData.map(unitScheduleData => unitScheduleData.lease));
-  //     });
-  // }
 
   buildUnitScheduleData(unitScheduleData: UnitScheduleData, assetClass: AssetClassType): UnitScheduleData {
     const unit = this.buildUnit(unitScheduleData.unit);
