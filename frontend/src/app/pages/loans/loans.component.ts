@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription} from 'rxjs';
-import { Loan } from 'src/app/_interfaces/loan.interface';
-import { LoanService } from 'src/app/_services/loan/loan.service';
-
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {Loan} from 'src/app/_interfaces/loan.interface';
+import {LoanService} from 'src/app/_services/loan/loan.service';
 
 @Component({
   selector: 'app-loans',
@@ -14,135 +13,124 @@ export class LoansComponent implements OnInit, OnDestroy {
   isCollapsed = true;
   openLoanModal = false;
   indexLoan = -1;
-  modalMode = "";
-  isCreateNewLoan = false
+  modalMode = '';
+  isCreateNewLoan = false;
 
-  arrowLeftBlack = "assets/images/arrowLeftBlack.svg";
-  arrowRightBlack = "assets/images/arrowRightBlack.svg";
-  buttonPlus = "assets/images/buttonPlus.svg";
+  arrowLeftBlack = 'assets/images/arrowLeftBlack.svg';
+  arrowRightBlack = 'assets/images/arrowRightBlack.svg';
+  buttonPlus = 'assets/images/buttonPlus.svg';
 
   loanSelected = {} as Loan;
   loanHovered = {} as Loan;
   loans: Loan[] = [];
   subs: Subscription[] = [];
 
-  constructor(
-    private _loanService: LoanService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
+  constructor(private _loanService: LoanService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.isCreateNewLoan = this.route.snapshot.params['new'] ? true : false;
-    if(this.isCreateNewLoan) {  
+    if (this.isCreateNewLoan) {
       this.onOpenModal('new');
-    };
+    }
 
-      this.getLoan();
-      this.getLoans();
+    this.getLoan();
+    this.getLoans();
   }
 
-  onOpenModal(modalMode: string){
+  onOpenModal(modalMode: string) {
     this.openLoanModal = true;
     this.modalMode = modalMode;
 
-    if(modalMode == "new"){
+    if (modalMode == 'new') {
       this.loanSelected = {} as Loan;
       this.indexLoan = -1;
     }
   }
 
-  getLoans(){
+  getLoans() {
     const loansSub: Loan[] = this._loanService.loansSub.getValue();
 
-    if(loansSub.length !== 0){
+    if (loansSub.length !== 0) {
       this.getSubLoans();
     } else {
       this.getReqLoans();
     }
   }
 
-  getSubLoans(){
-    this._loanService.getLoansSub()
-        .subscribe(loans => {
-          this.loans = loans;
+  getSubLoans() {
+    this._loanService.getLoansSub().subscribe(loans => {
+      this.loans = loans;
 
-          const loanSub: Loan = this._loanService.loanSub.getValue();
-          if(loans.length !== 0 && Object.keys(loanSub).length === 0){
-            this.loanSelected = loans[0];
-            this._loanService.setLoanSub(this.loanSelected);
-          }
-        })
+      const loanSub: Loan = this._loanService.loanSub.getValue();
+      if (loans.length !== 0 && Object.keys(loanSub).length === 0) {
+        this.loanSelected = loans[0];
+        this._loanService.setLoanSub(this.loanSelected);
+      }
+    });
   }
-  getReqLoans(){
-    this._loanService.getLoans()
-        .subscribe(loans => {
-          this.loans = loans;
-          this._loanService.setLoansSub(loans);
+  getReqLoans() {
+    this._loanService.getLoans().subscribe(loans => {
+      this.loans = loans;
+      this._loanService.setLoansSub(loans);
 
-          if(loans.length !== 0){
-            this.loanSelected = loans[0];
-            this._loanService.setLoanSub(this.loanSelected);
-          }
+      if (loans.length !== 0) {
+        this.loanSelected = loans[0];
+        this._loanService.setLoanSub(this.loanSelected);
+      }
     });
   }
 
-  getLoan(){
+  getLoan() {
     this.subs.push(
-      this._loanService.getLoanSub()
-        .subscribe(loan => {
-          this.loanSelected = loan;
-
-        })
+      this._loanService.getLoanSub().subscribe(loan => {
+        this.loanSelected = loan;
+      })
     );
   }
 
-  onLoanSelected(index: number ){ 
+  onLoanSelected(index: number) {
     this._loanService.setLoanSub(this.loans[index]);
     this.indexLoan = index;
-  };
+  }
 
-  onMouseEnter(i: number){
+  onMouseEnter(i: number) {
     this.loanHovered = this.loans[i];
   }
-  onMouseLeave(){
+  onMouseLeave() {
     this.loanHovered = {} as Loan;
   }
 
-  onSave(loan: Loan | null){
+  onSave(loan: Loan | null) {
     this.router.navigate(['/loans']);
     this.openLoanModal = false;
 
-    if(!!loan){
+    if (!!loan) {
       this._loanService.setLoanSub(loan);
 
-      if(this.indexLoan === -1 ){ 
+      if (this.indexLoan === -1) {
         this.loans.unshift(loan);
-
       } else {
-        this.loans[this.indexLoan] = loan
-        this.indexLoan === -1
+        this.loans[this.indexLoan] = loan;
+        this.indexLoan === -1;
       }
-
     }
   }
 
-  removeLoan(i: number){
-    this.loans.splice(i,1)
+  removeLoan(i: number) {
+    this.loans.splice(i, 1);
   }
 
-  onDeleteLoan(){
+  onDeleteLoan() {
     this.openLoanModal = false;
     this.removeLoan(this.indexLoan);
     this.indexLoan = -1;
 
-    if(this.loans.length !=0 ) {
+    if (this.loans.length != 0) {
       this._loanService.setLoanSub(this.loans[0]);
     }
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe())
+    this.subs.forEach(sub => sub.unsubscribe());
   }
-
 }

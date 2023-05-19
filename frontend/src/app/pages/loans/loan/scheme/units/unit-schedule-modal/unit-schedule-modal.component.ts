@@ -203,9 +203,16 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   populateUnitsFormArray() {
     const units: Unit[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.unit);
-    units.forEach(unit => {
-      this.onAddUnit(unit);
-    });
+
+    if(units.length === 0) {
+      this.onAddUnit();
+    } else {
+      units.forEach(unit => {
+        this.onAddUnit(unit);
+      });
+    }
+
+    
   }
 
   onAddUnit(unit?: Unit) {
