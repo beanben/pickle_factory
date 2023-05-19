@@ -8,10 +8,10 @@ import { SharedService } from 'src/app/_services/shared/shared.service';
 import { Choice } from 'src/app/_interfaces/shared.interface';
 
 interface UnitGroup {
-  description: string;
-  quantity: number;
-  beds: number;
-  areaSize: number;
+  description: string,
+  quantity: number,
+  beds: number,
+  areaSize: number,
 }
 
 @Component({
@@ -21,8 +21,6 @@ interface UnitGroup {
 export class UnitCardComponent implements OnInit, OnChanges {
   @Input() assetClass = {} as AssetClassType;
   @Input() scheme = {} as Scheme;
-  @Input() assetClassUnits = {} as AssetClassUnits;
-  @Input() useChoices: Choice[] = [];
   unitStructure = {} as UnitStructure;
   unitsGrouped: UnitGroup[] = [];
   totalQuantity = 0;
@@ -50,28 +48,14 @@ export class UnitCardComponent implements OnInit, OnChanges {
         }
       }
       ))
-    // this.assetClass = this.assetClassUnits.assetClass;
-    // this.unitStructure = new Unit(this.assetClass);
-  }
+  };
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['assetClass'] && changes['assetClass'].currentValue) {
       const assetClass: AssetClassType = changes['assetClass'].currentValue;
       this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
-      // this.getAssetClassUnits(assetClass);
     }
   }
-
-  // getAssetClassUnits(assetClass: AssetClassType) {
-  //   this._schemeService.getAssetClassUnits(assetClass)
-  //     .subscribe((units: Unit[]) => {
-
-  //       this.unitsGrouped = this.groupByDescription(units);
-  //       this.calculateTotals(this.unitsGrouped);
-        
-  //     });
-  // };
-
   
 
   groupByDescription(units: Unit[]): UnitGroup[] {
@@ -93,12 +77,12 @@ export class UnitCardComponent implements OnInit, OnChanges {
         description: unit.description,
         quantity: 0,
         beds: 0,
-        areaSize: 0
+        areaSize: 0,
       };
       unitsGrouped.push(unitGroup);
-    }
+    };
 
-    return unitGroup;
+    return unitGroup
   }
 
   calculateTotals(unitsGrouped: UnitGroup[]) {

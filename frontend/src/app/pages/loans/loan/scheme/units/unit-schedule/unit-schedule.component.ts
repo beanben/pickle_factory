@@ -11,8 +11,6 @@ import {
   Scheme,
   Unit,
   UnitScheduleData,
-  // UnitScheduleBTR,
-  // UnitScheduleBTS,
   UnitStructure
 } from 'src/app/_interfaces/scheme.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';

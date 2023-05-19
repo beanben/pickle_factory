@@ -46,17 +46,12 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
     private _schemeService: SchemeService,
     private _sharedService: SharedService,
     private el: ElementRef,
-    //   private _loanService: LoanService,
   ) { }
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
     this.getChoices("system");
     this.initForm();
-
-
-    // this.sub = this._loanService.getLoanSub()
-    //   .subscribe(loan => this.loan = loan)
   }
 
   onCancel() {
