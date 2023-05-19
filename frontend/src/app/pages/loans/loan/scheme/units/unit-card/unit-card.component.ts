@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription} from 'rxjs';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {AssetClassUnits, Scheme, Unit, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {UnitService} from 'src/app/_services/unit/unit.service';
+=======
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
+import { Subscription } from 'rxjs';
+import { AssetClassType } from 'src/app/_types/custom.type';
+import { AssetClassData, Scheme, Unit, UnitStructure } from 'src/app/_interfaces/scheme.interface';
+import { UnitService } from 'src/app/_services/unit/unit.service';
+import { SharedService } from 'src/app/_services/shared/shared.service';
+>>>>>>> behavior-assetClassId
 import { Choice } from 'src/app/_interfaces/shared.interface';
 
 interface UnitGroup {
@@ -30,26 +40,56 @@ export class UnitCardComponent implements OnInit, OnChanges {
   totalAreaSize = 0;
   totalBeds = 0;
   subs: Subscription[] = [];
+  @Input() useChoices:Choice[] = [];
 
+<<<<<<< HEAD
   constructor(private _schemeService: SchemeService, private _unitService: UnitService) {}
 
   ngOnInit(): void {
     this.defineUnitStructure()
     this.defineUnitGroups();
 
+=======
+  constructor(
+    private _schemeService: SchemeService,
+    private _unitService: UnitService,
+    private _sharedService: SharedService
+  ) { }
+
+  ngOnInit(): void {
+    this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
+
+    this.subs.push(
+      this._schemeService.getAssetClassDataSub().subscribe(
+        (assetClassDataArray: AssetClassData[]) => {
+          const assetClassData: AssetClassData | undefined = assetClassDataArray.find(assetClassData => assetClassData.assetClass === this.assetClass);
+          if (assetClassData) {
+            this.unitsGrouped = this.groupByDescription(assetClassData.units);
+            this.calculateTotals(this.unitsGrouped);
+        }
+      }
+      ))
+>>>>>>> behavior-assetClassId
     // this.assetClass = this.assetClassUnits.assetClass;
     // this.unitStructure = new Unit(this.assetClass);
   }
 
   ngOnChanges(changes: SimpleChanges) {
+<<<<<<< HEAD
     if (changes['assetClassUnits'] && changes['assetClassUnits'].currentValue) {
       this.defineUnitStructure();
       this.defineUnitGroups();
       // const assetClass: AssetClassType = changes['assetClassUnits'].currentValue;
+=======
+    if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      const assetClass: AssetClassType = changes['assetClass'].currentValue;
+      this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
+>>>>>>> behavior-assetClassId
       // this.getAssetClassUnits(assetClass);
     }
   }
 
+<<<<<<< HEAD
   defineUnitStructure() {
     const assetClass: AssetClassType = this.assetClassUnits.assetClass;
     this.unitStructure = this._unitService.createUnitStructure(assetClass, this.scheme);
@@ -67,6 +107,19 @@ export class UnitCardComponent implements OnInit, OnChanges {
   //     this.calculateTotals(this.unitsGrouped);
   //   });
   // }
+=======
+  // getAssetClassUnits(assetClass: AssetClassType) {
+  //   this._schemeService.getAssetClassUnits(assetClass)
+  //     .subscribe((units: Unit[]) => {
+
+  //       this.unitsGrouped = this.groupByDescription(units);
+  //       this.calculateTotals(this.unitsGrouped);
+        
+  //     });
+  // };
+
+  
+>>>>>>> behavior-assetClassId
 
   groupByDescription(units: Unit[]): UnitGroup[] {
     return units.reduce((unitsGrouped: UnitGroup[], unit: Unit) => {
@@ -102,7 +155,13 @@ export class UnitCardComponent implements OnInit, OnChanges {
   }
 
   getUseLabel(use: string): string {
+<<<<<<< HEAD
     const useChoice = this.useChoices.find(choice => choice.value === use);
     return useChoice ? useChoice.label : '';
   }
+=======
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
+  }
+
+>>>>>>> behavior-assetClassId
 }

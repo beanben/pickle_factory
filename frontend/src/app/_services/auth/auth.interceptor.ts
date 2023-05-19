@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this._tokenService.getAccessToken();
 
-    if (token) {
+    if (!!token) {
       req = this.addTokenHeader(req, token);
     };
 

@@ -10,6 +10,7 @@ import { Scheme } from 'src/app/_interfaces/scheme.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 import { AssetClassFactory } from 'src/app/_factories/scheme.factories';
 import { APIResult } from 'src/app/_interfaces/api.interface';
+import { SharedService } from 'src/app/_services/shared/shared.service';
 
 @Component({
   selector: 'app-asset-class-modal',
@@ -38,7 +39,11 @@ export class AssetClassModalComponent implements OnInit {
     investmentStrategy: new FormControl(''),
   });
 
-  constructor(private el: ElementRef, private _schemeService: SchemeService) {}
+  constructor(
+    private el: ElementRef, 
+    private _schemeService: SchemeService,
+    private _sharedService: SharedService
+    ) {}
 
   async ngOnInit(): Promise<void> {
     this.addEventBackgroundClose();
@@ -62,7 +67,7 @@ export class AssetClassModalComponent implements OnInit {
   }
 
   async getChoices(choiceType: string) {
-    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices$ = this._sharedService.getChoices(choiceType);
     const choices: Choice[] = await lastValueFrom(choices$);
     this.investmentStrategyChoices = choices;
 
@@ -219,8 +224,14 @@ export class AssetClassModalComponent implements OnInit {
     this.mode = 'edit';
   }
 
+  getUseLabel(use: string){
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
+  }
+
   getUseLabelTitleCase(use: string): string {
-    const useLabel = this._schemeService.getChoiceLabel(use, this.useChoices);
+    const useLabel = this.getUseLabel(use);
     return toTitleCase(useLabel);
   }
+
+
 }

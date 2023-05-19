@@ -4,7 +4,12 @@ import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
+<<<<<<< HEAD
 import {AssetClassUnits, Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+=======
+import {Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+import { SharedService } from 'src/app/_services/shared/shared.service';
+>>>>>>> behavior-assetClassId
 
 @Component({
   selector: 'app-units',
@@ -37,7 +42,10 @@ export class UnitsComponent implements OnInit, OnDestroy {
   useChoices: Choice[] = [];
   schemeData: AssetClassUnits[] = [];
 
-  constructor(private _schemeService: SchemeService) {}
+  constructor(
+    private _schemeService: SchemeService,
+    private _sharedService: SharedService
+    ) {}
 
   // async ngOnInit(): Promise<void> {
   // this.onSelectAssetClass(0);
@@ -49,6 +57,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
     await this.getChoices('assetClass', this.useChoices);
     // await this.setSchemeDataSub();
 
+<<<<<<< HEAD
     this.subs.push(
       this._schemeService.getSchemeDataSub()
       .subscribe((schemeData: AssetClassUnits[]) => {
@@ -58,6 +67,13 @@ export class UnitsComponent implements OnInit, OnDestroy {
         this.onSelectAssetClass(0);
       })
     );
+=======
+    // this.subs.push(
+    //   this._schemeService.schemeDataSub.subscribe((schemeData: SchemeData) => {
+    //     console.log('schemeData: ', schemeData);
+    //   })
+    // );
+>>>>>>> behavior-assetClassId
   }
 
   // setSchemeDataSub() {
@@ -71,7 +87,11 @@ export class UnitsComponent implements OnInit, OnDestroy {
   // }
 
   // async getSchemeData(scheme: Scheme) {
+<<<<<<< HEAD
   //   const schemeData: AssetClassUnits[] = [];
+=======
+  //   const schemeData: SchemeData = { assetClassUnits: [] };
+>>>>>>> behavior-assetClassId
 
   //   try {
   //     const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
@@ -81,8 +101,13 @@ export class UnitsComponent implements OnInit, OnDestroy {
   //       const assetClass = assetClasses[i];
   //       const units$ = this._schemeService.getAssetClassUnits(assetClass);
   //       const units: Unit[] = await lastValueFrom(units$);
+<<<<<<< HEAD
   //       const assetClassUnit = {assetClass, units} as AssetClassUnits;
   //       schemeData.push(assetClassUnit);
+=======
+  //       const assetClassUnit = {assetClass, units} as AssetClassUnit;
+  //       schemeData.assetClassUnits.push(assetClassUnit);
+>>>>>>> behavior-assetClassId
   //     }
   //   } catch (error) {
   //     console.error('Error while fetching asset classes and units:', error);
@@ -91,6 +116,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   //   return schemeData;
   // }
 
+<<<<<<< HEAD
   // async ngOnChanges(changes: SimpleChanges) {
   //   if (changes['scheme'] && changes['scheme'].currentValue) {
   //     const scheme: Scheme = changes['scheme'].currentValue;
@@ -102,16 +128,33 @@ export class UnitsComponent implements OnInit, OnDestroy {
   //     await this.setSchemeDataSub();
   //   }
   // }
+=======
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['scheme'] && changes['scheme'].currentValue) {
+      const scheme: Scheme = changes['scheme'].currentValue;
+      this.getSchemeAssetClasses(scheme).then(() => {
+        this.getAvailableAssetClassUses();
+        this.onSelectAssetClass(0);
+      });
+
+      // this._schemeService.getSchemeAssetClassesUnits(scheme);
+    }
+  }
+>>>>>>> behavior-assetClassId
+
+  onOpenAssetClassModal(modalMode: string) {
+    this.openAssetClassModal = true;
+    this.modalMode = modalMode;
+  }
 
   async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-    const choices$ = this._schemeService.getChoices(choiceType);
+    const choices$ = this._sharedService.getChoices(choiceType);
     const choices: Choice[] = await lastValueFrom(choices$);
     targetArray.push(...choices);
   }
 
   getUseLabel(use: string): string {
-    const useChoice = this.useChoices.find(choice => choice.value === use);
-    return useChoice ? useChoice.label : '';
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
   }
 
   // getSchemeAssetClasses(scheme: Scheme) {
@@ -120,25 +163,54 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
   //     this.getAvailableAssetClassUses();
   //     this.onSelectAssetClass(0);
+<<<<<<< HEAD
   //     // this.getAssetClassesUnits(assetClasses)
+=======
+  //     this.getAssetClassesUnits(assetClasses);
+>>>>>>> behavior-assetClassId
   //   });
   // }
 
-  onOpenAssetClassModal(modalMode: string) {
-    this.openAssetClassModal = true;
-    this.modalMode = modalMode;
+  async getSchemeAssetClasses(scheme: Scheme) {
+    const assetClasses$ = this._schemeService.getSchemeAssetClasses(scheme);
+    const assetClasses: AssetClassType[] = await lastValueFrom(assetClasses$);
+    this.schemeAssetClasses = assetClasses;
+
+    await this.fetchAssetClassData(assetClasses);
   }
 
   // getAssetClassesUnits(assetClasses: AssetClassType[]) {
   //   assetClasses.forEach((assetClass: AssetClassType) => {
-  //     this._schemeService.getAssetClassUnits(assetClass)
-  //       .subscribe((units: Unit[]) => {
-
-  //         this._schemeService
-  //         const assetClassUnits = {
-  //           assetClass: units
-  //       };
+  //     this._schemeService.getAssetClassUnits(assetClass).subscribe((units: Unit[]) => {
+  //       this.setAssetClassDataSub(assetClass, units);
+  //     });
   //   });
+  // }
+
+  async fetchAssetClassData(assetClasses: AssetClassType[]) {
+    for (let assetClass of assetClasses) {
+      await this.fetchAssetClassUnits(assetClass);
+    }
+  }
+
+  async fetchAssetClassUnits(assetClass: AssetClassType) {
+    const units$ = this._schemeService.getAssetClassUnits(assetClass);
+    const units: Unit[] = await lastValueFrom(units$);
+    this.storeAssetClassData(assetClass, units);
+  }
+
+  // setAssetClassDataSub(assetClass: AssetClassType, units: Unit[]) {
+  //   const assetClassData = {
+  //     assetClass: assetClass,
+  //     units: units
+  //   };
+  //   this._schemeService.setAssetClassDataSub(assetClassData);
+  // }
+
+  storeAssetClassData(assetClass: AssetClassType, units: Unit[]) {
+    const assetClassData = {assetClass, units};
+    this._schemeService.setAssetClassDataSub(assetClassData);
+  }
   // onOpenStrategyModal(modalMode: string) {
   //   this.openStrategyModal = true;
   //   this.modalMode = modalMode;
@@ -191,10 +263,16 @@ export class UnitsComponent implements OnInit, OnDestroy {
     // const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
     const existingAssetClassUses: string[] = this.schemeData.map(assetClassUnits => assetClassUnits.assetClass.use);
 
+<<<<<<< HEAD
     this.availableUseChoices = this.useChoices.filter(choice => !existingAssetClassUses.includes(choice.value));
     // this._schemeService.getChoices('assetClass').subscribe((choices: Choice[]) => {
     //   this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
     // });
+=======
+    this._sharedService.getChoices('assetClass').subscribe((choices: Choice[]) => {
+      this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));
+    });
+>>>>>>> behavior-assetClassId
   }
 
   onSelectAssetClass(index: number) {

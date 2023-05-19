@@ -44,11 +44,19 @@ export interface ShoppingCentre extends AssetClass {
   use: 'shoppingCentre';
 }
 
+<<<<<<< HEAD
 export interface AssetClassUnits {
+=======
+export interface AssetClassData {
+>>>>>>> behavior-assetClassId
   assetClass: AssetClassType;
   units: Unit[];
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> behavior-assetClassId
 // export interface SchemeData {
 //   assetClassUnits: AssetClassUnit[];
 // }

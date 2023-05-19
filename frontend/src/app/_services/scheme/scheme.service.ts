@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, tap} from 'rxjs';
@@ -6,14 +7,29 @@ import {AssetClassUnits, Scheme, Unit} from 'src/app/_interfaces/scheme.interfac
 import {APIResult} from 'src/app/_interfaces/api.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
+=======
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { SharedService } from '../shared/shared.service';
+import { AssetClassData, Scheme, Unit } from 'src/app/_interfaces/scheme.interface';
+import { APIResult } from 'src/app/_interfaces/api.interface';
+import { Choice } from 'src/app/_interfaces/shared.interface';
+import { AssetClassType } from 'src/app/_types/custom.type';
+>>>>>>> behavior-assetClassId
 
 @Injectable({
   providedIn: 'root'
 })
 export class SchemeService {
   relativeUrl = '/api/scheme';
+<<<<<<< HEAD
   // schemeDataSub = new BehaviorSubject<SchemeData>({assetClassUnits: []} as SchemeData);
   schemeDataSub = new BehaviorSubject<AssetClassUnits[]>([] as AssetClassUnits[]);
+=======
+  // schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
+  assetClassDataSub = new BehaviorSubject<AssetClassData[]>([] as AssetClassData[]);
+>>>>>>> behavior-assetClassId
 
   constructor(private http: HttpClient, private _sharedService: SharedService) {}
 
@@ -22,11 +38,23 @@ export class SchemeService {
     return this.http.get<Scheme>(url).pipe(tap(() => console.log('getScheme()', Math.random())));
   }
 
+<<<<<<< HEAD
   getSchemeDataSub(): Observable<AssetClassUnits[]> {
     return this.schemeDataSub.asObservable();
   }
   setSchemeDataSub(schemeData: AssetClassUnits[]) {
     return this.schemeDataSub.next(schemeData);
+=======
+  getAssetClassDataSub():Observable<AssetClassData[]>{
+    return this.assetClassDataSub.asObservable() 
+  }
+  setAssetClassDataSub(assetClassData: AssetClassData){
+    const currentData = this.assetClassDataSub.getValue();
+    const updatedData = currentData.filter((data) => data.assetClass.use !== assetClassData.assetClass.use);
+    const index = currentData.findIndex((data) => data.assetClass.use === assetClassData.assetClass.use);
+    updatedData.push(assetClassData)
+    return this.assetClassDataSub.next(updatedData);
+>>>>>>> behavior-assetClassId
   }
 
   createScheme(scheme: Scheme) {
@@ -86,10 +114,13 @@ export class SchemeService {
     return this.http.get<string[]>(url).pipe(tap(() => console.log('getAssetClassUses()', Math.random())));
   }
 
+<<<<<<< HEAD
   getChoices(choiceType: string): Observable<Choice[]> {
     const url = `/api/choices/${choiceType}/`;
     return this.http.get<Choice[]>(url).pipe(tap(() => console.log('getChoices()', Math.random())));
   }
+=======
+>>>>>>> behavior-assetClassId
 
   createAssetClass(assetClass: AssetClassType) {
     const url = '/api/asset_class/';
@@ -164,6 +195,7 @@ export class SchemeService {
   //     .pipe(tap(() => console.log('getAssetClassUnitsWithSaleAndLease()', Math.random())));
   // }
 
+<<<<<<< HEAD
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
     const choice = choices.find(choice => choice.value === choice_value);
     return choice ? choice.label : '';
@@ -173,4 +205,12 @@ export class SchemeService {
     const url = `/api/scheme/${scheme.id}/data/`;
     return this.http.get<AssetClassUnits[]>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
   }
+=======
+  
+
+  // getSchemeData(scheme: Scheme): Observable<SchemeData> {
+  //   const url = `/api/scheme/${scheme.id}/data/`;
+  //   return this.http.get<SchemeData>(url).pipe(tap(() => console.log('getSchemeData()', Math.random())));
+  // }
+>>>>>>> behavior-assetClassId
 }

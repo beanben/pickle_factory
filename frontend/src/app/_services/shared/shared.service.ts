@@ -1,12 +1,16 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { Choice } from 'src/app/_interfaces/shared.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+    ) {}
 
 
   handleError(errorRes: HttpErrorResponse): Array<string> {
@@ -40,5 +44,19 @@ export class SharedService {
 
     return errors;
   }
+
+  getChoices(choiceType: string): Observable<Choice[]> {
+    const url = `/api/choices/${choiceType}/`;
+    return this.http.get<Choice[]>(url).pipe(
+      tap(() => console.log('getChoices()', Math.random()))
+    );
+  }
+
+  getChoiceLabel(choice_value: string, choices: Choice[]): string {
+    const choice = choices.find((choice) => choice.value === choice_value);
+    return choice ? choice.label : '';
+  }
+
+
 
 }

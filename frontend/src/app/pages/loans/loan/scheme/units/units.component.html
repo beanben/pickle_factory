@@ -1,69 +1,80 @@
+<<<<<<< HEAD
 <!-- <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme"
   [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices" [useChoices]="useChoices"
   (modalSaveAssetClass)="onSaveAssetClass($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
+=======
+<app-asset-class-modal
+  *ngIf="openAssetClassModal"
+  [mode]="modalMode"
+  [scheme]="scheme"
+  [assetClass]="assetClassSelected"
+  [availableUseChoices]="availableUseChoices"
+  [useChoices]="useChoices"
+  (modalSaveAssetClass)="onSaveAssetClass($event)"
+  (deleteIsConfirmed)="onDeleteAssetClass()"
+>
+>>>>>>> behavior-assetClassId
 </app-asset-class-modal>
 
 <ng-container *ngIf="schemeAssetClasses.length > 0; else noAssetClass">
-
   <div class="p-4">
-    <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index ">
+    <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index">
       <div class="col-6 offset-3">
-        <app-unit-card [assetClass]="assetClass" [scheme]="scheme"></app-unit-card>
+        <app-unit-card [assetClass]="assetClass" [scheme]="scheme" [useChoices]="useChoices"></app-unit-card>
       </div>
     </div>
 
     <div class="my-2 d-flex justify-content-end">
       <button class="btn btn-primary mx-2" (click)="isShow = !isShow">
         <ng-container [ngSwitch]="schemeAssetClasses.length">
-          <span *ngSwitchCase="1">{{isShow ? 'Hide schedule' : 'Show schedule'}}</span>
-          <span *ngSwitchDefault>{{isShow ? 'Hide schedules' : 'Show schedules'}}</span>
+          <span *ngSwitchCase="1">{{ isShow ? 'Hide schedule' : 'Show schedule' }}</span>
+          <span *ngSwitchDefault>{{ isShow ? 'Hide schedules' : 'Show schedules' }}</span>
         </ng-container>
       </button>
 
-      <button class="btn btn-primary mx-2" (click)="onOpenAssetClassModal('new')"
-        [disabled]="availableUseChoices.length === 0">
+      <button
+        class="btn btn-primary mx-2"
+        (click)="onOpenAssetClassModal('new')"
+        [disabled]="availableUseChoices.length === 0"
+      >
         Add asset class
       </button>
     </div>
-
   </div>
 
   <ng-container *ngIf="isShow">
-    <hr>
+    <hr />
 
-    <h5 class="p-2"> Unit schedules</h5>
+    <h5 class="p-2">Unit schedules</h5>
 
     <ul class="nav nav-tabs pt-2">
-      <li class="nav-item px-2" *ngFor="let assetClass of schemeAssetClasses; let i=index">
-        <p class="nav-link" (click)="onSelectAssetClass(i)" [ngClass]="{'active': tabActive === assetClass.use}">
-          {{getUseLabel(assetClass.use) | titlecase}}
+      <li class="nav-item px-2" *ngFor="let assetClass of schemeAssetClasses; let i = index">
+        <p class="nav-link" (click)="onSelectAssetClass(i)" [ngClass]="{active: tabActive === assetClass.use}">
+          {{ getUseLabel(assetClass.use) | titlecase }}
         </p>
       </li>
     </ul>
 
     <div class="d-flex justify-content-end p-2">
-      <button class="btn btn-primary"  (click)="onOpenAssetClassModal('edit')">Edit
-        {{getUseLabel(assetClassSelected.use) | titlecase}}</button>
+      <button class="btn btn-primary" (click)="onOpenAssetClassModal('edit')">
+        Edit {{ getUseLabel(assetClassSelected.use) | titlecase }}
+      </button>
     </div>
-    
 
     <div class="row m-0">
       <div class="col">
-
         <div class="row p-2">
           <div class="col">
             <app-unit-schedule [assetClass]="assetClassSelected" [scheme]="scheme"></app-unit-schedule>
           </div>
         </div>
-
       </div>
     </div>
   </ng-container>
-
 </ng-container>
 
 <ng-template #noAssetClass>
-  <div class="d-flex flex-row justify-content-center pt-4" style="position: relative; top:20px">
+  <div class="d-flex flex-row justify-content-center pt-4" style="position: relative; top: 20px">
     <div class="title p-2">Add an asset class</div>
     <button class="btn btn-primary" (click)="onOpenAssetClassModal('new')">Add asset class</button>
   </div>
