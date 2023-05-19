@@ -14,14 +14,12 @@ import { Loan } from 'src/app/_interfaces/loan.interface';
 })
 export class LoanComponent implements OnInit, OnDestroy {
   tabActive = 'scheme';
-  // loanSchemesExist = false;
   openSchemeModal = false;
   openLoanModal = false;
   modalMode = '';
 
   loanSchemes: Scheme[] = [];
   loan = {} as Loan;
-  // loanSelected = {} as Loan;
   sub = Subscription.EMPTY;
 
   constructor(private _loanService: LoanService, private router: Router) {}

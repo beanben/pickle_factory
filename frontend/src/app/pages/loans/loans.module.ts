@@ -12,7 +12,6 @@ import { PartsModule } from 'src/app/parts/parts.module';
 import { UnitsComponent } from './loan/scheme/units/units.component';
 import { AssetClassModalComponent } from './loan/scheme/units/asset-class-modal/asset-class-modal.component';
 import { UnitCardComponent } from './loan/scheme/units/unit-card/unit-card.component';
-// import { SalesScheduleComponent } from './loan/scheme/units/sales-schedule/sales-schedule.component';
 import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule-modal/unit-schedule-modal.component';
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
@@ -43,18 +42,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     UnitScheduleComponent
   ],
   exports: [
-    // LoansComponent,
-    // LoanComponent,
-    // LoanModalComponent,
-    // FundersComponent,
-    // SchemeComponent,
-    // SchemeModalComponent,
-    // UnitsComponent,
-    // AssetClassModalComponent,
-    // UnitCardComponent,
-    // StrategyModalComponent,
-    // UnitScheduleModalComponent,
-    // UnitScheduleComponent
+
   ]
 })
 export class LoansModule { }
