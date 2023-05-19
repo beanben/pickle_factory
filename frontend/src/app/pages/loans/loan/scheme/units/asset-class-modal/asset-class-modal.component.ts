@@ -224,8 +224,14 @@ export class AssetClassModalComponent implements OnInit {
     this.mode = 'edit';
   }
 
+  getUseLabel(use: string){
+    return this._sharedService.getChoiceLabel(use, this.useChoices);
+  }
+
   getUseLabelTitleCase(use: string): string {
-    const useLabel = this._sharedService.getChoiceLabel(use, this.useChoices);
+    const useLabel = this.getUseLabel(use);
     return toTitleCase(useLabel);
   }
+
+
 }

@@ -93,7 +93,7 @@
 
       <div class="modal-footer" *ngIf="mode !== 'delete'">
         <button *ngIf="step ===1 && mode==='edit'" type="button" class="btn btn-danger me-auto"
-          (click)="mode ='delete'">Delete {{assetClass.use | titlecase}}</button>
+          (click)="mode ='delete'">Delete {{getUseLabel(assetClass.use) | titlecase}}</button>
         <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
           < Previous</button> <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel
         </button>

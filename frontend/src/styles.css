@@ -64,7 +64,8 @@ body {
 #f.is-submitted input.ng-invalid {
     border: 1px solid red;
 } */
-#form.is-submitted input.ng-invalid {
+#form.is-submitted input.ng-invalid,
+#form.is-submitted select.ng-invalid {
     border: 1px solid red;
 }
 

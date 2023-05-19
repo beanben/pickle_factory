@@ -164,6 +164,9 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       },
       priceAchieved: {
         pattern: 'Sale price achieved must be a valid number'
+      },
+      status: {
+        statusPriceError: 'Status cannot be available if price achieved is above 0'
       }
     },
     lease: {
@@ -194,7 +197,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateSalesTotals();
     this.calculateLeasesTotals();
     // this.populateForm();
-    this.populateUnitsFormGroup();
+    this.populateUnitsFormArray();
   }
 
   addEventBackgroundClose() {
@@ -268,7 +271,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   //   return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
   // }
 
-  populateUnitsFormGroup() {
+  populateUnitsFormArray() {
     const units: Unit[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.unit);
     units.forEach(unit => {
       this.onAddUnit(unit);
@@ -294,7 +297,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return unitForm;
   }
 
-  populateSalesFormGroup() {
+  populateSalesFormArray() {
     const sales: (Sale | undefined)[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.sale).flat();
 
     this.unitsFormArray.controls.forEach((unitForm, index) => {
@@ -314,7 +317,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   onAddSale(index: number, sale?: Sale) {
     const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
     // CHECK HERE
-    if(this.salesFormArray.length >= index + 1){
+    if (this.salesFormArray.length >= index + 1) {
       const saleForm = this.salesFormArray.at(index) as FormGroup;
       this.salesFormArray.setControl(index, saleForm);
     } else {
@@ -324,7 +327,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     // const matchingIndex = this.salesFormArray.controls.findIndex(
     //   saleForm => saleForm.get('unitIdentifier')?.value === unit.identifier
     // );
-    
+
     //  if (matchingIndex > -1) {
     //   return;
     // } else {
@@ -349,16 +352,19 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         if (value === 'available') {
           saleForm.get('statusDate')?.setValue(null);
         }
+      }),
+      saleForm.get('priceAchieved')!.valueChanges.subscribe(() => {
+        saleForm.get('status')!.updateValueAndValidity();
       })
     );
 
     return saleForm;
   }
 
-  populateLeasesFormGroup() {
+  populateLeasesFormArray() {
     const leases: (Lease | undefined)[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.lease).flat();
 
-    this.unitsFormArray.controls.forEach((unitForm, index)  => {
+    this.unitsFormArray.controls.forEach((unitForm, index) => {
       const unit: Unit = this.FormGroupToUnit(unitForm as FormGroup);
       const lease = leases.find(lease => lease?.unitId === unit.id);
 
@@ -388,8 +394,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   onAddLease(index: number, lease?: Lease) {
     const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
-    
-    if(this.leasesFormArray.length >= index + 1){
+
+    if (this.leasesFormArray.length >= index + 1) {
       const leaseForm = this.leasesFormArray.at(index) as FormGroup;
       this.leasesFormArray.setControl(index, leaseForm);
     } else {
@@ -602,11 +608,11 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
     this.unitsFormArray.removeAt(index);
 
-     if(this.leasesFormArray.length >= index) {
+    if (this.leasesFormArray.length >= index) {
       this.leasesFormArray.removeAt(index);
     }
 
-    if(this.salesFormArray.length >= index) {
+    if (this.salesFormArray.length >= index) {
       this.salesFormArray.removeAt(index);
     }
 
@@ -623,16 +629,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    if (!this.salesFormGroup.valid || !this.unitsFormGroup.valid || !this.leasesFormGroup.valid) {
+    if (this.salesFormGroup.invalid || this.unitsFormGroup.invalid || this.leasesFormGroup.invalid) {
+      this.printFormsErrors();
       return;
     }
-
-    // const unitsScheduleData: UnitScheduleData[] = this.unitsScheduleFormArray.controls.map(
-    //   (control: AbstractControl) => {
-    //     const unitScheduleDataFormGroup = control as FormGroup;
-    //     return this.formGroupToUnitScheduleData(unitScheduleDataFormGroup);
-    //   }
-    // );
 
     if (this.unitsToDelete.length > 0) {
       this.deleteUnits(this.unitsToDelete);
@@ -643,20 +643,38 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     } else {
       this.updateOrCreateUnitsScheduleBTR();
     }
-    //   this._unitService
-    //     .updateOrCreateUnitsScheduleBTS(unitsScheduleData)
-    //     .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-    //       this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-    //       this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
-    //     });
-    // } else {
-    //   this._unitService
-    //     .updateOrCreateUnitsScheduleBTR(unitsScheduleData)
-    //     .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-    //       this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-    //       this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
-    //     });
-    // }
+  }
+
+  printFormsErrors() {
+    if (this.salesFormGroup.invalid) {
+      this.printFormArrayErrors(this.salesFormArray);
+    }
+
+    if (this.unitsFormGroup.invalid) {
+      this.printFormArrayErrors(this.unitsFormArray);
+    }
+
+    if (this.leasesFormGroup.invalid) {
+      this.printFormArrayErrors(this.leasesFormArray);
+    }
+  }
+
+  printFormArrayErrors(formArray: FormArray) {
+    for (let i = 0; i < formArray.length; i++) {
+      const formGroup: FormGroup = formArray.at(i) as FormGroup;
+      // console.log("formGroup values: ", formGroup.value);
+      // console.log("formGroup errors: ", formGroup.errors);
+      Object.keys(formGroup.controls).forEach(key => {
+        const control = formGroup.get(key);
+        const controlErrors: ValidationErrors | null = control ? control.errors : null;
+        if (controlErrors) {
+          console.log('Key control: ' + key + ', err value: ', controlErrors);
+          // Object.keys(controlErrors).forEach(keyError => {
+          //   console.log('Key control: ' + key + ', keyError: ' + keyError + ', err value: ', controlErrors[keyError]);
+          // });
+        }
+      });
+    }
   }
 
   setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
@@ -742,9 +760,9 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
     if (this.unitsFormGroup.valid) {
       if (this.assetClass.investmentStrategy === 'buildToSell') {
-        this.populateSalesFormGroup();
+        this.populateSalesFormArray();
       } else {
-        this.populateLeasesFormGroup();
+        this.populateLeasesFormArray();
       }
 
       this.nextIsClicked = false;
@@ -798,8 +816,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       if (control.parent) {
         const formGroupParent = control.parent as FormGroup;
         const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
+        
+        if (status === 'available' && priceAchieved > 0) {
+          console.log('status: ', status, 'priceAchieved: ', priceAchieved);
 
-        if (status === 'available' && priceAchieved === 0) {
           return {statusPriceError: true}; // Returning custom error object
         }
       }
@@ -853,4 +873,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   //   const unitScheduleData = control as FormGroup;
   //   return unitScheduleData.get('sale.priceAchieved')?.value ? null : true;
   // }
+
+  salesAchieved(index: number): boolean {
+    const formGroup = this.salesFormArray.at(index) as FormGroup;
+    const priceAchieved = formGroup.get('priceAchieved')?.value || 0;
+    return priceAchieved > 0;
+  }
 }
