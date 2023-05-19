@@ -74,22 +74,7 @@ export class AssetClassModalComponent implements OnInit {
     this.form.patchValue({
       investmentStrategy: this.investmentStrategyChoices[0].value,
     });
-
-    // this._schemeService.getChoices(choiceType).subscribe((choices: Choice[]) => {
-    //   this.investmentStrategyChoices = choices;
-    //   this.form.patchValue({
-    //     investmentStrategy: this.investmentStrategyChoices[0].value,
-    //   });
-    // console.log(saleStatusChoices)
-    // async and await and set the value of the form control
-    // });
   }
-
-  // getInvestmentStrategyChoices() {
-  //   this._schemeService.getChoices('investment_strategy').subscribe((choices: Choice[]) => {
-  //     this.investmentStrategyChoices = choices;
-  //   })
-  // }
 
   onSubmit() {
     if (!this.form.valid) {
@@ -166,52 +151,6 @@ export class AssetClassModalComponent implements OnInit {
       this.investmentStartegyStatus = 'active';
     }
   }
-
-  // allDescriptionsDuplicateValidator(): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     if (!(control instanceof FormArray)) {
-  //       return null;
-  //     }
-
-  //     const descriptions = control.value.map((unit: any) => unit.description);
-  //     const hasDuplicates = descriptions.some((value: string, index: number) => descriptions.indexOf(value) !== index);
-  //     return hasDuplicates ? { duplicateDescription: true } : null;
-  //   };
-  // };
-
-  // allRequiredValidator(controlName: string): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-
-  //     if (!(control instanceof FormArray)) {
-  //       return null;
-  //     }
-
-  //     const hasEmptyControl:boolean = control.controls.some((abstractControl: AbstractControl) => {
-  //       const formGroup = abstractControl as FormGroup;
-  //       const controlInstance = formGroup.get(controlName);
-  //       return controlInstance?.value === undefined || controlInstance.value === null || controlInstance.value === "" || controlInstance.value === 0;
-  //     })
-
-  //     return hasEmptyControl ? { [`${controlName}Required`]: true } : null;
-  //   };
-  // };
-
-  // allPatternValidator(controlName: string): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-
-  //     if (!(control instanceof FormArray)) {
-  //       return null;
-  //     }
-
-  //     const hasInvalidControl:boolean = control.controls.some((abstractControl: AbstractControl) => {
-  //       const formGroup = abstractControl as FormGroup;
-  //       const controlInstance = formGroup.get(controlName);
-  //       return controlInstance?.hasError('pattern');
-  //     })
-
-  //     return hasInvalidControl ? { [`${controlName}Pattern`]: true } : null;
-  //   };
-  // };
 
   populateForm() {
     this.form.setValue({

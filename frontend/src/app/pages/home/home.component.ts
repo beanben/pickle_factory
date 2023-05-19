@@ -12,9 +12,6 @@ import { LoanService } from 'src/app/_services/loan/loan.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  // openLoanModal = false;
-  // isLoggedIn = false;
-  // modalMode = "";
 
   user = {} as User;
   subs: Subscription[] = []
@@ -23,11 +20,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     public _authService: AuthService,
-  //   private el: ElementRef,
     private _loanService: LoanService,
     private router: Router
   ) { 
-  //   this.addEventBackgroundClose()
   }
 
   ngOnInit(): void {
@@ -43,27 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         .subscribe(user => this.user = user)
     )
   }
-
-  // closePopup(){
-  //   this.openLoanModal = false;
-  // }
-
-  // addEventBackgroundClose(){
-  //   this.el.nativeElement.addEventListener('click', (el:any) => {
-  //     if (el.target.className === 'modal') {
-  //         this.closePopup();
-  //     }
-  //   });
-  // };
-
-  // onSave(loan:Loan | null){
-  //   this.openLoanModal = false;
-
-  //   if(loan){
-  //     this._loanService.setLoanSub(loan);
-  //     this.router.navigate(["/loans"]);
-  //   }
-  // }
 
   onLoanSelected(index: number ){ 
     this._loanService.setLoanSub(this.loans[index]);
@@ -111,11 +85,5 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe())
   }
-
-
-  // onOpenLoanModal(modalMode: string){
-  //   this.openLoanModal = true;
-  //   this.modalMode = modalMode;
-  // }
 
 }

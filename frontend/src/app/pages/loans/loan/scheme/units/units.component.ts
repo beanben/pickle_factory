@@ -4,7 +4,7 @@ import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
-import {AssetClassUnits, Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+import {Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
 import { SharedService } from 'src/app/_services/shared/shared.service';
 
 @Component({
@@ -24,7 +24,6 @@ export class UnitsComponent implements OnInit, OnDestroy {
   schemeAssetClasses: AssetClassType[] = [];
   subs: Subscription[] = [];
   useChoices: Choice[] = [];
-  schemeData: AssetClassUnits[] = [];
 
   constructor(
     private _schemeService: SchemeService,
@@ -35,7 +34,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
     await this.getChoices('assetClass', this.useChoices);
   }
 
-
+  
   ngOnChanges(changes: SimpleChanges) {
     if (changes['scheme'] && changes['scheme'].currentValue) {
       const scheme: Scheme = changes['scheme'].currentValue;
@@ -70,7 +69,6 @@ export class UnitsComponent implements OnInit, OnDestroy {
     await this.fetchAssetClassData(assetClasses);
   }
 
-
   async fetchAssetClassData(assetClasses: AssetClassType[]) {
     for (let assetClass of assetClasses) {
       await this.fetchAssetClassUnits(assetClass);
@@ -88,6 +86,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
     const assetClassData = {assetClass, units};
     this._schemeService.setAssetClassDataSub(assetClassData);
   }
+
 
   onSaveAssetClass(assetClass: AssetClassType | null) {
     this.openAssetClassModal = false;
@@ -110,7 +109,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
 
 
   getAvailableAssetClassUses() {
-    const existingAssetClassUses: string[] = this.schemeData.map(assetClassUnits => assetClassUnits.assetClass.use);
+    const existingAssetClassUses: string[] = this.schemeAssetClasses.map(assetClass => assetClass.use);
 
     this._sharedService.getChoices('assetClass').subscribe((choices: Choice[]) => {
       this.availableUseChoices = choices.filter(choice => !existingAssetClassUses.includes(choice.value));

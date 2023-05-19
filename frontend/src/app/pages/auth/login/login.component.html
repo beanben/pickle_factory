@@ -12,8 +12,6 @@
             <label for="email">Email address</label>
         </div>
     </div>
-    <!-- <div *ngIf="(email?.invalid && (email?.dirty || email?.touched)) || (f.submitted && email?.invalid)"
-        class="alert alert-danger"> -->
     <div *ngIf="(email?.invalid && f.submitted)"
         class="alert alert-danger">
         Please enter your email
@@ -28,8 +26,6 @@
             <label for="email">Password</label>
         </div>
     </div>
-    <!-- <div *ngIf="(password?.invalid && (password?.dirty || password?.touched)) || (f.submitted && password?.invalid)"
-        class="alert alert-danger"> -->
     <div *ngIf="password?.invalid && f.submitted"
         class="alert alert-danger">
         Please enter your password

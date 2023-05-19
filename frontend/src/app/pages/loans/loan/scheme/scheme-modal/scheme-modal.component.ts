@@ -21,11 +21,9 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   @Output() deleteIsConfirmed = new EventEmitter<Scheme>()
   @Input() scheme = {} as Scheme;
   @Input() mode = "";
-  // @Input() index = -1;
   @Input() loan = {} as Loan;
 
   sub = Subscription.EMPTY;
-  // loan = {} as Loan;
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],

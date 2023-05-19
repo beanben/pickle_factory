@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Borrower } from 'src/app/pages/borrowers/borrower/borrower';
 import { SharedService } from '../shared/shared.service';
 import { APIResult } from 'src/app/_interfaces/api.interface';
+import { Borrower } from 'src/app/_interfaces/loan.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -53,29 +53,6 @@ export class BorrowerService {
     })
   };
 
-  // updateBorrower(borrower: Borrower){
-  //   const url = `${this.relativeUrl}/${borrower.slug}/`;
-
-  //   return new Promise<APIResult>((resolve, reject) => {
-
-  //     this.http.put(url, borrower).subscribe({
-  //       next: (data) => {
-  //         const result = data as APIResult;
-          
-  //         if (result.status === "success"){
-  //           resolve(result);
-  //         } else {
-  //           reject(result.message)
-  //         }
-  //       },
-
-  //       error: (error) => {
-  //         reject(this._sharedService.handleError(error));
-  //       }
-  //     })
-  //   })
-  // };
-
   getBorrowers(): Observable<Borrower[]> {
     const url = `${this.relativeUrl}/`;
 
@@ -84,35 +61,5 @@ export class BorrowerService {
         tap(() => console.log('getBorrowers()', Math.random()))
       )
   };
-
-  // deleteBorrower(borrower: Borrower): Observable<any> {
-  //   const url = `${this.relativeUrl}/${borrower.slug}/`;
-
-  //   const options = {
-  //     body: borrower
-  //   }
-
-  //   return this.http.delete(url, options).pipe(
-  //     tap(() => console.log('deleteBorrower()', Math.random()))
-  //   );
-  // }
-
-  // getBorrowerLoans(borrower: Borrower): Observable<Loan[]>{
-  //   const url = `${this.relativeUrl}/${borrower.slug}`;
-
-  //   return this.http.get<Loan[]>(url)
-  //     .pipe(
-  //       tap(() => console.log('getBorrowerLoans()', Math.random()))
-  //     )
-  // };
-
-  // getBorrower(borrowerSlug: string): Observable<Borrower> {
-  //   const url = `${this.relativeUrl}/${borrowerSlug}/`;
-
-  //   return this.http.get<Borrower>(url)
-  //     .pipe(
-  //       tap(() => console.log('getBorrower()', Math.random()))
-  //     )
-  // };
 
 }

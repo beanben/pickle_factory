@@ -5,7 +5,6 @@ import { AuthService } from 'src/app/_services/auth/auth.service';
 @Component({
   selector: 'app-forgot',
   templateUrl: './forgot.component.html',
-  // styleUrls: ['./forgot.component.css']
   styleUrls: ['../auth.component.css']
 })
 export class ForgotComponent implements OnInit {

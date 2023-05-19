@@ -38,12 +38,6 @@ export class UnitService {
     return this.http.delete(url, httpOptions).pipe(tap(() => console.log('deleteUnits()', Math.random())));
   }
 
-  // updateOrCreateUnitsScheduleData(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
-  //   const url = `/api/asset_class/unit_schedule_data_bulk_update_create/`;
-  //   return this.http
-  //     .post<UnitScheduleData[]>(url, unitsScheduleData)
-  //     .pipe(tap(() => console.log('updateOrCreateUnitsScheduleData()', Math.random())));
-  // }
 
   updateOrCreateUnitsScheduleBTS(unitsScheduleData: UnitScheduleData[]): Observable<UnitScheduleData[]> {
     const url = `/api/asset_class/units_and_sales/`;

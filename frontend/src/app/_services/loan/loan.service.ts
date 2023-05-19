@@ -95,16 +95,6 @@ export class LoanService {
   };
 
 
-
-  // getLoan(loanSlug: string): Observable<Loan> {
-  //   const url = `${this.relativeUrl}/${loanSlug}/`;
-    
-  //   return this.http.get<Loan>(url)
-  //     .pipe(
-  //       tap(() => console.log('getLoan()', Math.random()))
-  //     )
-  // };
-
   deleteLoan(loan: Loan): Observable<any> {
     const url = `${this.relativeUrl}/${loan.id}/`;
 

@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SharedService } from '../shared/shared.service';
 import { AssetClassData, Scheme, Unit } from 'src/app/_interfaces/scheme.interface';
 import { APIResult } from 'src/app/_interfaces/api.interface';
-import { Choice } from 'src/app/_interfaces/shared.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 
 @Injectable({
@@ -12,7 +11,6 @@ import { AssetClassType } from 'src/app/_types/custom.type';
 })
 export class SchemeService {
   relativeUrl = '/api/scheme';
-  // schemeDataSub = new BehaviorSubject<SchemeData>({} as SchemeData);
   assetClassDataSub = new BehaviorSubject<AssetClassData[]>([] as AssetClassData[]);
 
   constructor(private http: HttpClient, private _sharedService: SharedService) {}

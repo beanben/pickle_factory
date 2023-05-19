@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-<!-- <app-asset-class-modal *ngIf="openAssetClassModal" [mode]="modalMode" [scheme]="scheme"
-  [assetClass]="assetClassSelected" [availableUseChoices]="availableUseChoices" [useChoices]="useChoices"
-  (modalSaveAssetClass)="onSaveAssetClass($event)" (deleteIsConfirmed)="onDeleteAssetClass()">
-=======
 <app-asset-class-modal
   *ngIf="openAssetClassModal"
   [mode]="modalMode"
@@ -13,7 +8,6 @@
   (modalSaveAssetClass)="onSaveAssetClass($event)"
   (deleteIsConfirmed)="onDeleteAssetClass()"
 >
->>>>>>> behavior-assetClassId
 </app-asset-class-modal>
 
 <ng-container *ngIf="schemeAssetClasses.length > 0; else noAssetClass">
