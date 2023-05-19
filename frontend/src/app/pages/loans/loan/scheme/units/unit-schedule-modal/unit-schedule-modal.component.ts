@@ -460,6 +460,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     }
 
     this.mode = 'edit';
+
+    if(this.unitsFormArray.length === 0) {
+      this.onSave();
+    }
   }
 
   onConfirmDelete(index: number) {
