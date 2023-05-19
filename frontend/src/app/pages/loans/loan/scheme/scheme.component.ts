@@ -17,7 +17,6 @@ export class SchemeComponent implements OnInit, OnDestroy,  OnChanges{
   tabActive = "units";
   @Input() loan = {} as Loan;
   @Input() scheme = {} as Scheme;
-  // @Input() index = -1;
   @Output() deleteConfirmed = new EventEmitter<Scheme>();
   subs: Subscription[] = [];
   schemeData: AssetClassUnits[] = [];
@@ -38,14 +37,6 @@ export class SchemeComponent implements OnInit, OnDestroy,  OnChanges{
         console.log("from scheme compo: ", schemeData)
       })
     );
-
-    // this._schemeService.setSchemeSub(this.scheme);
-
-    // this.subs.push(
-    //   this._schemeService.getSchemeSub().subscribe(scheme => {  
-    //     this.scheme = scheme;
-    //   }
-    // ));
   }
 
   setSchemeDataSub() {
@@ -82,11 +73,7 @@ export class SchemeComponent implements OnInit, OnDestroy,  OnChanges{
   ngOnChanges(changes: SimpleChanges) {
     if (changes['scheme'] && changes['scheme'].currentValue) {
       const scheme: Scheme = changes['scheme'].currentValue;
-      // this.getSchemeAssetClasses(scheme);
 
-      // this._schemeService.getSchemeAssetClassesUnits(scheme);
-      // this.getAvailableAssetClassUses();
-      // this.onSelectAssetClass(0);
       this.setSchemeDataSub();
     }
   }
