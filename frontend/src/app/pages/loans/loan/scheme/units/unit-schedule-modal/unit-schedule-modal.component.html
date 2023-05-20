@@ -63,7 +63,7 @@
                   <th class="text-invisible">&times;></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }}</th>
+                  <th>{{ unitStructure.label | titlecase }} identifier</th>
                   <th>Description</th>
                   <th>
                     {{ unitStructure.areaType }}
@@ -172,7 +172,7 @@
                   <th></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }}</th>
+                  <th>{{ unitStructure.label | titlecase }} identifier</th>
                   <th>Target price</th>
                   <th>Price achieved</th>
                   <th>Sale status</th>
@@ -316,8 +316,8 @@
                   <th></th>
                   <th></th>
                 </tr>
-                <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }}</th>
+                <tr class="border-bottom border-2 header"> 
+                  <th>{{ unitStructure.label | titlecase }} identifier</th>
                   <th>
                     Rent target <br />
                     <small> ({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
@@ -350,7 +350,7 @@
                         placeholder="DD-MMM-YY"
                         bsDatepicker
                         [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
-                        [attr.disabled]="lease.get('rentAchieved')?.value ? null : true"
+                        [attr.disabled]="rentAchieved(i) ? null : true"
                       />
                     </td>
                     <td>
@@ -361,11 +361,11 @@
                         bsDatepicker
                         [minDate]="getUnitLeaseStartDate(i)"
                         [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
-                        [attr.disabled]="lease.get('rentAchieved')?.value ? null : true"
+                        [attr.disabled]="rentAchieved(i) ? null : true"
                       />
                     </td>
                     <td>
-                      <input class="form-control text-center" formControlName="tenant" placeholder="-" />
+                      <input class="form-control text-center" formControlName="tenant" placeholder="-" [attr.disabled]="rentAchieved(i) ? null : true"/>
                     </td>
                     <td>
                       <button type="button" class="btn btn-danger" (click)="reset(leasesFormArray, i)">Reset</button>
@@ -418,7 +418,7 @@
           <table class="table table-hover text-center table-borderless">
             <thead>
               <tr class="border-bottom border-2 header">
-                <th>{{ unitStructure.label | titlecase }}</th>
+                <th>{{ unitStructure.label | titlecase }} identifier</th>
                 <th>Description</th>
                 <th>{{ unitStructure.areaType }} <small>({{ unitStructure.areaSystem }})</small></th>
                 <th *ngIf="unitStructure.hasBeds">Beds</th>

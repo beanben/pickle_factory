@@ -6,11 +6,12 @@ import { toTitleCase } from 'src/app/shared/utils';
 
 import { lastValueFrom } from 'rxjs';
 import { Choice } from 'src/app/_interfaces/shared.interface';
-import { Scheme } from 'src/app/_interfaces/scheme.interface';
+import { AssetClassData, Scheme } from 'src/app/_interfaces/scheme.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 import { AssetClassFactory } from 'src/app/_factories/scheme.factories';
 import { APIResult } from 'src/app/_interfaces/api.interface';
 import { SharedService } from 'src/app/_services/shared/shared.service';
+import { Unit } from 'src/app/_interfaces/scheme.interface';
 
 @Component({
   selector: 'app-asset-class-modal',
@@ -102,6 +103,7 @@ export class AssetClassModalComponent implements OnInit {
     this._schemeService.createAssetClass(assetClass).then((res: APIResult) => {
       const assetClassRes: AssetClassType = res.response;
       this.modalSaveAssetClass.emit(assetClassRes);
+
     });
   }
 
@@ -171,6 +173,5 @@ export class AssetClassModalComponent implements OnInit {
     const useLabel = this.getUseLabel(use);
     return toTitleCase(useLabel);
   }
-
 
 }

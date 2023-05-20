@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth/auth.service';
+import { LoanService } from 'src/app/_services/loan/loan.service';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private _authService: AuthService,
+    private _loanService: LoanService,
   ) { }
 
   ngOnInit(): void {
@@ -41,9 +43,16 @@ export class LoginComponent implements OnInit {
       this._authService.login(email, password)
        .then(() => {
         this.router.navigate(['/']);
+        this.setLoansSub();
       })
        .catch(err => this.errors = err)
     }
+ }
+
+ setLoansSub(){
+  this._loanService.getLoans().subscribe(loans => {
+    this._loanService.setLoansSub(loans);
+  })
  }
 
 }

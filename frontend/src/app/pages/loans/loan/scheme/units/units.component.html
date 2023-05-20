@@ -10,16 +10,12 @@
 >
 </app-asset-class-modal>
 
-<!-- <app-strategy-modal *ngIf="openStrategyModal" [assetClass]="assetClassSelected" [mode]="modalMode"
-  (modalAssetClassUpdate)="onUpdateInvestmentStrategy()">
-</app-strategy-modal>
-
-<app-unit-schedule-modal *ngIf="openUnitScheduleModal" [mode]="modalMode"
-[assetClass]="assetClassSelected" [scheme]="scheme" (modalSaveUnitSchedule)="onEditUnitSchedule($event)"></app-unit-schedule-modal> -->
-
 <ng-container *ngIf="schemeAssetClasses.length > 0; else noAssetClass">
+<!-- <ng-container *ngIf="assetClassData.length > 0; else noAssetClass"> -->
   <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index">
+    <!-- <div class="row py-2 justify-content-start" *ngFor="let data of assetClassData; let i = index"> -->
+
       <div class="col-6 offset-3">
         <app-unit-card [assetClass]="assetClass" [scheme]="scheme" [useChoices]="useChoices"></app-unit-card>
       </div>
@@ -56,7 +52,7 @@
       </li>
     </ul>
 
-    <div class="d-flex justify-content-end p-2">
+    <div class="d-flex justify-content-end p-2" *ngIf="!!assetClassSelected">
       <button class="btn btn-primary" (click)="onOpenAssetClassModal('edit')">
         Edit {{ getUseLabel(assetClassSelected.use) | titlecase }}
       </button>
@@ -65,7 +61,7 @@
     <div class="row m-0">
       <div class="col">
         <div class="row p-2">
-          <div class="col">
+          <div class="col" *ngIf="!!assetClassSelected">
             <app-unit-schedule [assetClass]="assetClassSelected" [scheme]="scheme"></app-unit-schedule>
           </div>
         </div>

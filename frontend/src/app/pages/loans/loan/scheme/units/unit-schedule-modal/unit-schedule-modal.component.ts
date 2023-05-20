@@ -57,10 +57,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
-  totalSalePriceTarget = 0;
-  totalSalePriceAchieved = 0;
-  averageLeaseRentTarget = 0;
-  averageLeaseRentAchieved = 0;
+  totalSalePriceTarget = 0.00;
+  totalSalePriceAchieved = 0.00;
+  averageLeaseRentTarget = 0.00;
+  averageLeaseRentAchieved = 0.00;
   unitsToDelete: Unit[] = [];
   rentFrequencyLabel = '';
   leaseFrequencyLabel = '';
@@ -640,7 +640,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
 
-      if (this.unitStructure.hasBeds) {
+      if (!this.unitStructure.hasBeds) {
         return null;
       }
 
@@ -675,5 +675,11 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const formGroup = this.salesFormArray.at(index) as FormGroup;
     const priceAchieved = formGroup.get('priceAchieved')?.value || 0;
     return priceAchieved > 0;
+  }
+
+  rentAchieved(index: number): boolean {
+    const formGroup = this.leasesFormArray.at(index) as FormGroup;
+    const rentAchieved = formGroup.get('rentAchieved')?.value || 0;
+    return rentAchieved > 0;
   }
 }

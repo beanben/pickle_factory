@@ -4,7 +4,7 @@ import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {Subscription, lastValueFrom} from 'rxjs';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
-import {Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
+import {AssetClassData, Scheme, Unit} from 'src/app/_interfaces/scheme.interface';
 import { SharedService } from 'src/app/_services/shared/shared.service';
 
 @Component({
@@ -24,15 +24,32 @@ export class UnitsComponent implements OnInit, OnDestroy {
   schemeAssetClasses: AssetClassType[] = [];
   subs: Subscription[] = [];
   useChoices: Choice[] = [];
+  assetClassData: AssetClassData[] = [];
 
   constructor(
     private _schemeService: SchemeService,
     private _sharedService: SharedService
     ) {}
 
+  // async ngOnInit() {
+  //   await this.getChoices('assetClass', this.useChoices);
+
+  // }
+
   async ngOnInit() {
-    await this.getChoices('assetClass', this.useChoices);
+    this.useChoices = await this.getChoices('assetClass');
+
+    // this.subs.push(
+    //   this._schemeService.getAssetClassDataSub()
+    //     .subscribe(assetClassData => {
+    //       this.assetClassData = assetClassData;
+    //       this.openAssetClassModal = false;
+    //       this.getAvailableAssetClassUses();
+    //       this.onSelectAssetClass(0);
+    //     })
+    // );
   }
+
 
   
   ngOnChanges(changes: SimpleChanges) {
@@ -42,7 +59,6 @@ export class UnitsComponent implements OnInit, OnDestroy {
         this.getAvailableAssetClassUses();
         this.onSelectAssetClass(0);
       });
-
     }
   }
 
@@ -51,10 +67,15 @@ export class UnitsComponent implements OnInit, OnDestroy {
     this.modalMode = modalMode;
   }
 
-  async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
+  // async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
+  //   const choices$ = this._sharedService.getChoices(choiceType);
+  //   const choices: Choice[] = await lastValueFrom(choices$);
+  //   targetArray.push(...choices);
+  // }
+
+  async getChoices(choiceType: string): Promise<Choice[]> {
     const choices$ = this._sharedService.getChoices(choiceType);
-    const choices: Choice[] = await lastValueFrom(choices$);
-    targetArray.push(...choices);
+    return await lastValueFrom(choices$);
   }
 
   getUseLabel(use: string): string {
@@ -94,6 +115,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
     if (!!assetClass) {
       this.getAvailableAssetClassUses();
       this.updateSchemeAssetClass(assetClass);
+      
     }
   }
 
@@ -102,8 +124,11 @@ export class UnitsComponent implements OnInit, OnDestroy {
     let index = this.schemeAssetClasses.findIndex(schemeAssetClass => schemeAssetClass.id === assetClass.id);
     if (index !== -1) {
       this.schemeAssetClasses[index] = assetClass;
+      // this.onSelectAssetClass(index);
     } else {
       this.schemeAssetClasses.push(assetClass);
+      // const lastIndex = this.schemeAssetClasses.length - 1;
+      // this.onSelectAssetClass(lastIndex);
     }
   }
 
@@ -117,6 +142,7 @@ export class UnitsComponent implements OnInit, OnDestroy {
   }
 
   onSelectAssetClass(index: number) {
+    // this.assetClassSelected = this.assetClassData[index].assetClass;
     this.assetClassSelected = this.schemeAssetClasses[index];
     if (this.schemeAssetClasses.length > 0) {
       this.tabActive = this.assetClassSelected.use;

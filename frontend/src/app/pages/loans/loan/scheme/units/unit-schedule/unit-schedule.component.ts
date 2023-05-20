@@ -29,10 +29,10 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
-  totalSalePriceTarget = 0;
-  totalSalePriceAchieved = 0;
-  averageLeaseRentTarget = 0;
-  averageLeaseRentAchieved = 0;
+  totalSalePriceTarget = 0.00;
+  totalSalePriceAchieved = 0.00;
+  averageLeaseRentTarget = 0.00;
+  averageLeaseRentAchieved = 0.00;
 
   rentFrequencyLabel = '';
   rentFrequencyChoices: Choice[] = [];
@@ -53,8 +53,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     ) {}
 
   async ngOnInit() {
-    await this.setUpUnitSchedule(this.assetClass);
-    
+      await this.setUpUnitSchedule(this.assetClass);
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -177,7 +176,13 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     this.totalSalePriceAchieved = sales.reduce((acc, sale) => acc + (Number(sale.priceAchieved) ?? 0), 0);
   }
 
-  calculateAveragesLease(leases?: Lease[]) {}
+  calculateAveragesLease(leases: Lease[]) {
+    const totalRentTarget = leases.reduce((acc, lease) => acc + (Number(lease.rentTarget) ?? 0), 0);
+    this.averageLeaseRentTarget = this.totalUnits !==0 ? totalRentTarget / this.totalUnits : 0;
+
+    const totalRentAchieved = leases.reduce((acc, lease) => acc + (Number(lease.rentAchieved) ?? 0), 0);
+    this.averageLeaseRentAchieved = this.totalUnits !==0 ? totalRentAchieved / this.totalUnits : 0;
+  }
 
   onOpenUnitScheduleModal(modalMode: string) {
     this.openUnitScheduleModal = true;
@@ -189,6 +194,14 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
     if (unitsScheduleData) {
       this.unitsScheduleData = unitsScheduleData;
+      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+      
+      const sales: (Sale|undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.sale);
+      this.calculateTotalsSale(sales.filter((sale): sale is Sale => sale !== undefined && sale !== null));
+
+      const leases: (Lease|undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.lease);
+      this.calculateAveragesLease(leases.filter((lease): lease is Lease => lease !== undefined));
+
     }
   }
 
