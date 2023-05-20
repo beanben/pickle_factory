@@ -74,7 +74,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this._loanService.getLoans()
         .subscribe(loans => {
           this.loans = loans;
-          console.log("loans getReqLoans: ", loans)
           this._loanService.setLoansSub(loans);
 
           if(loans.length !== 0){

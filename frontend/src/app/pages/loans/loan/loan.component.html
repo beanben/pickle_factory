@@ -6,12 +6,12 @@
     (deleteIsConfirmed)="onDeleteLoan()">
 </app-loan-modal>
 
-<app-scheme-modal
+<!-- <app-scheme-modal
     *ngIf="openSchemeModal"
     [mode] = "modalMode"
     [loan]="loan"
     (modalSaveScheme)="onSaveScheme($event)">
-</app-scheme-modal>
+</app-scheme-modal> -->
 
 <nav class="navbar navbar-light navbar-expand-lg pb-0 px-0 sticky-top mb-4 bg-white">
   <div>
@@ -59,7 +59,7 @@
       <ng-template #noScheme>
         <div class="row py-2">
           <div class="col px-0 bg-white" style="height: 800px">
-            <app-scheme></app-scheme>
+            <app-scheme [loan]="loan"></app-scheme>
           </div>
         </div>
       </ng-template>

@@ -90,6 +90,7 @@ export class SchemeModalComponent implements OnInit, OnDestroy {
   formToScheme(form: FormGroup): Scheme {
     const scheme: Scheme = form.value;
     scheme.loanId = this.loan.id;
+    
     return scheme;
   };
 
