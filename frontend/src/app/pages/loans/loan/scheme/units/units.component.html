@@ -15,7 +15,6 @@
   <div class="p-4">
     <div class="row py-2 justify-content-start" *ngFor="let assetClass of schemeAssetClasses; let i = index">
     <!-- <div class="row py-2 justify-content-start" *ngFor="let data of assetClassData; let i = index"> -->
-
       <div class="col-6 offset-3">
         <app-unit-card [assetClass]="assetClass" [scheme]="scheme" [useChoices]="useChoices"></app-unit-card>
       </div>
