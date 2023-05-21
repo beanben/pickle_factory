@@ -44,6 +44,11 @@ export interface ShoppingCentre extends AssetClass {
   use: 'shoppingCentre';
 }
 
+export interface Parking extends AssetClass {
+  use: 'parking';
+}
+
+
 export interface AssetClassData {
   assetClass: AssetClassType;
   units: Unit[];

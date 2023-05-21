@@ -45,13 +45,15 @@ class AssetClass(TimestampedModelReverse, AuthorTrackerModel):
     STUDENT_ACCOMMODATION = "student_accommodation"
     OFFICE = "office"
     SHOPPING_CENTRE = "shopping_centre"
+    PARKING = "parking"
     ASSET_CLASS_CHOICES =[
         (HOTEL, "hotel"),
         (RESIDENTIAL, "residential"),
         (COMMERCIAL, "commercial"),
         (STUDENT_ACCOMMODATION, "student accommodation"),
         (OFFICE, "office"),
-        (SHOPPING_CENTRE, "shopping centre")
+        (SHOPPING_CENTRE, "shopping centre"),
+        (PARKING, "parking")
     ]
 
     use = models.CharField(max_length=40, choices = ASSET_CLASS_CHOICES, default=RESIDENTIAL)
@@ -77,6 +79,9 @@ class Office(AssetClass):
    pass
 
 class ShoppingCentre(AssetClass): 
+    pass
+
+class Parking(AssetClass): 
     pass
 
 class Unit(TimestampedModelReverse, AuthorTrackerModel):

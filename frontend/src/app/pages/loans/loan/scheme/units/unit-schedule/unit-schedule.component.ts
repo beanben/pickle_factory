@@ -110,7 +110,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       this.calculateAveragesLease(
         unitsScheduleData
           .map(unitScheduleData => unitScheduleData.lease)
-          .filter((lease): lease is Lease => lease !== undefined)
+          .filter((lease): lease is Lease => lease !== undefined && lease !== null)
       );
   }
 
@@ -171,16 +171,16 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     this.totalBeds = units?.reduce((acc, units) => acc + (units.beds ?? 0), 0);
   }
 
-  calculateTotalsSale(sales: Sale[]) {
-    this.totalSalePriceTarget = sales.reduce((acc, sale) => acc + (Number(sale.priceTarget) ?? 0), 0);
-    this.totalSalePriceAchieved = sales.reduce((acc, sale) => acc + (Number(sale.priceAchieved) ?? 0), 0);
+  calculateTotalsSale(sales?: Sale[]) {
+    this.totalSalePriceTarget = sales?.reduce((acc, sale) => acc + (Number(sale.priceTarget) ?? 0), 0) || 0.00;
+    this.totalSalePriceAchieved = sales?.reduce((acc, sale) => acc + (Number(sale.priceAchieved) ?? 0), 0) || 0.00;
   }
 
-  calculateAveragesLease(leases: Lease[]) {
-    const totalRentTarget = leases.reduce((acc, lease) => acc + (Number(lease.rentTarget) ?? 0), 0);
+  calculateAveragesLease(leases?: Lease[]) {
+    const totalRentTarget = leases?.reduce((acc, lease) => acc + (Number(lease.rentTarget) ?? 0), 0) || 0.00;
     this.averageLeaseRentTarget = this.totalUnits !==0 ? totalRentTarget / this.totalUnits : 0;
 
-    const totalRentAchieved = leases.reduce((acc, lease) => acc + (Number(lease.rentAchieved) ?? 0), 0);
+    const totalRentAchieved = leases?.reduce((acc, lease) => acc + (Number(lease.rentAchieved) ?? 0), 0) || 0.00;
     this.averageLeaseRentAchieved = this.totalUnits !==0 ? totalRentAchieved / this.totalUnits : 0;
   }
 
@@ -200,7 +200,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       this.calculateTotalsSale(sales.filter((sale): sale is Sale => sale !== undefined && sale !== null));
 
       const leases: (Lease|undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.lease);
-      this.calculateAveragesLease(leases.filter((lease): lease is Lease => lease !== undefined));
+      this.calculateAveragesLease(leases.filter((lease): lease is Lease => lease!==undefined && lease !== null));
 
     }
   }

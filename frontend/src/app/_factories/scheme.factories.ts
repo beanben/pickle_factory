@@ -23,6 +23,8 @@ export class AssetClassFactory {
         return { ...baseAssetClass, use: 'office' };
       case 'shoppingCentre':
         return { ...baseAssetClass, use: 'shoppingCentre' };
+      case 'parking':
+          return { ...baseAssetClass, use: 'parking' };
       default:
         return { ...baseAssetClass, use: 'residential' };
     }

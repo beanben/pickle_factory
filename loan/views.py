@@ -132,7 +132,8 @@ class SchemeAssetClasses(AuthorQuerySetMixin, generics.ListAPIView):
             'commercial': scheme_serializers.CommercialSerializer,
             'office': scheme_serializers.OfficeSerializer,
             'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
-            'student_accommodation': scheme_serializers.StudentAccommodationSerializer
+            'student_accommodation': scheme_serializers.StudentAccommodationSerializer,
+            'parking': scheme_serializers.ParkingSerializer,
         }
 
 
@@ -265,7 +266,8 @@ class AssetClassList(AuthorQuerySetMixin, generics.ListCreateAPIView):
         'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
         'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
-        'student_accommodation': scheme_serializers.StudentAccommodationSerializer
+        'student_accommodation': scheme_serializers.StudentAccommodationSerializer,
+        'parking': scheme_serializers.ParkingSerializer,
     }
 
     def get_serializer_class(self):
@@ -294,7 +296,8 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         'commercial': scheme_models.Commercial,
         'office': scheme_models.Office,
         'shopping_centre': scheme_models.ShoppingCentre,
-        'student_accommodation': scheme_models.StudentAccommodation
+        'student_accommodation': scheme_models.StudentAccommodation,
+        'parking': scheme_models.Parking,
     }
 
     use_serialiser_map = {
@@ -303,7 +306,8 @@ class AssetClassDetail(AuthorQuerySetMixin, generics.RetrieveUpdateDestroyAPIVie
         'commercial': scheme_serializers.CommercialSerializer,
         'office': scheme_serializers.OfficeSerializer,
         'shopping_centre': scheme_serializers.ShoppingCentreSerializer,
-        'student_accommodation': scheme_serializers.StudentAccommodationSerializer
+        'student_accommodation': scheme_serializers.StudentAccommodationSerializer,
+        'parking': scheme_serializers.ParkingSerializer,
     }
 
     def get_object(self):

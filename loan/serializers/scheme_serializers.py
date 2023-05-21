@@ -104,6 +104,11 @@ class ShoppingCentreSerializer(AssetClassSerializer):
         model = scheme_models.ShoppingCentre
         fields = AssetClassSerializer.Meta.fields
 
+class ParkingSerializer(AssetClassSerializer):
+    class Meta:
+        model = scheme_models.Parking
+        fields = AssetClassSerializer.Meta.fields
+
 class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
     def update_or_create(self, instances, validated_data):
         instances_mapping = {instance.id: instance for instance in instances}

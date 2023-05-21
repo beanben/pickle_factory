@@ -165,12 +165,12 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.modalSaveUnitsSchedule.emit(null);
   }
 
-  async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-    const choices$ = this.sharedService.getChoices(choiceType);
-    const choices: Choice[] = await lastValueFrom(choices$);
+  // async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
+  //   const choices$ = this.sharedService.getChoices(choiceType);
+  //   const choices: Choice[] = await lastValueFrom(choices$);
 
-    targetArray.push(...choices);
-  }
+  //   targetArray.push(...choices);
+  // }
 
   calculateUnitsTotals() {
     this.totalUnits = this.unitsFormArray.length;

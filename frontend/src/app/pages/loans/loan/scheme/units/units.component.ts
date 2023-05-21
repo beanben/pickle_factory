@@ -164,4 +164,10 @@ export class UnitsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe());
   }
+
+  onClickCard(assetClass: AssetClassType) {
+    const indexAssetClass = this.schemeAssetClasses.findIndex(schemeAssetClass => schemeAssetClass.use === assetClass.use);
+    this.onSelectAssetClass(indexAssetClass);
+    this.isShow = true;
+  }
 }
