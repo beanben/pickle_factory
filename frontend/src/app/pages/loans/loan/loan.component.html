@@ -40,12 +40,13 @@
     <ng-container *ngIf="tabActive === 'scheme'">
       <ng-container *ngIf="loanSchemes.length !=0 ; else noScheme">
 
-        <button class="btn btn-primary px-auto" (click)="onOpenSchemeModal('new')"> Add scheme</button>
+        <!-- <button class="btn btn-primary px-auto" (click)="onOpenSchemeModal('new')">New scheme</button> -->
         <div class="row">
           <div class="col">
 
             <div class="row py-2" *ngFor="let scheme of loanSchemes">
               <div class="col px-0 bg-white" style="min-height: 600px">
+                <!-- <div class="col px-0 bg-white"> -->
 
                 <app-scheme [loan]="loan" [scheme]="scheme" (deleteConfirmed)="deleteScheme($event)">
                 </app-scheme>
@@ -58,8 +59,8 @@
 
       <ng-template #noScheme>
         <div class="row py-2">
-          <div class="col px-0 bg-white">
-          <!-- <div class="col px-0 bg-white" style="height: 800px"> -->
+          <!-- <div class="col px-0 bg-white"> -->
+          <div class="col px-0 bg-white" style="height: 700px">
             <app-scheme [loan]="loan"></app-scheme>
           </div>
         </div>
