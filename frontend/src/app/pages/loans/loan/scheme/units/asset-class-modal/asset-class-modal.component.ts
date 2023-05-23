@@ -37,6 +37,7 @@ export class AssetClassModalComponent implements OnInit {
 
   form: FormGroup = new FormGroup({
     assetClassUse: new FormControl('', [Validators.required]),
+    // assetClassSubUse: new FormControl(''),
     investmentStrategy: new FormControl(''),
   });
 
@@ -96,6 +97,7 @@ export class AssetClassModalComponent implements OnInit {
 
     assetClass = {
       ...assetClass,
+      // subUse: this.form.value.assetClassSubUse,
       schemeId: this.scheme.id,
       investmentStrategy: this.form.value.investmentStrategy,
     };
@@ -108,7 +110,8 @@ export class AssetClassModalComponent implements OnInit {
   }
 
   updateAssetClass(assetClass: AssetClassType) {
-    assetClass.investmentStrategy = this.form.value.investmentStrategy;
+    assetClass.investmentStrategy = this.form.get("investmentStrategy")!.value;
+    // assetClass.subUse = this.form.get("assetClassSubUse")?.value;
 
     this._schemeService.updateAssetClass(assetClass).then((res: APIResult) => {
       const assetClassRes: AssetClassType = res.response;
@@ -157,6 +160,7 @@ export class AssetClassModalComponent implements OnInit {
   populateForm() {
     this.form.setValue({
       assetClassUse: this.assetClass.use,
+      // assetClassSubUse: this.assetClass.subUse,
       investmentStrategy: this.assetClass.investmentStrategy,
     });
   }

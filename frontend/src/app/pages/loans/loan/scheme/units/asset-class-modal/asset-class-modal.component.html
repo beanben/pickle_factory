@@ -1,37 +1,57 @@
-<div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
+<div class="modal" tabindex="-1" [ngStyle]="{display: displayStyle}" role="dialog">
   <div class="modal-dialog modal-centered">
     <div class="modal-content">
-
       <div class="modal-header">
-        <h5 class="modal-title w-100 text-center">{{mode | titlecase}} Asset Class</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          (click)="onCancel()"></button>
+        <h5 class="modal-title w-100 text-center">{{ mode | titlecase }} Asset Class</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="onCancel()"
+        ></button>
       </div>
 
       <div class="modal-body">
         <nav
-          style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);"
+          style="
+            --bs-breadcrumb-divider: url(
+              &#34;data:image/svg + xml,
+              %3Csvgxmlns='http://www.w3.org/2000/svg'width='8'height='8'%3E%3Cpathd='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z'fill='currentColor'/%3E%3C/svg%3E&#34;
+            );
+          "
           aria-label="breadcrumb"
-          *ngIf="mode !=='delete'">
+          *ngIf="mode !== 'delete'"
+        >
           <ol class="breadcrumb justify-content-center">
             <li class="breadcrumb-item d-flex align-items-center">
-              <span class="px-2 d-flex align-items-center justify-content-center" appDot
-                [status]="assetClassStatus"></span>
-              <span class="px-2" [ngClass]="{'text-active': step ===1 }">Asset class</span>
+              <span
+                class="px-2 d-flex align-items-center justify-content-center"
+                appDot
+                [status]="assetClassStatus"
+              ></span>
+              <span class="px-2" [ngClass]="{'text-active': step === 1}">Asset class</span>
             </li>
-            <img src="{{chevronRight}}" alt="">
+            <img src="{{ chevronRight }}" alt="" />
             <li class="breadcrumb-item d-flex align-items-center">
-              <span class="px-2 d-flex align-items-center justify-content-center" appDot
-                [status]="investmentStartegyStatus"></span>
+              <span
+                class="px-2 d-flex align-items-center justify-content-center"
+                appDot
+                [status]="investmentStartegyStatus"
+              ></span>
               <span class="px-2">Investment Strategy</span>
             </li>
           </ol>
         </nav>
 
-        <form [formGroup]="form" #f="ngForm" class="mx-auto" id="form"
-          [ngClass]="{'is-submitted': f.submitted || nextIsClicked}">
-
-          <span class="d-flex justify-content-center py-4 text-center">
+        <form
+          [formGroup]="form"
+          #f="ngForm"
+          class="mx-auto"
+          id="form"
+          [ngClass]="{'is-submitted': f.submitted || nextIsClicked}"
+        >
+          <span class="d-flex justify-content-center py-2 text-center">
             <span [ngSwitch]="step" *ngIf="mode === 'new'">
               <span *ngSwitchCase="1">Please select an asset class</span>
               <span *ngSwitchCase="2">Please choose the investment strategy</span>
@@ -47,65 +67,91 @@
             </span>
           </span>
 
-
-          <div class="mb-3 py-2" [ngClass]="{'d-none': step !== 1}">
-
-            <ng-container *ngIf="mode === 'new'">
-              <app-required></app-required>
-              <div class="form-floating">
-                <select class="form-select" id="asset-class" formControlName="assetClassUse">
-                  <option [ngValue]="''"> -- Select Asset Class --</option>
-                  <option *ngFor='let choice of availableUseChoices' [ngValue]="choice.value">
-                    {{choice.label | titlecase}}
-                  </option>
-                </select>
-                <label for="asset-class">Asset class</label>
+          <ng-container *ngIf="mode === 'new' && step === 1">
+            <div class="row py-2">
+              <div class="col">
+                <app-required></app-required>
+                <div class="form-floating">
+                  <select class="form-select" id="asset-class" formControlName="assetClassUse">
+                    <option [ngValue]="''">-- Select Asset Class --</option>
+                    <option *ngFor="let choice of availableUseChoices" [ngValue]="choice.value">
+                      {{ choice.label | titlecase }}
+                    </option>
+                  </select>
+                  <label for="asset-class">Asset class</label>
+                </div>
+                <div
+                  *ngIf="form.get('assetClassUse')?.invalid && (f.dirty || nextIsClicked)"
+                  class="mt-2 alert alert-danger"
+                >
+                  Please select the unit asset class
+                </div>
               </div>
-              <div *ngIf="form.get('assetClassUse')?.invalid && (f.dirty || nextIsClicked)"
-                class="mt-2 alert alert-danger">
-                Please select the unit asset class
+            </div>
+            <!-- <div class="row py-2">
+              <div class="col">
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="subUse">Sub use</span>
+                  <input type="text" class="form-control" placeholder="Sub use" formControlName="assetClassSubUse" />
+                </div>
               </div>
-            </ng-container>
+            </div> -->
+          </ng-container>
 
-            <ng-container *ngIf="mode === 'edit'">
-              <div class="form-floating">
-                <input type="text" class="form-control" formControlName="assetClassUse" id="asset-class"
-                  placeholder="Asset class" [value]="getUseLabelTitleCase(form.get('assetClassUse')!.value)" [attr.disabled]="true">
-                <label for="asset-class">Asset class</label>
-              </div>
-            </ng-container>
-
-          </div>
+          <ng-container *ngIf="mode === 'edit' && step === 1">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="assetClassUse"
+                id="asset-class"
+                placeholder="Asset class"
+                [value]="getUseLabelTitleCase(form.get('assetClassUse')!.value)"
+                [attr.disabled]="true"
+              />
+              <label for="asset-class">Asset class</label>
+            </div>
+          </ng-container>
 
           <div class="mb-3 border d-flex justify-content-around py-2 rounded" [ngClass]="{'d-none': step !== 2}">
-
             <div class="form-check form-check-inline" *ngFor="let choice of investmentStrategyChoices; let i = index">
-              <input class="form-check-input cursor-pointer" type="radio" name="investmentStrategy" [id]="'investmentStrategy-'+i" formControlName="investmentStrategy"
-                [value]="choice.value">
-              <label class="form-check-label" [for]="'investmentStrategy-'+i">
-                {{choice.label | titlecase}}
+              <input
+                class="form-check-input cursor-pointer"
+                type="radio"
+                name="investmentStrategy"
+                [id]="'investmentStrategy-' + i"
+                formControlName="investmentStrategy"
+                [value]="choice.value"
+              />
+              <label class="form-check-label" [for]="'investmentStrategy-' + i">
+                {{ choice.label | titlecase }}
               </label>
             </div>
-
           </div>
         </form>
       </div>
 
       <div class="modal-footer" *ngIf="mode !== 'delete'">
-        <button *ngIf="step ===1 && mode==='edit'" type="button" class="btn btn-danger me-auto"
-          (click)="mode ='delete'">Delete {{getUseLabel(assetClass.use) | titlecase}}</button>
-        <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
-          < Previous</button> <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel
+        <button
+          *ngIf="step === 1 && mode === 'edit'"
+          type="button"
+          class="btn btn-danger me-auto"
+          (click)="mode = 'delete'"
+        >
+          Delete {{ getUseLabel(assetClass.use) | titlecase }}
         </button>
-        <button *ngIf="step !==2" type="button" class="btn btn-success" (click)="onNext()">Next ></button>
-        <button *ngIf="step ===2" type="submit" class="btn btn-success" (click)="onSubmit()">Save</button>
+        <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
+          < Previous
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button *ngIf="step !== 2" type="button" class="btn btn-success" (click)="onNext()">Next ></button>
+        <button *ngIf="step === 2" type="submit" class="btn btn-success" (click)="onSubmit()">Save</button>
       </div>
 
       <div class="modal-footer" *ngIf="mode === 'delete'">
         <button type="button" class="btn btn-secondary m-2 me-auto" (click)="onCancelDelete()">Cancel</button>
         <button type="submit" class="btn btn-danger m-2" (click)="onConfirmDelete()">Delete</button>
       </div>
-
     </div>
   </div>
 </div>

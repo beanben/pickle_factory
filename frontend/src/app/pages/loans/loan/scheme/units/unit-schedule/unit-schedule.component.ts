@@ -148,7 +148,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       statusDate: saleData?.statusDate,
       priceTarget: saleData?.priceTarget,
       priceAchieved: saleData?.priceAchieved,
-      buyer: saleData?.buyer
+      buyer: saleData?.buyer,
+      ownershipType: saleData?.ownershipType || "",
     };
   }
 
@@ -161,7 +162,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       rentAchieved: leaseData?.rentAchieved,
       rentFrequency: leaseData?.rentFrequency,
       startDate: leaseData?.startDate,
-      endDate: leaseData?.endDate
+      endDate: leaseData?.endDate,
+      leaseType: leaseData?.leaseType || "",
     };
   }
 

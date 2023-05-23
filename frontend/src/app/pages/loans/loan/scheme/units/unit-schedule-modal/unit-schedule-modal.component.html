@@ -46,8 +46,7 @@
             </ol>
           </nav>
 
-          <form [formGroup]="unitsFormGroup" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked}" id="form"
-          >
+          <form [formGroup]="unitsFormGroup" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked}" id="form">
             <table class="table table-hover text-center table-borderless custom-padding">
               <thead>
                 <tr class="border border-1 header bg-grey">
@@ -119,7 +118,7 @@
         </div>
       </ng-container>
 
-<!-- Build to Sell -->
+      <!-- Build to Sell -->
 
       <ng-container *ngIf="step === 2 && mode !== 'delete' && assetClass.investmentStrategy === 'buildToSell'">
         <div class="modal-header">
@@ -146,12 +145,12 @@
               </li>
               <img src="{{ chevronRight }}" alt="" />
               <li class="breadcrumb-item d-flex align-items-center">
-                  <span
-                    class="px-2 d-flex align-items-center justify-content-center"
-                    appDot
-                    [status]="salesStatus"
-                  ></span>
-                  <span class="px-2" [ngClass]="{'text-active': step === 2}">Sales</span>
+                <span
+                  class="px-2 d-flex align-items-center justify-content-center"
+                  appDot
+                  [status]="salesStatus"
+                ></span>
+                <span class="px-2" [ngClass]="{'text-active': step === 2}">Sales</span>
               </li>
             </ol>
           </nav>
@@ -161,6 +160,7 @@
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
+                  <th *ngIf="assetClass.use === 'residential'"></th>
                   <th>
                     {{ totalSalePriceTarget | number : '1.2-2' : 'en-GB' }}
                   </th>
@@ -170,9 +170,11 @@
                   <th></th>
                   <th></th>
                   <th></th>
+                  <th></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
                   <th>{{ unitStructure.label | titlecase }} identifier</th>
+                  <th *ngIf="assetClass.use === 'residential'">Type</th>
                   <th>Target price</th>
                   <th>Price achieved</th>
                   <th>Sale status</th>
@@ -183,17 +185,136 @@
               </thead>
               <tbody formArrayName="salesData">
                 <tr *ngFor="let sale of salesFormArray.controls; let i = index" [formGroupName]="i">
-                    <td>
-                      <input class="form-control text-center" [value]="sale.get('unitIdentifier')?.value" disabled />
-                    </td>
-                    <td>
-                      <input class="form-control text-center" formControlName="priceTarget" placeholder="0.00" />
-                    </td>
-                    <td>
-                      <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
-                    </td>
-                    <td>
+                  <td class="align-middle">
+                    <input
+                      class="form-control text-center flex-grow-1"
+                      [value]="sale.get('unitIdentifier')?.value"
+                      disabled
+                    />
+                  </td>
+                  <td class="text-start align-middle text-nowrap" *ngIf="assetClass.use === 'residential'">
+                    <div class="border rounded px-2">
+                      <div class="form-check" *ngFor="let choice of ownershipTypeChoices; let j = index">
+                        <input
+                          class="form-check-input cursor-pointer"
+                          type="radio"
+                          [id]="'ownershipType-' + i + '-' + j"
+                          formControlName="ownershipType"
+                          [value]="choice.value"
+                        />
+                        <label class="form-check-label" [for]="'ownershipType-' + i + '-' + j">
+                          {{ choice.label | titlecase }}
+                        </label>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="align-middle">
+                    <input class="form-control text-center" formControlName="priceTarget" placeholder="0.00" />
+                  </td>
+                  <td class="align-middle">
+                    <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
+                  </td>
+                  <td class="align-middle text-nowrap">
+                    <!-- <div class="pe-3"> -->
                       <select
+                      class="form-select"
+                      id="status"
+                      formControlName="status"
+                      [compareWith]="compareFn"
+                      [attr.disabled]="salesAchieved(i) ? null : true"
+                    >
+                      <option *ngFor="let status of saleStatusChoices" [ngValue]="status.value">
+                        {{ status.label }}
+                      </option>
+                    </select>
+                    <!-- </div> -->
+                  </td>
+                  <td class="align-middle">
+                    <ng-container *ngIf="salesAchieved(i); else noSale">
+                      <input
+                        class="form-control text-center cursor-pointer"
+                        formControlName="statusDate"
+                        placeholder="DD-MMM-YY"
+                        bsDatepicker
+                        [bsConfig]="{dateInputFormat: 'DD MMM YY'}"
+                      />
+                    </ng-container>
+                    <ng-template #noSale>
+                      <input
+                        class="form-control text-center"
+                        formControlName="statusDate"
+                        placeholder="-"
+                        [attr.disabled]="true"
+                        [value]="null"
+                      />
+                    </ng-template>
+                  </td>
+                  <td class="align-middle">
+                    <input
+                      class="form-control text-center"
+                      formControlName="buyer"
+                      placeholder="-"
+                      [attr.disabled]="salesAchieved(i) ? null : true"
+                    />
+                  </td>
+                  <td class="align-middle">
+                    <button type="button" class="btn btn-danger" (click)="reset(salesFormArray, i)">Reset</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- <div class="table">
+              <div class="table-row">
+                <div class="table-cell">Total</div>
+                <div class="table-cell"></div>
+                <div class="table-cell">{{ totalSalePriceTarget | number : '1.2-2' : 'en-GB' }}</div>
+                 <div class="table-cell">{{ totalSalePriceAchieved | number : '1.2-2' : 'en-GB' }}</div>
+                 <div class="table-cell"></div>
+                 <div class="table-cell"></div>
+                 <div class="table-cell"></div>
+                 <div class="table-cell"></div>
+              </div>
+              <div class="table-row">
+                <div class="table-cell">{{ unitStructure.label | titlecase }} identifier</div>
+                <div class="table-cell">Type</div>
+                <div class="table-cell">Target price</div>
+                 <div class="table-cell">Price achieved</div>
+                 <div class="table-cell">Sale status</div>
+                 <div class="table-cell">Status update</div>
+                 <div class="table-cell">Buyer</div>
+                 <div class="table-cell"></div>
+              </div>
+              <ng-container formArrayName="salesData">
+                <div class="table-row" *ngFor="let sale of salesFormArray.controls; let i = index" [formGroupName]="i">
+                  <div class="table-cell">
+                    <input class="form-control text-center" [value]="sale.get('unitIdentifier')?.value" disabled />
+                  </div>
+                  <div class="table-cell text-start">
+                    <div class="border rounded px-2">
+                      <div class="form-check" *ngFor="let choice of ownershipTypeChoices; let i = index">
+                        <input
+                          class="form-check-input cursor-pointer"
+                          type="radio"
+                          name="ownershipType"
+                          [id]="'ownershipType-' + i"
+                          formControlName="ownershipType"
+                          [value]="choice.value"
+                        />
+                        <label class="form-check-label" [for]="'ownershipType-' + i">
+                          {{ choice.label | titlecase }}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-cell">
+                    <input class="form-control text-center" formControlName="priceTarget" placeholder="0.00" />
+                  </div>
+                  <div class="table-cell">
+                    <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
+                  </div>
+                  <div class="table-cell">
+                    <select
                         class="form-select"
                         id="status"
                         formControlName="status"
@@ -204,41 +325,41 @@
                           {{ status.label }}
                         </option>
                       </select>
-                    </td>
-                    <td>
-                      <ng-container *ngIf="salesAchieved(i); else noSale">
-                        <input
-                          class="form-control text-center cursor-pointer"
-                          formControlName="statusDate"
-                          placeholder="DD-MMM-YY"
-                          bsDatepicker
-                          [bsConfig]="{dateInputFormat: 'DD MMM YY'}"
-                        />
-                      </ng-container>
-                      <ng-template #noSale>
-                        <input
-                          class="form-control text-center"
-                          formControlName="statusDate"
-                          placeholder="-"
-                          [attr.disabled]="true"
-                          [value]="null"
-                        />
-                      </ng-template>
-                    </td>
-                    <td>
+                  </div>
+                  <div class="table-cell">
+                    <ng-container *ngIf="salesAchieved(i); else noSale">
                       <input
+                        class="form-control text-center cursor-pointer"
+                        formControlName="statusDate"
+                        placeholder="DD-MMM-YY"
+                        bsDatepicker
+                        [bsConfig]="{dateInputFormat: 'DD MMM YY'}"
+                      />
+                    </ng-container>
+                    <ng-template #noSale>
+                      <input
+                        class="form-control text-center"
+                        formControlName="statusDate"
+                        placeholder="-"
+                        [attr.disabled]="true"
+                        [value]="null"
+                      />
+                    </ng-template>
+                  </div>
+                  <div class="table-cell">
+                    <input
                         class="form-control text-center"
                         formControlName="buyer"
                         placeholder="-"
                         [attr.disabled]="salesAchieved(i) ? null : true"
                       />
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-danger" (click)="reset(salesFormArray, i)">Reset</button>
-                    </td>
-                </tr>
-              </tbody>
-            </table>
+                  </div>
+                  <div class="table-cell">
+                    <button type="button" class="btn btn-danger" (click)="reset(salesFormArray, i)">Reset</button>
+                  </div>
+                </div>
+            </ng-container>
+            </div> -->
 
             <div class="mt-3">
               <div *ngIf="f.submitted && f.invalid" class="mt-1 border border-danger rounded">
@@ -253,7 +374,7 @@
                   </ul>
                 </div>
               </div>
-            </div>  
+            </div>
           </form>
         </div>
 
@@ -262,9 +383,9 @@
           <button type="button" class="btn btn-secondary m-2" (click)="onCancel()">Cancel</button>
           <button form="form" type="submit" class="btn btn-success m-2" (click)="onSave()">Save</button>
         </div>
-      </ng-container>      
+      </ng-container>
 
-<!-- Build to Rent -->
+      <!-- Build to Rent -->
 
       <ng-container *ngIf="step === 2 && mode !== 'delete' && assetClass.investmentStrategy === 'buildToRent'">
         <div class="modal-header">
@@ -291,12 +412,12 @@
               </li>
               <img src="{{ chevronRight }}" alt="" />
               <li class="breadcrumb-item d-flex align-items-center">
-                  <span
-                    class="px-2 d-flex align-items-center justify-content-center"
-                    appDot
-                    [status]="lettingsStatus"
-                  ></span>
-                  <span class="px-2" [ngClass]="{'text-active': step === 2}">Lettings</span>
+                <span
+                  class="px-2 d-flex align-items-center justify-content-center"
+                  appDot
+                  [status]="lettingsStatus"
+                ></span>
+                <span class="px-2" [ngClass]="{'text-active': step === 2}">Lettings</span>
               </li>
             </ol>
           </nav>
@@ -306,6 +427,7 @@
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
+                  <th *ngIf="assetClass.use === 'residential'"></th>
                   <th>
                     {{ averageLeaseRentTarget | number : '1.2-2' : 'en-GB' }}
                   </th>
@@ -316,8 +438,9 @@
                   <th></th>
                   <th></th>
                 </tr>
-                <tr class="border-bottom border-2 header"> 
+                <tr class="border-bottom border-2 header">
                   <th>{{ unitStructure.label | titlecase }} identifier</th>
+                  <th *ngIf="assetClass.use === 'residential'">Type</th>
                   <th>
                     Rent target <br />
                     <small> ({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
@@ -334,42 +457,64 @@
               </thead>
               <tbody formArrayName="leasesData">
                 <tr *ngFor="let lease of leasesFormArray.controls; let i = index" [formGroupName]="i">
-                    <td>
-                      <input class="form-control text-center" [value]="lease.get('unitIdentifier')?.value" disabled />
-                    </td>
-                    <td>
-                      <input class="form-control text-center" formControlName="rentTarget" placeholder="0.00" />
-                    </td>
-                    <td>
-                      <input class="form-control text-center" formControlName="rentAchieved" placeholder="0.00" />
-                    </td>
-                    <td>
-                      <input
-                        class="form-control text-center"
-                        formControlName="startDate"
-                        placeholder="DD-MMM-YY"
-                        bsDatepicker
-                        [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
-                        [attr.disabled]="rentAchieved(i) ? null : true"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        class="form-control text-center"
-                        formControlName="endDate"
-                        placeholder="DD-MMM-YY"
-                        bsDatepicker
-                        [minDate]="getUnitLeaseStartDate(i)"
-                        [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
-                        [attr.disabled]="rentAchieved(i) ? null : true"
-                      />
-                    </td>
-                    <td>
-                      <input class="form-control text-center" formControlName="tenant" placeholder="-" [attr.disabled]="rentAchieved(i) ? null : true"/>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-danger" (click)="reset(leasesFormArray, i)">Reset</button>
-                    </td>
+                  <td class="align-middle">
+                    <input class="form-control text-center" [value]="lease.get('unitIdentifier')?.value" disabled />
+                  </td>
+                  <td class="text-start align-middle text-nowrap" *ngIf="assetClass.use === 'residential'">
+                    <div class="border rounded px-2">
+                      <div class="form-check" *ngFor="let choice of leaseTypeChoices; let i = index">
+                        <input
+                          class="form-check-input cursor-pointer"
+                          type="radio"
+                          name="leaseType"
+                          [id]="'leaseType-' + i"
+                          formControlName="leaseType"
+                          [value]="choice.value"
+                        />
+                        <label class="form-check-label" [for]="'leaseType-' + i">
+                          {{ choice.label | titlecase }}
+                        </label>
+                      </div>
+                    </div>                   
+                  </td>
+                  <td class="align-middle">
+                    <input class="form-control text-center" formControlName="rentTarget" placeholder="0.00" />
+                  </td>
+                  <td class="align-middle">
+                    <input class="form-control text-center" formControlName="rentAchieved" placeholder="0.00" />
+                  </td>
+                  <td class="align-middle">
+                    <input
+                      class="form-control text-center"
+                      formControlName="startDate"
+                      placeholder="DD-MMM-YY"
+                      bsDatepicker
+                      [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
+                      [attr.disabled]="rentAchieved(i) ? null : true"
+                    />
+                  </td>
+                  <td class="align-middle">
+                    <input
+                      class="form-control text-center"
+                      formControlName="endDate"
+                      placeholder="DD-MMM-YY"
+                      bsDatepicker
+                      [minDate]="getUnitLeaseStartDate(i)"
+                      [bsConfig]="{dateInputFormat: 'DD MMM YYYY'}"
+                      [attr.disabled]="rentAchieved(i) ? null : true"
+                    />
+                  </td>
+                  <td class="align-middle">
+                    <input
+                      class="form-control text-center"
+                      formControlName="tenant"
+                      placeholder="-"
+                      [attr.disabled]="rentAchieved(i) ? null : true"
+                    />
+                  </td>
+                  <td class="align-middle">
+                    <button type="button" class="btn btn-danger" (click)="reset(leasesFormArray, i)">Reset</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -398,7 +543,7 @@
         </div>
       </ng-container>
 
-<!-- Delete -->
+      <!-- Delete -->
 
       <ng-container *ngIf="mode === 'delete'">
         <div class="modal-header">
@@ -420,7 +565,9 @@
               <tr class="border-bottom border-2 header">
                 <th>{{ unitStructure.label | titlecase }} identifier</th>
                 <th>Description</th>
-                <th>{{ unitStructure.areaType }} <small>({{ unitStructure.areaSystem }})</small></th>
+                <th>
+                  {{ unitStructure.areaType }} <small>({{ unitStructure.areaSystem }})</small>
+                </th>
                 <th *ngIf="unitStructure.hasBeds">Beds</th>
               </tr>
             </thead>
@@ -451,5 +598,3 @@
     </div>
   </div>
 </div>
-
-

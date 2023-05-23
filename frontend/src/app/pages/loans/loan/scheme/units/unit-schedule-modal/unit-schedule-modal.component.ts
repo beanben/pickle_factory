@@ -65,7 +65,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   rentFrequencyLabel = '';
   leaseFrequencyLabel = '';
   index = -1;
-
   numbersOnly = /^\d+$/;
   decimalsOnly = /^\d*\.?\d*$/;
   step = 1;
@@ -76,7 +75,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   nextIsClicked = false;
   subs: Subscription[] = [];
   showResetIcon = false;
-
+  ownershipTypeChoices: Choice[] = [];
+  leaseTypeChoices: Choice[] = [];
 
   unitsFormGroup: FormGroup = this.fb.group({
     unitsData: this.fb.array([])
@@ -142,7 +142,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     private _schemeService: SchemeService,
     private _unitService: UnitService,
     private fb: FormBuilder,
-    private sharedService: SharedService
+    private _sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -151,7 +151,24 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateSalesTotals();
     this.calculateLeasesTotals();
     this.populateUnitsFormArray();
+
+    this.getChoices('ownershipType')
+    this.getChoices('leaseType')
   }
+
+
+  getChoices(choiceType: string) {
+    this._sharedService.getChoices(choiceType)
+      .subscribe((choices: Choice[]) => {
+        if (choiceType === 'ownershipType') {
+          this.ownershipTypeChoices = choices;
+        } else if (choiceType === 'leaseType') {
+          this.leaseTypeChoices = choices;
+        }
+      });
+  }
+
+
 
   addEventBackgroundClose() {
     this.el.nativeElement.addEventListener('click', (el: any) => {
@@ -164,13 +181,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   onCancel() {
     this.modalSaveUnitsSchedule.emit(null);
   }
-
-  // async getChoices(choiceType: string, targetArray: Choice[]): Promise<void> {
-  //   const choices$ = this.sharedService.getChoices(choiceType);
-  //   const choices: Choice[] = await lastValueFrom(choices$);
-
-  //   targetArray.push(...choices);
-  // }
 
   calculateUnitsTotals() {
     this.totalUnits = this.unitsFormArray.length;
@@ -231,6 +241,14 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       areaSize: [unit?.areaSize, Validators.pattern(this.decimalsOnly)],
       id: [unit?.id]
     });
+
+    this.subs.push(
+      unitForm.valueChanges.pipe(
+        debounceTime(300),
+      ).subscribe(() => {
+        this.calculateUnitsTotals();
+      })
+    )
     return unitForm;
   }
 
@@ -252,12 +270,13 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   onAddSale(index: number, sale?: Sale) {
     const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
+    let saleForm = {} as FormGroup;
 
     if (this.salesFormArray.length >= index + 1) {
-      const saleForm = this.salesFormArray.at(index) as FormGroup;
+      saleForm = this.salesFormArray.at(index) as FormGroup;
       this.salesFormArray.setControl(index, saleForm);
     } else {
-      const saleForm: FormGroup = this.saleToFormGroup(unitIdentifier, sale);
+      saleForm = this.saleToFormGroup(unitIdentifier, sale);
       this.salesFormArray.push(saleForm);
     }
 
@@ -271,7 +290,9 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       statusDate: [sale?.statusDate],
       priceTarget: [sale?.priceTarget || 0.0, Validators.pattern(this.decimalsOnly)],
       priceAchieved: [sale?.priceAchieved || 0.0, Validators.pattern(this.decimalsOnly)],
-      buyer: [sale?.buyer]
+      buyer: [sale?.buyer],
+      ownershipType: [sale?.ownershipType || this.ownershipTypeChoices[0].value],
+
     });
 
     this.subs.push(
@@ -282,6 +303,11 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       }),
       saleForm.get('priceAchieved')!.valueChanges.subscribe(() => {
         saleForm.get('status')!.updateValueAndValidity();
+      }),
+      saleForm.valueChanges.pipe(
+        debounceTime(300),
+      ).subscribe(() => {
+        this.calculateSalesTotals();
       })
     );
 
@@ -326,8 +352,18 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       endDate: [lease?.endDate],
       rentTarget: [lease?.rentTarget, Validators.pattern(this.decimalsOnly)],
       rentAchieved: [lease?.rentAchieved, Validators.pattern(this.decimalsOnly)],
-      tenant: [lease?.tenant]
+      tenant: [lease?.tenant],
+      leaseType: [lease?.leaseType || this.leaseTypeChoices[0].value],
     });
+
+    this.subs.push(
+      leaseForm.valueChanges.pipe(
+        debounceTime(300),
+      ).subscribe(() => {
+        this.calculateLeasesTotals();
+      })
+    );
+    
     return leaseForm;
   }
 
@@ -363,7 +399,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       statusDate: form.get('statusDate')?.value,
       priceTarget: form.get('priceTarget')?.value || 0.0,
       priceAchieved: form.get('priceAchieved')?.value || 0.0,
-      buyer: form.get('buyer')?.value || ''
+      buyer: form.get('buyer')?.value || '',
+      ownershipType: form.get('ownershipType')?.value
     };
 
     return sale;
@@ -378,7 +415,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       rentAchieved: form.get('rentAchieved')?.value || 0.0,
       rentFrequency: this.leaseStructure.rentFrequency,
       startDate: form.get('startDate')?.value,
-      endDate: form.get('endDate')?.value
+      endDate: form.get('endDate')?.value,
+      leaseType: form.get('leaseType')?.value
     };
 
     return lease;

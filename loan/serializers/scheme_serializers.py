@@ -47,12 +47,14 @@ class AssetClassSerializer(serializers.ModelSerializer):
     scheme_id = serializers.IntegerField()
     investment_strategy = CamelToSnakeCaseCharField()
     use = CamelToSnakeCaseCharField()
+    # sub_use = CamelToSnakeCaseCharField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.AssetClass
         fields = [
             'id', 
             'use',
+            # 'sub_use',  
             'scheme_id', 
             'investment_strategy']
 
@@ -172,6 +174,7 @@ class LeaseSerializer(serializers.ModelSerializer):
     rent_achieved = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
     start_date = AngularDateField(required=False, allow_null=True)
     end_date = AngularDateField(required=False, allow_null=True)
+    lease_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
 
     class Meta:
         model = scheme_models.Lease
@@ -183,7 +186,8 @@ class LeaseSerializer(serializers.ModelSerializer):
             'rent_frequency',
             'rent_achieved',
             'start_date',
-            'end_date'
+            'end_date',
+            'lease_type'
             ]
     
     def update_validated_data(self, validated_data):
@@ -203,10 +207,12 @@ class LeaseSerializer(serializers.ModelSerializer):
 class SaleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     unit_id = serializers.IntegerField()
+    status = CamelToSnakeCaseCharField(required=False, allow_null=True)
     status_date = AngularDateField(required=False, allow_null=True)
     price_target = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
     price_achieved = serializers.DecimalField(max_digits=20, decimal_places=2, required=False, allow_null=True)
     buyer = serializers.CharField(required=False, allow_blank=True)
+    ownership_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
     
 
     class Meta:
@@ -219,6 +225,7 @@ class SaleSerializer(serializers.ModelSerializer):
             'price_target',
             'price_achieved',
             'buyer',
+            'ownership_type'
             ]
     
     def validate_buyer(self, value):

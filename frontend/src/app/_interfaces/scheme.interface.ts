@@ -16,6 +16,7 @@ export interface Scheme {
 export interface AssetClass {
   id?: number;
   use: string;
+  // subUse: string;
   schemeId: number;
   investmentStrategy: string;
 }
@@ -89,6 +90,7 @@ export interface Lease {
   rentFrequency?: 'perWeek' | 'perMonth';
   startDate?: Date;
   endDate?: Date;
+  leaseType: string;
 }
 
 export interface LeaseStructure {
@@ -103,4 +105,5 @@ export interface Sale {
   priceTarget?: number;
   priceAchieved?: number;
   buyer?: string;
+  ownershipType: string;
 }

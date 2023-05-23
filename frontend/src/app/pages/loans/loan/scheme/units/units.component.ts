@@ -15,7 +15,7 @@ import { SharedService } from 'src/app/_services/shared/shared.service';
 export class UnitsComponent implements OnInit, OnDestroy {
   openAssetClassModal = false;
   modalMode = '';
-  isShow = false;
+  isShow = true;
   availableUseChoices: Choice[] = [];
   assetClassSelected = {} as AssetClassType;
   tabActive = '';

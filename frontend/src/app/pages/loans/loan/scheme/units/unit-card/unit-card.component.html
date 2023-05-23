@@ -8,13 +8,13 @@
     <div class="col">
       <div class="table">
         <div class="table-row header">
-          <div class="table-cell text-center">Description</div>
+          <div class="table-cell text-center" *ngIf="assetClass.use !== 'parking'">Description</div>
           <div class="table-cell text-center">{{unitStructure.label | titlecase}}s</div>
           <div class="table-cell text-center">{{unitStructure.areaType}} <small class="px-0">({{unitStructure.areaSystem}})</small></div>
           <div class="table-cell text-center" *ngIf="unitStructure.hasBeds">Beds</div>
         </div>
         <div class="table-row" *ngFor="let unitGroup of unitsGrouped">
-          <div class="table-cell text-center">
+          <div class="table-cell text-center" *ngIf="assetClass.use !== 'parking'">
             {{(unitGroup.description === "" && unitsGrouped.length === 1) ? "Total" : unitGroup.description}}
           </div>
           <div class="table-cell text-center">{{unitGroup.quantity}}</div>
@@ -22,7 +22,7 @@
           <div class="table-cell text-center" *ngIf="unitStructure.hasBeds">{{unitGroup.beds}}</div>
         </div>
         <div class="table-row footer" *ngIf="unitsGrouped.length > 1">
-          <div class="table-cell">Total</div>
+          <div class="table-cell" *ngIf="assetClass.use !== 'parking'">Total</div>
           <div class="table-cell text-center">{{totalQuantity | number: '1.0-0' : 'en-GB'}}</div>
           <div class="table-cell text-center">{{totalAreaSize | number: '1.2-2' : 'en-GB'}}</div>
           <div class="table-cell text-center" *ngIf="unitStructure.hasBeds">{{totalBeds | number: '1.0-0' : 'en-GB'}}</div>

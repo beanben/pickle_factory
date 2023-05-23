@@ -7,6 +7,7 @@ export class AssetClassFactory {
   defineAssetClass(use: string): AssetClassType {
     const baseAssetClass = {
       schemeId: this.scheme.id,
+      // subUse:'',
       investmentStrategy: '',
     };
 

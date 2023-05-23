@@ -98,7 +98,9 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         (NIA, "Net Internal Area"),
         (GIA, "Gross Internal Area"),
     ]
-    asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units", related_query_name="unit") 
+
+
+    asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units", related_query_name="unit")
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True, default=UNIT)
     identifier = models.CharField(verbose_name="unit number", max_length=10)
     description = models.CharField(max_length=100, blank=True , default="")
@@ -166,7 +168,7 @@ class Lease(TimestampedModel, AuthorTrackerModel):
     rent_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
-    # lease_frequency = models.CharField(max_length=100, blank=True , choices = LEASE_FREQUENCY_CHOICES, default=MONTHS)
+    lease_type = models.CharField(max_length=100, blank=True , choices = LEASE_TYPE_CHOICES, default=OPEN_MARKET)
 
     # def __str__(self):
     #     return f"{self.get_tenancy_type_display()} - {self.unit} - Tenant: {self.get_tenant()}"
@@ -219,12 +221,20 @@ class Sale(TimestampedModel, AuthorTrackerModel):
         (COMPLETED, "completed")
     ]
 
+    AFFORDABLE = "affordable"
+    PRIVATE = "private"
+    OWNERSHIP_TYPE_CHOICES =[
+        (AFFORDABLE, "affordable"),
+        (PRIVATE, "private"),
+    ]
+
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="sales", related_query_name="sale")
     status = models.CharField(max_length=20, blank=True , choices= STATUS_CHOICES, default=AVAILABLE)
     status_date = models.DateField(blank=True, null=True)
     price_target = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     price_achieved = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     buyer = models.CharField(max_length=100, blank=True , default="")
+    ownership_type = models.CharField(max_length=20, blank=True , choices= OWNERSHIP_TYPE_CHOICES, default=PRIVATE)
 
     def __str__(self):
         return f'sale of unit {self.unit}'

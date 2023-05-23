@@ -1,6 +1,7 @@
-.delete-hover:hover{
-    background: red; 
+.delete-hover:hover {
+    background: red;
 }
+
 .text-red {
     color: red
 }
@@ -8,6 +9,7 @@
 .text-red:hover {
     color: white
 }
+
 .text-invisible {
     color: transparent
 }
@@ -17,3 +19,39 @@
     border: 1px solid red;
 }
 
+/* .table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.table-row {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.table-cell {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
+
+.input-full-height {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* .custom-select {
+    padding-right: 30px;
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg fill="black" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 4 5"><path d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') no-repeat;
+    background-position: right .75em top 50%;
+    background-size: .65em auto;
+} */
+
+.form-select{
+    margin-right: 2rem;
+}

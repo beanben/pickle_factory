@@ -37,6 +37,8 @@ class ChoicesView(APIView):
             'investment_strategy': scheme_models.AssetClass.INVESTMENT_STRATEGY_CHOICES,
             'sale_status': scheme_models.Sale.STATUS_CHOICES,
             'rent_frequency': scheme_models.Lease.RENT_FREQUENCY_CHOICES,
+            'lease_type': scheme_models.Lease.LEASE_TYPE_CHOICES,
+            'ownership_type': scheme_models.Sale.OWNERSHIP_TYPE_CHOICES,
             # 'lease_frequency': scheme_models.Lease.LEASE_FREQUENCY_CHOICES,
             # Add more choices here if needed
         }
