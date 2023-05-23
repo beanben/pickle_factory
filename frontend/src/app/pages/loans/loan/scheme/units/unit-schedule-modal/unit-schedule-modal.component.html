@@ -215,7 +215,6 @@
                     <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
                   </td>
                   <td class="align-middle text-nowrap">
-                    <!-- <div class="pe-3"> -->
                       <select
                       class="form-select"
                       id="status"
@@ -227,7 +226,6 @@
                         {{ status.label }}
                       </option>
                     </select>
-                    <!-- </div> -->
                   </td>
                   <td class="align-middle">
                     <ng-container *ngIf="salesAchieved(i); else noSale">
@@ -263,103 +261,6 @@
                 </tr>
               </tbody>
             </table>
-
-            <!-- <div class="table">
-              <div class="table-row">
-                <div class="table-cell">Total</div>
-                <div class="table-cell"></div>
-                <div class="table-cell">{{ totalSalePriceTarget | number : '1.2-2' : 'en-GB' }}</div>
-                 <div class="table-cell">{{ totalSalePriceAchieved | number : '1.2-2' : 'en-GB' }}</div>
-                 <div class="table-cell"></div>
-                 <div class="table-cell"></div>
-                 <div class="table-cell"></div>
-                 <div class="table-cell"></div>
-              </div>
-              <div class="table-row">
-                <div class="table-cell">{{ unitStructure.label | titlecase }} identifier</div>
-                <div class="table-cell">Type</div>
-                <div class="table-cell">Target price</div>
-                 <div class="table-cell">Price achieved</div>
-                 <div class="table-cell">Sale status</div>
-                 <div class="table-cell">Status update</div>
-                 <div class="table-cell">Buyer</div>
-                 <div class="table-cell"></div>
-              </div>
-              <ng-container formArrayName="salesData">
-                <div class="table-row" *ngFor="let sale of salesFormArray.controls; let i = index" [formGroupName]="i">
-                  <div class="table-cell">
-                    <input class="form-control text-center" [value]="sale.get('unitIdentifier')?.value" disabled />
-                  </div>
-                  <div class="table-cell text-start">
-                    <div class="border rounded px-2">
-                      <div class="form-check" *ngFor="let choice of ownershipTypeChoices; let i = index">
-                        <input
-                          class="form-check-input cursor-pointer"
-                          type="radio"
-                          name="ownershipType"
-                          [id]="'ownershipType-' + i"
-                          formControlName="ownershipType"
-                          [value]="choice.value"
-                        />
-                        <label class="form-check-label" [for]="'ownershipType-' + i">
-                          {{ choice.label | titlecase }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-cell">
-                    <input class="form-control text-center" formControlName="priceTarget" placeholder="0.00" />
-                  </div>
-                  <div class="table-cell">
-                    <input class="form-control text-center" formControlName="priceAchieved" placeholder="0.00" />
-                  </div>
-                  <div class="table-cell">
-                    <select
-                        class="form-select"
-                        id="status"
-                        formControlName="status"
-                        [compareWith]="compareFn"
-                        [attr.disabled]="salesAchieved(i) ? null : true"
-                      >
-                        <option *ngFor="let status of saleStatusChoices" [ngValue]="status.value">
-                          {{ status.label }}
-                        </option>
-                      </select>
-                  </div>
-                  <div class="table-cell">
-                    <ng-container *ngIf="salesAchieved(i); else noSale">
-                      <input
-                        class="form-control text-center cursor-pointer"
-                        formControlName="statusDate"
-                        placeholder="DD-MMM-YY"
-                        bsDatepicker
-                        [bsConfig]="{dateInputFormat: 'DD MMM YY'}"
-                      />
-                    </ng-container>
-                    <ng-template #noSale>
-                      <input
-                        class="form-control text-center"
-                        formControlName="statusDate"
-                        placeholder="-"
-                        [attr.disabled]="true"
-                        [value]="null"
-                      />
-                    </ng-template>
-                  </div>
-                  <div class="table-cell">
-                    <input
-                        class="form-control text-center"
-                        formControlName="buyer"
-                        placeholder="-"
-                        [attr.disabled]="salesAchieved(i) ? null : true"
-                      />
-                  </div>
-                  <div class="table-cell">
-                    <button type="button" class="btn btn-danger" (click)="reset(salesFormArray, i)">Reset</button>
-                  </div>
-                </div>
-            </ng-container>
-            </div> -->
 
             <div class="mt-3">
               <div *ngIf="f.submitted && f.invalid" class="mt-1 border border-danger rounded">
@@ -462,16 +363,15 @@
                   </td>
                   <td class="text-start align-middle text-nowrap" *ngIf="assetClass.use === 'residential'">
                     <div class="border rounded px-2">
-                      <div class="form-check" *ngFor="let choice of leaseTypeChoices; let i = index">
+                      <div class="form-check" *ngFor="let choice of leaseTypeChoices; let j = index">
                         <input
                           class="form-check-input cursor-pointer"
                           type="radio"
-                          name="leaseType"
-                          [id]="'leaseType-' + i"
+                          [id]="'leaseType-' + i + '-' + j"
                           formControlName="leaseType"
                           [value]="choice.value"
                         />
-                        <label class="form-check-label" [for]="'leaseType-' + i">
+                        <label class="form-check-label" [for]="'leaseType-' + i + '-' + j">
                           {{ choice.label | titlecase }}
                         </label>
                       </div>

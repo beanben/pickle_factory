@@ -11,6 +11,7 @@
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
 ></app-unit-schedule-modal>
 
+
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
     <table
@@ -23,6 +24,7 @@
           <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
           <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'"></th>
           <th scope="col">{{ totalSalePriceTarget | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col">{{ totalSalePriceAchieved | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col"></th>
@@ -36,6 +38,7 @@
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
           <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'">Type</th>
           <th scope="col">Target price</th>
           <th scope="col">Price achieved</th>
           <th scope="col">Sale status</th>
@@ -49,6 +52,12 @@
           <td>{{ unitScheduleData.unit.areaSize | number : '1.2-2' : 'en-GB' }}</td>
           <td *ngIf="unitStructure.hasBeds">
             {{ unitScheduleData.unit.beds | number : '1.0-0' : 'en-GB' }}
+          </td>
+          <td *ngIf="assetClass.use === 'residential'">
+            <ng-container *ngIf="!!unitScheduleData.sale?.ownershipType; else noType">
+              {{unitScheduleData.sale?.ownershipType}}
+            </ng-container>
+            <ng-template #noType>not defined</ng-template>
           </td>
           <td>
             <ng-container *ngIf="!!unitScheduleData.sale?.priceTarget; else noPrice">
@@ -88,6 +97,7 @@
           <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
           <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'"></th>
           <th scope="col" class="larger-column">{{ averageLeaseRentTarget | number : '1.2-2' : 'en-GB' }}</th>
           <th scope="col" class="larger-column">{{ averageLeaseRentAchieved | number : '1.2-2' : 'en-GB' }}</th>
           <th scope="col"></th>
@@ -102,13 +112,15 @@
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
           <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'">Type</th>
           <th scope="col">
             Rent target <br>
-            <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
+            <!-- <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small> -->
+            <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small>
           </th>
           <th scope="col">
             Rent achieved <br>
-            <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
+            <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small>
           </th>
           <th scope="col">Lease start</th>
           <th scope="col">Lease end</th>
@@ -122,6 +134,12 @@
           <td>{{ unitScheduleData.unit.areaSize | number : '1.2-2' : 'en-GB' }}</td>
           <td *ngIf="unitStructure.hasBeds">
             {{ unitScheduleData.unit.beds | number : '1.0-0' : 'en-GB' }}
+          </td>
+          <td *ngIf="assetClass.use === 'residential'">
+            <ng-container *ngIf="!!unitScheduleData?.lease?.leaseType; else noType">
+              {{getChoiceLabel(unitScheduleData.lease!.leaseType,leaseTypeChoices)}}
+            </ng-container>
+            <ng-template #noType>not defined</ng-template>
           </td>
           <td>
             <ng-container *ngIf="!!unitScheduleData?.lease?.rentTarget; else noTarget">
