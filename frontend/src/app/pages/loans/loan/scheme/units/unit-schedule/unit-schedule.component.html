@@ -11,6 +11,11 @@
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
 ></app-unit-schedule-modal>
 
+<app-unit-schedule-upload
+  *ngIf="openUploadModal"
+  
+></app-unit-schedule-upload>
+
 
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
@@ -183,6 +188,7 @@
       <button type="button" class="btn btn-primary mx-2" (click)="onOpenUnitScheduleModal('edit')">
         Edit unit schedule
       </button>
+      <button class="btn btn-primary" (click)="onOpenUploadModal()">Upload unit schedule</button>
     </div>
   </div>
 </div>

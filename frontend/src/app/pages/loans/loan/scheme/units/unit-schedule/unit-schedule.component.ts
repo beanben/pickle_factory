@@ -24,6 +24,7 @@ import {SharedService} from 'src/app/_services/shared/shared.service';
 })
 export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
+  openUploadModal = false;
   openAssetClassModal = false;
   modalMode = '';
   totalUnits = 0;
@@ -217,5 +218,9 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
     return this._sharedService.getChoiceLabel(choice_value, choices);
+  }
+
+  onOpenUploadModal(){
+    this.openUploadModal = true;
   }
 }

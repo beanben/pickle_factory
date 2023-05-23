@@ -12,11 +12,13 @@ import { PartsModule } from 'src/app/parts/parts.module';
 import { UnitsComponent } from './loan/scheme/units/units.component';
 import { AssetClassModalComponent } from './loan/scheme/units/asset-class-modal/asset-class-modal.component';
 import { UnitCardComponent } from './loan/scheme/units/unit-card/unit-card.component';
-import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule-modal/unit-schedule-modal.component';
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { UnitScheduleUploadComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/unit-schedule-upload.component';
+import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule/unit-schedule-modal/unit-schedule-modal.component';
+import { UploadNavComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-nav/upload-nav.component';
 
 @NgModule({
   imports: [
@@ -39,7 +41,9 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     AssetClassModalComponent,
     UnitCardComponent,
     UnitScheduleModalComponent,
-    UnitScheduleComponent
+    UnitScheduleComponent,
+    UnitScheduleUploadComponent,
+    UploadNavComponent,
   ],
   exports: [
 

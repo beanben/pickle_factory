@@ -39,7 +39,7 @@
                 appDot
                 [status]="investmentStartegyStatus"
               ></span>
-              <span class="px-2">Investment Strategy</span>
+              <span class="px-2" [ngClass]="{'text-active': step === 2}">Investment Strategy</span>
             </li>
           </ol>
         </nav>
