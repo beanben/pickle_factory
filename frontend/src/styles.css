@@ -113,7 +113,7 @@ app-edit {
 
 .text-active {
     color: rgb(15, 86, 179);
-    font-weight: bolder;
+    font-weight: 500;
 }
 
 input[type="radio"]:disabled {
@@ -226,4 +226,14 @@ table.table td {
     padding-top: 2px;
     padding-bottom: 2px;
 } */
+
+.bg-highlight {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;  
+}
+
+.bg-instructions{
+    background-color: rgba(0,123,255, 0.1);
+    border-radius: 5px; 
+}
 

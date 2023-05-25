@@ -53,6 +53,23 @@ class ChoicesView(APIView):
         serializer = shared_serializers.ChoicesSerializer(choices, many=True)
         # pdb.set_trace()
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class SerializerFieldsView(APIView):
+    def get(self, request, serializer_name):
+        serializer_name = camel_to_snake(serializer_name)
+        serializer_dict = {
+            'unit': scheme_serializers.UnitSerializer(),
+            'sale': scheme_serializers.SaleSerializer(),
+            'lease': scheme_serializers.LeaseSerializer(),
+        }
+
+        if serializer_name not in serializer_dict:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = serializer_dict[serializer_name]
+        fields = list(serializer.fields.keys())
+        fields = [snake_to_camel(field) for field in fields]
+        return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = loan_models.Loan.objects.all()

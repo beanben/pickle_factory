@@ -57,6 +57,13 @@ export class SharedService {
     return choice ? choice.label : '';
   }
 
+  getFields(name: string):Observable<string[]> {
+    const url = `/api/fields/${name}/`;
+    return this.http.get<string[]>(url).pipe(
+      tap(() => console.log('getFields()', Math.random()))
+    );
+  }
+
 
 
 }

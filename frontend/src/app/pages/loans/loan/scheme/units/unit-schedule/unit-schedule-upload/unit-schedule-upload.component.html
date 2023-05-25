@@ -1,0 +1,37 @@
+<div class="modal" tabindex="-1" [ngStyle]="{display: displayStyle}" role="dialog">
+  <div class="modal-dialog modal-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title w-100 text-center">Upload unit schedule data</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="onCancel()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <app-upload-nav [step]="step"></app-upload-nav>
+
+        <app-upload-step-one
+          [unitStructure]="unitStructure"
+          [leaseStructure]="leaseStructure"
+          [assetClass]="assetClass"
+          (checkboxChanged)="onCheckboxChanged($event)"
+        ></app-upload-step-one>
+      </div>
+
+
+      <div class="modal-footer">
+        <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
+          < Previous
+        </button>
+        <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [disabled]="!isChecked">
+          Next >
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

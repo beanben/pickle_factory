@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="row">
+      <div class="col p-4">
+        <h6 class="text-center py-2">Step 1 of 2</h6>
+
+        <div class="bg-instructions py-2">
+          <ol class="my-2">
+            <li class="py-1">You can upload a .csv or an .xlsx file.</li>
+            <li class="py-1">
+              Make sure your file has the correct column headers: <br />
+              <span *ngFor="let field of parametres$ | async; let i = index"
+                >{{ field | titlecase }}{{ i + 1 === (parametres$ | async)?.length ? '.' : ', ' }}</span
+              >
+            </li>
+            <li class="py-1">The number of columns should not exceed {{ (parametres$ | async)?.length }}.</li>
+          </ol>
+        </div>
+
+        <div class="bg-instructions my-2">
+          <div class="d-flex justify-content-start py-2">
+            <img src="{{ information }}" alt="" class="px-2"/>
+            <p class="my-auto">In case of any issues, please download our .xlsx template</p>
+          </div>
+        </div>
+
+        <div class="my-2">
+          <h5 class="py-1">Pre-import data settings</h5>
+          <p class="py-1">Before uploading  your file, please take a moment to configure how we should handle the data.</p>
+          <h6 class="py-1">HEADER COLUMNS</h6>
+          <p class="py-1">The first row of your file must contain the column headings. See an example of header columns format below.</p>
+        </div>
+
+        <div class="my-2">
+          <table class="table table-hover text-center">
+            <thead>
+              <tr>
+                <th>{{getLetter(0)}}</th>
+                <th *ngFor="let field of parametres$ | async; let i = index">{{getLetter(i+1)}}</th>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td *ngFor="let field of parametres$ | async">{{ field | titlecase }}</td>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <div class="my-2 pt-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [(ngModel)]="isChecked" id="checkColumns">
+            <label class="form-check-label" for="checkColumns">
+              My first row contains column headings
+            </label>
+          </div>
+          <p>By ticking the box you validate that your file has headers in the first row</p>
+        </div>
+
+      </div>
+    </div>
+  </div>

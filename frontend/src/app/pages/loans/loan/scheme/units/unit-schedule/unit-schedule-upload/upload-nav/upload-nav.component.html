@@ -1,0 +1,30 @@
+<nav>
+    <ol class="breadcrumb justify-content-center">
+      <li class="breadcrumb-item d-flex align-items-center">
+        <span
+          class="px-2 d-flex align-items-center justify-content-center"
+          appDot
+          [status]="selectFileStatus"
+        ></span>
+        <span class="px-2" [ngClass]="{'text-active': step === 1 || step === 2}">Select file</span>
+      </li>
+      <img src="{{ chevronRight }}" alt="" />
+      <li class="breadcrumb-item d-flex align-items-center">
+          <span
+            class="px-2 d-flex align-items-center justify-content-center"
+            appDot
+            [status]="dataValidationStatus"
+          ></span>
+          <span class="px-2" [ngClass]="{'text-active': step === 3}">Data validation</span>
+        </li>
+        <img src="{{ chevronRight }}" alt="" />
+        <li class="breadcrumb-item d-flex align-items-center">
+          <span
+            class="px-2 d-flex align-items-center justify-content-center"
+            appDot
+            [status]="uploadStatus"
+          ></span>
+          <span class="px-2" [ngClass]="{'text-active': step === 4}">Upload</span>
+      </li>
+    </ol>
+  </nav>

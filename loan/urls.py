@@ -21,7 +21,8 @@ from .views import (
     # SaleStatusChoicesView,
     ChoicesView,
     UnitsAndSales,
-    UnitsAndLeases
+    UnitsAndLeases,
+    SerializerFieldsView
 )
 
 unit_patterns = ([
@@ -71,4 +72,5 @@ urlpatterns = [
     path('unit/', include(unit_patterns)),
     path('asset_class/', include(asset_class_patterns)),
     path('choices/<str:choice_type>/', ChoicesView.as_view(), name='choices'),
+    path('fields/<str:serializer_name>/', SerializerFieldsView.as_view(), name='fields')
 ]
