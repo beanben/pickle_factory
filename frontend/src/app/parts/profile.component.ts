@@ -8,7 +8,7 @@ import { Firm, User } from '../_interfaces/auth.interface';
   selector: 'app-profile',
   template: `
         <div class="modal" tabindex="-1" [ngStyle]="{'display':displayStyle}" role="dialog">
-        <div class="modal-dialog modal-centered">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
 
                 <div class="modal-header">
