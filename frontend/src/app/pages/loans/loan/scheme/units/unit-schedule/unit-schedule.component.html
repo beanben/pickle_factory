@@ -8,6 +8,8 @@
   [rentFrequencyChoices]="rentFrequencyChoices"
   [unitStructure]="unitStructure"
   [leaseStructure]="leaseStructure"
+  [leaseTypeChoices] = "leaseTypeChoices"
+  [ownershipTypeChoices] = "ownershipTypeChoices"
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
 ></app-unit-schedule-modal>
 
@@ -15,6 +17,11 @@
   *ngIf="openUploadModal"
   [unitStructure]="unitStructure"
   [leaseStructure]="leaseStructure"
+  [assetClass]="assetClass"
+  [ownershipTypeChoices]="ownershipTypeChoices"
+  [saleStatusChoices]="saleStatusChoices"
+  [leaseTypeChoices]="leaseTypeChoices"
+  (modalUploadUnitSchedule)="onCloseUploadModal($event)"
 ></app-unit-schedule-upload>
 
 

@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { LeaseStructure, UnitScheduleData, UnitStructure } from 'src/app/_interfaces/scheme.interface';
+import { Choice } from 'src/app/_interfaces/shared.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 
 @Component({
@@ -23,6 +24,9 @@ export class UnitScheduleUploadComponent implements OnInit {
   @Input() unitStructure = {} as UnitStructure;
   @Input() leaseStructure = {} as LeaseStructure;
   @Input() assetClass = {} as AssetClassType;
+  @Input() ownershipTypeChoices: Choice[] = [];
+  @Input() leaseTypeChoices: Choice[] = [];
+  @Input() saleStatusChoices: Choice[] = [];
   // private parametresSubject = new BehaviorSubject<string[]>([]);
   // parametres$: Observable<string[]> = this.parametresSubject.asObservable();
 

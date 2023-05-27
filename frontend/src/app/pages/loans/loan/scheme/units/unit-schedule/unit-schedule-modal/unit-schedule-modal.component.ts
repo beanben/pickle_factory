@@ -65,8 +65,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   rentFrequencyLabel = '';
   leaseFrequencyLabel = '';
   index = -1;
-  numbersOnly = /^\d+$/;
-  decimalsOnly = /^\d*\.?\d*$/;
+  // numbersOnly = /^\d+$/;
+  // decimalsOnly = /^\d*\.?\d*$/;
+  numbersOnly = /^(0|[1-9][0-9]*)$/;
+  decimalsOnly = /^([0-9]\d*(\.\d+)?)$/;
   step = 1;
   chevronRight = 'assets/images/chevronRight.svg';
   unitsStatus = 'active';
@@ -75,8 +77,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   nextIsClicked = false;
   subs: Subscription[] = [];
   showResetIcon = false;
-  ownershipTypeChoices: Choice[] = [];
-  leaseTypeChoices: Choice[] = [];
+  @Input() ownershipTypeChoices: Choice[] = [];
+  @Input() leaseTypeChoices: Choice[] = [];
 
   unitsFormGroup: FormGroup = this.fb.group({
     unitsData: this.fb.array([])
@@ -117,10 +119,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     },
     sale: {
       priceTarget: {
-        pattern: 'Sale price target must be a valid number'
+        pattern: 'Sale price target must be a valid positive number'
       },
       priceAchieved: {
-        pattern: 'Sale price achieved must be a valid number'
+        pattern: 'Sale price achieved must be a valid positive number'
       },
       status: {
         statusPriceError: 'Status cannot be available if price achieved is above 0'
@@ -128,10 +130,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     },
     lease: {
       rentTarget: {
-        pattern: 'Rent target must be a valid number'
+        pattern: 'Rent target must be a valid positive number'
       },
       rentAchieved: {
-        pattern: 'Rent achieved must be a valid number'
+        pattern: 'Rent achieved must be a valid positive number'
       }
     }
   };
@@ -152,21 +154,21 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateLeasesTotals();
     this.populateUnitsFormArray();
 
-    this.getChoices('ownershipType')
-    this.getChoices('leaseType')
+    // this.getChoices('ownershipType')
+    // this.getChoices('leaseType')
   }
 
 
-  getChoices(choiceType: string) {
-    this._sharedService.getChoices(choiceType)
-      .subscribe((choices: Choice[]) => {
-        if (choiceType === 'ownershipType') {
-          this.ownershipTypeChoices = choices;
-        } else if (choiceType === 'leaseType') {
-          this.leaseTypeChoices = choices;
-        }
-      });
-  }
+  // getChoices(choiceType: string) {
+  //   this._sharedService.getChoices(choiceType)
+  //     .subscribe((choices: Choice[]) => {
+  //       if (choiceType === 'ownershipType') {
+  //         this.ownershipTypeChoices = choices;
+  //       } else if (choiceType === 'leaseType') {
+  //         this.leaseTypeChoices = choices;
+  //       }
+  //     });
+  // }
 
 
 
@@ -720,4 +722,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const rentAchieved = formGroup.get('rentAchieved')?.value || 0;
     return rentAchieved > 0;
   }
+
+
 }

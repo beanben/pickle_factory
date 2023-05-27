@@ -1,5 +1,5 @@
 <div class="modal" tabindex="-1" [ngStyle]="{display: displayStyle}" role="dialog">
-  <div class="modal-dialog modal-centered modal-xl">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title w-100 text-center">Upload unit schedule data</h5>
@@ -16,11 +16,20 @@
         <app-upload-nav [step]="step"></app-upload-nav>
 
         <app-upload-step-one
+          *ngIf = "step === 1"
           [unitStructure]="unitStructure"
           [leaseStructure]="leaseStructure"
           [assetClass]="assetClass"
+          [ownershipTypeChoices]="ownershipTypeChoices"
+          [saleStatusChoices]="saleStatusChoices"
+          [leaseTypeChoices]="leaseTypeChoices"
           (checkboxChanged)="onCheckboxChanged($event)"
         ></app-upload-step-one>
+
+        <app-upload-step-two
+          *ngIf = "step === 2">
+        </app-upload-step-two>
+
       </div>
 
 
@@ -28,6 +37,7 @@
         <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
           < Previous
         </button>
+        <button type="button" class="btn btn-secondary m-2" (click)="onCancel()">Cancel</button>
         <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [disabled]="!isChecked">
           Next >
         </button>

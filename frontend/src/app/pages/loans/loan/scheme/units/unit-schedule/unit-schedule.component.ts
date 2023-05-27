@@ -39,6 +39,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   rentFrequencyChoices: Choice[] = [];
   saleStatusChoices: Choice[] = [];
   leaseTypeChoices: Choice[] = [];
+  ownershipTypeChoices: Choice[] = [];
 
   unitsScheduleData: UnitScheduleData[] = [];
   unitStructure = {} as UnitStructure;
@@ -57,6 +58,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   async ngOnInit() {
     this.saleStatusChoices = await this.getChoices('saleStatus');
     this.leaseTypeChoices = await this.getChoices('leaseType');
+    this.ownershipTypeChoices = await this.getChoices('ownershipType');
     await this.setUpUnitSchedule(this.assetClass);
   }
 
@@ -222,5 +224,9 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
   onOpenUploadModal(){
     this.openUploadModal = true;
+  }
+
+  onCloseUploadModal(unitsScheduleData: UnitScheduleData[] | null) {
+    this.openUploadModal = false;
   }
 }
