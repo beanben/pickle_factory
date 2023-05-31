@@ -1,0 +1,10 @@
+input.ng-invalid {
+  border: 1px solid red;
+}
+
+.no-padding-alert {
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100%;
+  width: 100%;
+}

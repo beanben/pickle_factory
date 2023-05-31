@@ -665,7 +665,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
         
         if (status === 'available' && priceAchieved > 0) {
-          console.log('status: ', status, 'priceAchieved: ', priceAchieved);
+          // console.log('status: ', status, 'priceAchieved: ', priceAchieved);
 
           return {statusPriceError: true}; // Returning custom error object
         }

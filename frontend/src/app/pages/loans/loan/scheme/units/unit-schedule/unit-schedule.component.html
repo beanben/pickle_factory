@@ -44,14 +44,14 @@
           <th scope="col"></th>
         </tr>
         <tr class="border-bottom border-2 header">
-          <th scope="col">{{ unitStructure.label | titlecase }} identifier</th>
+          <th scope="col">Identifier</th>
           <th scope="col">Description</th>
           <th scope="col">
             {{ unitStructure.areaType }}
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
           <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
-          <th scope="col" *ngIf="assetClass.use === 'residential'">Type</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'">Ownership Type</th>
           <th scope="col">Target price</th>
           <th scope="col">Price achieved</th>
           <th scope="col">Sale status</th>
@@ -125,7 +125,7 @@
             <small class="px-0">({{ unitStructure.areaSystem }})</small>
           </th>
           <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
-          <th scope="col" *ngIf="assetClass.use === 'residential'">Type</th>
+          <th scope="col" *ngIf="assetClass.use === 'residential'">Lease type</th>
           <th scope="col">
             Rent target <br>
             <!-- <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small> -->

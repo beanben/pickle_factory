@@ -8,16 +8,15 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import {BehaviorSubject, Observable, lastValueFrom} from 'rxjs';
-import {LeaseStructure, UnitStructure} from 'src/app/_interfaces/scheme.interface';
+import {BehaviorSubject, Observable, Subscription, lastValueFrom} from 'rxjs';
+import {FieldOption, LeaseStructure, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {SharedService} from 'src/app/_services/shared/shared.service';
+import { UnitService } from 'src/app/_services/unit/unit.service';
 import {AssetClassType} from 'src/app/_types/custom.type';
+import {toTitleCase} from 'src/app/shared/utils';
 
-interface FieldOption {
-  fieldName: string;
-  choicesLabels: string[];
-}
+
 
 @Component({
   selector: 'app-upload-step-one',
@@ -26,20 +25,34 @@ interface FieldOption {
   // styleUrls: ['./upload-step-one.component.css']
 })
 export class UploadStepOneComponent implements OnInit, OnChanges {
-  private parametresSubject = new BehaviorSubject<string[]>([]);
-  parametres$: Observable<string[]> = this.parametresSubject.asObservable();
-  private fieldOptionsSubject = new BehaviorSubject<FieldOption[]>([]);
-  fieldOptions$: Observable<FieldOption[]> = this.fieldOptionsSubject.asObservable();
-
   @Input() unitStructure = {} as UnitStructure;
   @Input() leaseStructure = {} as LeaseStructure;
   @Input() assetClass = {} as AssetClassType;
   information = 'assets/images/information.svg';
   @Output() checkboxChanged = new EventEmitter<boolean>();
-  // fieldOptions: FieldOption[] = [];
+
   @Input() ownershipTypeChoices: Choice[] = [];
   @Input() saleStatusChoices: Choice[] = [];
   @Input() leaseTypeChoices: Choice[] = [];
+
+  parameters = {
+    unitParametre: [] as string[],
+    saleParametre: [] as string[],
+    leaseParametre: [] as string[]
+  };
+  parametresDisplayed: string[] = [];
+
+  parametersOptions = {
+    saleOptions: [] as FieldOption[],
+    leaseOptions: [] as FieldOption[]
+  };
+  parametersOptionsDisplayed: FieldOption[] = [];
+
+  unitFields: string[] = [];
+  saleFields: string[] = [];
+  leaseFields: string[] = [];
+
+  subs: Subscription[] = [];
 
   _isChecked = false;
   get isChecked(): boolean {
@@ -50,91 +63,112 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     this.onCheckboxChange();
   }
 
-  constructor(private _sharedService: SharedService) {}
+  constructor(
+    private _sharedService: SharedService,
+    private _unitService: UnitService) {}
 
-  ngOnInit() {
-    this.updateParametersAndFieldOptions();
+  async ngOnInit() {
+    this.unitFields = await this.getFields('unit');
+    this.saleFields = await this.getFields('sale');
+    this.leaseFields = await this.getFields('lease');
+    await this.setParametersAndOptions();
+    this.defineParametreAndOptions(this.assetClass.investmentStrategy);
+
+    // subscribe to paranetree required & set them in the below
+    // COTINUE HERE
+  }
+
+  
+
+  defineParametreAndOptions(investmentStrategy: string) {
+    const parameters: string[] = [];
+    const parametersOptions: FieldOption[] = [];
+
+    if (investmentStrategy === 'buildToSell') {
+      parameters.push(...this.parameters.unitParametre, ...this.parameters.saleParametre);
+
+      parametersOptions.push(...this.parametersOptions.saleOptions);
+    }
+
+    if (investmentStrategy === 'buildToRent') {
+      parameters.push(...this.parameters.unitParametre, ...this.parameters.leaseParametre);
+
+      parametersOptions.push(...this.parametersOptions.leaseOptions);
+    }
+    
+    if(parameters.length === 0) {
+      this.parametresDisplayed = this._unitService.parametresDisplayed;
+      this.parametersOptionsDisplayed = this._unitService.parametersOptionsDisplayed;
+    } else {
+      this.parametresDisplayed = parameters;
+      this.parametersOptionsDisplayed = parametersOptions;
+      this._unitService.parametresDisplayed = parameters;
+      this._unitService.parametersOptionsDisplayed = parametersOptions;
+      this._unitService.setParametersRequiredSub(parameters)
+    }
+
+    // this.parametresDisplayed = parameters;
+    // this.parametersOptionsDisplayed = parametersOptions;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const {unitStructure, leaseStructure, assetClass} = changes;
-
-    if (unitStructure?.currentValue || leaseStructure?.currentValue || assetClass?.currentValue) {
-      this.updateParametersAndFieldOptions();
-    }
-    
-    // if (this.isAnyChoiceChanged(changes)) {
-    //   this.setFieldOptions();
+    // if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      
+      this.defineParametreAndOptions(this.assetClass.investmentStrategy);
     // }
   }
 
-  // async getChoices(choiceType: string): Promise<Choice[]> {
-  //   const choices$ = this._sharedService.getChoices(choiceType);
-  //   return await lastValueFrom(choices$);
-  // }
+  setParametersAndOptions() {
+    this.parameters = {
+      unitParametre: this.setParametres('unit', this.unitFields),
+      saleParametre: this.setParametres('sale', this.saleFields),
+      leaseParametre: this.setParametres('lease', this.leaseFields)
+    };
 
-  updateParametersAndFieldOptions() {
-    const parametres = this.getParametres();
-    this.parametresSubject.next(parametres);
-    this.setFieldOptions();
+    this.parametersOptions = {
+      leaseOptions: this.setParametreOptions('lease', this.leaseFields),
+      saleOptions: this.setParametreOptions('sale', this.saleFields)
+    };
   }
 
-  getParametres(): string[] {
-    const parameters: string[] = [];
+  setParametres(model: string, fields: string[]): string[] {
+    fields = fields.map(field => toTitleCase(field));
 
-    const unitParametre = this.unitParametre();
-    if (this.assetClass.investmentStrategy === 'buildToSell') {
-      const saleParametre = this.saleParametre();
-      parameters.push(...unitParametre, ...saleParametre);
-    } else {
-      const leaseParametre = this.leaseParametre();
-      parameters.push(...unitParametre, ...leaseParametre);
+    fields = fields.filter(field => {
+      return !field.toLowerCase().includes('id') || field.toLowerCase().includes('identifier');
+    });
+
+    if (model === 'unit') {
+      fields = fields.filter(field => {
+        return field.toLowerCase() !== 'label' && !field.toLowerCase().includes('area');
+      });
+
+      if(!this.unitStructure.hasBeds){
+        fields = fields.filter(field => {
+          return field.toLowerCase() !== 'beds';
+        });
+      }
+
+      const area = this.unitStructure.areaType.toUpperCase() + ' (' + this.unitStructure.areaSystem + ')';
+      fields.push(area);
     }
 
-    return parameters;
+    // if (model === 'sale') {
+    //   fields = fields.map(field => {
+    //     if (field.toLowerCase() === 'ownership type') {
+    //       return 'type';
+    //     }
+    //     return field;
+    //   });
+    // }
+
+    return fields;
   }
 
-  unitParametre(): string[] {
-    const unitParametre: string[] = [];
-    unitParametre.push(
-      this.unitStructure.label + ' identifier',
-      'description',
-      this.unitStructure.areaType + ' (' + this.unitStructure.areaSystem + ')'
-    );
-    if (this.unitStructure.hasBeds) {
-      unitParametre.push('beds');
-    }
-    return unitParametre;
-  }
-
-  saleParametre(): string[] {
-    const saleParametre: string[] = [];
-
-    saleParametre.push('ownership type', 'target price', 'price achieved', 'sale status', 'sale status date', 'buyer');
-
-    return saleParametre;
-  }
-
-  leaseParametre(): string[] {
-    const leaseParametre: string[] = [];
-
-    let frequency = '';
-    if (this.leaseStructure.rentFrequency === 'perWeek') {
-      frequency = 'per week';
-    } else {
-      frequency = 'per month';
-    }
-
-    leaseParametre.push(
-      'lease type',
-      'rent target' + ' (' + frequency + ')',
-      'rent achieved' + ' (' + frequency + ')',
-      'lease start date',
-      'lease end date',
-      'tenant'
-    );
-
-    return leaseParametre;
+  async getFields(model: string) {
+    const fields$ = this._sharedService.getFields(model);
+    let fields = await lastValueFrom(fields$);
+    return fields;
   }
 
   getLetter(index: number): string {
@@ -145,34 +179,20 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     this.checkboxChanged.emit(this.isChecked);
   }
 
-  setFieldOptions() {
+  setParametreOptions(model: string, fields: string[]): FieldOption[] {
     const fieldOptions: FieldOption[] = [];
 
-    if (this.assetClass.investmentStrategy === 'buildToSell') {
+    if (model === 'sale') {
       fieldOptions.push(
-        {fieldName: 'Ownership type', choicesLabels: this.ownershipTypeChoices.map(choice => choice.label)},
-        {fieldName: 'Sale status', choicesLabels: this.saleStatusChoices.map(choice => choice.label)}
+        {name: 'Ownership type', options: this.ownershipTypeChoices.map(choice => choice.label)},
+        {name: 'Sale status', options: this.saleStatusChoices.map(choice => choice.label)}
       );
-    } else if (this.assetClass.investmentStrategy === 'buildToRent') {
-      fieldOptions.push({fieldName: 'Lease type', choicesLabels: this.leaseTypeChoices.map(choice => choice.label)});
     }
 
-    this.fieldOptionsSubject.next(fieldOptions);
+    if (model === 'lease') {
+      fieldOptions.push({name: 'Lease type', options: this.leaseTypeChoices.map(choice => choice.label)});
+    }
 
-    // this.fieldOptions = fieldOptions;
+    return fieldOptions;
   }
-
-  // private isAnyStructureChanged(changes: SimpleChanges): boolean {
-  //   const {unitStructure, leaseStructure, assetClass} = changes;
-  //   return unitStructure?.currentValue || leaseStructure?.currentValue || assetClass?.currentValue;
-  // }
-
-  // private isAnyChoiceChanged(changes: SimpleChanges): boolean {
-  //   const {ownershipTypeChoices, saleStatusChoices, leaseTypeChoices} = changes;
-  //   return (
-  //     ownershipTypeChoices?.currentValue?.length &&
-  //     saleStatusChoices?.currentValue?.length &&
-  //     leaseTypeChoices?.currentValue?.length
-  //   );
-  // }
 }

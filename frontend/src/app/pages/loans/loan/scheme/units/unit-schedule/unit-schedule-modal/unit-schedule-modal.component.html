@@ -47,7 +47,7 @@
           </nav>
 
           <form [formGroup]="unitsFormGroup" #f="ngForm" [ngClass]="{'is-submitted': nextIsClicked}" id="form">
-            <table class="table table-hover text-center table-borderless custom-padding">
+            <table class="table table-hover text-center table-borderless">
               <thead>
                 <tr class="border border-1 header bg-grey">
                   <th>Total</th>
@@ -62,7 +62,7 @@
                   <th class="text-invisible">&times;></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }} identifier</th>
+                  <th>Identifier</th>
                   <th>Description</th>
                   <th>
                     {{ unitStructure.areaType }}
@@ -174,7 +174,7 @@
                 </tr>
                 <tr class="border-bottom border-2 header">
                   <th>{{ unitStructure.label | titlecase }} identifier</th>
-                  <th *ngIf="assetClass.use === 'residential'">Type</th>
+                  <th *ngIf="assetClass.use === 'residential'">Ownership type</th>
                   <th>Target price</th>
                   <th>Price achieved</th>
                   <th>Sale status</th>

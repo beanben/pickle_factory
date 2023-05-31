@@ -14,7 +14,9 @@ from rest_framework import status
 from django.http import JsonResponse
 import pdb
 from django.shortcuts import get_object_or_404
-from .utils import camel_to_snake, snake_to_camel
+from .utils import camel_to_snake, snake_to_camel, snake_to_space
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import pandas as pd
 
 
 # def asset_class_uses(request):
@@ -68,7 +70,7 @@ class SerializerFieldsView(APIView):
 
         serializer = serializer_dict[serializer_name]
         fields = list(serializer.fields.keys())
-        fields = [snake_to_camel(field) for field in fields]
+        fields = [snake_to_space(field) for field in fields]
         return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
@@ -588,4 +590,15 @@ class UnitsAndLeases(AuthorQuerySetMixin, generics.GenericAPIView):
             response_data = self.get_serializer(unit_lease_list, many=True).data
             return Response(response_data, status=status.HTTP_200_OK)
         
-
+class FileUploadView(APIView):
+    def post(self, request):
+        file = request.FILES.get('file')
+        if isinstance(file, InMemoryUploadedFile):
+            if file.name.endswith('.csv'):
+                data = pd.read_csv(file)
+            elif file.name.endswith('.xlsx') or file.name.endswith('.xls'):
+                data = pd.read_excel(file)
+            else:
+                return Response({'detail': 'Unsupported file format'}, status=400)
+            return Response(data.to_dict(), status=200)
+        return Response({'detail': 'Bad request'}, status=400)

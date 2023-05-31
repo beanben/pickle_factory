@@ -30,7 +30,7 @@ export class UploadNavComponent implements OnInit, OnChanges {
       this.selectFileStatus = 'active';
       this.dataValidationStatus = 'inactive';
       this.uploadStatus = 'inactive';
-    } else if (this.step === 3) {
+    } else if (this.step === 3 || this.step === 4) {
       this.selectFileStatus = 'complete';
       this.dataValidationStatus = 'active';
       this.uploadStatus = 'inactive';

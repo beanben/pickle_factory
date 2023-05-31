@@ -1,14 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SharedService } from '../shared/shared.service';
-import { LeaseStructure, Scheme, Unit, UnitStructure, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
+import { FieldOption, LeaseStructure, Scheme, Unit, UnitStructure, UnitScheduleData } from 'src/app/_interfaces/scheme.interface';
 import { AssetClassType } from 'src/app/_types/custom.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UnitService {
+  parametersOptionsDisplayed: FieldOption[] = [];
+  parametresDisplayed: string[] = [];
+
+  parametersRequiredSub = new BehaviorSubject<string[]>([]);
+  fileNameSub = new BehaviorSubject<string>('');
+
+  getFileNameSub():Observable<string>{
+    return this.fileNameSub.asObservable() 
+  }
+  setFileNameSub(fileName:string){
+    return this.fileNameSub.next(fileName) 
+  }
+
+  getParametersRequiredSub():Observable<string[]>{
+    return this.parametersRequiredSub.asObservable()
+  }
+  setParametersRequiredSub(parametersRequired:string[]){
+    return this.parametersRequiredSub.next(parametersRequired)
+  }
+
+
+
   constructor(private http: HttpClient, private _sharedService: SharedService) {}
 
   createUnits(units: Unit[]): Observable<Unit[]> {
@@ -86,5 +108,7 @@ export class UnitService {
     const rentFrequency = assetClass.use === 'studentAccommodation' ? 'perWeek' : 'perMonth';
     return {rentFrequency};
   }
+
+
 
 }

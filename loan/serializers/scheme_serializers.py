@@ -181,13 +181,13 @@ class LeaseSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'unit_id',
-            'tenant', 
+            'lease_type', 
             'rent_target',
             'rent_frequency',
             'rent_achieved',
             'start_date',
             'end_date',
-            'lease_type'
+            'tenant',
             ]
     
     def update_validated_data(self, validated_data):
@@ -220,12 +220,12 @@ class SaleSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'unit_id', 
-            'status', 
-            'status_date',
+            'ownership_type',
             'price_target',
             'price_achieved',
+            'status', 
+            'status_date',
             'buyer',
-            'ownership_type'
             ]
     
     def validate_buyer(self, value):

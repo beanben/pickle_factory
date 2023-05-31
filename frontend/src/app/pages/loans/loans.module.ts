@@ -21,7 +21,8 @@ import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule/un
 import { UploadNavComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-nav/upload-nav.component';
 import { UploadStepOneComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-one/upload-step-one.component';
 import { UploadStepTwoComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-two/upload-step-two.component';
-import { FileUploadComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-two/file-upload/file-upload.component';
+import { UploadStepThreeComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-three/upload-step-three.component';
+import { UploadStepFourComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-four/upload-step-four.component';
 
 @NgModule({
   imports: [
@@ -49,7 +50,8 @@ import { FileUploadComponent } from './loan/scheme/units/unit-schedule/unit-sche
     UploadNavComponent,
     UploadStepOneComponent,
     UploadStepTwoComponent,
-    FileUploadComponent,
+    UploadStepThreeComponent,
+    UploadStepFourComponent,
   ],
   exports: [
 

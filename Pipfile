@@ -20,6 +20,7 @@ sendgrid = "*"
 django-sendgrid-v5 = "*"
 djangorestframework-camel-case = "*"
 python-dateutil = "*"
+pandas = "==2.0.0"
 
 [dev-packages]
 

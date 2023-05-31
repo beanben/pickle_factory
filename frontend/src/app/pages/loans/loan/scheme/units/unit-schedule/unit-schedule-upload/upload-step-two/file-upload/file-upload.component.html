@@ -1,9 +1,0 @@
-<div>
-  <p class="text-center">Select file to upload <small>(.csv, .xls, .xlsx)</small></p>
-
-  <div class="d-flex align-items-center justify-content-start">
-    <input type="file" id="file-input" (change)="onFileSelected($event)" style="display: none" accept=".csv, .xls, .xlsx"/>
-    <button type="button" class="btn btn-primary" (click)="onButtonClick()">browse</button>
-    <div id="file-name" class="text-start px-2 link" (click)="onButtonClick()"></div>
-  </div>
-</div>

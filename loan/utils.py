@@ -14,4 +14,7 @@ def snake_to_camel(snake_case_str):
     # element_with_dash becomes elementWithDash
     return re.sub(r'_([a-z])', lambda m: m.group(1).upper(), snake_case_str)
 
+def snake_to_space(snake_case_str):
+    return re.sub(r'_', ' ', snake_case_str)
+
   

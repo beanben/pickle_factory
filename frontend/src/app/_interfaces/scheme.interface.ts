@@ -100,10 +100,16 @@ export interface LeaseStructure {
 export interface Sale {
   id?: number;
   unitId?: number;
-  status: string;
-  statusDate?: Date;
+  ownershipType: string;
   priceTarget?: number;
   priceAchieved?: number;
+  status: string;
+  statusDate?: Date;
   buyer?: string;
-  ownershipType: string;
+  
+}
+
+export interface FieldOption {
+  name: string;
+  options: string[];
 }

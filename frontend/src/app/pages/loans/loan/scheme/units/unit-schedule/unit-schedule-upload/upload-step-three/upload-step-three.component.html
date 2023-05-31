@@ -1,0 +1,35 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h6 class="text-center py-2">Step 1 of 2</h6>
+      <p class="text-center">
+        Our system checks the values of your headers and if any issues are found, you can easily edit by clicking on the
+        cell.
+      </p>
+
+      <form [formGroup]="headersForm" #f="ngForm">
+        <div class="container">
+          <div class="row">
+            <div class="col-6 offset-3">
+              <table class="table table-hover text-center table-borderless custom-table" >
+                <thead formArrayName="headersArray">
+                  <tr  *ngFor="let control of headersArray.controls; let i = index" [formGroupName]="i">
+                    <td >
+                      <input type="text" class="form-control" formControlName="header" />
+                    </td>
+                    <td *ngIf="control.get('header')?.errors?.['notEqual']">
+                      <div class="alert alert-danger no-padding-alert">
+                        Value should be "{{parametresRequired[i]}}"
+                      </div>
+                    </td>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

@@ -27,8 +27,15 @@
         ></app-upload-step-one>
 
         <app-upload-step-two
-          *ngIf = "step === 2">
+          *ngIf = "step === 2"
+          (dataUpload)="handleDataUpload($event)">
         </app-upload-step-two>
+
+        <app-upload-step-three
+        *ngIf="step === 3"
+        [data]="data"
+        (headerFormStatusChange)="handleHeaderFormChange($event)">
+        </app-upload-step-three>
 
       </div>
 
@@ -38,7 +45,7 @@
           < Previous
         </button>
         <button type="button" class="btn btn-secondary m-2" (click)="onCancel()">Cancel</button>
-        <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [disabled]="!isChecked">
+        <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [disabled]="disableNext()">
           Next >
         </button>
       </div>
