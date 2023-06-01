@@ -237,3 +237,8 @@ table.table td {
     border-radius: 5px; 
 }
 
+table td.bg-light-red {
+    background-color: rgba(245, 194, 199, 1);
+}
+
+

@@ -11,25 +11,34 @@
         <div class="container">
           <div class="row">
             <div class="col-6 offset-3">
-              <table class="table table-hover text-center table-borderless custom-table" >
+              <table class="table table-hover text-center table-borderles">
                 <thead formArrayName="headersArray">
-                  <tr  *ngFor="let control of headersArray.controls; let i = index" [formGroupName]="i">
-                    <td >
+                  <tr *ngFor="let control of headersArray.controls; let i = index" [formGroupName]="i">
+                    <td>
                       <input type="text" class="form-control" formControlName="header" />
                     </td>
                     <td *ngIf="control.get('header')?.errors?.['notEqual']">
                       <div class="alert alert-danger no-padding-alert">
-                        Value should be "{{parametresRequired[i]}}"
+                        Value should be "{{ parametresRequired[i] }}"
                       </div>
                     </td>
                   </tr>
                 </thead>
               </table>
+
+              <div *ngIf="headersArray.controls.length !== parametresRequired.length" class="alert alert-danger">
+                <span>Your file contains {{headersArray.controls.length}} headers but {{ parametresRequired.length}} are required.</span>
+                <span>
+                  The full list is :
+                  <span *ngFor="let parametre of parametresRequired; let i = index"
+                    >{{ parametre }}{{ i + 1 === parametresRequired.length ? '.' : ', ' }}</span
+                  >
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </form>
-
     </div>
   </div>
 </div>

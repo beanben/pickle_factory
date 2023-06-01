@@ -15,7 +15,7 @@
             appDot
             [status]="dataValidationStatus"
           ></span>
-          <span class="px-2" [ngClass]="{'text-active': step === 3}">Data validation</span>
+          <span class="px-2" [ngClass]="{'text-active': step === 3 || step === 4}">Data validation</span>
         </li>
         <img src="{{ chevronRight }}" alt="" />
         <li class="breadcrumb-item d-flex align-items-center">
@@ -24,7 +24,7 @@
             appDot
             [status]="uploadStatus"
           ></span>
-          <span class="px-2" [ngClass]="{'text-active': step === 4}">Upload</span>
+          <span class="px-2" [ngClass]="{'text-active': step === 5}">Upload</span>
       </li>
     </ol>
   </nav>

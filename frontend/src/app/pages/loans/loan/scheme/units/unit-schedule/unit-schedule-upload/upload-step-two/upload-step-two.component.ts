@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {UnitService} from 'src/app/_services/unit/unit.service';
-// import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-upload-step-two',
@@ -16,6 +16,8 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   fileName = '';
   subs: Subscription[] = [];
   data = {} as Uint8Array;
+  headers: string[] = [];
+  parametresRequired: string[] = [];
 
   constructor(private _unitService: UnitService) {}
 
@@ -23,6 +25,9 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     this.subs.push(
       this._unitService.getFileNameSub().subscribe(fileName => {
         document.getElementById('file-name')!.innerText = fileName;
+      }),
+      this._unitService.getParametersRequiredSub().subscribe(parametresRequired => {
+        this.parametresRequired = parametresRequired;
       })
     );
   }
@@ -42,7 +47,9 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
     reader.onload = () => {
       this.data = new Uint8Array(reader.result as ArrayBuffer);
-      this.dataUpload.emit(this.data);
+
+      this.headers = this.extractFileHeaders(this.data, file.name);
+      // this.dataUpload.emit(this.data);
     };
 
     reader.onerror = () => {
@@ -106,7 +113,6 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
   //   let headers = data[0].map(header => header.trim());
 
-
   //   for (let i = 1; i < data.length; i++) {
   //     let row = data[i];
 
@@ -120,7 +126,49 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   //   return form;
   // }
 
+  private extractFileHeaders(fileData: Uint8Array, fileName: string): string[] {
+    let headers: string[] = [];
+
+    if (fileName.endsWith('.csv')) {
+      headers = this.extractCSVFileHeaders(fileData);
+    } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+      headers = this.extractExcelFileHeaders(fileData);
+    }
+
+    return headers;
+  }
+
+  private extractCSVFileHeaders(fileData: Uint8Array): string[] {
+    const csvString = new TextDecoder('utf-8').decode(fileData);
+    const lines = csvString.split('\n').filter(line => line.trim() !== '');
+
+    return lines.map(line => line.split(','))[0];
+  }
+
+  private extractExcelFileHeaders(fileData: Uint8Array): string[] {
+    const workbook = XLSX.read(fileData, {type: 'array'});
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
+
+    const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
+    return nonEmptyRows[0];
+  }
+
+  // private isEqualTo(expectedValue: string): ValidatorFn {
+  //   return (control: AbstractControl): {[key: string]: any} | null => {
+  //     return control.value.toLowerCase() === expectedValue.toLowerCase() ? null : {notEqual: true};
+  //   };
+  // }
+
+  compareArrays(arr1: string[], arr2: string[]): boolean {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+
+    return arr1.every((value, index) => value === arr2[index]);
+  }
+
   ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe());    
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 }
