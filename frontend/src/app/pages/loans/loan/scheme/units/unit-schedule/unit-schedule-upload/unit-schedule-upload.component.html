@@ -28,7 +28,8 @@
 
         <app-upload-step-two
           *ngIf = "step === 2"
-          (dataUpload)="handleDataUpload($event)">
+          (dataUpload)="handleDataUpload($event)"
+          (dataHeadersValidation)="handleHeadersValidation($event)">
         </app-upload-step-two>
 
         <app-upload-step-three

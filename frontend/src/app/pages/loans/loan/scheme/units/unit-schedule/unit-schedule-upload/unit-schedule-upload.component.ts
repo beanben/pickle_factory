@@ -21,7 +21,6 @@ export class UnitScheduleUploadComponent implements OnInit {
   step = 1;
   data = {} as Uint8Array;
   headerFormIsValid = false;
-  dataIsLoaded = false;
 
   @Output() modalUploadUnitSchedule = new EventEmitter<UnitScheduleData[] | null>();
   @Input() unitStructure = {} as UnitStructure;
@@ -64,21 +63,21 @@ export class UnitScheduleUploadComponent implements OnInit {
 
   handleDataUpload(data: Uint8Array) {
     this.data = data;
-    this.dataIsLoaded = true;
-
   }
 
   handleHeaderFormChange(form: FormGroup) {
     this.headerFormIsValid = form.valid;
   }
 
+  handleHeadersValidation(isValid: boolean) {
+    this.headerFormIsValid = isValid;
+  }
+
   disableNext(): boolean {
     if (this.step === 1) {
       return !this.isChecked;
     }else if(this.step === 2){
-      return !this.dataIsLoaded;
-    } else if (this.step === 3) {
-      return !this.headerFormIsValid;
+      return !this.headerFormIsValid
     } else {
       return false;
     }

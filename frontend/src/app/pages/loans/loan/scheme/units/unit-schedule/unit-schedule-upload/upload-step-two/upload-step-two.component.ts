@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 export class UploadStepTwoComponent implements OnInit, OnDestroy {
   errorMessage = '';
   @Output() dataUpload = new EventEmitter<Uint8Array>();
+  @Output() dataHeadersValidation = new EventEmitter<boolean>();
   dataForm = {} as FormGroup;
   fileName = '';
   subs: Subscription[] = [];
@@ -49,7 +50,12 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
       this.data = new Uint8Array(reader.result as ArrayBuffer);
 
       this.headers = this.extractFileHeaders(this.data, file.name);
-      // this.dataUpload.emit(this.data);
+
+      if(this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
+        this.dataUpload.emit(this.data);
+        this.dataHeadersValidation.emit(true);
+      }
+
     };
 
     reader.onerror = () => {
@@ -142,7 +148,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     const csvString = new TextDecoder('utf-8').decode(fileData);
     const lines = csvString.split('\n').filter(line => line.trim() !== '');
 
-    return lines.map(line => line.split(','))[0];
+    return lines.map(line => line.split(',').map(header => header.trim()))[0];
   }
 
   private extractExcelFileHeaders(fileData: Uint8Array): string[] {
@@ -151,7 +157,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
 
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-    return nonEmptyRows[0];
+    return nonEmptyRows[0].map(header => header.trim());
   }
 
   // private isEqualTo(expectedValue: string): ValidatorFn {
@@ -160,12 +166,16 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   //   };
   // }
 
-  compareArrays(arr1: string[], arr2: string[]): boolean {
+  arraysAreEqual(arr1: string[], arr2: string[]): boolean {
     if (arr1.length !== arr2.length) {
       return false;
     }
 
-    return arr1.every((value, index) => value === arr2[index]);
+    return arr1.every((value, index) => value.trim().toLowerCase() === arr2[index].trim().toLowerCase());
+  }
+
+  stringsAreEqual(str1: string, str2: string): boolean {
+    return str1.trim().toLowerCase() === str2.trim().toLowerCase();
   }
 
   ngOnDestroy(): void {

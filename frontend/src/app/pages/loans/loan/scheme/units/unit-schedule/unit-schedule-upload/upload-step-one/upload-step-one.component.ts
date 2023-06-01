@@ -168,6 +168,9 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
   async getFields(model: string) {
     const fields$ = this._sharedService.getFields(model);
     let fields = await lastValueFrom(fields$);
+
+    // fields = fields.map(field => field.trim());
+
     return fields;
   }
 
