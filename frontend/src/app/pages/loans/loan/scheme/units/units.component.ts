@@ -125,11 +125,8 @@ export class UnitsComponent implements OnInit, OnDestroy {
     let index = this.schemeAssetClasses.findIndex(schemeAssetClass => schemeAssetClass.id === assetClass.id);
     if (index !== -1) {
       this.schemeAssetClasses[index] = assetClass;
-      // this.onSelectAssetClass(index);
     } else {
       this.schemeAssetClasses.push(assetClass);
-      // const lastIndex = this.schemeAssetClasses.length - 1;
-      // this.onSelectAssetClass(lastIndex);
     }
   }
 

@@ -99,7 +99,6 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         (GIA, "Gross Internal Area"),
     ]
 
-
     asset_class = models.ForeignKey(AssetClass, on_delete=models.CASCADE, related_name="units", related_query_name="unit")
     label = models.CharField(max_length=10, choices=LABEL_CHOICES, blank=True, default=UNIT)
     identifier = models.CharField(verbose_name="unit number", max_length=10)
@@ -119,6 +118,8 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
         if self.asset_class.scheme.system == "SQM":
             return "sqm"
         return "sqft"
+    
+    
 
 # class Individual(TimestampedModel, AuthorTrackerModel):
 #     first_name = models.CharField(max_length=100, blank=True , default="")

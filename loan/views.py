@@ -72,6 +72,28 @@ class SerializerFieldsView(APIView):
         fields = list(serializer.fields.keys())
         fields = [snake_to_space(field) for field in fields]
         return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
+    
+class FieldsRequiredView(APIView):
+    def get_unit_fields(self, asset_class):
+        serializer = scheme_serializers.UnitSerializer()
+        unit_fields = list(serializer.fields.keys())
+
+        # remove 'label' from list , as well as "id" and "asset_class_id"
+        unit_fields.remove('label')
+        unit_fields.remove('id')
+        unit_fields.remove('asset_class_id')
+
+        # if use is not either residential, student_accommodation or hotel, remove 'beds'
+        if asset_class.use not in ['residential', 'student_accommodation', 'hotel']:
+            unit_fields.remove('beds')
+
+        # replace 'area_size', 'area_type" and "area_system" with the value of "area_type" and "area_system"
+
+
+    def get(self, request, asset_class_id):
+        asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
+        unit_fields_required = self.get_unit_fields(asset_class)
+
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = loan_models.Loan.objects.all()

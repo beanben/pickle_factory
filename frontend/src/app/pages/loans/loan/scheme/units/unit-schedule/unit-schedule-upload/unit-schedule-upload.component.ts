@@ -14,7 +14,6 @@ import {AssetClassType} from 'src/app/_types/custom.type';
 export class UnitScheduleUploadComponent implements OnInit {
   displayStyle = 'block';
   isChecked = false;
-  // isUploadError = false;
   selectFileStatus = 'active';
   dataValidationStatus = 'inactive';
   uploadStatus = 'inactive';

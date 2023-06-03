@@ -154,22 +154,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateLeasesTotals();
     this.populateUnitsFormArray();
 
-    // this.getChoices('ownershipType')
-    // this.getChoices('leaseType')
   }
-
-
-  // getChoices(choiceType: string) {
-  //   this._sharedService.getChoices(choiceType)
-  //     .subscribe((choices: Choice[]) => {
-  //       if (choiceType === 'ownershipType') {
-  //         this.ownershipTypeChoices = choices;
-  //       } else if (choiceType === 'leaseType') {
-  //         this.leaseTypeChoices = choices;
-  //       }
-  //     });
-  // }
-
 
 
   addEventBackgroundClose() {
