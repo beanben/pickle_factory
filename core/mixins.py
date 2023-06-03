@@ -1,4 +1,5 @@
 from core import models
+from rest_framework import serializers
 
 class AuthorQuerySetMixin():
     
@@ -24,3 +25,18 @@ class AuthorQuerySetMixin():
         serializer.save(
             author=self.request.user
             )
+        
+class ChoiceFieldSerializerMixin(serializers.ModelSerializer):
+    """
+    This is a mixin that includes a to_representation method adding the display value
+    for all choice fields to the serialized output.
+    """
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        for field in self.fields:
+            if isinstance(self.fields[field], serializers.ChoiceField):
+                method_name = f'get_{field}_display'
+                if hasattr(instance, method_name):
+                    rep[f'{field}_display'] = getattr(instance, method_name)()
+        return rep

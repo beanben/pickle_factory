@@ -107,10 +107,8 @@ class Unit(TimestampedModelReverse, AuthorTrackerModel):
     beds = models.IntegerField(blank=True, null=True)
     area_size = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     area_type = models.CharField(max_length=3, choices=AREA_TYPE_CHOICES, blank=True, default=NIA)
-    # value = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
 
     def __str__(self):
-        # display the unit identified for a given asset class
         return self.identifier
     
     class Meta:

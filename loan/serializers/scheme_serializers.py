@@ -7,6 +7,7 @@ from rest_framework.serializers import ValidationError
 import pdb
 from django.utils.text import camel_case_to_spaces, slugify
 from loan.fields import CamelToSnakeCaseCharField, AngularDateField
+from core.mixins import ChoiceFieldSerializerMixin
 
 class SchemeSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -165,7 +166,7 @@ class UnitSerializer(serializers.ModelSerializer):
     def get_area_system(self, obj):
         return obj.asset_class.scheme.system.lower()
     
-class LeaseSerializer(serializers.ModelSerializer):
+class LeaseSerializer(ChoiceFieldSerializerMixin, serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     unit_id = serializers.IntegerField()
     tenant = serializers.CharField(required=False, allow_blank=True)
@@ -203,6 +204,14 @@ class LeaseSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['rent_frequency_display'] = self.get_rent_frequency_display(instance)
+        return rep
+
+    def get_rent_frequency_display(self, instance):
+        return instance.get_rent_frequency_display()
     
 class SaleSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)

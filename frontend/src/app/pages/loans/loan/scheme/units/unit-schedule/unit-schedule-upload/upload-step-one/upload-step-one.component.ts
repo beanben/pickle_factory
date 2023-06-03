@@ -12,11 +12,9 @@ import {BehaviorSubject, Observable, Subscription, lastValueFrom} from 'rxjs';
 import {FieldOption, LeaseStructure, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {SharedService} from 'src/app/_services/shared/shared.service';
-import { UnitService } from 'src/app/_services/unit/unit.service';
+import {UnitService} from 'src/app/_services/unit/unit.service';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {toTitleCase} from 'src/app/shared/utils';
-
-
 
 @Component({
   selector: 'app-upload-step-one',
@@ -34,6 +32,7 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
   @Input() ownershipTypeChoices: Choice[] = [];
   @Input() saleStatusChoices: Choice[] = [];
   @Input() leaseTypeChoices: Choice[] = [];
+  @Input() rentFrequencyChoices: Choice[] = [];
 
   parameters = {
     unitParametre: [] as string[],
@@ -63,22 +62,15 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     this.onCheckboxChange();
   }
 
-  constructor(
-    private _sharedService: SharedService,
-    private _unitService: UnitService) {}
+  constructor(private _sharedService: SharedService, private _unitService: UnitService) {}
 
   async ngOnInit() {
     this.unitFields = await this.getFields('unit');
     this.saleFields = await this.getFields('sale');
     this.leaseFields = await this.getFields('lease');
-    await this.setParametersAndOptions();
-    this.defineParametreAndOptions(this.assetClass.investmentStrategy);
-
-    // subscribe to paranetree required & set them in the below
-    // COTINUE HERE
+    // await this.setParametersAndOptions();
+    // this.defineParametreAndOptions(this.assetClass.investmentStrategy);
   }
-
-  
 
   defineParametreAndOptions(investmentStrategy: string) {
     const parameters: string[] = [];
@@ -95,8 +87,8 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
 
       parametersOptions.push(...this.parametersOptions.leaseOptions);
     }
-    
-    if(parameters.length === 0) {
+
+    if (parameters.length === 0) {
       this.parametresDisplayed = this._unitService.parametresDisplayed;
       this.parametersOptionsDisplayed = this._unitService.parametersOptionsDisplayed;
     } else {
@@ -104,7 +96,7 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
       this.parametersOptionsDisplayed = parametersOptions;
       this._unitService.parametresDisplayed = parameters;
       this._unitService.parametersOptionsDisplayed = parametersOptions;
-      this._unitService.setParametersRequiredSub(parameters)
+      this._unitService.setParametersRequiredSub(parameters);
     }
 
     // this.parametresDisplayed = parameters;
@@ -112,10 +104,21 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // if (changes['assetClass'] && changes['assetClass'].currentValue) {
+    if (
+      this.ownershipTypeChoices.length &&
+      this.saleStatusChoices.length &&
+      this.leaseTypeChoices.length &&
+      this.rentFrequencyChoices.length
+    ) {
+      // if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      this.setParametersAndOptions();
       
+    }
+
+    if (changes['assetClass'] && changes['assetClass'].currentValue) {
       this.defineParametreAndOptions(this.assetClass.investmentStrategy);
-    // }
+    }
+
   }
 
   setParametersAndOptions() {
@@ -139,28 +142,64 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     });
 
     if (model === 'unit') {
-      fields = fields.filter(field => {
-        return field.toLowerCase() !== 'label' && !field.toLowerCase().includes('area');
-      });
-
-      if(!this.unitStructure.hasBeds){
-        fields = fields.filter(field => {
-          return field.toLowerCase() !== 'beds';
-        });
-      }
-
-      const area = this.unitStructure.areaType.toUpperCase() + ' (' + this.unitStructure.areaSystem + ')';
-      fields.push(area);
+      fields = this.setUnitFields(fields);
     }
 
-    // if (model === 'sale') {
-    //   fields = fields.map(field => {
-    //     if (field.toLowerCase() === 'ownership type') {
-    //       return 'type';
-    //     }
-    //     return field;
-    //   });
-    // }
+    if (model === 'lease') {
+      fields = this.setLeaseFields(fields);
+    }
+
+    if (model === 'sale') {
+      fields = this.setSaleFields(fields);
+    }
+
+    return fields;
+  }
+
+  setUnitFields(fields: string[]): string[] {
+    fields = fields.filter(field => {
+      return field.toLowerCase() !== 'label' && !field.toLowerCase().includes('area');
+    });
+
+    if (!this.unitStructure.hasBeds) {
+      fields = fields.filter(field => {
+        return field.toLowerCase() !== 'beds';
+      });
+    }
+
+    const area = this.unitStructure.areaType.toUpperCase() + ' (' + this.unitStructure.areaSystem + ')';
+    fields.push(area);
+
+    return fields;
+  }
+
+  setLeaseFields(fields: string[]): string[] {
+    fields = fields.filter(field => {
+      return field.toLowerCase() !== 'rent frequency';
+    });
+
+    if (this.assetClass.use !== 'residential') {
+      fields = fields.filter(field => {
+        return field.toLowerCase() !== 'lease type';
+      });
+    }
+
+    fields = fields.map(field => {
+      if (field.toLowerCase() === 'rent target' || field.toLowerCase() === 'rent achieved') {
+        return field + ' (' + this.getChoiceLabel(this.leaseStructure.rentFrequency, this.rentFrequencyChoices) + ')';
+      }
+      return field;
+    });
+
+    return fields;
+  }
+
+  setSaleFields(fields: string[]): string[] {
+    if (this.assetClass.use !== 'residential') {
+      fields = fields.filter(field => {
+        return field.toLowerCase() !== 'ownership type';
+      });
+    }
 
     return fields;
   }
@@ -197,5 +236,9 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     }
 
     return fieldOptions;
+  }
+
+  getChoiceLabel(choice_value: string, choices: Choice[]): string {
+    return this._sharedService.getChoiceLabel(choice_value, choices);
   }
 }

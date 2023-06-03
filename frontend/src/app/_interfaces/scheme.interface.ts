@@ -88,6 +88,7 @@ export interface Lease {
   rentTarget?: number;
   rentAchieved?: number;
   rentFrequency?: 'perWeek' | 'perMonth';
+  rentFrequencyDisplay?: string;
   startDate?: Date;
   endDate?: Date;
   leaseType: string;
@@ -95,6 +96,7 @@ export interface Lease {
 
 export interface LeaseStructure {
   rentFrequency: 'perWeek' | 'perMonth';
+  rentFrequencyDisplay?: string;
 }
 
 export interface Sale {

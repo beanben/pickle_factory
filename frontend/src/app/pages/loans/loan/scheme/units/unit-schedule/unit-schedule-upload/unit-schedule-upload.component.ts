@@ -29,6 +29,8 @@ export class UnitScheduleUploadComponent implements OnInit {
   @Input() ownershipTypeChoices: Choice[] = [];
   @Input() leaseTypeChoices: Choice[] = [];
   @Input() saleStatusChoices: Choice[] = [];
+  @Input() rentFrequencyChoices: Choice[] = [];
+  content: string[][] = [];
 
   constructor(private el: ElementRef, private _unitService: UnitService) {}
 
@@ -61,8 +63,8 @@ export class UnitScheduleUploadComponent implements OnInit {
     this.isChecked = isChecked;
   }
 
-  handleDataUpload(data: Uint8Array) {
-    this.data = data;
+  handleContentUpload(content: string[][]) {
+    this.content = content;
   }
 
   handleHeaderFormChange(form: FormGroup) {

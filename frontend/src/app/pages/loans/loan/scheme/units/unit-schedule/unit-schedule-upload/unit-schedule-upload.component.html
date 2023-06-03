@@ -17,26 +17,28 @@
 
         <app-upload-step-one
           *ngIf = "step === 1"
+          
           [unitStructure]="unitStructure"
           [leaseStructure]="leaseStructure"
           [assetClass]="assetClass"
           [ownershipTypeChoices]="ownershipTypeChoices"
           [saleStatusChoices]="saleStatusChoices"
           [leaseTypeChoices]="leaseTypeChoices"
+          [rentFrequencyChoices]="rentFrequencyChoices"
           (checkboxChanged)="onCheckboxChanged($event)"
         ></app-upload-step-one>
 
         <app-upload-step-two
           *ngIf = "step === 2"
-          (dataUpload)="handleDataUpload($event)"
+          (contentUpload)="handleContentUpload($event)"
           (dataHeadersValidation)="handleHeadersValidation($event)">
         </app-upload-step-two>
 
-        <app-upload-step-three
+        <!-- <app-upload-step-three
         *ngIf="step === 3"
         [data]="data"
         (headerFormStatusChange)="handleHeaderFormChange($event)">
-        </app-upload-step-three>
+        </app-upload-step-three> -->
 
       </div>
 

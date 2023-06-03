@@ -35,7 +35,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   averageLeaseRentTarget = 0.0;
   averageLeaseRentAchieved = 0.0;
 
-  rentFrequencyLabel = '';
+  // rentFrequencyLabel = '';
   rentFrequencyChoices: Choice[] = [];
   saleStatusChoices: Choice[] = [];
   leaseTypeChoices: Choice[] = [];
@@ -49,6 +49,10 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   @Input() scheme = {} as Scheme;
   assetClassUnits: Unit[] = [];
 
+  unitFields: string[] = [];
+  saleFields: string[] = [];
+  leaseFields: string[] = [];
+
   constructor(
     private _schemeService: SchemeService,
     private _unitService: UnitService,
@@ -59,6 +63,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     this.saleStatusChoices = await this.getChoices('saleStatus');
     this.leaseTypeChoices = await this.getChoices('leaseType');
     this.ownershipTypeChoices = await this.getChoices('ownershipType');
+    this.rentFrequencyChoices = await this.getChoices('rentFrequency');
+    
     await this.setUpUnitSchedule(this.assetClass);
   }
 
@@ -74,7 +80,6 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     }
 
     if (assetClass.investmentStrategy === 'buildToRent') {
-      this.rentFrequencyChoices = await this.getChoices('rentFrequency');
       await this.getUnitsAndLeases(assetClass);
       this.leaseStructure = this._unitService.createLeaseStructure(this.assetClass);
     }
@@ -209,21 +214,11 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     }
   }
 
-  // getRentFrequencyLabel(rentFrequencyValue: string): string {
-  //   const rentFrequencyChoice = this.rentFrequencyChoices.find(choice => choice.value === rentFrequencyValue);
-  //   return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
-  // }
-
-  // getLeaseTypeLabel(leaseTypeValue: string): string {
-  //   const leaseTypeChoice = this.leaseTypeChoices.find(choice => choice.value === leaseTypeValue);
-  //   return leaseTypeChoice ? leaseTypeChoice.label : 'not defined';
-  // }
-
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
     return this._sharedService.getChoiceLabel(choice_value, choices);
   }
 
-  onOpenUploadModal(){
+  onOpenUploadModal() {
     this.openUploadModal = true;
   }
 

@@ -21,12 +21,14 @@
   [ownershipTypeChoices]="ownershipTypeChoices"
   [saleStatusChoices]="saleStatusChoices"
   [leaseTypeChoices]="leaseTypeChoices"
+  [rentFrequencyChoices]="rentFrequencyChoices"
   (modalUploadUnitSchedule)="onCloseUploadModal($event)"
 ></app-unit-schedule-upload>
 
 
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
+<!-- Build to sell  -->
     <table
       class="table table-hover text-center table-borderless uniform-width"
       *ngIf="assetClass.investmentStrategy === 'buildToSell'"
@@ -100,6 +102,7 @@
       </tbody>
     </table>
 
+<!-- Build to rent -->
     <table
       class="table table-hover text-center table-borderless uniform-width"
       *ngIf="assetClass.investmentStrategy === 'buildToRent'"
@@ -118,7 +121,7 @@
           <th scope="col"></th>
         </tr>
         <tr class="border-bottom border-2 header">
-          <th scope="col">{{ unitStructure.label | titlecase }}</th>
+          <th scope="col">Identifier</th>
           <th scope="col">Description</th>
           <th scope="col">
             {{ unitStructure.areaType }}
@@ -128,8 +131,8 @@
           <th scope="col" *ngIf="assetClass.use === 'residential'">Lease type</th>
           <th scope="col">
             Rent target <br>
-            <!-- <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small> -->
-            <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small>
+            <small>({{ leaseStructure.rentFrequencyDisplay }})</small>
+            <!-- <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small> -->
           </th>
           <th scope="col">
             Rent achieved <br>

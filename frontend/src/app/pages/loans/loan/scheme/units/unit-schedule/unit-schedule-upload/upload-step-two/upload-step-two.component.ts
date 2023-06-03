@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 })
 export class UploadStepTwoComponent implements OnInit, OnDestroy {
   errorMessage = '';
-  @Output() dataUpload = new EventEmitter<Uint8Array>();
+  @Output() contentUpload = new EventEmitter<string[][]>();
   @Output() dataHeadersValidation = new EventEmitter<boolean>();
   dataForm = {} as FormGroup;
   fileName = '';
@@ -19,6 +19,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   data = {} as Uint8Array;
   headers: string[] = [];
   parametresRequired: string[] = [];
+  content: string[][] = [];
 
   constructor(private _unitService: UnitService) {}
 
@@ -49,13 +50,14 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     reader.onload = () => {
       this.data = new Uint8Array(reader.result as ArrayBuffer);
 
-      this.headers = this.extractFileHeaders(this.data, file.name);
+      this.content = this.extractFileContent(this.data, file.name);
+      this.headers = this.content[0];
+      // this.headers = this.extractFileHeaders(this.data, file.name);
 
-      if(this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
-        this.dataUpload.emit(this.data);
+      if (this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
+        this.contentUpload.emit(this.content);
         this.dataHeadersValidation.emit(true);
       }
-
     };
 
     reader.onerror = () => {
@@ -70,101 +72,51 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     fileInput.click();
   }
 
-  // private extractFileContent(fileData: Uint8Array, fileName: string): string[][] {
-  //   let content: string[][] = [];
-
-  //   if (fileName.endsWith('.csv')) {
-  //     content = this.extractCSVFileContent(fileData);
-  //   } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-  //     content = this.extractExcelFileContent(fileData);
-  //   }
-
-  //   return content;
-  // }
-
-  // private extractCSVFileContent(fileData: Uint8Array): string[][] {
-  //   const csvString = new TextDecoder('utf-8').decode(fileData);
-  //   const lines = csvString.split('\n').filter(line => line.trim() !== '');
-
-  //   return lines.map(line => line.split(','));
-  // }
-
-  // private extractExcelFileContent(fileData: Uint8Array): string[][] {
-  //   const workbook = XLSX.read(fileData, {type: 'array'});
-  //   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-  //   const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
-
-  //   const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-  //   return nonEmptyRows;
-  // }
-
-  // private uploadFileToBackend(file: File) {
-  //   const formData = new FormData();
-  //   formData.append('file', file, file.name);
-
-  //   console.log('formData: ', formData);
-  // }
-
-  // checkFormData(formData: FormData) {
-  //   formData.forEach((value, key) => {
-  //     console.log(`Field name: ${key}`);
-  //     console.log(`Field value: ${value}`);
-  //   });
-  // }
-
-  // private createFormFromData(data: string[][]): FormGroup {
-  //   let form = new FormGroup({
-  //     rows: new FormArray([])
-  //   });
-
-  //   let headers = data[0].map(header => header.trim());
-
-  //   for (let i = 1; i < data.length; i++) {
-  //     let row = data[i];
-
-  //     let rowGroup = new FormGroup({});
-  //     for (let j = 0; j < headers.length; j++) {
-  //       rowGroup.addControl(headers[j], new FormControl(row[j]));
-  //     }
-  //     (form.get('rows') as FormArray).push(rowGroup);
-  //   }
-
-  //   return form;
-  // }
-
-  private extractFileHeaders(fileData: Uint8Array, fileName: string): string[] {
-    let headers: string[] = [];
+  private extractFileContent(fileData: Uint8Array, fileName: string): string[][] {
+    let content: string[][] = [];
 
     if (fileName.endsWith('.csv')) {
-      headers = this.extractCSVFileHeaders(fileData);
+      content = this.extractCSVFileContent(fileData);
     } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-      headers = this.extractExcelFileHeaders(fileData);
+      content = this.extractExcelFileContent(fileData);
     }
 
-    return headers;
+    return content;
   }
 
-  private extractCSVFileHeaders(fileData: Uint8Array): string[] {
+  // private extractFileHeaders(fileData: Uint8Array, fileName: string): string[] {
+  //   let headers: string[] = [];
+
+  //   if (fileName.endsWith('.csv')) {
+  //     headers = this.extractCSVFileHeaders(fileData);
+  //   } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+  //     headers = this.extractExcelFileHeaders(fileData);
+  //   }
+
+  //   return headers;
+  // }
+
+  private extractCSVFileContent(fileData: Uint8Array): string[][] {
     const csvString = new TextDecoder('utf-8').decode(fileData);
     const lines = csvString.split('\n').filter(line => line.trim() !== '');
 
-    return lines.map(line => line.split(',').map(header => header.trim()))[0];
+    // return lines.map(line => line.split(',').map(header => header.trim()))[0];
+    return lines.map(line => line.split(',').map(data => data.trim()));
   }
 
-  private extractExcelFileHeaders(fileData: Uint8Array): string[] {
+  private extractExcelFileContent(fileData: Uint8Array): string[][] {
     const workbook = XLSX.read(fileData, {type: 'array'});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
 
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-    return nonEmptyRows[0].map(header => header.trim());
-  }
 
-  // private isEqualTo(expectedValue: string): ValidatorFn {
-  //   return (control: AbstractControl): {[key: string]: any} | null => {
-  //     return control.value.toLowerCase() === expectedValue.toLowerCase() ? null : {notEqual: true};
-  //   };
-  // }
+    // Trim each cell in each row
+    const trimmedRows = nonEmptyRows.map(row => row.map(cell => (typeof cell === 'string' ? cell.trim() : cell)));
+
+    // return nonEmptyRows[0].map(header => header.trim());
+    return trimmedRows;
+  }
 
   arraysAreEqual(arr1: string[], arr2: string[]): boolean {
     if (arr1.length !== arr2.length) {
@@ -174,7 +126,10 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     return arr1.every((value, index) => value.trim().toLowerCase() === arr2[index].trim().toLowerCase());
   }
 
-  stringsAreEqual(str1: string, str2: string): boolean {
+  stringsAreEqual(str1: string | undefined, str2: string): boolean {
+    if (!str1) {
+      return false;
+    }
     return str1.trim().toLowerCase() === str2.trim().toLowerCase();
   }
 

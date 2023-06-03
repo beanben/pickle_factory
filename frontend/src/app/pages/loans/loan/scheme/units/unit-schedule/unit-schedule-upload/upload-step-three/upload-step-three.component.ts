@@ -9,20 +9,20 @@ import * as XLSX from 'xlsx';
   templateUrl: './upload-step-three.component.html',
   styleUrls: ['./upload-step-three.component.css']
 })
-export class UploadStepThreeComponent implements OnInit, OnDestroy {
+export class UploadStepThreeComponent implements OnInit, OnDestroy, OnChanges {
   @Input() data = {} as Uint8Array;
-  @Output() headerFormStatusChange = new EventEmitter<FormGroup>();
+  // @Output() headerFormStatusChange = new EventEmitter<FormGroup>();
   dataForm = {} as FormGroup;
   fileName = '';
   subs: Subscription[] = [];
-  headersForm: FormGroup = new FormGroup({
-    headersArray: new FormArray([])
+  form: FormGroup = new FormGroup({
+    content: new FormArray([])
   });
-  nextIsClicked = false;
-  parametresRequired: string[] = [];
+  // nextIsClicked = false;
+  // parametresRequired: string[] = [];
 
-  get headersArray(): FormArray {
-    return this.headersForm.get('headersArray') as FormArray;
+  get content(): FormArray {
+    return this.form.get('content') as FormArray;
   }
 
   constructor(private _unitService: UnitService) {}
@@ -34,74 +34,86 @@ export class UploadStepThreeComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subs.push(
-      this._unitService.getParametersRequiredSub().subscribe(parametresRequired => {
-        this.parametresRequired = parametresRequired;
-        this.onFileUploaded();
-        this.headerFormStatusChange.emit(this.headersForm);
-      }),
-      this.headersForm.statusChanges.subscribe(status => {
-        this.headerFormStatusChange.emit(this.headersForm);
-      })
-    );
+    // this.subs.push(
+    //   this._unitService.getParametersRequiredSub().subscribe(parametresRequired => {
+    //     this.parametresRequired = parametresRequired;
+    //     this.onFileUploaded();
+    //     this.headerFormStatusChange.emit(this.headersForm);
+    //   }),
+    //   this.headersForm.statusChanges.subscribe(status => {
+    //     this.headerFormStatusChange.emit(this.headersForm);
+    //   })
+    // );
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && changes['data'].currentValue) {
+      this.onFileUploaded();
+    }
   }
 
   onFileUploaded() {
-    const headers = this.extractFileHeaders(this.data, this.fileName);
-    if (this.parametresRequired.length > 0) {
-      this.headersForm = this.createFormFromHeaders(headers, this.parametresRequired);
-    }
+    const content = this.extractFileContent(this.data, this.fileName);
+    // this.form = this.createFormFromContent(content);
   }
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
-  private extractFileHeaders(fileData: Uint8Array, fileName: string): string[] {
-    let headers: string[] = [];
+  private extractFileContent(fileData: Uint8Array, fileName: string): string[][] {
+    let content: string[][] = [];
 
-    if (fileName.endsWith('.csv')) {
-      headers = this.extractCSVFileHeaders(fileData);
-    } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-      headers = this.extractExcelFileHeaders(fileData);
-    }
+    // if (fileName.endsWith('.csv')) {
+    //   content = this.extractCSVFileContent(fileData);
+    // } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+    //   content = this.extractExcelFileContent(fileData);
+    // }
 
-    return headers;
+    return content;
   }
 
-  private extractCSVFileHeaders(fileData: Uint8Array): string[] {
+  private extractCSVFileContent(fileData: Uint8Array): string[][] {
     const csvString = new TextDecoder('utf-8').decode(fileData);
     const lines = csvString.split('\n').filter(line => line.trim() !== '');
 
-    return lines.map(line => line.split(','))[0];
+    return lines.map(line => line.split(','));
   }
 
-  private extractExcelFileHeaders(fileData: Uint8Array): string[] {
+  private extractExcelFileCcontent(fileData: Uint8Array): string[][] {
     const workbook = XLSX.read(fileData, {type: 'array'});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
 
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-    return nonEmptyRows[0];
+    return nonEmptyRows;
   }
 
-  private createFormFromHeaders(headers: string[], requiredValues: string[]): FormGroup {
-    const headersArray = new FormArray(
-      headers.map(
-        (header, index) =>
-          new FormGroup({
-            header: new FormControl(header.trim(), [Validators.required, this.isEqualTo(requiredValues[index])])
-          })
-      )
-    );
+  // create form from content. First row represents headers
+  private createFormFromContent(content: string[][], requiredValues: string[]): FormGroup {
+    const form = new FormGroup({});
+    const headers = content[0];
 
-    return new FormGroup({headersArray});
+    headers.forEach(header => {
+      form.addControl(header, new FormControl(''));
+    });
+
+    for (let i = 1; i < content.length; i++) {
+      const row = content[i];
+      const rowForm = new FormGroup({});
+
+      for (let j = 0; j < row.length; j++) {
+        const header = headers[j];
+        rowForm.addControl(header, new FormControl(row[j]));
+      }
+
+      this.content.push(rowForm);
+    }
+
+    return form;
+
+    
+
   }
 
-  private isEqualTo(expectedValue: string): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} | null => {
-      return control.value.toLowerCase() === expectedValue.toLowerCase() ? null : {notEqual: true};
-    };
-  }
 }
