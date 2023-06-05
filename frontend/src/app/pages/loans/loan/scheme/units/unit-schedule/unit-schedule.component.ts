@@ -24,7 +24,7 @@ import {SharedService} from 'src/app/_services/shared/shared.service';
 })
 export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
-  openUploadModal = true;
+  openUploadModal = false;
   openAssetClassModal = false;
   modalMode = '';
   totalUnits = 0;
@@ -45,6 +45,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   unitStructure = {} as UnitStructure;
   leaseStructure = {} as LeaseStructure;
 
+  
   @Input() assetClass = {} as AssetClassType;
   @Input() scheme = {} as Scheme;
   assetClassUnits: Unit[] = [];
@@ -138,7 +139,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     return {
       id: unitData.id,
       assetClassId: unitData.assetClassId,
-      label: unitData.label,
+      // label: unitData.label,
       identifier: unitData.identifier,
       description: unitData.description,
       beds: unitData.beds,

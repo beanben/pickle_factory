@@ -53,22 +53,22 @@
                   <th>Total</th>
                   <th>
                     {{ totalUnits | number : '1.0-0' : 'en-GB' }}
-                    {{ unitStructure.label }}s
+                    {{unitFieldMap['label']}}s
                   </th>
                   <th>{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
-                  <th *ngIf="unitStructure.hasBeds">
+                  <th *ngIf="unitFieldMap['beds']">
                     {{ totalBeds | number : '1.0-0' : 'en-GB' }}
                   </th>
                   <th class="text-invisible">&times;></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>Identifier</th>
-                  <th>Description</th>
+                  <th>{{unitFieldMap['identifier'] | titlecase }}</th>
+                  <th>{{unitFieldMap['description'] | titlecase }}</th>
                   <th>
-                    {{ unitStructure.areaType }}
-                    <small>({{ unitStructure.areaSystem }})</small>
+                    {{unitFieldMap['areaType']}}
+                    <small>({{unitFieldMap['areaSystem']}})</small>
                   </th>
-                  <th *ngIf="unitStructure.hasBeds">Beds</th>
+                  <th *ngIf="unitFieldMap['beds']">{{unitFieldMap["beds"] | titlecase}}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -83,7 +83,7 @@
                   <td>
                     <input class="form-control text-center" formControlName="areaSize" placeholder="0.00" />
                   </td>
-                  <td *ngIf="unitStructure.hasBeds">
+                  <td *ngIf="unitFieldMap['beds']">
                     <input class="form-control text-center" formControlName="beds" placeholder="0" />
                   </td>
                   <td>
@@ -94,7 +94,7 @@
             </table>
 
             <div class="mt-3">
-              <button type="button" class="btn btn-primary" (click)="onAddUnit()">Add Unit</button>
+              <button type="button" class="btn btn-primary" (click)="onAddUnit()">Add {{unitFieldMap['label']}}</button>
 
               <div *ngIf="nextIsClicked && unitsFormGroup.invalid" class="mt-1 border border-danger rounded">
                 <div class="d-flex justify-content-center">
@@ -173,13 +173,13 @@
                   <th></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }} identifier</th>
-                  <th *ngIf="assetClass.use === 'residential'">Ownership type</th>
-                  <th>Target price</th>
-                  <th>Price achieved</th>
-                  <th>Sale status</th>
-                  <th>Status update</th>
-                  <th>Buyer</th>
+                  <th>{{ unitFieldMap["identifer"] | titlecase }} </th>
+                  <th *ngIf="saleFieldMap['ownershipType']">{{saleFieldMap["ownershipType"] | titlecase }}</th>
+                  <th>{{saleFieldMap["priceTarget"] | titlecase}}</th>
+                  <th>{{saleFieldMap["priceAchieved"] | titlecase}}</th>
+                  <th>{{saleFieldMap["status"] | titlecase}}</th>
+                  <th>{{saleFieldMap["statusDate"] | titlecase}}</th>
+                  <th>{{saleFieldMap["buyer"] | titlecase}}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -340,19 +340,19 @@
                   <th></th>
                 </tr>
                 <tr class="border-bottom border-2 header">
-                  <th>{{ unitStructure.label | titlecase }} identifier</th>
-                  <th *ngIf="assetClass.use === 'residential'">Type</th>
+                  <th>{{unitFieldMap['identifier']}}</th>
+                  <th *ngIf="leaseFieldMap['leaseType']">{{leaseFieldMap['leaseType']}}</th>
                   <th>
-                    Rent target <br />
-                    <small> ({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
+                    {{leaseFieldMap["rentTarget"]}}<br />
+                    <small> ({{leaseFieldMap["rentFrequency"]}})</small>
                   </th>
                   <th>
-                    Rent achieved <br />
-                    <small>({{ getRentFrequencyLabel(leaseStructure.rentFrequency) }})</small>
+                    {{leaseFieldMap["rentAchieved"]}} <br />
+                    <small> ({{leaseFieldMap["rentFrequency"]}})</small>
                   </th>
-                  <th>Start date</th>
-                  <th>End date</th>
-                  <th>Tenant</th>
+                  <th>{{leaseFieldMap["startDate"]}}</th>
+                  <th>{{leaseFieldMap["endDate"]}}</th>
+                  <th>{{leaseFieldMap["tenant"]}}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -463,12 +463,13 @@
           <table class="table table-hover text-center table-borderless">
             <thead>
               <tr class="border-bottom border-2 header">
-                <th>{{ unitStructure.label | titlecase }} identifier</th>
-                <th>Description</th>
+                <th>{{unitFieldMap["identifier"]}}</th>
+                <th>{{unitFieldMap["description"]}}</th>
                 <th>
-                  {{ unitStructure.areaType }} <small>({{ unitStructure.areaSystem }})</small>
+                  {{ unitFieldMap["areaType"] }} 
+                  <small>({{ unitFieldMap["areaSystem"] }})</small>
                 </th>
-                <th *ngIf="unitStructure.hasBeds">Beds</th>
+                <th *ngIf="unitFieldMap['beds']">{{unitFieldMap["beds"]}}</th>
               </tr>
             </thead>
             <tbody>
@@ -482,7 +483,7 @@
                 <td>
                   {{ getFormValue(unitsFormArray, index, 'areaSize') }}
                 </td>
-                <td *ngIf="unitStructure.hasBeds">
+                <td *ngIf="unitFieldMap['beds']">
                   {{ getFormValue(unitsFormArray, index, 'beds') }}
                 </td>
               </tr>

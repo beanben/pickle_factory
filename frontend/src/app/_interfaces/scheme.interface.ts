@@ -19,6 +19,7 @@ export interface AssetClass {
   // subUse: string;
   schemeId: number;
   investmentStrategy: string;
+  hasBeds?: boolean;
 }
 
 export interface Hotel extends AssetClass {
@@ -65,13 +66,12 @@ export interface UnitScheduleData {
 export interface Unit {
   id?: number;
   assetClassId?: number;
-  label: 'room' | 'unit';
   identifier?: string;
   description: string;
   beds?: number;
   areaSize: number;
-  areaType: 'NIA' | 'GIA';
-  areaSystem: 'sqft' | 'sqm';
+  areaType?: 'NIA' | 'GIA';
+  areaSystem?: 'sqft' | 'sqm';
 }
 
 export interface UnitStructure {
@@ -87,15 +87,14 @@ export interface Lease {
   tenant?: string;
   rentTarget?: number;
   rentAchieved?: number;
-  rentFrequency?: 'perWeek' | 'perMonth';
-  rentFrequencyDisplay?: string;
+  rentFrequency?: 'perDay' | 'perWeek' | 'perMonth';
   startDate?: Date;
   endDate?: Date;
   leaseType: string;
 }
 
 export interface LeaseStructure {
-  rentFrequency: 'perWeek' | 'perMonth';
+  rentFrequency: 'perDay' | 'perWeek' | 'perMonth';
   rentFrequencyDisplay?: string;
 }
 

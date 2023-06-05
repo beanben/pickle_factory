@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {LeaseStructure, UnitScheduleData, UnitStructure} from 'src/app/_interfaces/scheme.interface';
+import {LeaseStructure, Scheme, UnitScheduleData, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {UnitService} from 'src/app/_services/unit/unit.service';
 import {AssetClassType} from 'src/app/_types/custom.type';
@@ -25,6 +25,7 @@ export class UnitScheduleUploadComponent implements OnInit {
   @Input() unitStructure = {} as UnitStructure;
   @Input() leaseStructure = {} as LeaseStructure;
   @Input() assetClass = {} as AssetClassType;
+  @Input() scheme = {} as Scheme;
   @Input() ownershipTypeChoices: Choice[] = [];
   @Input() leaseTypeChoices: Choice[] = [];
   @Input() saleStatusChoices: Choice[] = [];

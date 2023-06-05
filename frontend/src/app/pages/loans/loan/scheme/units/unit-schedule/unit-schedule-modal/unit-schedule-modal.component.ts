@@ -3,7 +3,6 @@ import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output} f
 import {SchemeService} from 'src/app/_services/scheme/scheme.service';
 import {
   AbstractControl,
-  Form,
   FormArray,
   FormBuilder,
   FormControl,
@@ -12,17 +11,15 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import {Subscription, lastValueFrom} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 import {UnitService} from 'src/app/_services/unit/unit.service';
 import {
   Lease,
-  LeaseStructure,
   Sale,
   Scheme,
   Unit,
   UnitScheduleData,
-  UnitStructure
 } from 'src/app/_interfaces/scheme.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {Choice} from 'src/app/_interfaces/shared.interface';
@@ -34,6 +31,10 @@ interface ValidationMessages {
       [errorType: string]: string;
     };
   };
+}
+
+interface fieldMap  {
+  [key: string]: string | null;
 }
 
 @Component({
@@ -48,8 +49,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
   @Input() assetClass = {} as AssetClassType;
   @Input() scheme = {} as Scheme;
-  @Input() unitStructure = {} as UnitStructure;
-  @Input() leaseStructure = {} as LeaseStructure;
+
   @Output() modalSaveUnitsSchedule = new EventEmitter<UnitScheduleData[] | null>();
   @Input() saleStatusChoices: Choice[] = [];
   @Input() rentFrequencyChoices: Choice[] = [];
@@ -62,11 +62,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   averageLeaseRentTarget = 0.00;
   averageLeaseRentAchieved = 0.00;
   unitsToDelete: Unit[] = [];
-  rentFrequencyLabel = '';
-  leaseFrequencyLabel = '';
+
   index = -1;
-  // numbersOnly = /^\d+$/;
-  // decimalsOnly = /^\d*\.?\d*$/;
   numbersOnly = /^(0|[1-9][0-9]*)$/;
   decimalsOnly = /^([0-9]\d*(\.\d+)?)$/;
   step = 1;
@@ -137,6 +134,9 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       }
     }
   };
+  unitFieldMap = {} as fieldMap;
+  saleFieldMap = {} as fieldMap;
+  leaseFieldMap = {} as fieldMap;
 
 
   constructor(
@@ -153,7 +153,13 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.calculateSalesTotals();
     this.calculateLeasesTotals();
     this.populateUnitsFormArray();
+    this.getFieldsMap();
+  }
 
+  getFieldsMap() {
+    this.unitFieldMap = this._unitService.getUnitFieldsMap(this.assetClass, this.scheme);
+    this.saleFieldMap = this._unitService.getSaleFieldsMap(this.assetClass);
+    this.leaseFieldMap = this._unitService.getLeaseFieldsMap(this.assetClass);
   }
 
 
@@ -367,13 +373,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const unit = {
       id: form.get('id')?.value,
       assetClassId: this.assetClass.id,
-      label: this.unitStructure.label,
       identifier: form.get('identifier')?.value,
       description: form.get('description')?.value || '',
       beds: form.get('beds')?.value,
       areaSize: form.get('areaSize')?.value || 0.0,
-      areaType: this.unitStructure.areaType,
-      areaSystem: this.unitStructure.areaSystem
     };
     return unit;
   }
@@ -400,7 +403,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       tenant: form.get('tenant')?.value || '',
       rentTarget: form.get('rentTarget')?.value || 0.0,
       rentAchieved: form.get('rentAchieved')?.value || 0.0,
-      rentFrequency: this.leaseStructure.rentFrequency,
       startDate: form.get('startDate')?.value,
       endDate: form.get('endDate')?.value,
       leaseType: form.get('leaseType')?.value
@@ -665,7 +667,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
 
-      if (!this.unitStructure.hasBeds) {
+      if (!this.assetClass.hasBeds) {
         return null;
       }
 
@@ -684,10 +686,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return value || 'not defined';
   }
 
-  getRentFrequencyLabel(rentFrequencyValue: string): string {
-    const rentFrequencyChoice = this.rentFrequencyChoices.find(choice => choice.value === rentFrequencyValue);
-    return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
-  }
+  // getRentFrequencyLabel(rentFrequencyValue: string): string {
+  //   const rentFrequencyChoice = this.rentFrequencyChoices.find(choice => choice.value === rentFrequencyValue);
+  //   return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
+  // }
 
 
   reset(formArray: FormArray, index: number) {

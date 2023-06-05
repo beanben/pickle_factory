@@ -1,30 +1,30 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      rentFrequencyChoices: {{ rentFrequencyChoices | json }}
       <h6 class="text-center py-2">Step 1 of 2</h6>
-
       <div class="bg-instructions py-2">
         <ol class="my-2">
           <li class="py-1">You can upload a .csv or an .xlsx file.</li>
           <li class="py-1">
             Make sure your file has the correct column headers: <br />
-            <span *ngFor="let parametre of parametresDisplayed; let i = index"
-              >{{ parametre }}{{ i + 1 === parametresDisplayed.length ? '.' : ', ' }}</span
+            <span *ngFor="let parametre of parametresRequired; let last = last"
+              >{{ parametre }}{{ last ? '.' : ', ' }}</span
             >
           </li>
-            <li class="py-1" *ngIf="parametersOptionsDisplayed.length > 0">
-                Please note that certain fields only accept specific values. These fields and their valid options are listed
-                below:
-              <ol>
-                <li *ngFor="let field of parametersOptionsDisplayed">
-                  {{ field.name }}:
+          <ng-container *ngIf="parametersOptions$ | async as parametersOptions">
+            <li class="py-1" *ngIf="parametersOptions.length > 0">
+              Please note that certain fields only accept specific values. These fields and their valid options are
+              listed below:
+              <ul>
+                <li *ngFor="let field of parametersOptions">
+                  {{ field.name | titlecase }}:
                   <span *ngFor="let option of field.options; let i = index"
                     >{{ option | titlecase }} {{ field.options.length - 1 === i ? '.' : ',' }}
                   </span>
                 </li>
-              </ol>
+              </ul>
             </li>
+          </ng-container>
         </ol>
       </div>
 
@@ -48,10 +48,10 @@
         <table class="table table-hover text-center table-bordered border-primary">
           <thead>
             <tr>
-              <th *ngFor="let field of parametresDisplayed; let i = index">{{ getLetter(i) }}</th>
+              <th *ngFor="let field of parametresRequired; let i = index">{{ getLetter(i) }}</th>
             </tr>
             <tr>
-              <td *ngFor="let field of parametresDisplayed">{{ field }}</td>
+              <td *ngFor="let field of parametresRequired">{{ field }}</td>
             </tr>
           </thead>
         </table>

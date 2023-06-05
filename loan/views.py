@@ -56,44 +56,50 @@ class ChoicesView(APIView):
         # pdb.set_trace()
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class SerializerFieldsView(APIView):
-    def get(self, request, serializer_name):
-        serializer_name = camel_to_snake(serializer_name)
-        serializer_dict = {
-            'unit': scheme_serializers.UnitSerializer(),
-            'sale': scheme_serializers.SaleSerializer(),
-            'lease': scheme_serializers.LeaseSerializer(),
-        }
+# class SerializerFieldsView(APIView):
+#     def get(self, request, serializer_name):
+#         serializer_name = camel_to_snake(serializer_name)
+#         serializer_dict = {
+#             'unit': scheme_serializers.UnitSerializer(),
+#             'sale': scheme_serializers.SaleSerializer(),
+#             'lease': scheme_serializers.LeaseSerializer(),
+#         }
 
-        if serializer_name not in serializer_dict:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+#         if serializer_name not in serializer_dict:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = serializer_dict[serializer_name]
-        fields = list(serializer.fields.keys())
-        fields = [snake_to_space(field) for field in fields]
-        return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
+#         serializer = serializer_dict[serializer_name]
+#         fields = list(serializer.fields.keys())
+#         fields = [snake_to_space(field) for field in fields]
+#         return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
     
-class FieldsRequiredView(APIView):
-    def get_unit_fields(self, asset_class):
-        serializer = scheme_serializers.UnitSerializer()
-        unit_fields = list(serializer.fields.keys())
+# class AssetClassUnitScheduleFields(APIView):
 
-        # remove 'label' from list , as well as "id" and "asset_class_id"
-        unit_fields.remove('label')
-        unit_fields.remove('id')
-        unit_fields.remove('asset_class_id')
+#     def get_unit_fields(self, asset_class):
+#         serializer = scheme_serializers.UnitSerializer()
 
-        # if use is not either residential, student_accommodation or hotel, remove 'beds'
-        if asset_class.use not in ['residential', 'student_accommodation', 'hotel']:
-            unit_fields.remove('beds')
-
-        # replace 'area_size', 'area_type" and "area_system" with the value of "area_type" and "area_system"
+#         # remove the read_only fields
+#         fields = list(serializer.fields.keys())
 
 
-    def get(self, request, asset_class_id):
-        asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
-        unit_fields_required = self.get_unit_fields(asset_class)
+#     def get(self, request, asset_class_id):
+#         asset_class = get_object_or_404(scheme_models.AssetClass, id=asset_class_id)
 
+#         fields_dict = {
+#             'unit': self.get_unit_fields(asset_class),
+#             'sale': self.get_sale_fields(asset_class),
+#             'lease': self.get_lease_fields(asset_class),
+#         }
+
+#         fields = []
+
+#         if(asset_class.investment_strategy == scheme_models.AssetClass.BUILD_TO_SELL):
+#             fields = fields_dict['unit'] + fields_dict['sale']
+        
+#         if(asset_class.investment_strategy == scheme_models.AssetClass.BUILD_TO_RENT):
+#             fields = fields_dict['unit'] + fields_dict['lease']
+
+#         return JsonResponse(fields, safe = False, status=status.HTTP_200_OK)
 
 class LoanList(AuthorQuerySetMixin, generics.ListCreateAPIView):
     queryset = loan_models.Loan.objects.all()

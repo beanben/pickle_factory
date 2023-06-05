@@ -44,20 +44,19 @@ class SchemeSerializer(serializers.ModelSerializer):
 
 class AssetClassSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
-    # scheme = SchemeSerializer(required=False, allow_null=True)
     scheme_id = serializers.IntegerField()
     investment_strategy = CamelToSnakeCaseCharField()
     use = CamelToSnakeCaseCharField()
-    # sub_use = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    has_beds = serializers.SerializerMethodField()
 
     class Meta:
         model = scheme_models.AssetClass
         fields = [
             'id', 
             'use',
-            # 'sub_use',  
             'scheme_id', 
-            'investment_strategy']
+            'investment_strategy',
+            'has_beds']
 
     def update_validated_data(self, validated_data):
         # scheme_id = validated_data.pop("scheme")["id"]
@@ -76,6 +75,9 @@ class AssetClassSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
+    
+    def get_has_beds(self, obj):
+        return obj.has_beds
 
 class HotelSerializer(AssetClassSerializer):
     class Meta:
@@ -134,14 +136,14 @@ class BulkUpdateOrCreateSerializer(serializers.ListSerializer):
 class UnitSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
     asset_class_id = serializers.IntegerField()
-    area_system = serializers.SerializerMethodField(required=False, allow_null=True)
+    area_type = serializers.SerializerMethodField()
+    area_system = serializers.SerializerMethodField()
     
     class Meta:
         model = scheme_models.Unit
         fields = [
             'id',
             'asset_class_id',
-            'label',
             'identifier',
             'description',
             'beds',
@@ -163,8 +165,13 @@ class UnitSerializer(serializers.ModelSerializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
     
+    
     def get_area_system(self, obj):
-        return obj.asset_class.scheme.system.lower()
+        return obj.asset_class.scheme.get_system_display()
+
+    def get_area_type(self, obj):
+        return obj.area_type
+
     
 class LeaseSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False, allow_null=True)
@@ -176,6 +183,7 @@ class LeaseSerializer(serializers.ModelSerializer):
     start_date = AngularDateField(required=False, allow_null=True)
     end_date = AngularDateField(required=False, allow_null=True)
     lease_type = CamelToSnakeCaseCharField(required=False, allow_null=True)
+    has_lease_type = serializers.SerializerMethodField()
 
     class Meta:
         model = scheme_models.Lease
@@ -205,10 +213,8 @@ class LeaseSerializer(serializers.ModelSerializer):
         self.update_validated_data(validated_data)
         return super().update(instance, validated_data)
     
-    # def to_representation(self, instance):
-    #     rep = super().to_representation(instance)
-    #     rep['rent_frequency_display'] = self.get_rent_frequency_display(instance)
-    #     return rep
+    def has_lease_type(self, obj):
+        return obj.has_lease_type
 
     def get_rent_frequency_display(self, instance):
         return instance.get_rent_frequency_display()
