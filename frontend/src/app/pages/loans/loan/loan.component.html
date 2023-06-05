@@ -6,13 +6,6 @@
     (deleteIsConfirmed)="onDeleteLoan()">
 </app-loan-modal>
 
-<!-- <app-scheme-modal
-    *ngIf="openSchemeModal"
-    [mode] = "modalMode"
-    [loan]="loan"
-    (modalSaveScheme)="onSaveScheme($event)">
-</app-scheme-modal> -->
-
 <nav class="navbar navbar-light navbar-expand-lg pb-0 px-0 sticky-top mb-4 bg-white">
   <div>
     <div class="p-2 mx-2 nav-title highlight rounded d-flex align-items-center">
@@ -40,13 +33,11 @@
     <ng-container *ngIf="tabActive === 'scheme'">
       <ng-container *ngIf="loanSchemes.length !=0 ; else noScheme">
 
-        <!-- <button class="btn btn-primary px-auto" (click)="onOpenSchemeModal('new')">New scheme</button> -->
         <div class="row">
           <div class="col">
 
             <div class="row py-2" *ngFor="let scheme of loanSchemes">
               <div class="col px-0 bg-white" style="min-height: 600px">
-                <!-- <div class="col px-0 bg-white"> -->
 
                 <app-scheme [loan]="loan" [scheme]="scheme" (deleteConfirmed)="deleteScheme($event)">
                 </app-scheme>
@@ -59,7 +50,6 @@
 
       <ng-template #noScheme>
         <div class="row py-2">
-          <!-- <div class="col px-0 bg-white"> -->
           <div class="col px-0 bg-white" style="height: 700px">
             <app-scheme [loan]="loan"></app-scheme>
           </div>

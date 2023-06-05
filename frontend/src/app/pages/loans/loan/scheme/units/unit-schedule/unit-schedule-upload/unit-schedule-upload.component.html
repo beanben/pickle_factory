@@ -17,14 +17,8 @@
 
         <app-upload-step-one
           *ngIf = "step === 1"
-          
-          [unitStructure]="unitStructure"
-          [leaseStructure]="leaseStructure"
           [assetClass]="assetClass"
-          [ownershipTypeChoices]="ownershipTypeChoices"
-          [saleStatusChoices]="saleStatusChoices"
-          [leaseTypeChoices]="leaseTypeChoices"
-          [rentFrequencyChoices]="rentFrequencyChoices"
+          [scheme]="scheme"
           (checkboxChanged)="onCheckboxChanged($event)"
         ></app-upload-step-one>
 

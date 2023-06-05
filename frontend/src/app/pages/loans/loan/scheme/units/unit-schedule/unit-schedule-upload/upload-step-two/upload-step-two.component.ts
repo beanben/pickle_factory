@@ -42,6 +42,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
       this.errorMessage = 'file not found';
       return;
     }
+    
     this._unitService.setFileNameSub(file.name);
     document.getElementById('file-name')!.innerText = file.name || 'Select file to upload';
 

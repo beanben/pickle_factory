@@ -6,8 +6,6 @@
   [scheme]="scheme"
   [saleStatusChoices]="saleStatusChoices"
   [rentFrequencyChoices]="rentFrequencyChoices"
-  [unitStructure]="unitStructure"
-  [leaseStructure]="leaseStructure"
   [leaseTypeChoices] = "leaseTypeChoices"
   [ownershipTypeChoices] = "ownershipTypeChoices"
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
@@ -18,6 +16,7 @@
   [unitStructure]="unitStructure"
   [leaseStructure]="leaseStructure"
   [assetClass]="assetClass"
+  [scheme]="scheme"
   [ownershipTypeChoices]="ownershipTypeChoices"
   [saleStatusChoices]="saleStatusChoices"
   [leaseTypeChoices]="leaseTypeChoices"
@@ -208,5 +207,7 @@
   <div class="d-flex justify-content-center pt-4">
     <div class="title p-2">Create units</div>
     <button class="btn btn-primary" (click)="onOpenUnitScheduleModal('new')">New units</button>
+    <div class="title p-2">or</div>
+    <button class="btn btn-primary" (click)="onOpenUploadModal()">Upload unit schedule</button>
   </div>
 </ng-template>

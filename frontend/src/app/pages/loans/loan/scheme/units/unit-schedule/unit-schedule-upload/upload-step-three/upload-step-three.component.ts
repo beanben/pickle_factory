@@ -64,11 +64,11 @@ export class UploadStepThreeComponent implements OnInit, OnDestroy, OnChanges {
   private extractFileContent(fileData: Uint8Array, fileName: string): string[][] {
     let content: string[][] = [];
 
-    // if (fileName.endsWith('.csv')) {
-    //   content = this.extractCSVFileContent(fileData);
-    // } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-    //   content = this.extractExcelFileContent(fileData);
-    // }
+    if (fileName.endsWith('.csv')) {
+      content = this.extractCSVFileContent(fileData);
+    } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
+      content = this.extractExcelFileContent(fileData);
+    }
 
     return content;
   }
@@ -80,7 +80,7 @@ export class UploadStepThreeComponent implements OnInit, OnDestroy, OnChanges {
     return lines.map(line => line.split(','));
   }
 
-  private extractExcelFileCcontent(fileData: Uint8Array): string[][] {
+  private extractExcelFileContent(fileData: Uint8Array): string[][] {
     const workbook = XLSX.read(fileData, {type: 'array'});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
