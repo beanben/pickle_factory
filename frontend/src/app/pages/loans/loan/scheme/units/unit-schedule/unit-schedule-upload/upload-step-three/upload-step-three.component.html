@@ -1,44 +1,41 @@
-<!-- <div class="container">
+<div class="container">
   <div class="row">
     <div class="col">
-      <h6 class="text-center py-2">Step 1 of 2</h6>
+      <h6 class="text-center my-2">Step 1 of 2</h6>
+
       <p class="text-center">
-        Our system checks the values of your headers and if any issues are found, you can easily edit by clicking on the
-        cell.
+        Our system checks the values of each row and if any issues are found, you can easily edit by clicking on the
+        cell. This steps focused on unit parametres.
       </p>
 
-      <form [formGroup]="headersForm" #f="ngForm">
-        <div class="container">
-          <div class="row">
-            <div class="col-6 offset-3">
-              <table class="table table-hover text-center table-borderles">
-                <thead formArrayName="headersArray">
-                  <tr *ngFor="let control of headersArray.controls; let i = index" [formGroupName]="i">
-                    <td>
-                      <input type="text" class="form-control" formControlName="header" />
-                    </td>
-                    <td *ngIf="control.get('header')?.errors?.['notEqual']">
-                      <div class="alert alert-danger no-padding-alert">
-                        Value should be "{{ parametresRequired[i] }}"
-                      </div>
-                    </td>
-                  </tr>
-                </thead>
-              </table>
-
-              <div *ngIf="headersArray.controls.length !== parametresRequired.length" class="alert alert-danger">
-                <span>Your file contains {{headersArray.controls.length}} headers but {{ parametresRequired.length}} are required.</span>
-                <span>
-                  The full list is :
-                  <span *ngFor="let parametre of parametresRequired; let i = index"
-                    >{{ parametre }}{{ i + 1 === parametresRequired.length ? '.' : ', ' }}</span
-                  >
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <form [formGroup]="form">
+        <table class="table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of unitHeaders">{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="data">
+            <tr *ngFor="let row of data.controls; let i = index" [formGroupName]="i">
+              <td *ngFor="let controlName of unitControlNames">
+                <div class="input-group">
+                  <input type="text" [formControlName]="controlName" class="form-control" />
+                  <span *ngIf="row.get(controlName)?.errors" class="input-group-text">
+                    <button
+                      type="button"
+                      class="btn btn-tansparent"
+                      tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                      triggers="mouseenter:click"
+                    >
+                      <img src="{{ exclamation }}" alt="" />
+                    </button>
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </form>
     </div>
   </div>
-</div> -->
+</div>

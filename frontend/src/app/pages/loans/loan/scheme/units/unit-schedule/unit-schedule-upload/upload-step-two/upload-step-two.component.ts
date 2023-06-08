@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {UnitService} from 'src/app/_services/unit/unit.service';
@@ -25,8 +25,10 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subs.push(
-      this._unitService.getFileNameSub().subscribe(fileName => {
-        document.getElementById('file-name')!.innerText = fileName;
+      this._unitService.getFileSub().subscribe(file => {
+        if (file instanceof File ){
+          this.readFile(file);
+        }
       }),
       this._unitService.getParametersRequiredSub().subscribe(parametresRequired => {
         this.parametresRequired = parametresRequired;
@@ -43,7 +45,12 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
       return;
     }
     
-    this._unitService.setFileNameSub(file.name);
+    this._unitService.setFileSub(file);
+    this.readFile(file);
+
+  }
+
+  readFile(file: File){
     document.getElementById('file-name')!.innerText = file.name || 'Select file to upload';
 
     const reader = new FileReader();
@@ -53,7 +60,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
       this.content = this.extractFileContent(this.data, file.name);
       this.headers = this.content[0];
-      // this.headers = this.extractFileHeaders(this.data, file.name);
+      
 
       if (this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
         this.contentUpload.emit(this.content);
@@ -85,37 +92,26 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     return content;
   }
 
-  // private extractFileHeaders(fileData: Uint8Array, fileName: string): string[] {
-  //   let headers: string[] = [];
-
-  //   if (fileName.endsWith('.csv')) {
-  //     headers = this.extractCSVFileHeaders(fileData);
-  //   } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-  //     headers = this.extractExcelFileHeaders(fileData);
-  //   }
-
-  //   return headers;
-  // }
-
   private extractCSVFileContent(fileData: Uint8Array): string[][] {
     const csvString = new TextDecoder('utf-8').decode(fileData);
     const lines = csvString.split('\n').filter(line => line.trim() !== '');
 
-    // return lines.map(line => line.split(',').map(header => header.trim()))[0];
+    // return lines.map(line => line.split(','));
     return lines.map(line => line.split(',').map(data => data.trim()));
   }
 
   private extractExcelFileContent(fileData: Uint8Array): string[][] {
     const workbook = XLSX.read(fileData, {type: 'array'});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
+    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true, defval: ""});
 
+    // return rows;
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
 
-    // Trim each cell in each row
+    // return nonEmptyRows;
+    // // Trim each cell in each row
     const trimmedRows = nonEmptyRows.map(row => row.map(cell => (typeof cell === 'string' ? cell.trim() : cell)));
 
-    // return nonEmptyRows[0].map(header => header.trim());
     return trimmedRows;
   }
 

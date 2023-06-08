@@ -1,3 +1,5 @@
+
+
 <app-unit-schedule-modal
   *ngIf="openUnitScheduleModal"
   [mode]="modalMode"
@@ -6,8 +8,8 @@
   [scheme]="scheme"
   [saleStatusChoices]="saleStatusChoices"
   [rentFrequencyChoices]="rentFrequencyChoices"
-  [leaseTypeChoices] = "leaseTypeChoices"
-  [ownershipTypeChoices] = "ownershipTypeChoices"
+  [leaseTypeChoices]="leaseTypeChoices"
+  [ownershipTypeChoices]="ownershipTypeChoices"
   (modalSaveUnitsSchedule)="onCloseUnitScheduleModal($event)"
 ></app-unit-schedule-modal>
 
@@ -25,9 +27,10 @@
 ></app-unit-schedule-upload>
 
 
+
+
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
-<!-- Build to sell  -->
     <table
       class="table table-hover text-center table-borderless uniform-width"
       *ngIf="assetClass.investmentStrategy === 'buildToSell'"
@@ -69,7 +72,7 @@
           </td>
           <td *ngIf="assetClass.use === 'residential'">
             <ng-container *ngIf="!!unitScheduleData.sale?.ownershipType; else noType">
-              {{unitScheduleData.sale?.ownershipType}}
+              {{ unitScheduleData.sale?.ownershipType }}
             </ng-container>
             <ng-template #noType>not defined</ng-template>
           </td>
@@ -101,7 +104,6 @@
       </tbody>
     </table>
 
-<!-- Build to rent -->
     <table
       class="table table-hover text-center table-borderless uniform-width"
       *ngIf="assetClass.investmentStrategy === 'buildToRent'"
@@ -129,12 +131,11 @@
           <th scope="col" *ngIf="unitStructure.hasBeds">Beds</th>
           <th scope="col" *ngIf="assetClass.use === 'residential'">Lease type</th>
           <th scope="col">
-            Rent target <br>
+            Rent target <br />
             <small>({{ leaseStructure.rentFrequencyDisplay }})</small>
-            <!-- <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small> -->
           </th>
           <th scope="col">
-            Rent achieved <br>
+            Rent achieved <br />
             <small>({{ getChoiceLabel(leaseStructure.rentFrequency, rentFrequencyChoices) }})</small>
           </th>
           <th scope="col">Lease start</th>
@@ -152,7 +153,7 @@
           </td>
           <td *ngIf="assetClass.use === 'residential'">
             <ng-container *ngIf="!!unitScheduleData?.lease?.leaseType; else noType">
-              {{getChoiceLabel(unitScheduleData.lease!.leaseType,leaseTypeChoices)}}
+              {{ getChoiceLabel(unitScheduleData.lease!.leaseType, leaseTypeChoices) }}
             </ng-container>
             <ng-template #noType>not defined</ng-template>
           </td>

@@ -1,60 +1,66 @@
 <ng-container *ngIf="!_authService.isLoggedIn()">
-    <app-landing></app-landing>
+  <app-landing></app-landing>
 </ng-container>
 
 <ng-container *ngIf="_authService.isLoggedIn()">
+  <!-- <button
+    type="button"
+    class="btn btn-info"
+    tooltip="I will hide on click"
+    triggers="mouseenter:click"
+  >
+    Hover over me!
+  </button> -->
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col p-4">
-                <h2 class="pb-2" *ngIf="user.firm">
-                    {{user.firm.name}}
-                </h2>
-            </div>
-        </div>
-        <div class="row m-2">
-            <div class="col bg-white rounded" style="min-height: 650px">
-
-                <div class="row">
-                    <div class="col m-2 py-2">
-
-                        <ng-container *ngIf="loans.length !== 0 ; else noLoans">
-                            <div class="row py-2 tableTitle bg-light">
-                                <div class="col my-1">Loan</div>
-                                <!-- <div class="col my-1">Borrower</div> -->
-                            </div>
-        
-                            <div class="row py-2 rowTable highlight" *ngFor="let loan of loans; let i = index" (click)="onLoanSelected(i)">
-                                <div class="col my-auto">{{loan.name}}</div>
-                                <!-- <div class="col my-auto">{{loan.borrower? loan.borrower.name: "no borrower"}}</div> -->
-                            </div>      
-                        </ng-container>
-        
-                        <ng-template #noLoans>
-                            <div class="d-flex justify-content-center" style="margin-top: 70px">
-                                <div class="d-flex flex-column">
-                                    <div class="text-instructions text-center p-2">You don't have any loans yet.</div>
-                                    <div class="text-instructions text-center p-2">
-                                        Navigate to 
-                                        <span class="px-2">
-                                            <button class="btn btn-auth" [routerLink]="['loans', 'new']">
-                                                <img src="{{dollar}}" alt="" class="me-2">
-                                                    Loans
-                                            </button> 
-                                        </span>
-                                        
-                                        to add a new loan.
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col p-4">
+        <h2 class="pb-2" *ngIf="user.firm">
+          {{ user.firm.name }}
+        </h2>
+      </div>
     </div>
+    <div class="row m-2">
+      <div class="col bg-white rounded" style="min-height: 650px">
+        <div class="row">
+          <div class="col m-2 py-2">
+            <ng-container *ngIf="loans.length !== 0; else noLoans">
+              <div class="row py-2 tableTitle bg-light">
+                <div class="col my-1">Loan</div>
+                <!-- <div class="col my-1">Borrower</div> -->
+              </div>
 
+              <div
+                class="row py-2 rowTable highlight"
+                *ngFor="let loan of loans; let i = index"
+                (click)="onLoanSelected(i)"
+              >
+                <div class="col my-auto">{{ loan.name }}</div>
+                <!-- <div class="col my-auto">{{loan.borrower? loan.borrower.name: "no borrower"}}</div> -->
+              </div>
+            </ng-container>
+
+            <ng-template #noLoans>
+              <div class="d-flex justify-content-center" style="margin-top: 70px">
+                <div class="d-flex flex-column">
+                  <div class="text-instructions text-center p-2">You don't have any loans yet.</div>
+                  <div class="text-instructions text-center p-2">
+                    Navigate to
+                    <span class="px-2">
+                      <button class="btn btn-auth" [routerLink]="['loans', 'new']">
+                        <img src="{{ dollar }}" alt="" class="me-2" />
+                        Loans
+                      </button>
+                    </span>
+
+                    to add a new loan.
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </ng-container>
-

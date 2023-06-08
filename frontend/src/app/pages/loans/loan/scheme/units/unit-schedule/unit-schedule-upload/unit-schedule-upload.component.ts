@@ -1,6 +1,5 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {BehaviorSubject, Observable} from 'rxjs';
 import {LeaseStructure, Scheme, UnitScheduleData, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {UnitService} from 'src/app/_services/unit/unit.service';
@@ -11,7 +10,7 @@ import {AssetClassType} from 'src/app/_types/custom.type';
   templateUrl: './unit-schedule-upload.component.html'
   // styleUrls: ['./unit-schedule-upload.component.css']
 })
-export class UnitScheduleUploadComponent implements OnInit {
+export class UnitScheduleUploadComponent implements OnInit, OnChanges {
   displayStyle = 'block';
   isChecked = false;
   selectFileStatus = 'active';
@@ -31,11 +30,14 @@ export class UnitScheduleUploadComponent implements OnInit {
   @Input() saleStatusChoices: Choice[] = [];
   @Input() rentFrequencyChoices: Choice[] = [];
   content: string[][] = [];
+  unitHeaders: string[] = [];
+  unitControlNames: string[] = [];
 
   constructor(private el: ElementRef, private _unitService: UnitService) {}
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
+    this.unitHeaders = this._unitService.displayUnitFields(this.assetClass, this.scheme);
   }
 
   addEventBackgroundClose() {
@@ -78,10 +80,17 @@ export class UnitScheduleUploadComponent implements OnInit {
   disableNext(): boolean {
     if (this.step === 1) {
       return !this.isChecked;
-    }else if(this.step === 2){
-      return !this.headerFormIsValid
+    } else if (this.step === 2) {
+      return !this.headerFormIsValid;
     } else {
       return false;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['assetClass'] && changes['assetClass'].currentValue) {
+      this.unitHeaders = this._unitService.displayUnitFields(this.assetClass, this.scheme);
+      this.unitControlNames = this._unitService.getUnitControlNames(this.assetClass, this.scheme);
     }
   }
 }

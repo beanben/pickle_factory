@@ -230,7 +230,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         [Validators.required, this.uniqueValueValidator(this.unitsFormArray, 'identifier')]
       ],
       description: [unit?.description, Validators.required],
-      beds: [unit?.beds, [Validators.pattern(this.numbersOnly), this.atLeastOneValditor()]],
+      beds: [unit?.beds, [Validators.pattern(this.numbersOnly), this.atLeastOneValidator()]],
       areaSize: [unit?.areaSize, Validators.pattern(this.decimalsOnly)],
       id: [unit?.id]
     });
@@ -285,7 +285,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       priceAchieved: [sale?.priceAchieved || 0.0, Validators.pattern(this.decimalsOnly)],
       buyer: [sale?.buyer],
       ownershipType: [sale?.ownershipType || this.ownershipTypeChoices[0].value],
-
     });
 
     this.subs.push(
@@ -663,7 +662,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   }
 
   // if units has beds, then beds must be greater than 0
-  atLeastOneValditor(): ValidatorFn {
+  atLeastOneValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
 
@@ -685,12 +684,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const value = formArray.at(index).get(controlName)?.value;
     return value || 'not defined';
   }
-
-  // getRentFrequencyLabel(rentFrequencyValue: string): string {
-  //   const rentFrequencyChoice = this.rentFrequencyChoices.find(choice => choice.value === rentFrequencyValue);
-  //   return rentFrequencyChoice ? rentFrequencyChoice.label : 'not defined';
-  // }
-
 
   reset(formArray: FormArray, index: number) {
     const formGroup = formArray.at(index) as FormGroup;

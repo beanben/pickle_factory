@@ -19,12 +19,20 @@ import {toTitleCase} from 'src/app/shared/utils';
 export class UnitService {
   parametersRequiredSub = new BehaviorSubject<string[]>([]);
   fileNameSub = new BehaviorSubject<string>('');
+  fileSub = new BehaviorSubject<File>({} as File);
 
   getFileNameSub(): Observable<string> {
     return this.fileNameSub.asObservable();
   }
   setFileNameSub(fileName: string) {
     return this.fileNameSub.next(fileName);
+  }
+
+  getFileSub(): Observable<File> {
+    return this.fileSub.asObservable();
+  }
+  setFileSub(file: File) {
+    return this.fileSub.next(file);
   }
 
   getParametersRequiredSub(): Observable<string[]> {
@@ -120,6 +128,23 @@ export class UnitService {
       areaSystem: scheme.system.toLowerCase()
     };
   }
+
+  getUnitControlNames(assetClass: AssetClassType, scheme: Scheme) {
+    const unitFieldsMap = this.getUnitFieldsMap(assetClass, scheme);
+
+    let result = Object.keys(unitFieldsMap).filter(key => {
+      return key !== 'areaSystem' && key !== 'areaType' && key !== 'label';
+    });
+
+    if(!assetClass.hasBeds) {
+      result = result.filter(key => {
+        return key !== 'beds';
+      });
+    }
+
+    return result;
+  }
+
 
   displayUnitFields(assetClass: AssetClassType, scheme: Scheme) {
     const unitFieldsMap = this.getUnitFieldsMap(assetClass, scheme);

@@ -2,9 +2,57 @@ input.ng-invalid {
   border: 1px solid red;
 }
 
-.no-padding-alert {
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100%;
-  width: 100%;
+/* .input-container {
+  position: relative;
+} */
+
+/* .form-control-container {
+  position: relative;
 }
+
+.error-icon {
+  position: absolute;
+  top: 50%;
+  right: 1px;
+  transform: translateY(-50%);
+  cursor: pointer;
+} */
+
+/* .custom-tooltip {
+  position: absolute;
+  top: -100%;
+  right: 0;
+  transform: translateY(-50%);
+  background-color: #f8f9fa;
+  padding: 5px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  z-index: 9999;
+  max-height: 3.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.75em;
+} */
+
+/* .tooltip {
+  min-width: 200px; 
+} */
+
+.input-group-text {
+  border: 1px solid red;
+  border-left-color: transparent;
+  background-color: transparent; /* this will make the background color transparent */
+  padding: 0;
+}
+
+.input-group > .form-control {
+  border-right: none; /* this will remove the right border of the input field */
+}
+
+.btn.btn-tansparent {
+  background-color: transparent; /* this will make the button's background color transparent */
+  border: none; /* this will hide the border of the button */
+}
+

@@ -15,7 +15,6 @@ import { UnitCardComponent } from './loan/scheme/units/unit-card/unit-card.compo
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { UnitScheduleUploadComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/unit-schedule-upload.component';
 import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule/unit-schedule-modal/unit-schedule-modal.component';
 import { UploadNavComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-nav/upload-nav.component';
@@ -23,6 +22,8 @@ import { UploadStepOneComponent } from './loan/scheme/units/unit-schedule/unit-s
 import { UploadStepTwoComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-two/upload-step-two.component';
 import { UploadStepThreeComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-three/upload-step-three.component';
 import { UploadStepFourComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-four/upload-step-four.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { UploadStepFourComponent } from './loan/scheme/units/unit-schedule/unit-
     PartsModule,
     FormsModule,
     BrowserAnimationsModule,
-    BsDatepickerModule.forRoot(),
+    BsDatepickerModule,
+    TooltipModule
   ],
   declarations: [
     LoansComponent,

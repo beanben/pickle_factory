@@ -28,11 +28,12 @@
           (dataHeadersValidation)="handleHeadersValidation($event)">
         </app-upload-step-two>
 
-        <!-- <app-upload-step-three
-        *ngIf="step === 3"
-        [data]="data"
-        (headerFormStatusChange)="handleHeaderFormChange($event)">
-        </app-upload-step-three> -->
+        <app-upload-step-three
+        *ngIf = "step === 3"
+        [content]="content"
+        [unitHeaders]="unitHeaders"
+        [unitControlNames]="unitControlNames">
+        </app-upload-step-three>
 
       </div>
 

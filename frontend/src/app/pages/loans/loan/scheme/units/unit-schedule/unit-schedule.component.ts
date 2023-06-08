@@ -24,7 +24,7 @@ import {SharedService} from 'src/app/_services/shared/shared.service';
 })
 export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
-  openUploadModal = false;
+  openUploadModal = true;
   openAssetClassModal = false;
   modalMode = '';
   totalUnits = 0;
@@ -221,6 +221,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
   onOpenUploadModal() {
     this.openUploadModal = true;
+    this._unitService.setFileSub({} as File)
   }
 
   onCloseUploadModal(unitsScheduleData: UnitScheduleData[] | null) {
