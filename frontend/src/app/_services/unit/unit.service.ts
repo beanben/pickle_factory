@@ -115,7 +115,7 @@ export class UnitService {
     return {rentFrequency};
   }
 
-  getUnitFieldsMap(assetClass: AssetClassType, scheme: Scheme) {
+  getUnitFieldsMap(assetClass: AssetClassType, scheme: Scheme): Record<string, string | null> {
     const workingUse = ['commercial', 'office', 'shoppingCentre', 'parking'];
     const labelIsRomm = ['hotel', 'studentAccommodation'];
     return {
@@ -133,36 +133,29 @@ export class UnitService {
     const unitFieldsMap = this.getUnitFieldsMap(assetClass, scheme);
 
     let result = Object.keys(unitFieldsMap).filter(key => {
-      return key !== 'areaSystem' && key !== 'areaType' && key !== 'label';
+      return key !== 'areaSystem' && key !== 'areaType' && key !== 'label' && unitFieldsMap[key] !== null;
     });
 
-    if(!assetClass.hasBeds) {
-      result = result.filter(key => {
-        return key !== 'beds';
-      });
-    }
-
     return result;
   }
 
-
-  displayUnitFields(assetClass: AssetClassType, scheme: Scheme) {
+  displayUnitFields(assetClass: AssetClassType, scheme: Scheme): string[] {
     const unitFieldsMap = this.getUnitFieldsMap(assetClass, scheme);
+    let result = [];
+    result.push(
+      toTitleCase(unitFieldsMap['identifier']!),
+      toTitleCase(unitFieldsMap['description']!),
+      unitFieldsMap['areaType'] + ' (' + unitFieldsMap['areaSystem']!.toLowerCase() + ')'
+    );
 
-    let result = [
-      toTitleCase(unitFieldsMap.identifier),
-      toTitleCase(unitFieldsMap.description),
-      unitFieldsMap.areaType + ' (' + unitFieldsMap.areaSystem.toLowerCase() + ')'
-    ];
-
-    if (unitFieldsMap.beds) {
-      result.splice(2, 0, toTitleCase(unitFieldsMap.beds));
+    if (unitFieldsMap['beds']) {
+      result.splice(2, 0, toTitleCase(unitFieldsMap['beds']));
     }
 
     return result;
   }
 
-  getSaleFieldsMap(assetClass: AssetClassType) {
+  getSaleFieldsMap(assetClass: AssetClassType): Record<string, string | null> {
     return {
       ownershipType: assetClass.use === 'residential' ? 'ownership type' : null,
       priceTarget: 'price target',
@@ -171,6 +164,14 @@ export class UnitService {
       statusDate: 'status date',
       buyer: 'buyer'
     };
+  }
+
+  getSaleControlNames(assetClass: AssetClassType): string[] {
+    const saleFieldsMap = this.getSaleFieldsMap(assetClass);
+
+    return Object.keys(saleFieldsMap).filter(key => {
+      return saleFieldsMap[key] !== null;
+    });
   }
 
   displaySaleFields(assetClass: AssetClassType) {
@@ -193,7 +194,7 @@ export class UnitService {
         };
 
         const statusOption: FieldOption = {
-          name: saleFieldsMap['status'],
+          name: saleFieldsMap['status']!,
           options: statusChoices.map(choice => choice.label)
         };
 
@@ -221,7 +222,7 @@ export class UnitService {
     );
   }
 
-  getLeaseFieldsMap(assetClass: AssetClassType) {
+  getLeaseFieldsMap(assetClass: AssetClassType): Record<string, string | null> {
     let rentFrequencyDisplay = '';
     if (assetClass.use === 'hotel') {
       rentFrequencyDisplay = 'per day';
@@ -242,19 +243,29 @@ export class UnitService {
     };
   }
 
+  getLeaseControlNames(assetClass: AssetClassType) {
+    const leaseFieldsMap = this.getLeaseFieldsMap(assetClass);
+
+    let result = Object.keys(leaseFieldsMap).filter(key => {
+      return key !== 'rentFrequency' && leaseFieldsMap[key] !== null;
+    });
+
+    return result;
+  }
+
   displayLeaseFields(assetClass: AssetClassType) {
     const leaseFieldsMap = this.getLeaseFieldsMap(assetClass);
 
     let result = [
-      toTitleCase(leaseFieldsMap.rentTarget) + ' (' + leaseFieldsMap.rentFrequency + ')',
-      toTitleCase(leaseFieldsMap.rentAchieved) + ' (' + leaseFieldsMap.rentFrequency + ')',
-      toTitleCase(leaseFieldsMap.startDate),
-      toTitleCase(leaseFieldsMap.endDate),
-      toTitleCase(leaseFieldsMap.tenant)
+      toTitleCase(leaseFieldsMap['rentTarget']!) + ' (' + leaseFieldsMap['rentFrequency'] + ')',
+      toTitleCase(leaseFieldsMap['rentAchieved']!) + ' (' + leaseFieldsMap['rentFrequency'] + ')',
+      toTitleCase(leaseFieldsMap['startDate']!),
+      toTitleCase(leaseFieldsMap['endDate']!),
+      toTitleCase(leaseFieldsMap['tenant']!)
     ];
 
-    if (leaseFieldsMap.leaseType) {
-      result.splice(0, 0, toTitleCase(leaseFieldsMap.leaseType));
+    if (leaseFieldsMap['leaseType']) {
+      result.splice(0, 0, toTitleCase(leaseFieldsMap['leaseType']));
     }
 
     return result;

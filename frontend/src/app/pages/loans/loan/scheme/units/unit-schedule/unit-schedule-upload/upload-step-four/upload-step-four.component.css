@@ -1,0 +1,21 @@
+
+input.ng-invalid {
+  border: 1px solid red;
+}
+
+.input-group-text {
+  border: 1px solid red;
+  border-left-color: transparent;
+  background-color: transparent; /* this will make the background color transparent */
+  padding: 0;
+}
+
+.input-group > .form-control.ng-invalid {
+  border-right: none; /* this will remove the right border of the input field */
+}
+
+.btn.btn-tansparent {
+  background-color: transparent; /* this will make the button's background color transparent */
+  border: none; /* this will hide the border of the button */
+}
+

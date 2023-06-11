@@ -16,34 +16,41 @@
         <app-upload-nav [step]="step"></app-upload-nav>
 
         <app-upload-step-one
-          *ngIf = "step === 1"
+          *ngIf="step === 1"
           [assetClass]="assetClass"
           [scheme]="scheme"
           (checkboxChanged)="onCheckboxChanged($event)"
         ></app-upload-step-one>
 
-        <app-upload-step-two
-          *ngIf = "step === 2"
-          (contentUpload)="handleContentUpload($event)"
-          (dataHeadersValidation)="handleHeadersValidation($event)">
-        </app-upload-step-two>
+        <app-upload-step-two *ngIf="step === 2" (contentUpload)="handleContentUpload($event)"> </app-upload-step-two>
 
         <app-upload-step-three
-        *ngIf = "step === 3"
-        [content]="content"
-        [unitHeaders]="unitHeaders"
-        [unitControlNames]="unitControlNames">
+          *ngIf="step === 3"
+          [form]="unitForm"
+          [unitHeaders]="unitHeaders"
+          [unitControlNames]="unitControlNames"
+          [controlValidatioMessages]="unitValidatioMessages"
+          [exclamation]="exclamation"
+          (unitFormChange)="handleUnitFormChange($event)"
+        >
         </app-upload-step-three>
 
+        <app-upload-step-four
+          *ngIf="step === 4"
+          [form]="saleOrLeaseForm"
+          [headers] = "saleOrLeaseHeaders"
+          [controlNames]= "saleOrLeaseControlNames"
+          [exclamation]="exclamation"
+          [controlValidatioMessages]="saleOrLeaseValidatioMessages"
+        ></app-upload-step-four>
       </div>
-
 
       <div class="modal-footer">
         <button *ngIf="step > 1" type="button" class="btn btn-outline-primary me-auto" (click)="onPrevious()">
           < Previous
         </button>
         <button type="button" class="btn btn-secondary m-2" (click)="onCancel()">Cancel</button>
-        <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [disabled]="disableNext()">
+        <button form="form" type="button" class="btn btn-success m-2" (click)="onNext()" [attr.disabled]="disableNext() ? true: null">
           Next >
         </button>
       </div>

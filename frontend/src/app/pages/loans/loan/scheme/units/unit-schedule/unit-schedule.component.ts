@@ -35,7 +35,6 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   averageLeaseRentTarget = 0.0;
   averageLeaseRentAchieved = 0.0;
 
-  // rentFrequencyLabel = '';
   rentFrequencyChoices: Choice[] = [];
   saleStatusChoices: Choice[] = [];
   leaseTypeChoices: Choice[] = [];

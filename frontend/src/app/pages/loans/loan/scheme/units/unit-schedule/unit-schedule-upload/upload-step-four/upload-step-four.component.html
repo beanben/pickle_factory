@@ -1,1 +1,41 @@
-<p>upload-step-four works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h6 class="text-center my-2">Step 2 of 2</h6>
+
+      <p class="text-center">
+        Our system checks the values of each row and if any issues are found, you can easily edit by clicking on the
+        cell. This steps focused on sales/leases parametres.
+      </p>
+
+      <form [formGroup]="form">
+        <table class="table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of headers">{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="data">
+            <tr *ngFor="let row of data.controls; let i = index" [formGroupName]="i">
+              <td *ngFor="let controlName of controlNames">
+                <div class="input-group">
+                  <input type="text" [formControlName]="controlName" class="form-control" [attr.disabled]="controlName==='identifier' ? true : null"/>
+                  <span *ngIf="row.get(controlName)?.errors" class="input-group-text">
+                    <button
+                      type="button"
+                      class="btn btn-tansparent"
+                      [tooltip]="getErrorMessage(row.get(controlName), controlName)"
+                      [container]="'body'"
+                    >
+                      <img src="{{ exclamation }}" alt="" />
+                    </button>
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>

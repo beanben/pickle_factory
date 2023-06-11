@@ -14,13 +14,7 @@ import {
 import {Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 import {UnitService} from 'src/app/_services/unit/unit.service';
-import {
-  Lease,
-  Sale,
-  Scheme,
-  Unit,
-  UnitScheduleData,
-} from 'src/app/_interfaces/scheme.interface';
+import {Lease, Sale, Scheme, Unit, UnitScheduleData} from 'src/app/_interfaces/scheme.interface';
 import {AssetClassType} from 'src/app/_types/custom.type';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {SharedService} from 'src/app/_services/shared/shared.service';
@@ -33,7 +27,7 @@ interface ValidationMessages {
   };
 }
 
-interface fieldMap  {
+interface fieldMap {
   [key: string]: string | null;
 }
 
@@ -57,10 +51,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   totalUnits = 0;
   totalAreaSize = 0;
   totalBeds = 0;
-  totalSalePriceTarget = 0.00;
-  totalSalePriceAchieved = 0.00;
-  averageLeaseRentTarget = 0.00;
-  averageLeaseRentAchieved = 0.00;
+  totalSalePriceTarget = 0.0;
+  totalSalePriceAchieved = 0.0;
+  averageLeaseRentTarget = 0.0;
+  averageLeaseRentAchieved = 0.0;
   unitsToDelete: Unit[] = [];
 
   index = -1;
@@ -138,7 +132,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   saleFieldMap = {} as fieldMap;
   leaseFieldMap = {} as fieldMap;
 
-
   constructor(
     private el: ElementRef,
     private _schemeService: SchemeService,
@@ -161,7 +154,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.saleFieldMap = this._unitService.getSaleFieldsMap(this.assetClass);
     this.leaseFieldMap = this._unitService.getLeaseFieldsMap(this.assetClass);
   }
-
 
   addEventBackgroundClose() {
     this.el.nativeElement.addEventListener('click', (el: any) => {
@@ -189,7 +181,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.averageLeaseRentAchieved = this.calculateAverageFromFormArray(this.leasesFormArray, 'rentAchievedAmount', 2);
   }
 
-
   calculateTotalForFormArray(formArray: FormArray, controlName: string, decimalPrecision = 0): number {
     return formArray.controls
       .map(control => control.get(controlName)?.value || 0)
@@ -197,25 +188,21 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       .toFixed(decimalPrecision);
   }
 
-
   calculateAverageFromFormArray(formArray: FormArray, controlName: string, decimalPrecision = 0): number {
     const total = this.calculateTotalForFormArray(formArray, controlName, decimalPrecision);
     return this.totalUnits === 0 ? 0 : +(total / this.totalUnits).toFixed(decimalPrecision);
   }
 
-
   populateUnitsFormArray() {
     const units: Unit[] = this.unitsScheduleData.map(unitScheduleData => unitScheduleData.unit);
 
-    if(units.length === 0) {
+    if (units.length === 0) {
       this.onAddUnit();
     } else {
       units.forEach(unit => {
         this.onAddUnit(unit);
       });
     }
-
-    
   }
 
   onAddUnit(unit?: Unit) {
@@ -236,12 +223,10 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     });
 
     this.subs.push(
-      unitForm.valueChanges.pipe(
-        debounceTime(300),
-      ).subscribe(() => {
+      unitForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
         this.calculateUnitsTotals();
       })
-    )
+    );
     return unitForm;
   }
 
@@ -258,7 +243,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         this.onAddSale(index);
       }
     });
-
   }
 
   onAddSale(index: number, sale?: Sale) {
@@ -272,7 +256,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       saleForm = this.saleToFormGroup(unitIdentifier, sale);
       this.salesFormArray.push(saleForm);
     }
-
   }
 
   saleToFormGroup(unitIdentifier: string, sale?: Sale): FormGroup {
@@ -284,7 +267,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       priceTarget: [sale?.priceTarget || 0.0, Validators.pattern(this.decimalsOnly)],
       priceAchieved: [sale?.priceAchieved || 0.0, Validators.pattern(this.decimalsOnly)],
       buyer: [sale?.buyer],
-      ownershipType: [sale?.ownershipType || this.ownershipTypeChoices[0].value],
+      ownershipType: [sale?.ownershipType || this.ownershipTypeChoices[0].value]
     });
 
     this.subs.push(
@@ -296,9 +279,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       saleForm.get('priceAchieved')!.valueChanges.subscribe(() => {
         saleForm.get('status')!.updateValueAndValidity();
       }),
-      saleForm.valueChanges.pipe(
-        debounceTime(300),
-      ).subscribe(() => {
+      saleForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
         this.calculateSalesTotals();
       })
     );
@@ -319,10 +300,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
         this.onAddLease(index);
       }
     });
-
-
   }
-
 
   onAddLease(index: number, lease?: Lease) {
     const unitIdentifier = this.unitsFormArray.at(index).get('identifier')!.value;
@@ -345,20 +323,17 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       rentTarget: [lease?.rentTarget, Validators.pattern(this.decimalsOnly)],
       rentAchieved: [lease?.rentAchieved, Validators.pattern(this.decimalsOnly)],
       tenant: [lease?.tenant],
-      leaseType: [lease?.leaseType || this.leaseTypeChoices[0].value],
+      leaseType: [lease?.leaseType || this.leaseTypeChoices[0].value]
     });
 
     this.subs.push(
-      leaseForm.valueChanges.pipe(
-        debounceTime(300),
-      ).subscribe(() => {
+      leaseForm.valueChanges.pipe(debounceTime(300)).subscribe(() => {
         this.calculateLeasesTotals();
       })
     );
-    
+
     return leaseForm;
   }
-
 
   getUnitIdentifier(index: number): any {
     return this.unitsFormArray.at(index).get('identifier')?.value;
@@ -375,7 +350,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       identifier: form.get('identifier')?.value,
       description: form.get('description')?.value || '',
       beds: form.get('beds')?.value,
-      areaSize: form.get('areaSize')?.value || 0.0,
+      areaSize: form.get('areaSize')?.value || 0.0
     };
     return unit;
   }
@@ -463,8 +438,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return unitsScheduleDataBTR;
   }
 
-
-
   onRemoveUnit(index: number) {
     const unitId = this.unitsFormArray.at(index).get('id')?.value;
     if (unitId) {
@@ -487,7 +460,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
 
     this.mode = 'edit';
 
-    if(this.unitsFormArray.length === 0) {
+    if (this.unitsFormArray.length === 0) {
       this.onSave();
     }
   }
@@ -561,8 +534,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this._unitService.deleteUnits(units).subscribe();
   }
 
-
-
   getFormArrayErrorMessages(formArray: FormArray, category: string): string[] {
     const errorMessages: string[] = [];
 
@@ -587,7 +558,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   compareFn(satus1: string, satus2: string): boolean {
     return satus1 === satus2;
   }
-
 
   onNext() {
     this.nextIsClicked = true;
@@ -649,7 +619,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       if (control.parent) {
         const formGroupParent = control.parent as FormGroup;
         const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
-        
+
         if (status === 'available' && priceAchieved > 0) {
           // console.log('status: ', status, 'priceAchieved: ', priceAchieved);
 
@@ -678,8 +648,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     this.subs.forEach(sub => sub.unsubscribe());
   }
 
-
-
   getFormValue(formArray: FormArray, index: number, controlName: string) {
     const value = formArray.at(index).get(controlName)?.value;
     return value || 'not defined';
@@ -689,7 +657,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const formGroup = formArray.at(index) as FormGroup;
     formGroup.reset();
   }
-
 
   salesAchieved(index: number): boolean {
     const formGroup = this.salesFormArray.at(index) as FormGroup;
@@ -702,6 +669,4 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const rentAchieved = formGroup.get('rentAchieved')?.value || 0;
     return rentAchieved > 0;
   }
-
-
 }

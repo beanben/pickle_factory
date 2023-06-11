@@ -1,44 +1,7 @@
+
 input.ng-invalid {
   border: 1px solid red;
 }
-
-/* .input-container {
-  position: relative;
-} */
-
-/* .form-control-container {
-  position: relative;
-}
-
-.error-icon {
-  position: absolute;
-  top: 50%;
-  right: 1px;
-  transform: translateY(-50%);
-  cursor: pointer;
-} */
-
-/* .custom-tooltip {
-  position: absolute;
-  top: -100%;
-  right: 0;
-  transform: translateY(-50%);
-  background-color: #f8f9fa;
-  padding: 5px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  z-index: 9999;
-  max-height: 3.5em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  word-wrap: break-word;
-  line-height: 1.75em;
-} */
-
-/* .tooltip {
-  min-width: 200px; 
-} */
 
 .input-group-text {
   border: 1px solid red;
@@ -47,7 +10,7 @@ input.ng-invalid {
   padding: 0;
 }
 
-.input-group > .form-control {
+.input-group > .form-control.ng-invalid {
   border-right: none; /* this will remove the right border of the input field */
 }
 

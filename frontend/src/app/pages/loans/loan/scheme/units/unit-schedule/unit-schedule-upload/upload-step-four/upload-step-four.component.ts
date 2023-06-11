@@ -1,96 +1,215 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { UnitService } from 'src/app/_services/unit/unit.service';
-import * as XLSX from 'xlsx';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
+import { AssetClassType } from "src/app/_types/custom.type";
 
+interface ControlValidationMessages {
+  [controlName: string]: {
+    [errorType: string]: string | { [errorType: string]: string };
+  };
+}
 @Component({
   selector: 'app-upload-step-four',
   templateUrl: './upload-step-four.component.html',
   styleUrls: ['./upload-step-four.component.css']
 })
-export class UploadStepFourComponent implements OnInit, OnDestroy {
-  @Input() data = {} as Uint8Array;
-  dataForm = {} as FormGroup;
-  fileName = '';
-  subs: Subscription[] = [];
-  headers: string[] = [];
+export class UploadStepFourComponent implements OnInit {
+  @Input() form = new FormGroup({
+    data: new FormArray([])
+  });
+  @Input() headers: string[] = [];
+  @Input() controlNames: string[] = [];
+  @Input() exclamation = '';
+  @Output() saleOrLeaseFormChange = new EventEmitter<FormGroup>();
 
-  constructor(private _unitService: UnitService) {}
+  @Input() controlValidatioMessages = {} as ControlValidationMessages;
 
-  ngOnInit(): void {
-    this.subs.push(
-      this._unitService.getFileNameSub().subscribe(fileName => {
-        this.fileName = fileName;
-      })
-    );
+  // @Input() content: string[][] = [];
+  // @Input() assetClass = {} as AssetClassType;
+  // @Input() unitControlNames: string[] = [];
+  // @Input() saleControlNames: string[] = [];
+  // @Input() leaseControlNames: string[] = [];
+  // @Input() unitHeaders: string[] = [];
+  // @Input() leaseHeaders: string[] = [];
+  // @Input() saleHeaders: string[] = [];
+  // exclamation = 'assets/images/exclamation.svg';
 
-    this.onFileUploaded();
+  // form = new FormGroup({
+  //   data: new FormArray([])
+  // });
+  get data(): FormArray {
+    return this.form.get('data') as FormArray;
   }
+  // headers: string[] = [];
+  // controlNames: string[] = [];
+  // numbersOnly = /^(0|[1-9][0-9]*)$/;
+  // decimalsOnly = /^([0-9]\d*(\.\d+)?)$/;
+  
 
-  onFileUploaded(){
-    
-    this.headers = this.extractFileContent(this.data, this.fileName, true) as string[];
-    const content = this.extractFileContent(this.data, this.fileName);
+  // validationMessages: ValidationMessages = {
+  //   unit: {
+  //     identifier: {
+  //       required: 'Identifier is required',
+  //       uniqueValue: 'Identifier must be unique'
+  //     },
+  //     description: {
+  //       required: 'Description is required'
+  //     },
+  //     areaSize: {
+  //       required: 'Area is required',
+  //       pattern: 'Area must be a valid number'
+  //     },
+  //     beds: {
+  //       pattern: 'Number of beds must be a valid number',
+  //       required: 'At least one bed is required'
+  //     }
+  //   },
+  //   sale: {
+  //     priceTarget: {
+  //       pattern: 'Sale price target must be a valid positive number'
+  //     },
+  //     priceAchieved: {
+  //       pattern: 'Sale price achieved must be a valid positive number'
+  //     },
+  //     status: {
+  //       statusPriceError: 'Status cannot be available if price achieved is above 0'
+  //     }
+  //   },
+  //   lease: {
+  //     rentTarget: {
+  //       pattern: 'Rent target must be a valid positive number'
+  //     },
+  //     rentAchieved: {
+  //       pattern: 'Rent achieved must be a valid positive number'
+  //     }
+  //   }
+  // };
 
-    
-    // this.dataForm = this.createFormFromData(content);
-  }
+  constructor() {}
 
-  ngOnDestroy(): void {
-    this.subs.forEach(sub => sub.unsubscribe());
-  }
-
-  private extractFileContent(fileData: Uint8Array, fileName: string, headersOnly = false): string[][] | string[] {
-    let content: string[][] = [];
-
-    if (fileName.endsWith('.csv')) {
-      content = this.extractCSVFileContent(fileData);
-    } else if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx')) {
-      content = this.extractExcelFileContent(fileData);
-    }
-
-    if (headersOnly) {
-      return content[0];  // Only return the first row (headers)
-    } else {
-      return content;
-    }
-  }
-
-  private extractCSVFileContent(fileData: Uint8Array): string[][] {
-    const csvString = new TextDecoder('utf-8').decode(fileData);
-    const lines = csvString.split('\n').filter(line => line.trim() !== '');
-
-    return lines.map(line => line.split(','));
-  }
-
-  private extractExcelFileContent(fileData: Uint8Array): string[][] {
-    const workbook = XLSX.read(fileData, {type: 'array'});
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true});
-
-    const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-    return nonEmptyRows;
-  }
-
-  private createFormFromData(data: string[][]): FormGroup {
-    let form = new FormGroup({
-      rows: new FormArray([])
+  ngOnInit() {
+    // await this.defineHeadersAndControlNames();
+    // this.form = this.createFormFromContent(this.content);
+    this.saleOrLeaseFormChange.emit(this.form);
+    this.form.valueChanges.subscribe(() => {
+      this.saleOrLeaseFormChange.emit(this.form);
     });
+  }
 
-    let headers = data[0].map(header => header.trim());
+  // async defineHeadersAndControlNames() {
+  //   if(this.assetClass.investmentStrategy === "buildToSell") {
+  //     this.headers = [this.unitHeaders[0], ...this.saleHeaders];
+  //     this.controlNames = [this.unitControlNames[0], ...this.saleControlNames];
+  //   } else {
+  //     this.headers = [this.unitHeaders[0], ...this.leaseHeaders];
+  //     this.controlNames = [this.unitControlNames[0], ...this.leaseControlNames];
+  //   }
+  // }
 
+  //   // create form from content. First row represents headers
+  //   private createFormFromContent(content: string[][]) {
+  //     const form = new FormGroup({
+  //       data: new FormArray([])
+  //     });
 
-    for (let i = 1; i < data.length; i++) {
-      let row = data[i];
+  //     const headers = this.controlNames;
 
-      let rowGroup = new FormGroup({});
-      for (let j = 0; j < headers.length; j++) {
-        rowGroup.addControl(headers[j], new FormControl(row[j]));
-      }
-      (form.get('rows') as FormArray).push(rowGroup);
+  //     const validatorsMap: {[key: string]: ValidatorFn[]} = {
+  //       status: [this.saleStatusValidator()],
+  //       statusDate: [],
+  //       priceTarget: [Validators.required, Validators.pattern(this.decimalsOnly)],
+  //       priceAchieved: [Validators.pattern(this.decimalsOnly)],
+  //       buyer: [],
+  //       ownershipType: [],
+
+  //       startDate: [],
+  //       endDate: [],
+  //       rentTarget: [Validators.pattern(this.decimalsOnly)],
+  //       rentAchieved: [Validators.pattern(this.decimalsOnly)],
+  //       tenant: [],
+  //       leaseType: [],
+  //     }
+
+  //     const unitControlLenght = this.unitControlNames.length;
+
+  //     for (let i = 1; i < content.length; i++) {
+  //       const row = content[i].slice(0, 1).concat(content[i].slice(unitControlLenght));
+  //       const rowForm = new FormGroup({});
+
+  //       rowForm.addControl(headers[0], new FormControl(content[i][0]));
+  //       for (let j = 1; j < headers.length; j++) {
+  //         const header = headers[j];
+  //         const value = row[j];
+  //         const validators = validatorsMap[header];
+
+  //         rowForm.addControl(header, new FormControl(value, validators));
+  //       }
+
+  //       (form.get('data') as FormArray).push(rowForm);
+  //     }
+
+  //     return form
+  //   }
+
+  // getErrorMessage(control: AbstractControl | null, controlName: string): string | undefined {
+  //   const formControl = control as FormControl;
+  //   const errors = formControl.errors;
+
+  //   let errorMessages
+  //   if(this.assetClass.investmentStrategy === "buildToSell") {
+  //     errorMessages = this.validationMessages['sale'][controlName]
+  //   } else {
+  //     errorMessages = this.validationMessages['lease'][controlName]
+  //   }
+    
+  //   const messages = [];
+
+  //   if (!control || !errors) {
+  //     return undefined;
+  //   }
+
+  //   for (let errorName in errors) {
+  //     if (errors[errorName]) {
+  //       messages.push(errorMessages[errorName]);
+  //     }
+  //   }
+  //   return messages.join(', ')+ '.';
+  // }
+
+  // saleStatusValidator(): ValidatorFn {
+  //   return (control: AbstractControl) => {
+  //     const status = control.value;
+
+  //     if (control.parent) {
+  //       const formGroupParent = control.parent as FormGroup;
+  //       const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
+
+  //       if (status === 'available' && Number(priceAchieved) > 0) {
+  //         // console.log('status: ', status, 'priceAchieved: ', priceAchieved);
+
+  //         return {statusPriceError: true}; // Returning custom error object
+  //       }
+  //     }
+
+  //     return null; // If validation passed, return null
+  //   };
+  // }
+
+  getErrorMessage(control: AbstractControl | null, controlName: string): string | undefined {
+    const formControl = control as FormControl;
+    const errors = formControl.errors;
+    const errorMessages = this.controlValidatioMessages[controlName];
+    const messages = [];
+
+    if (!control || !errors) {
+      return undefined;
     }
 
-    return form;
+    for (let errorName in errors) {
+      if (errors[errorName]) {
+        messages.push(errorMessages[errorName]);
+      }
+    }
+    return messages.join(', ') + '.';
   }
+
 }

@@ -24,8 +24,8 @@
                     <button
                       type="button"
                       class="btn btn-tansparent"
-                      tooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
-                      triggers="mouseenter:click"
+                      [tooltip]="getErrorMessage(row.get(controlName), controlName)"
+                      [container]="'body'"
                     >
                       <img src="{{ exclamation }}" alt="" />
                     </button>

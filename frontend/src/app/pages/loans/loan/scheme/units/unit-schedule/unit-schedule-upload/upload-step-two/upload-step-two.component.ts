@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn} from '@angular/forms';
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {UnitService} from 'src/app/_services/unit/unit.service';
 import * as XLSX from 'xlsx';
@@ -12,7 +12,7 @@ import * as XLSX from 'xlsx';
 export class UploadStepTwoComponent implements OnInit, OnDestroy {
   errorMessage = '';
   @Output() contentUpload = new EventEmitter<string[][]>();
-  @Output() dataHeadersValidation = new EventEmitter<boolean>();
+  // @Output() headersChange = new EventEmitter<boolean>();
   dataForm = {} as FormGroup;
   fileName = '';
   subs: Subscription[] = [];
@@ -20,13 +20,13 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   headers: string[] = [];
   parametresRequired: string[] = [];
   content: string[][] = [];
-
+  
   constructor(private _unitService: UnitService) {}
 
   ngOnInit(): void {
     this.subs.push(
       this._unitService.getFileSub().subscribe(file => {
-        if (file instanceof File ){
+        if (file instanceof File) {
           this.readFile(file);
         }
       }),
@@ -44,13 +44,12 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
       this.errorMessage = 'file not found';
       return;
     }
-    
+
     this._unitService.setFileSub(file);
     this.readFile(file);
-
   }
 
-  readFile(file: File){
+  readFile(file: File) {
     document.getElementById('file-name')!.innerText = file.name || 'Select file to upload';
 
     const reader = new FileReader();
@@ -60,11 +59,10 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
       this.content = this.extractFileContent(this.data, file.name);
       this.headers = this.content[0];
-      
 
       if (this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
         this.contentUpload.emit(this.content);
-        this.dataHeadersValidation.emit(true);
+        // this.headersChange.emit(true);
       }
     };
 
@@ -103,7 +101,7 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   private extractExcelFileContent(fileData: Uint8Array): string[][] {
     const workbook = XLSX.read(fileData, {type: 'array'});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true, defval: ""});
+    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true, defval: ''});
 
     // return rows;
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
