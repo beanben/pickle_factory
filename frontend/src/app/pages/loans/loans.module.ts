@@ -24,6 +24,7 @@ import { UploadStepThreeComponent } from './loan/scheme/units/unit-schedule/unit
 import { UploadStepFourComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-four/upload-step-four.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { UploadStepFiveComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-five/upload-step-five.component';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
     UploadStepTwoComponent,
     UploadStepThreeComponent,
     UploadStepFourComponent,
+    UploadStepFiveComponent,
   ],
   exports: [
 

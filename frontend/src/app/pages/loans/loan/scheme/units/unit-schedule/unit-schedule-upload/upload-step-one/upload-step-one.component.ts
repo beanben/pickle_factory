@@ -35,7 +35,7 @@ export class UploadStepOneComponent implements OnInit, OnChanges {
     this.onCheckboxChange();
   }
 
-  constructor(private _sharedService: SharedService, private _unitService: UnitService) {}
+  constructor( private _unitService: UnitService) {}
 
   ngOnInit() {
     this.parametresRequired = this._unitService.displayUnitScheduleFields(this.assetClass, this.scheme);

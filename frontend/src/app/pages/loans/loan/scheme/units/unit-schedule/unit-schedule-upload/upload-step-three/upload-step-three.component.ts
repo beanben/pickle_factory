@@ -3,7 +3,7 @@ import {AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validat
 
 interface ControlValidationMessages {
   [controlName: string]: {
-    [errorType: string]: string | { [errorType: string]: string };
+    [errorType: string]: string | {[errorType: string]: string};
   };
 }
 
@@ -25,14 +25,35 @@ export class UploadStepThreeComponent implements OnInit {
   get data(): FormArray {
     return this.form.get('data') as FormArray;
   }
+  invalidControls = 0;
 
   constructor() {}
 
   ngOnInit(): void {
+    
     this.unitFormChange.emit(this.form);
+    this.invalidControls = this.countInvalidControls();
+    
     this.form.valueChanges.subscribe(() => {
       this.unitFormChange.emit(this.form);
+      this.invalidControls = this.countInvalidControls();
     });
+  }
+
+  countInvalidControls() {
+    let count = 0;
+    this.data.controls.forEach((control: AbstractControl) => {
+      if (control instanceof FormGroup) {
+        const formGroup = control as FormGroup;
+        Object.keys(formGroup.controls).forEach((controlName: string) => {
+          const control = formGroup.controls[controlName];
+          if (control.invalid) {
+            count++;
+          }
+        });
+      }
+    });
+    return count;
   }
 
   getErrorMessage(control: AbstractControl | null, controlName: string): string | undefined {
@@ -51,5 +72,18 @@ export class UploadStepThreeComponent implements OnInit {
       }
     }
     return messages.join(', ') + '.';
+  }
+
+  getControlType(controlName: string): string {
+    if (this.isNumberField(controlName)) {
+      return 'number';
+    } else {
+      return 'text';
+    }
+  }
+
+  isNumberField(controlName: string): boolean {
+    const numberFields = ['beds', 'areaSize'];
+    return numberFields.includes(controlName);
   }
 }

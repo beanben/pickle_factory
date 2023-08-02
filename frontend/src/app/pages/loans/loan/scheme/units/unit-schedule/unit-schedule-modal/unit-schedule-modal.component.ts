@@ -137,7 +137,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     private _schemeService: SchemeService,
     private _unitService: UnitService,
     private fb: FormBuilder,
-    private _sharedService: SharedService
   ) {}
 
   ngOnInit() {
@@ -385,17 +384,6 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return lease;
   }
 
-  updateOrCreateUnitsScheduleBTS() {
-    const unitsScheduleDataBTS: UnitScheduleData[] = this.combineUnitAndSaleForms();
-
-    this._unitService
-      .updateOrCreateUnitsScheduleBTS(unitsScheduleDataBTS)
-      .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
-        this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
-      });
-  }
-
   combineUnitAndSaleForms(): UnitScheduleData[] {
     const unitsScheduleDataBTS: UnitScheduleData[] = [];
 
@@ -412,11 +400,11 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return unitsScheduleDataBTS;
   }
 
-  updateOrCreateUnitsScheduleBTR() {
-    const unitsScheduleDataBTR: UnitScheduleData[] = this.combineUnitAndLeaseForms();
+  updateOrCreateUnitsScheduleBTS() {
+    const unitsScheduleDataBTS: UnitScheduleData[] = this.combineUnitAndSaleForms();
 
     this._unitService
-      .updateOrCreateUnitsScheduleBTR(unitsScheduleDataBTR)
+      .updateOrCreateUnitsScheduleBTS(unitsScheduleDataBTS)
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
         this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
@@ -437,6 +425,19 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     });
     return unitsScheduleDataBTR;
   }
+
+  updateOrCreateUnitsScheduleBTR() {
+    const unitsScheduleDataBTR: UnitScheduleData[] = this.combineUnitAndLeaseForms();
+
+    this._unitService
+      .updateOrCreateUnitsScheduleBTR(unitsScheduleDataBTR)
+      .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
+        this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
+        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+      });
+  }
+
+
 
   onRemoveUnit(index: number) {
     const unitId = this.unitsFormArray.at(index).get('id')?.value;

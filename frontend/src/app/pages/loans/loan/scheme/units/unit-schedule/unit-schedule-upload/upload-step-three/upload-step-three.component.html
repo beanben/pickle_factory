@@ -8,6 +8,24 @@
         cell. This steps focused on unit parametres.
       </p>
 
+      <ng-container *ngIf="invalidControls > 0; else noErrors">
+        <div class="alert alert-danger text-center" role="alert">
+          <p class="mb-0">
+            <strong>{{ invalidControls }}</strong> invalid controls found. Please fix them before proceeding.
+          </p>
+        </div>
+      </ng-container>
+
+      <ng-template #noErrors>
+        <div class="alert alert-success text-center" role="alert">
+          <p class="mb-0">
+            <strong>0</strong> invalid controls found. You can proceed to the next step.
+          </p>
+        </div>
+      </ng-template>
+
+      
+
       <form [formGroup]="form">
         <table class="table">
           <thead>
@@ -19,7 +37,22 @@
             <tr *ngFor="let row of data.controls; let i = index" [formGroupName]="i">
               <td *ngFor="let controlName of unitControlNames">
                 <div class="input-group">
-                  <input type="text" [formControlName]="controlName" class="form-control" />
+                  <ng-container [ngSwitch]="getControlType(controlName)">
+                    <input
+                    *ngSwitchCase="'number'"
+                    type="text"
+                    [formControlName]="controlName"
+                    class="form-control"
+                    appFormatNumber
+                  />
+                  <input
+                    *ngSwitchDefault
+                    type="text"
+                    [formControlName]="controlName"
+                    class="form-control"
+                  />
+                  </ng-container>
+
                   <span *ngIf="row.get(controlName)?.errors" class="input-group-text">
                     <button
                       type="button"

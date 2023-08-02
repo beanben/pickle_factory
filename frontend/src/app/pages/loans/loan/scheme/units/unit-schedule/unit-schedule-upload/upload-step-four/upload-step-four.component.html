@@ -8,6 +8,20 @@
         cell. This steps focused on sales/leases parametres.
       </p>
 
+      <ng-container *ngIf="invalidControls > 0; else noErrors">
+        <div class="alert alert-danger text-center" role="alert">
+          <p class="mb-0">
+            <strong>{{ invalidControls }}</strong> invalid controls found. Please fix them before proceeding.
+          </p>
+        </div>
+      </ng-container>
+
+      <ng-template #noErrors>
+        <div class="alert alert-success text-center" role="alert">
+          <p class="mb-0"><strong>0</strong> invalid controls found. You can proceed to the next step.</p>
+        </div>
+      </ng-template>
+
       <form [formGroup]="form">
         <table class="table">
           <thead>
@@ -19,7 +33,32 @@
             <tr *ngFor="let row of data.controls; let i = index" [formGroupName]="i">
               <td *ngFor="let controlName of controlNames">
                 <div class="input-group">
-                  <input type="text" [formControlName]="controlName" class="form-control" [attr.disabled]="controlName==='identifier' ? true : null"/>
+                  <ng-container [ngSwitch]="getControlType(controlName)">
+                    <input
+                      *ngSwitchCase="'date'"
+                      type="text"
+                      class="form-control text-center cursor-pointer"
+                      [formControlName]="controlName"
+                      placeholder="DD/MM/YYYY"
+                      bsDatepicker
+                      [bsConfig]="{dateInputFormat: 'DD/MM/YYYY'}"
+                    />
+                    <input
+                      *ngSwitchCase="'number'"
+                      type="text"
+                      [formControlName]="controlName"
+                      class="form-control"
+                      appFormatNumber
+                    />
+                    <input
+                      *ngSwitchDefault
+                      type="text"
+                      [formControlName]="controlName"
+                      class="form-control"
+                      [attr.disabled]="controlName === 'unitIdentifier' ? true : null"
+                    />
+                  </ng-container>
+
                   <span *ngIf="row.get(controlName)?.errors" class="input-group-text">
                     <button
                       type="button"

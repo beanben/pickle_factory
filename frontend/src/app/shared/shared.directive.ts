@@ -1,4 +1,5 @@
-import { Directive, ElementRef, Renderer2, Input, SimpleChanges, HostBinding } from '@angular/core';
+import { Directive, ElementRef, Renderer2, Input, SimpleChanges, HostBinding, HostListener, OnInit } from '@angular/core';
+import { NgControl } from '@angular/forms';
 
 @Directive({
   selector: '[appDot]',
@@ -37,4 +38,45 @@ export class DotDirective {
     return this.status === "complete";
   }
 
+}
+@Directive({
+  selector: '[appFormatNumber]'
+})
+export class FormatNumberDirective implements OnInit{
+  constructor(
+    private control: NgControl
+  ) {}
+
+  ngOnInit() {
+    const value = this.control.control?.value
+    this.control.control?.setValue(this.formatValue(value), { emitEvent: false });
+  }
+
+  @HostListener('focus', ['$event.target.value'])
+  onFocus(value: string) {
+    this.control.control?.setValue(this.parseValue(value), { emitEvent: false });
+  }
+
+  @HostListener('blur', ['$event.target.value'])
+  onBlur(value: string) {
+    this.control.control?.setValue(this.formatValue(this.parseValue(value)), { emitEvent: false });
+  }
+
+  parseValue(value: string | undefined | null): number | null{
+    if (value === undefined || value === null || value === '') {
+      return null;
+    }
+    return parseFloat(value.replace(/,/g, ''));
+  }
+
+  formatValue(value: number | null): string {
+    if (value === undefined || value === null) {
+      return '';
+    }
+
+    return value.toLocaleString('en-GB', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
 }

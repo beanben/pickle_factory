@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 export class UploadStepTwoComponent implements OnInit, OnDestroy {
   errorMessage = '';
   @Output() contentUpload = new EventEmitter<string[][]>();
-  // @Output() headersChange = new EventEmitter<boolean>();
   dataForm = {} as FormGroup;
   fileName = '';
   subs: Subscription[] = [];
@@ -62,7 +61,6 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
 
       if (this.headers.length > 0 && this.arraysAreEqual(this.headers, this.parametresRequired)) {
         this.contentUpload.emit(this.content);
-        // this.headersChange.emit(true);
       }
     };
 
@@ -94,21 +92,22 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
     const csvString = new TextDecoder('utf-8').decode(fileData);
     const lines = csvString.split('\n').filter(line => line.trim() !== '');
 
-    // return lines.map(line => line.split(','));
-    return lines.map(line => line.split(',').map(data => data.trim()));
+    return lines.map(line => line.split(',').map(data => {
+      const trimmedData = data.trim();
+      return typeof trimmedData === 'string' ? trimmedData.toLowerCase() : trimmedData;
+    }));
   }
 
   private extractExcelFileContent(fileData: Uint8Array): string[][] {
-    const workbook = XLSX.read(fileData, {type: 'array'});
+    const workbook = XLSX.read(fileData, {type: 'array', cellDates: true});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: true, defval: ''});
+    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
 
-    // return rows;
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
-
-    // return nonEmptyRows;
-    // // Trim each cell in each row
-    const trimmedRows = nonEmptyRows.map(row => row.map(cell => (typeof cell === 'string' ? cell.trim() : cell)));
+    const trimmedRows = nonEmptyRows.map(row => row.map(cell => {
+      const trimmedCell = typeof cell === 'string' ? cell.trim() : cell;
+      return typeof trimmedCell === 'string' ? trimmedCell.toLowerCase() : trimmedCell;
+    }));
 
     return trimmedRows;
   }

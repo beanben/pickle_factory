@@ -24,7 +24,7 @@ import {SharedService} from 'src/app/_services/shared/shared.service';
 })
 export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
-  openUploadModal = true;
+  openUploadModal = false;
   openAssetClassModal = false;
   modalMode = '';
   totalUnits = 0;
@@ -54,7 +54,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   leaseFields: string[] = [];
 
   constructor(
-    private _schemeService: SchemeService,
+    // private _schemeService: SchemeService,
     private _unitService: UnitService,
     private _sharedService: SharedService
   ) {}
@@ -214,6 +214,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     }
   }
 
+
+
   getChoiceLabel(choice_value: string, choices: Choice[]): string {
     return this._sharedService.getChoiceLabel(choice_value, choices);
   }
@@ -225,5 +227,16 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
   onCloseUploadModal(unitsScheduleData: UnitScheduleData[] | null) {
     this.openUploadModal = false;
+
+    if (unitsScheduleData) {
+      this.unitsScheduleData = unitsScheduleData;
+      this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
+
+      const sales: (Sale | undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.sale);
+      this.calculateTotalsSale(sales.filter((sale): sale is Sale => sale !== undefined && sale !== null));
+
+      const leases: (Lease | undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.lease);
+      this.calculateAveragesLease(leases.filter((lease): lease is Lease => lease !== undefined && lease !== null));
+    }
   }
 }

@@ -1,5 +1,17 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {Subject, takeUntil} from 'rxjs';
 import {LeaseStructure, Scheme, UnitScheduleData, UnitStructure} from 'src/app/_interfaces/scheme.interface';
 import {Choice} from 'src/app/_interfaces/shared.interface';
 import {UnitService} from 'src/app/_services/unit/unit.service';
@@ -8,23 +20,24 @@ import {AssetClassType} from 'src/app/_types/custom.type';
 interface ValidationMessages {
   [category: string]: {
     [controlName: string]: {
-      [errorType: string]: string | { [errorType: string]: string };
+      [errorType: string]: string | {[errorType: string]: string};
     };
   };
 }
 
 interface ControlValidationMessages {
   [controlName: string]: {
-    [errorType: string]: string | { [errorType: string]: string };
+    [errorType: string]: string | {[errorType: string]: string};
   };
 }
 
 @Component({
+  providers: [DatePipe],
   selector: 'app-unit-schedule-upload',
   templateUrl: './unit-schedule-upload.component.html'
   // styleUrls: ['./unit-schedule-upload.component.css']
 })
-export class UnitScheduleUploadComponent implements OnInit, OnChanges {
+export class UnitScheduleUploadComponent implements OnInit, OnChanges, OnDestroy {
   displayStyle = 'block';
   isChecked = false;
   selectFileStatus = 'active';
@@ -37,6 +50,10 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
   unitForm = new FormGroup({});
   saleOrLeaseForm = new FormGroup({});
   saleOrLeaseControlNames: string[] = [];
+  saleForm = new FormGroup({});
+  leaseForm = new FormGroup({});
+  private destroy$ = new Subject<boolean>();
+  importAllowed = false;
 
   @Output() modalUploadUnitSchedule = new EventEmitter<UnitScheduleData[] | null>();
   @Input() unitStructure = {} as UnitStructure;
@@ -71,28 +88,33 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
       },
       areaSize: {
         required: 'Area is required',
-        pattern: 'Area must be a valid number'
+        // pattern: 'Area must be a valid number',
+        positiveNumber: 'Area must be a valid positive number'
       },
       beds: {
-        pattern: 'Number of beds must be a valid number',
-        required: 'At least one bed is required'
+        // pattern: 'Number of beds must be a valid number',
+        required: 'At least one bed is required',
+        positiveNumber: 'Number of beds must be a valid positive number'
       }
     },
     sale: {
       priceTarget: {
-        pattern: 'Sale price target must be a valid positive number',
+        positiveNumber: 'Sale price target must be a valid positive number',
         required: 'Sale price target is required'
       },
       priceAchieved: {
-        pattern: 'Sale price achieved must be a valid positive number'
+        positiveNumber: 'Sale price achieved must be a valid positive number'
       },
       status: {
         required: 'Status is required',
         statusPriceError: {
           available: 'Status cannot be available if price achieved is above 0',
-          notAvailable: 'Status must be available if price achieved is 0',
+          notAvailable: 'Status must be available if price achieved is 0'
         },
         invalidChoice: ''
+      },
+      statusDate: {
+        dateInvalid: 'date must be in format DD/MM/YYYY'
       },
       ownershipType: {
         required: 'A type is required',
@@ -100,18 +122,24 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
       }
     },
     lease: {
+      startDate: {
+        dateInvalid: 'date must be in format DD/MM/YYYY'
+      },
+      endDate: {
+        dateInvalid: 'date must be in format DD/MM/YYYY'
+      },
       rentTarget: {
-        pattern: 'Rent target must be a valid positive number'
+        positiveNumber: 'Rent target must be a valid positive number'
       },
       rentAchieved: {
-        pattern: 'Rent achieved must be a valid positive number'
+        positiveNumber: 'Rent achieved must be a valid positive number'
       }
     }
   };
   numbersOnly = /^(0|[1-9][0-9]*)$/;
   decimalsOnly = /^([0-9]\d*(\.\d+)?)$/;
 
-  constructor(private el: ElementRef, private _unitService: UnitService) {}
+  constructor(private datePipe: DatePipe, private el: ElementRef, private _unitService: UnitService) {}
 
   ngOnInit(): void {
     this.addEventBackgroundClose();
@@ -124,6 +152,11 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
         this.onCancel();
       }
     });
+  }
+
+  onCloseModal() {
+    console.log("close")
+    this.onCancel();
   }
 
   onCancel() {
@@ -167,10 +200,8 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
     if (Object.keys(this.saleOrLeaseForm.value).length > 0) {
       return;
     }
-    const saleStatusValidLabels = this.saleStatusChoices.map(choice => choice.label).join(', ')+'.'
-    const saleOwnershipTypeValidLabels = this.ownershipTypeChoices.map(choice => choice.label).join(', ')
-    this.validationMessages['sale']['status']['invalidChoice'] = `Status must be one of the following: ${saleStatusValidLabels}`;
-    this.validationMessages['sale']['ownershipType']['invalidChoice'] = `Type must be one of the following: ${saleOwnershipTypeValidLabels}`;
+
+    this.updateValidationMessages();
 
     if (this.assetClass.investmentStrategy === 'buildToSell') {
       this.saleOrLeaseHeaders = [this.unitHeaders[0], ...this.saleHeaders];
@@ -187,6 +218,28 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
     this.saleOrLeaseControlNames.splice(0, 0, 'unitIdentifier');
   }
 
+  updateValidationMessages() {
+    const saleStatusValidLabels = this.saleStatusChoices.map(choice => choice.label).join(', ') + '.';
+    const saleOwnershipTypeValidLabels = this.ownershipTypeChoices.map(choice => choice.label).join(', ');
+    this.validationMessages['sale']['status'][
+      'invalidChoice'
+    ] = `Status must be one of the following: ${saleStatusValidLabels}`;
+    this.validationMessages['sale']['ownershipType'][
+      'invalidChoice'
+    ] = `Type must be one of the following: ${saleOwnershipTypeValidLabels}`;
+  }
+
+  handleSaleOrLeaseFormChange(saleOrLeaseForm: FormGroup) {
+    if (saleOrLeaseForm.invalid) {
+      return;
+    }
+    if (this.assetClass.investmentStrategy === 'buildToSell') {
+      this.saleForm = saleOrLeaseForm;
+    } else {
+      this.leaseForm = saleOrLeaseForm;
+    }
+  }
+
   saleOrLeaseContent(content: string[][]): string[][] {
     const unitHeadersLength = this.unitHeaders.length;
     return content.map((row: string[]) => {
@@ -195,15 +248,22 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
   }
 
   disableNext(): boolean {
+    let disable: boolean;
     if (this.step === 1) {
-      return !this.isChecked;
+      disable = !this.isChecked;
     } else if (this.step === 2) {
-      return !this.headersAreValid;
+      disable = !this.headersAreValid;
     } else if (this.step === 3) {
-      return this.unitForm.invalid;
+      disable = this.unitForm.invalid || Object.keys(this.unitForm.value).length === 0;
+    } else if (this.step === 4) {
+      this.importAllowed = this.saleOrLeaseForm.invalid || Object.keys(this.saleOrLeaseForm.value).length === 0;
+      disable = this.importAllowed;
     } else {
-      return false;
+      
+      disable = false;
     }
+
+    return disable;
   }
 
   getFieldsAndControlNames() {
@@ -235,8 +295,8 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
     const validatorsMap: {[key: string]: ValidatorFn[]} = {
       identifier: [Validators.required, this.uniqueValueValidator(form.get('data') as FormArray, 'identifier')],
       description: [Validators.required],
-      beds: [Validators.required, Validators.pattern(this.numbersOnly)],
-      areaSize: [Validators.required, Validators.pattern(this.decimalsOnly)],
+      beds: [Validators.required, this.positiveNumberValidator()],
+      areaSize: [Validators.required, this.positiveNumberValidator()],
       id: [] // no validators
     };
 
@@ -261,24 +321,38 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
     });
 
     const validatorsMap: {[key: string]: ValidatorFn[]} = {
-      status: [Validators.required, this.saleStatusValidator(), this.choiceValidator(this.saleStatusChoices)],
-      statusDate: [],
-      priceTarget: [Validators.required, Validators.pattern(this.decimalsOnly)],
-      priceAchieved: [Validators.pattern(this.decimalsOnly)],
+      status: [Validators.required, this.choiceValidator(this.saleStatusChoices)],
+      statusDate: [this.dateValidator()],
+      priceTarget: [Validators.required, this.positiveNumberValidator()],
+      priceAchieved: [this.positiveNumberValidator()],
       buyer: [],
-      ownershipType: [Validators.required, this.choiceValidator(this.ownershipTypeChoices)],
+      ownershipType: [Validators.required, this.choiceValidator(this.ownershipTypeChoices)]
     };
 
     for (let i = 0; i < content.length; i++) {
       const row = content[i];
-      const rowForm = new FormGroup({});
+      const rowForm = new FormGroup({}, {validators: this.saleStatusValidator()});
 
       rowForm.addControl('unitIdentifier', (unitForm.get('data') as FormArray).at(i).get('identifier')!);
       for (let j = 0; j < controlNames.length; j++) {
         const controlName = controlNames[j];
-        const control = new FormControl(row[j], validatorsMap[controlName]);
+        let controlValue = row[j];
+
+        if (controlName.toLowerCase().includes('date') && controlValue) {
+          const transformedDate = this.datePipe.transform(controlValue, 'dd/MM/yyyy');
+          controlValue = transformedDate ? transformedDate : controlValue;
+        }
+
+        const control = new FormControl(controlValue, validatorsMap[controlName]);
         rowForm.addControl(controlName, control);
       }
+
+      rowForm
+        .get('priceAchieved')
+        ?.valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          rowForm.get('status')?.updateValueAndValidity();
+        });
 
       (form.get('data') as FormArray).push(rowForm);
     }
@@ -292,10 +366,10 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
     });
 
     const validatorsMap: {[key: string]: ValidatorFn[]} = {
-      startDate: [],
-      endDate: [],
-      rentTarget: [Validators.pattern(this.decimalsOnly)],
-      rentAchieved: [Validators.pattern(this.decimalsOnly)],
+      startDate: [this.dateValidator()],
+      endDate: [this.dateValidator()],
+      rentTarget: [this.positiveNumberValidator()],
+      rentAchieved: [this.positiveNumberValidator()],
       tenant: [],
       leaseType: []
     };
@@ -307,7 +381,18 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
       rowForm.addControl('unitIdentifier', (unitForm.get('data') as FormArray).at(i).get('identifier')!);
       for (let j = 0; j < controlNames.length; j++) {
         const controlName = controlNames[j];
-        const control = new FormControl(row[j], validatorsMap[controlName]);
+        let controlValue = row[j];
+
+        if (controlName.toLowerCase().includes('date') && controlValue) {
+          const dateObject = new Date(controlValue);
+
+          if (!isNaN(dateObject.getTime())) {
+            const transformedDate = this.datePipe.transform(dateObject, 'dd/MM/yyyy');
+            controlValue = transformedDate ? transformedDate : controlValue;
+          }
+        }
+
+        const control = new FormControl(controlValue, validatorsMap[controlName]);
         rowForm.addControl(controlName, control);
       }
 
@@ -337,30 +422,87 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges {
   }
 
   saleStatusValidator(): ValidatorFn {
-    return (control: AbstractControl) => {
-      const status = control.value;
+    return (formGroup: AbstractControl) => {
+      const statusControl = formGroup.get('status');
+      const priceAchievedControl = formGroup.get('priceAchieved');
 
-      if (control.parent) {
-        const formGroupParent = control.parent as FormGroup;
-        const priceAchieved = formGroupParent.get('priceAchieved')?.value || 0;
-
-        if (status.toLowerCase() === 'available' && Number(priceAchieved) > 0) {
-          return {statusPriceError: 'available'};
-        }
-        if(status.toLowerCase() !== 'available' && Number(priceAchieved) === 0) {
-          return {statusPriceError: 'notAvailable'};
-        }
+      if (!statusControl || !priceAchievedControl) {
+        return null;
       }
 
+      const status = statusControl?.value;
+      const priceAchieved = priceAchievedControl.value || 0;
+
+      // if (status === null || status === '') {
+      //   return null;
+      // }
+
+      if (!status) {
+        return null;
+      }
+
+      if (status.toLowerCase() === 'available' && Number(priceAchieved) > 0) {
+        statusControl?.setErrors({statusPriceError: 'available'});
+        return {statusPriceError: 'available'};
+      }
+      if (status.toLowerCase() !== 'available' && Number(priceAchieved) === 0) {
+        statusControl?.setErrors({statusPriceError: 'notAvailable'});
+        return {statusPriceError: 'notAvailable'};
+      }
+
+      // statusControl?.updateValueAndValidity({emitEvent: false});
       return null;
     };
   }
 
   choiceValidator(choices: Choice[]): ValidatorFn {
     return (control: AbstractControl) => {
+      if (control.value === null || control.value === '') {
+        return null;
+      }
+
       const valid = choices.some(choice => choice.label.toLowerCase() === control.value.toLowerCase());
+
       return valid ? null : {invalidChoice: {value: control.value}};
     };
   }
 
+  positiveNumberValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (control.value === null || control.value === '') {
+        return null;
+      }
+
+      let numValue: number = parseFloat(control.value);
+
+      if (isNaN(numValue) || numValue < 0) {
+        return {positiveNumber: {value: control.value}};
+      }
+      return null;
+    };
+  }
+
+  dateValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const value = control.value;
+
+      if (!value) {
+        return null;
+      }
+
+      if (value instanceof Date) {
+        return null;
+      }
+
+      const dateRegex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/(\d{4})$/;
+      const isValid = dateRegex.test(value);
+
+      return isValid ? null : {dateInvalid: true};
+    };
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
 }

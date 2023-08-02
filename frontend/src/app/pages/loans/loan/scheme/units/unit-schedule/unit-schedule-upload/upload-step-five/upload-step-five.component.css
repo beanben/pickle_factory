@@ -1,0 +1,28 @@
+.square {
+    width: 50vw;
+    height: 50vw;
+    max-width: 200px;
+    max-height: 200px;
+  }
+  
+  .circle {
+    width: 80%;
+    height: 80%;
+  }
+  
+  /* i {
+    font-size: 25%;
+  } */
+
+
+  .light-green{
+    background-color: rgb(182, 218, 182)
+  }
+
+  .light-grey{
+    background-color: rgba(128, 128, 128, 0.1
+    )
+  }
+
+  
+  

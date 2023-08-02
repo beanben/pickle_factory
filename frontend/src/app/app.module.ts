@@ -19,6 +19,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DotDirective } from './shared.directive';
+import { DotDirective, FormatNumberDirective } from './shared.directive';
 import { DeleteComponent } from './delete.component';
 import { EditComponent } from './edit.component';
 import { InitialsPipe } from './initials.pipe';
@@ -27,7 +27,8 @@ import { BorrowerModalComponent } from './borrower-modal/borrower-modal.componen
     // LoanModalComponent,
     BorrowerModalComponent,
     InitialsPipe,
-    InitialPipe
+    InitialPipe,
+    FormatNumberDirective
   ],
   exports: [
     DotDirective,
@@ -39,6 +40,7 @@ import { BorrowerModalComponent } from './borrower-modal/borrower-modal.componen
     BorrowerModalComponent,
     InitialsPipe,
     InitialPipe,
+    FormatNumberDirective
   ]
 })
 export class SharedModule { }
