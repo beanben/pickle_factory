@@ -34,9 +34,9 @@
       <thead>
         <tr class="border border-1 header bg-grey">
           <th scope="col">Total</th>
-          <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }}</th>
-          <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }}</th>
-          <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }}</th>
+          <th scope="col">{{ totalUnits | number : '1.0-0' : 'en-GB' }} {{unitStructure.label}}</th>
+          <th scope="col">{{ totalAreaSize | number : '1.2-2' : 'en-GB' }} {{unitStructure.areaSystem}}</th>
+          <th scope="col" *ngIf="unitStructure.hasBeds">{{ totalBeds | number : '1.0-0' : 'en-GB' }} beds</th>
           <th scope="col" *ngIf="assetClass.use === 'residential'"></th>
           <th scope="col">{{ totalSalePriceTarget | number : '1.0-0' : 'en-GB' }}</th>
           <th scope="col">{{ totalSalePriceAchieved | number : '1.0-0' : 'en-GB' }}</th>

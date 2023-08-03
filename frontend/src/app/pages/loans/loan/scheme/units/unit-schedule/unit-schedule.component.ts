@@ -85,7 +85,6 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     }
 
     this.unitStructure = this._unitService.createUnitStructure(this.assetClass, this.scheme);
-    // console.log("unitsScheduleData: ", this.unitsScheduleData);
   }
 
   async getChoices(choiceType: string): Promise<Choice[]> {
