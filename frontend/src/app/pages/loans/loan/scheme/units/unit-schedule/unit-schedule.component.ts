@@ -54,7 +54,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   leaseFields: string[] = [];
 
   constructor(
-    // private _schemeService: SchemeService,
+    private _schemeService: SchemeService,
     private _unitService: UnitService,
     private _sharedService: SharedService
   ) {}
@@ -229,6 +229,8 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
 
     if (unitsScheduleData) {
       this.unitsScheduleData = unitsScheduleData;
+      this.setAssetClassDataSub(this.assetClass, unitsScheduleData);
+
       this.calculateTotals(unitsScheduleData.map(unitScheduleData => unitScheduleData.unit));
 
       const sales: (Sale | undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.sale);
@@ -237,5 +239,16 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
       const leases: (Lease | undefined)[] = unitsScheduleData.map(unitScheduleData => unitScheduleData.lease);
       this.calculateAveragesLease(leases.filter((lease): lease is Lease => lease !== undefined && lease !== null));
     }
+  }
+
+  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
+    const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
+
+    const assetClassData = {
+      assetClass: assetClass,
+      units: units
+    };
+
+    this._schemeService.setAssetClassDataSub(assetClassData);
   }
 }

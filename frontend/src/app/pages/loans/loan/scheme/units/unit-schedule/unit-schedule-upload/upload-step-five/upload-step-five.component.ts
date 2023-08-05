@@ -129,7 +129,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         this.unitScheduleDataRes = unitScheduleDataRes;
         this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
-        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+        // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
   }
 
@@ -157,7 +157,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
         this.unitScheduleDataRes = unitScheduleDataRes;
         this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
         // this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+        // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
   }
 
