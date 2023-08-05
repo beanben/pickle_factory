@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Lease, Sale, Unit, UnitScheduleData} from 'src/app/_interfaces/scheme.interface';
+import { SchemeService } from 'src/app/_services/scheme/scheme.service';
 import {UnitService} from 'src/app/_services/unit/unit.service';
 import {AssetClassType} from 'src/app/_types/custom.type';
 
@@ -34,7 +35,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
   @Output() modalCloseUnitsSchedule = new EventEmitter<void>();
   @Output() modalSaveUnitsSchedule = new EventEmitter<UnitScheduleData[]>();
 
-  constructor(private fb: FormBuilder, private _unitService: UnitService) {}
+  constructor(private fb: FormBuilder, private _unitService: UnitService, private _schemeService: SchemeService) {}
 
   ngOnInit(): void {
     // if (this.assetClass.investmentStrategy === 'buildToSell') {
@@ -47,7 +48,6 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['unitsFormGroup'] && changes['unitsFormGroup'].currentValue) {
       this.createUnitSchedule();
-
     }
   }
 
@@ -118,7 +118,6 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
       unitsScheduleDataBTS.push(unitScheduleData);
     });
 
-
     return unitsScheduleDataBTS;
   }
 
@@ -130,8 +129,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         this.unitScheduleDataRes = unitScheduleDataRes;
         this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
-        // this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-        // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
   }
 
@@ -159,12 +157,23 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
         this.unitScheduleDataRes = unitScheduleDataRes;
         this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
         // this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
-        // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
+        this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
   }
 
-  onCloseModal(){
+  onCloseModal() {
     // this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
     this.modalCloseUnitsSchedule.emit();
+  }
+
+  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
+    const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
+
+    const assetClassData = {
+      assetClass: assetClass,
+      units: units
+    };
+
+    this._schemeService.setAssetClassDataSub(assetClassData);
   }
 }
