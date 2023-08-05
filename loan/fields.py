@@ -15,6 +15,9 @@ class CamelToSnakeCaseCharField(CharField):
 
 class AngularDateField(DateField):
     def to_internal_value(self, data):
+         # If data is an empty string or None, return None
+        if not data:
+            return None
         # Convert the date from the Angular format to a Python datetime object
         data = parse(data)
         return super().to_internal_value(data.date())

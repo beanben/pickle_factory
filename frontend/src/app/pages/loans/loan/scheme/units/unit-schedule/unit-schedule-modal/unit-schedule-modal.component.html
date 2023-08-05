@@ -185,7 +185,7 @@
                   <th>{{saleFieldMap["status"] | titlecase}}</th>
                   <th>{{saleFieldMap["statusDate"] | titlecase}}</th>
                   <th>{{saleFieldMap["buyer"] | titlecase}}</th>
-                  <th></th>
+                  <!-- <th></th> -->
                 </tr>
               </thead>
               <tbody formArrayName="salesData">
@@ -260,9 +260,9 @@
                       [attr.disabled]="salesAchieved(i) ? null : true"
                     />
                   </td>
-                  <td class="align-middle">
+                  <!-- <td class="align-middle">
                     <button type="button" class="btn btn-danger" (click)="reset(salesFormArray, i)">Reset</button>
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </table>
@@ -358,7 +358,7 @@
                   <th>{{leaseFieldMap["startDate"]}}</th>
                   <th>{{leaseFieldMap["endDate"]}}</th>
                   <th>{{leaseFieldMap["tenant"]}}</th>
-                  <th></th>
+                  <!-- <th></th> -->
                 </tr>
               </thead>
               <tbody formArrayName="leasesData">
@@ -417,9 +417,9 @@
                       [attr.disabled]="rentAchieved(i) ? null : true"
                     />
                   </td>
-                  <td class="align-middle">
+                  <!-- <td class="align-middle">
                     <button type="button" class="btn btn-danger" (click)="reset(leasesFormArray, i)">Reset</button>
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </table>

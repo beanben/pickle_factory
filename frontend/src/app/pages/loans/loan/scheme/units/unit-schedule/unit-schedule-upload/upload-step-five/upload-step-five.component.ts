@@ -32,6 +32,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
     return this.leasesFormGroup.get('data') as FormArray;
   }
   @Output() modalCloseUnitsSchedule = new EventEmitter<void>();
+  @Output() modalSaveUnitsSchedule = new EventEmitter<UnitScheduleData[]>();
 
   constructor(private fb: FormBuilder, private _unitService: UnitService) {}
 
@@ -128,6 +129,7 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
       .updateOrCreateUnitsScheduleBTS(unitsScheduleDataBTS)
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         this.unitScheduleDataRes = unitScheduleDataRes;
+        this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
         // this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
         // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
@@ -155,12 +157,14 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
       .updateOrCreateUnitsScheduleBTR(unitsScheduleDataBTR)
       .subscribe((unitScheduleDataRes: UnitScheduleData[]) => {
         this.unitScheduleDataRes = unitScheduleDataRes;
+        this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
         // this.modalSaveUnitsSchedule.emit(unitScheduleDataRes);
         // this.setAssetClassDataSub(this.assetClass, unitScheduleDataRes);
       });
   }
 
   onCloseModal(){
+    // this.modalSaveUnitsSchedule.emit(this.unitScheduleDataRes);
     this.modalCloseUnitsSchedule.emit();
   }
 }

@@ -74,6 +74,7 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges, OnDestroy
   saleControlNames: string[] = [];
   leaseControlNames: string[] = [];
   exclamation = 'assets/images/exclamation.svg';
+  unitScheduleData: UnitScheduleData[] = [];
 
   unitValidatioMessages = {} as ControlValidationMessages;
   saleOrLeaseValidatioMessages = {} as ControlValidationMessages;
@@ -155,12 +156,24 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges, OnDestroy
   }
 
   onCloseModal() {
-    console.log("close")
     this.onCancel();
   }
 
+  // onSaveModal(unitScheduleData: UnitScheduleData[]){
+  //   this.modalUploadUnitSchedule.emit(unitScheduleData);
+  //   this.onCancel();
+  // }
+  onSaveUnitsSchedule(unitScheduleData: UnitScheduleData[]) {
+    this.unitScheduleData = unitScheduleData;
+  }
+
   onCancel() {
-    this.modalUploadUnitSchedule.emit(null);
+    if (this.unitScheduleData.length > 0) {
+      this.modalUploadUnitSchedule.emit(this.unitScheduleData);
+    } else {
+      this.modalUploadUnitSchedule.emit(null);
+    }
+
     this._unitService.setFileNameSub('');
   }
 
@@ -259,7 +272,6 @@ export class UnitScheduleUploadComponent implements OnInit, OnChanges, OnDestroy
       this.importAllowed = this.saleOrLeaseForm.invalid || Object.keys(this.saleOrLeaseForm.value).length === 0;
       disable = this.importAllowed;
     } else {
-      
       disable = false;
     }
 

@@ -54,8 +54,11 @@
           [unitsFormGroup]="unitForm"
           [salesFormGroup]="saleForm"
           [leasesFormGroup]="leaseForm"
-        >
+
+          (modalSaveUnitsSchedule)="onSaveUnitsSchedule($event)"
           (modalCloseUnitsSchedule)="onCloseModal()"
+        >
+          <!-- (modalCloseUnitsSchedule)="onCloseModal()" -->
         </app-upload-step-five>
       </div>
 

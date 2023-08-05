@@ -479,7 +479,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       this.printFormsErrors();
       return;
     }
-
+    
     if (this.unitsToDelete.length > 0) {
       this.deleteUnits(this.unitsToDelete);
     }
@@ -653,10 +653,16 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     return value || 'not defined';
   }
 
-  reset(formArray: FormArray, index: number) {
-    const formGroup = formArray.at(index) as FormGroup;
-    formGroup.reset();
-  }
+  // reset(formArray: FormArray, index: number) {
+  //   const formGroup = formArray.at(index) as FormGroup;
+  //   formGroup.setValue({
+  //     status: null,
+  //     priceAchieved: null,
+  //     dateAchieved: null,
+  //   });
+
+  //   // formGroup.reset();
+  // }
 
   salesAchieved(index: number): boolean {
     const formGroup = this.salesFormArray.at(index) as FormGroup;
