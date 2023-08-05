@@ -90,6 +90,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
   get leasesFormArray(): FormArray {
     return this.leasesFormGroup.get('leasesData') as FormArray;
   }
+  checkedUnits: Unit[] = [];
 
   validationMessages: ValidationMessages = {
     unit: {
@@ -136,7 +137,7 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private _schemeService: SchemeService,
     private _unitService: UnitService,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -218,7 +219,8 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       description: [unit?.description, Validators.required],
       beds: [unit?.beds, [Validators.pattern(this.numbersOnly), this.atLeastOneValidator()]],
       areaSize: [unit?.areaSize, Validators.pattern(this.decimalsOnly)],
-      id: [unit?.id]
+      id: [unit?.id],
+      selected: false
     });
 
     this.subs.push(
@@ -437,38 +439,35 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
       });
   }
 
-
-
-  onRemoveUnit(index: number) {
-    const unitId = this.unitsFormArray.at(index).get('id')?.value;
-    if (unitId) {
-      const indexInUnitsScheduleData = this.unitsScheduleData.findIndex(
-        unitScheduleData => unitScheduleData.unit.id === unitId
-      );
-
-      this.unitsToDelete.push(this.unitsScheduleData[indexInUnitsScheduleData].unit);
+  onRemoveUnits() {
+    for (let i = this.unitsFormArray.controls.length - 1; i >= 0; i--) {
+      let control = this.unitsFormArray.controls[i];
+      if (control.value.selected) {
+        this.unitsFormArray.removeAt(i);
+        this.leasesFormArray.removeAt(i);
+        this.salesFormArray.removeAt(i);
+        this.unitsToDelete.push(control.value as Unit);
+      }
     }
-
-    this.unitsFormArray.removeAt(index);
-
-    if (this.leasesFormArray.length >= index) {
-      this.leasesFormArray.removeAt(index);
-    }
-
-    if (this.salesFormArray.length >= index) {
-      this.salesFormArray.removeAt(index);
-    }
-
-    this.mode = 'edit';
 
     if (this.unitsFormArray.length === 0) {
       this.onSave();
     }
+
+    this.mode = 'edit';
   }
 
-  onConfirmDelete(index: number) {
+  updateCheckedUnits(): void {
+    const checkedUnitsControls = this.unitsFormArray.controls.filter(
+      (control: AbstractControl) => control.value.selected
+    );
+
+    this.checkedUnits = checkedUnitsControls.map((control: AbstractControl) => control.value);
+  }
+
+  onConfirmDelete() {
+    this.updateCheckedUnits();
     this.mode = 'delete';
-    this.index = index;
   }
 
   onCancelDelete() {
@@ -669,5 +668,14 @@ export class UnitScheduleModalComponent implements OnInit, OnDestroy {
     const formGroup = this.leasesFormArray.at(index) as FormGroup;
     const rentAchieved = formGroup.get('rentAchieved')?.value || 0;
     return rentAchieved > 0;
+  }
+
+  onSelectAllChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target) {
+      this.unitsFormArray.controls.forEach(control => {
+        control.get('selected')?.setValue(target.checked);
+      });
+    }
   }
 }
