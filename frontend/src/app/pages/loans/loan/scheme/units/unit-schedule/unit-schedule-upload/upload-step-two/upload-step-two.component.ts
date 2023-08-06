@@ -2,7 +2,8 @@ import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core'
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {UnitService} from 'src/app/_services/unit/unit.service';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
+import {read, utils} from 'xlsx';
 
 @Component({
   selector: 'app-upload-step-two',
@@ -99,9 +100,11 @@ export class UploadStepTwoComponent implements OnInit, OnDestroy {
   }
 
   private extractExcelFileContent(fileData: Uint8Array): string[][] {
-    const workbook = XLSX.read(fileData, {type: 'array', cellDates: true});
+    // const workbook = XLSX.read(fileData, {type: 'array', cellDates: true});
+    const workbook = read(fileData, {type: 'array', cellDates: true});
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
+    // const rows: string[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
+    const rows: string[][] = utils.sheet_to_json(worksheet, {header: 1, raw: false});
 
     const nonEmptyRows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
     const trimmedRows = nonEmptyRows.map(row => row.map(cell => {

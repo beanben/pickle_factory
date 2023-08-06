@@ -7,8 +7,6 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { ResetComponent } from './pages/auth/reset/reset.component';
 import { BorrowersComponent } from './pages/borrowers/borrowers.component';
 import { HomeComponent } from './pages/home/home.component';
-import { LoansComponent } from './pages/loans/loans.component';
-// import { UnitsComponent } from './pages/loans/loan/scheme/units/units.component';
 import { AuthGuard } from './_services/auth/auth.guard';
 
 const routes: Routes = [
@@ -19,10 +17,10 @@ const routes: Routes = [
     {path: 'forgot', component: ForgotComponent},
     {path: 'reset/:token', component: ResetComponent},  
   ]},
-  {path: 'loans', component: LoansComponent, canActivate: [AuthGuard]},
-  {path: 'loans/:new', component: LoansComponent, canActivate: [AuthGuard]},
-  {path: 'borrowers', component: BorrowersComponent, canActivate: [AuthGuard]},
-  // {path: 'borrowers/:action', component: BorrowersComponent, canActivate: [AuthGuard]},
+  { path: 'loans', loadChildren: () => import('./pages/loans/loans.module').then(m => m.LoansModule), canActivate: [AuthGuard]},
+  { path: 'borrowers', loadChildren: () => import('./pages/borrowers/borrowers.module').then(m => m.BorrowersModule), canActivate: [AuthGuard]},
+
+  // {path: 'borrowers', component: BorrowersComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: "/"}
 ];
 

@@ -7,8 +7,6 @@ import { InitialsPipe } from './initials.pipe';
 import { InitialPipe } from './initial.pipe';
 import { RequiredComponent } from './required.component';
 import { ToggleComponent } from './toggle.component';
-// import { BorrowerModalComponent } from '../pages/borrowers/borrower/borrower-modal/borrower-modal.component';
-// import { LoanModalComponent } from './loan-modal/loan-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BorrowerModalComponent } from './borrower-modal/borrower-modal.component';
 
@@ -24,7 +22,6 @@ import { BorrowerModalComponent } from './borrower-modal/borrower-modal.componen
     EditComponent,
     RequiredComponent,
     ToggleComponent,
-    // LoanModalComponent,
     BorrowerModalComponent,
     InitialsPipe,
     InitialPipe,
@@ -36,7 +33,6 @@ import { BorrowerModalComponent } from './borrower-modal/borrower-modal.componen
     EditComponent,
     RequiredComponent,
     ToggleComponent,
-    // LoanModalComponent,
     BorrowerModalComponent,
     InitialsPipe,
     InitialPipe,

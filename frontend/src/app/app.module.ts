@@ -11,7 +11,6 @@ import { SharedModule } from './shared/shared.module';
 import { PartsModule } from './parts/parts.module';
 import { HomeModule } from './pages/home/home.module';
 import { BorrowersModule } from './pages/borrowers/borrowers.module';
-import { LoansModule } from './pages/loans/loans.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
@@ -30,7 +29,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     SharedModule,
     HomeModule,
     BorrowersModule,
-    LoansModule,
     BrowserAnimationsModule,
   ],
   providers: [ {provide: APP_BASE_HREF, useValue: '/'}, authInterceptorProviders ],

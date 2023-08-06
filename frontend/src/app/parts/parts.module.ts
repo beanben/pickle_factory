@@ -4,7 +4,7 @@ import { ProfileComponent } from './profile.component';
 import { NavLeftComponent } from './nav-left/nav-left.component';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AppRoutingModule } from '../app-routing.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -13,7 +13,7 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    AppRoutingModule,
+    RouterModule
   ],
   declarations: [
     ProfileComponent,

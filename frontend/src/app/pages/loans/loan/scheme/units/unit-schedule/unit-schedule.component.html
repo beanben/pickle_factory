@@ -25,6 +25,8 @@
 ></app-unit-schedule-upload>
 
 
+
+
 <div class="row" *ngIf="unitsScheduleData.length > 0; else noUnits">
   <div class="col">
     <table
@@ -207,5 +209,7 @@
     <button class="btn btn-primary" (click)="onOpenUnitScheduleModal('new')">New units</button>
     <div class="title p-2">or</div>
     <button class="btn btn-primary" (click)="onOpenUploadModal()">Upload unit schedule</button>
+    <div class="title p-2">or</div>
+    <button class="btn btn-primary" (click)="onOpenUnitScheduleBuilder()">Use unit schedule builder</button>
   </div>
 </ng-template>

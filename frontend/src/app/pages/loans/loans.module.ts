@@ -14,7 +14,6 @@ import { AssetClassModalComponent } from './loan/scheme/units/asset-class-modal/
 import { UnitCardComponent } from './loan/scheme/units/unit-card/unit-card.component';
 import { UnitScheduleComponent } from './loan/scheme/units/unit-schedule/unit-schedule.component';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UnitScheduleUploadComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/unit-schedule-upload.component';
 import { UnitScheduleModalComponent } from './loan/scheme/units/unit-schedule/unit-schedule-modal/unit-schedule-modal.component';
 import { UploadNavComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-nav/upload-nav.component';
@@ -25,15 +24,24 @@ import { UploadStepFourComponent } from './loan/scheme/units/unit-schedule/unit-
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { UploadStepFiveComponent } from './loan/scheme/units/unit-schedule/unit-schedule-upload/upload-step-five/upload-step-five.component';
+import { UnitScheduleBuilderComponent } from './loan/scheme/units/unit-schedule/unit-schedule-builder/unit-schedule-builder.component';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: LoansComponent
+  }
+];
 
 @NgModule({
   imports: [
+    RouterModule.forChild(routes),
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
     PartsModule,
     FormsModule,
-    BrowserAnimationsModule,
     BsDatepickerModule,
     TooltipModule
   ],
@@ -56,6 +64,7 @@ import { UploadStepFiveComponent } from './loan/scheme/units/unit-schedule/unit-
     UploadStepThreeComponent,
     UploadStepFourComponent,
     UploadStepFiveComponent,
+    UnitScheduleBuilderComponent,
   ],
   exports: [
 

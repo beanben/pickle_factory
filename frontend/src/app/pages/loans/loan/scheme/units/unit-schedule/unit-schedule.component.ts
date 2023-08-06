@@ -26,6 +26,7 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
   openUnitScheduleModal = false;
   openUploadModal = false;
   openAssetClassModal = false;
+  openUnitScheduleBuilder = false;
   modalMode = '';
   totalUnits = 0;
   totalAreaSize = 0;
@@ -250,5 +251,9 @@ export class UnitScheduleComponent implements OnInit, OnChanges {
     };
 
     this._schemeService.setAssetClassDataSub(assetClassData);
+  }
+
+  onOpenUnitScheduleBuilder(){
+    this.openUnitScheduleBuilder = true;
   }
 }
