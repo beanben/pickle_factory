@@ -166,14 +166,14 @@ export class UploadStepFiveComponent implements OnInit, OnChanges {
     this.modalCloseUnitsSchedule.emit();
   }
 
-  setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
-    const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
+  // setAssetClassDataSub(assetClass: AssetClassType, UnitScheduleData: UnitScheduleData[]) {
+  //   const units: Unit[] = UnitScheduleData.map(unitScheduleData => unitScheduleData.unit);
 
-    const assetClassData = {
-      assetClass: assetClass,
-      units: units
-    };
+  //   const assetClassData = {
+  //     assetClass: assetClass,
+  //     units: units
+  //   };
 
-    this._schemeService.setAssetClassDataSub(assetClassData);
-  }
+  //   this._schemeService.setAssetClassDataSub(assetClassData);
+  // }
 }
